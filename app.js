@@ -294,6 +294,8 @@
       skillVersion: active.skillVersion,
       taskMode: active.taskMode,
       pool: active.pool,
+      transferLevel: active.transferLevel || null,
+      evidenceTaxonomyVersion: active.evidenceTaxonomyVersion || 1,
       uiVersion: active.uiVersion || "unknown_pre_navigation-v2",
       firstExposure: active.firstExposure,
       answerCount: state.answersThisTurn,
@@ -349,9 +351,9 @@
       hintShown: recovered ? null : state.hintShown,
       endedReason: reason,
       recovered,
-      evidenceTaxonomyVersion: active.evidenceTaxonomyVersion || EvidenceTaxonomy.CURRENT_VERSION,
-      transferLevel: active.transferLevel || "T3",
-      evaluationContext: active.evaluationContext || "standardized",
+      evidenceTaxonomyVersion: active.evidenceTaxonomyVersion || 1,
+      transferLevel: active.evidenceTaxonomyVersion ? (active.transferLevel || "T3") : "fixed_local_probe",
+      evaluationContext: active.evidenceTaxonomyVersion ? (active.evaluationContext || "standardized") : null,
       uiVersion: active.uiVersion || "unknown_pre_navigation-v2"
     });
     state.activeApplicationPresentation = null;
@@ -401,6 +403,8 @@
         skillVersion: skill.version,
         taskMode: problem.taskMode,
         pool: problem.pool,
+        transferLevel: problem.transferLevel || "T0",
+        evidenceTaxonomyVersion: EvidenceTaxonomy.CURRENT_VERSION,
         presentedAt: state.presentedAt,
         firstExposure,
         uiVersion
