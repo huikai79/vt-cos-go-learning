@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "go-formal-teaching-gate-v1",
+  "r1ProtocolId": "go-r1-independent-content-review-v4",
+  "r1ContentFingerprint": "fnv1a32-1afc0a13",
+  "criteria": {
+    "formalTeachingUse": {
+      "minimumNoviceParticipants": 3,
+      "requiredCriticalTasks": [
+        "start_course",
+        "complete_board_answer",
+        "recover_after_wrong_answer",
+        "reload_and_resume",
+        "export_learning_data"
+      ],
+      "requiredAccessibilityChecks": [
+        "keyboard_only",
+        "screen_reader_spot_check",
+        "zoom_200",
+        "viewport_320"
+      ],
+      "maximumOpenBlockingIssues": 0
+    },
+    "formalEvaluation": {
+      "requiresFormalTeachingUse": true,
+      "requiresPrivateUnexposedHoldout": true,
+      "requiresR1bComparability": true
+    }
+  },
+  "currentStatus": {
+    "engineeringRelease": "pass",
+    "r1aExternalContentReview": "awaiting_external_receipt",
+    "noviceUsability": "not_tested",
+    "accessibility": "not_tested",
+    "replacementPrivateHoldout": "not_established",
+    "r1bComparability": "not_established",
+    "learningEffect": "not_measured"
+  }
+}

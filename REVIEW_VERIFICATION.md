@@ -5,9 +5,9 @@
 - 擁有者選擇接受題庫與答案公開；相容用 `holdout` 欄位不再具受控盲測資格。48 題均標記 `public_source` 與 `formalHoldoutEligible=false`，舊 formal holdout pool 已退役。
 - Phase 2 來源拆成 100 題基礎技巧與 48 題基礎死活，組裝後仍為 148 題。
 - 題目 ID 順序 SHA-256 維持 `4de9567ad6c481b0c8fc721e9f5d2cc03388243ab88a2cd661b0fc70212930ad`。
-- R1 內容指紋維持 `fnv1a32-1afc0a13`，既有審題回條契約未因拆檔失效。
+- R1 內容指紋維持 `fnv1a32-1afc0a13`；審查契約升為 v4，瀏覽器只載入去答案資料，舊 v3 回條不會被誤收。
 - 新增 `release-manifest.json` 與發布契約測試；GitHub Pages 採 `main`／repository root 靜態發布，`.nojekyll` 關閉 Jekyll，無自訂建置步驟。
-- 加入 `VT-COS｜一手一懂` 母品牌／產品品牌契約、MIT License、公開曝光契約及 repository boundary audit 後，manifest 共 58 個公開檔案；本機已通過 82 項 Node 測試、file URL UI suite 與 Edge smoke。
+- 加入 R1 v4 去答案資料、正式教學 gate 與匿名真人證據範本後，manifest 共 65 個公開檔案；本機已通過 87 項 Node 測試。
 
 驗證日期：2026-09-21
 
@@ -24,7 +24,7 @@
 
 | 驗證 | 結果 | 覆蓋 |
 |---|---|---|
-| 所有非瀏覽器 `.cjs` | 82 pass、0 fail、0 skip | 狀態 19、完成矩陣 4、棋規 11、指標 5、課程 5、Phase 2 7、R1 4、發布契約 7、排程 4、SGF 8、trial 8 |
+| 所有非瀏覽器 `.cjs` | 87 pass、0 fail、0 skip | 狀態 19、完成矩陣 4、棋規 11、指標 5、課程 5、Phase 2 7、R1 5、發布契約 7、排程 4、SGF 8、正式教學 gate 4、trial 8 |
 | `node tests/ui.test.cjs`（file URL） | PASS | 主流程、選課、鍵盤、localStorage、匯出、320px、200%、R1 |
 | `tests/ui-smoke.ps1` | PASS | Edge 動態載入、作答、重新載入、事件匯出 |
 | loopback 網域根目錄 | PASS | `http://127.0.0.1:8765/` 的完整 UI suite |
@@ -32,9 +32,11 @@
 | JavaScript 語法 | PASS | 全部 `.js`／`.cjs` 通過 `node --check` |
 | 外部 runtime 請求搜尋 | PASS | 非文件程式只有 UI smoke 連本機 DevTools；無 CDN、API、遙測 |
 | 敏感檔案盤點 | PASS with exclusion | `gtp_logs/` 確認含本機資訊並由 `.gitignore` 排除；截圖無可見個資 |
-| repository boundary audit | PASS | 58 個 tracked 檔與 manifest 相同；workflow、secret reference、Dependabot、submodule／symlink、reparse point均為 0 |
+| repository boundary audit | PASS | 65 個 staged／tracked 檔與 manifest 相同；workflow、secret reference、Dependabot、submodule／symlink、reparse point均為 0 |
 | 乾淨 manifest 副本 | PASS（前一版） | 首次發布時精確複製 56 個公開檔案；81 項 Node 測試與 file URL UI suite 通過 |
-| GitHub fresh clone | PASS | 從公開 `main` clone `039cfc76c84984a92305dfca681e892b49ed3f87`，確認 58 檔、82 項 Node、boundary audit 與 file URL UI suite 均通過 |
+| GitHub fresh clone | PASS（前一版） | 公開 runtime hardening `039cfc76c84984a92305dfca681e892b49ed3f87` 曾確認 58 檔、82 項 Node、boundary audit 與 file URL UI suite；R1 v4 候選尚待推送後重驗 |
+| R1 去答案資料 | PASS | 77 題可由完整題庫決定性重建；瀏覽器資料只含 `id`、`prompt`、`focus`、`stones`，不含答案、goal 或評分欄位 |
+| 正式教學 gate | PASS（行為） | 無外部證據時穩定輸出正式教學 `BLOCKED`、正式評量 `BLOCKED`、學習成效 `NOT_MEASURED`；R1 通過不會取代真人證據 |
 | GitHub Pages build | PASS | `main`／`/`、legacy branch publishing、`.nojekyll`；latest build 綁定 `039cfc76c84984a92305dfca681e892b49ed3f87` |
 | GitHub Pages HTTP | PASS | `github.io` 預設網址 301 到 `https://huikai.com.kg/vt-cos-go-learning/`；正式入口 HTTPS 200 |
 | GitHub Pages UI | PASS | 由 `GO_UI_BASE_URL=https://huikai79.github.io/vt-cos-go-learning/` 啟動完整 Edge suite，經轉址後主流程與 R1 頁均通過 |

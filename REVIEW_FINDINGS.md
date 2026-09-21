@@ -24,14 +24,14 @@
 | B 前端與互動狀態 | 主頁、選課、答題、重試、跨課、工具、R1 | 直接開檔及 HTTP 瀏覽器旅程通過 | PASS |
 | C 後端／外部服務 | 搜尋 request／CDN／遙測／worker | 沒有後端與外部 runtime 請求；帳號、伺服器授權與 CORS 不適用 | N/A |
 | D 棋規與答案判定 | `go.js`、106 題、148 題、70 題窮舉 | 氣、提子、自殺、簡單劫、指定目標與唯一成功手測試通過 | PASS |
-| E 教材與學習流程 | 課程、示範、成效聲明、R1 邊界 | 工程與聲明邊界一致；獨立真人審題與難度可比性未完成 | BLOCKED |
+| E 教材與學習流程 | 課程、示範、成效聲明、R1 與正式教學 gate | v4 去答案審查流程與機器 gate 已完成；外部 R1a、初學者任務與真人無障礙證據未完成 | BLOCKED |
 | F 本機資料與指標 | localStorage、遷移、排程、trial、metrics | 壞 JSON／壞欄位、寫入失敗、首答與重試已測並修補 | PASS |
 | G SGF／匯入匯出 | parser、局部題、三種匯出 | 多盤、分支、pass、劫、非法落子及資源上限已測 | PASS |
 | H 安全、隱私與公開暴露 | DOM sinks、外連、log、截圖、保留題 | 公開題庫風險已由擁有者接受並落成不可盲測契約；Deep Scan 未啟動 | BLOCKED |
 | I 使用者體驗與無障礙 | 鍵盤、焦點、320px、200%、手機 | 自動工程檢查通過；真人鍵盤／螢幕閱讀器與理解度未測 | NOT TESTED |
 | J 效能、穩定性與相容性 | 最大 SGF、直接開檔、根／子路徑、正式 Pages | 10,001 節點與 1 MB 上限測試、file／loopback／Pages 通過；非 Chromium 未測 | PASS |
-| K 測試與可維護性 | 全部測試、退出碼、語法、PowerShell smoke | 82 項 Node 測試、語法、file URL UI 與 Edge smoke 通過 | PASS |
-| L GitHub 發布與重現性 | Git 邊界、manifest、automation、link、fresh clone、Pages | 58 個 tracked 檔與 manifest 相同；無 workflow、Dependabot、gitlink、symlink 或 reparse point；remote fresh clone 與正式 Pages UI 通過 | PASS |
+| K 測試與可維護性 | 全部測試、退出碼、語法、PowerShell smoke | 87 項 Node 測試、語法、file URL UI 與 Edge smoke 通過 | PASS |
+| L GitHub 發布與重現性 | Git 邊界、manifest、automation、link、fresh clone、Pages | 65 個候選公開檔由 manifest 固定；無 workflow、Dependabot、gitlink、symlink 或 reparse point | PASS |
 
 ## 已確認問題
 
@@ -46,9 +46,9 @@
 ### GLR-002｜公開原始碼會暴露 holdout 題與答案
 
 - 分類／嚴重度／信心：E／H／L；P1；高。
-- 證據：`phase2-content.js` 包含完整題目、棋形、答案與 goal；R1 工具直接載入同一靜態資產。
+- 原始證據：`phase2-content.js` 包含完整題目、棋形、答案與 goal；舊 R1 工具直接載入同一靜態資產。
 - 影響：一般匯出雖遮蔽答案，GitHub 原始碼讀者仍可取得；相關題目不能再靠 UI 隱藏保證未見。
-- 處置：擁有者於 2026-09-21 接受公開；題庫來源拆成 100 題基礎技巧與 48 題基礎死活，組裝層保留原 ID、順序、答案與內容指紋。48 題逐題加入 `public_source` 曝光時間與 `formalHoldoutEligible=false`；整體政策標記 formal holdout pool 已退役且正式評量需要替代題庫。
+- 處置：擁有者於 2026-09-21 接受公開；題庫來源拆成 100 題基礎技巧與 48 題基礎死活，組裝層保留原 ID、順序、答案與內容指紋。48 題逐題加入 `public_source` 曝光時間與 `formalHoldoutEligible=false`；整體政策標記 formal holdout pool 已退役且正式評量需要替代題庫。R1 v4 頁面另改為只載入可重建但不含答案、goal 或評分欄位的 `r1-review-bank.js`，降低審查者意外看到答案的機會。
 - 狀態：風險已接受並完成契約化。這批題仍可供練習、透明內容審查及個人流程試行，但不得再作受控盲測證據。
 
 ### GLR-003｜本機 GTP log 會洩露裝置與路徑資訊
@@ -65,7 +65,7 @@
 - 分類／嚴重度／信心：H／L；P1；高。
 - 影響：workflow、submodule、symlink 或 junction 可能在一般檔案清單之外取得權限、secret 或父目錄內容。
 - 修補：新增 `tests/repository-boundary.ps1`，要求 Git root 精確等於專案根、tracked 清單等於 manifest，拒絕 `.gitmodules`、gitlink、tracked symlink、reparse point、`pull_request_target`、`write-all` 與未鎖定 commit 的外部 Action，並盤點 Dependabot 與 secret references。
-- 回歸：58 個 tracked 檔與 manifest 相同；workflow、secret reference、Dependabot、submodule／symlink 及 reparse point皆為 0。
+- 回歸：候選 65 檔均列入 manifest；workflow、secret reference、Dependabot、submodule／symlink 及 reparse point皆為 0。
 - 狀態：已修復；remote fresh clone 與正式 Pages 驗證均通過。
 
 ### GLR-004｜SGF 會靜默部分匯入、pass 編號錯位且缺少資源上限
@@ -115,7 +115,7 @@
 |---|---|---|
 | 公開原始碼 | PASS | 獨立 repository、58 檔 manifest、秘密特徵掃描、boundary audit 及 remote fresh clone 均通過。 |
 | 網站部署 | PASS | Pages 已發布；預設網址轉向帳號自訂網域，正式 HTTPS URL 的完整 Edge UI suite 通過。 |
-| 正式教學使用 | BLOCKED | 缺獨立內容審查、真人可用性／無障礙及學習成效證據。 |
+| 正式教學使用 | BLOCKED | 可執行 gate 已建立；仍缺合格 R1a 外部回條、三位目標初學者關鍵任務及真人無障礙 spot check。 |
 | 學習成效證據 | 未量測 | 這是獨立證據狀態，不屬 release verdict，也不由工程測試升格。 |
 
 ## 邏輯檢修附注

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "go-formal-teaching-evidence-v1",
+  "r1ContentFingerprint": "fnv1a32-1afc0a13",
+  "usability": {
+    "completedAt": null,
+    "participantCount": 0,
+    "participantsAreTargetNovices": false,
+    "criticalTasks": {
+      "start_course": false,
+      "complete_board_answer": false,
+      "recover_after_wrong_answer": false,
+      "reload_and_resume": false,
+      "export_learning_data": false
+    },
+    "openBlockingIssues": null,
+    "evidenceReference": null
+  },
+  "accessibility": {
+    "completedAt": null,
+    "checks": {
+      "keyboard_only": false,
+      "screen_reader_spot_check": false,
+      "zoom_200": false,
+      "viewport_320": false
+    },
+    "openBlockingIssues": null,
+    "evidenceReference": null
+  },
+  "formalEvaluation": {
+    "privateUnexposedHoldoutEstablished": false,
+    "r1bComparabilityEstablished": false,
+    "evidenceReference": null
+  }
+}

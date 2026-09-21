@@ -39,6 +39,7 @@
     "DESIGN_PLAN.md",
     "EXECUTION_PIPELINE.md",
     "favicon.svg",
+    "formal-teaching-evidence.example.json",
     "go.js",
     "index.html",
     "LEARNING_MODEL_REVIEW.md",
@@ -51,6 +52,7 @@
     "phase4-content.js",
     "PUBLICATION_ARCHITECTURE.md",
     "R1_CONTENT_AUDIT.md",
+    "r1-review-bank.js",
     "r1-review-verify.cjs",
     "r1-review.html",
     "r1-review.js",
@@ -62,8 +64,12 @@
     "REVIEW_PLAN.md",
     "REVIEW_VERIFICATION.md",
     "scheduler.js",
+    "scripts/build-r1-review-bank.cjs",
     "sgf.js",
     "styles.css",
+    "TEACHING_GATE.md",
+    "teaching-gate.json",
+    "teaching-gate-verify.cjs",
     "trial.js",
     "UI_UX_AUDIT.md",
     "tests/app-state.test.cjs",
@@ -78,6 +84,7 @@
     "tests/release-manifest.test.cjs",
     "tests/scheduler.test.cjs",
     "tests/sgf.test.cjs",
+    "tests/teaching-gate.test.cjs",
     "tests/trial.test.cjs",
     "tests/ui-smoke.ps1",
     "tests/ui.test.cjs",
@@ -92,6 +99,7 @@
     "個人圍棋練習紀錄.md",
     "局部復盤_*.sgf",
     "R1_獨立審題草稿.json",
-    "R1_獨立審題回條.json"
+    "R1_獨立審題回條.json",
+    "formal-teaching-evidence.json"
   ]
 }

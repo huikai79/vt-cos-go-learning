@@ -1,25 +1,12 @@
 (function () {
   "use strict";
-  const allProblems = window.GoPhase2Content.phase2Problems;
-  const familyIds = [...new Set(allProblems.map((problem) => problem.familyId))];
-  const reviewItems = [...new Map([
-    ...familyIds.map((familyId) => allProblems.find((problem) => problem.familyId === familyId)),
-    ...allProblems.filter((problem) => problem.pool === "holdout")
-  ].map((problem) => [problem.id, problem])).values()];
+  const reviewBank = window.GoR1ReviewBank;
+  const reviewItems = reviewBank.reviewItems;
   const reviews = new Map();
-  const draftStorageKey = "go-r1-independent-review-draft-v3";
+  const draftStorageKey = "go-r1-independent-review-draft-v4";
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
-  }
-  function fingerprint(items) {
-    const source = JSON.stringify(items.map((problem) => ({ id: problem.id, contentVersion: problem.contentVersion, itemVersion: problem.itemVersion, stones: problem.stones, answer: problem.answer, goal: problem.goal })));
-    let hash = 2166136261;
-    for (let index = 0; index < source.length; index += 1) {
-      hash ^= source.charCodeAt(index);
-      hash = Math.imul(hash, 16777619);
-    }
-    return `fnv1a32-${(hash >>> 0).toString(16).padStart(8, "0")}`;
   }
   function board(problem) {
     const focus = new Set(problem.focus.map(([x, y]) => `${x},${y}`));
@@ -56,10 +43,13 @@
   function saveDraft() {
     try {
       localStorage.setItem(draftStorageKey, JSON.stringify({
-        contentFingerprint: fingerprint(reviewItems),
+        protocolId: reviewBank.protocolId,
+        contentFingerprint: reviewBank.contentFingerprint,
         reviewerCode: document.getElementById("reviewer-code").value,
         reviewerExperience: document.getElementById("reviewer-experience").value,
-        independent: document.getElementById("independent").checked,
+        independentOfContentAuthoring: document.getElementById("independent-authoring").checked,
+        separateFromLearner: document.getElementById("separate-learner").checked,
+        answerBlindBeforeReview: document.getElementById("answer-blind").checked,
         reviews: reviewItems.map((problem) => reviewFor(problem.id))
       }));
       return true;
@@ -74,10 +64,12 @@
   function restoreDraft() {
     try {
       const saved = JSON.parse(localStorage.getItem(draftStorageKey) || "null");
-      if (!saved || saved.contentFingerprint !== fingerprint(reviewItems)) return;
+      if (!saved || saved.protocolId !== reviewBank.protocolId || saved.contentFingerprint !== reviewBank.contentFingerprint) return;
       document.getElementById("reviewer-code").value = saved.reviewerCode || "";
       document.getElementById("reviewer-experience").value = saved.reviewerExperience || "";
-      document.getElementById("independent").checked = saved.independent === true;
+      document.getElementById("independent-authoring").checked = saved.independentOfContentAuthoring === true;
+      document.getElementById("separate-learner").checked = saved.separateFromLearner === true;
+      document.getElementById("answer-blind").checked = saved.answerBlindBeforeReview === true;
       for (const item of Array.isArray(saved.reviews) ? saved.reviews : []) {
         if (!reviewItems.some((problem) => problem.id === item.problemId)) continue;
         reviews.set(item.problemId, { problemId: item.problemId, status: item.status || "", proposedMove: item.proposedMove || null, notes: item.notes || "" });
@@ -135,16 +127,18 @@
   function payload(draft) {
     const reviewerCode = document.getElementById("reviewer-code").value.trim();
     const reviewerExperience = document.getElementById("reviewer-experience").value.trim();
-    const independent = document.getElementById("independent").checked;
+    const independentOfContentAuthoring = document.getElementById("independent-authoring").checked;
+    const separateFromLearner = document.getElementById("separate-learner").checked;
+    const answerBlindBeforeReview = document.getElementById("answer-blind").checked;
     return {
       schemaVersion: 1,
-      protocolId: "go-r1-independent-content-review-v3",
+      protocolId: reviewBank.protocolId,
       draft: Boolean(draft),
-      contentFingerprint: fingerprint(reviewItems),
+      contentFingerprint: reviewBank.contentFingerprint,
       reviewedAt: new Date().toISOString(),
-      reviewer: { code: reviewerCode || null, experience: reviewerExperience || null, independentOfContentAuthoring: independent, separateFromLearner: independent, answerBlindBeforeReview: independent },
+      reviewer: { code: reviewerCode || null, experience: reviewerExperience || null, independentOfContentAuthoring, separateFromLearner, answerBlindBeforeReview },
       reviewScope: { contentCorrectness: "single_reviewer_evidence", parallelFormComparability: "not_established", learningEffect: "not_measured" },
-      population: { catalogCount: allProblems.length, familyCount: familyIds.length, holdoutCount: allProblems.filter((problem) => problem.pool === "holdout").length, reviewItemCount: reviewItems.length },
+      population: reviewBank.population,
       reviews: reviewItems.map((problem) => reviewFor(problem.id))
     };
   }
@@ -164,10 +158,11 @@
   function exportFinalReceipt() {
     const reviewerCode = document.getElementById("reviewer-code").value.trim();
     const reviewerExperience = document.getElementById("reviewer-experience").value.trim();
-    const independent = document.getElementById("independent").checked;
+    const declarations = ["independent-authoring", "separate-learner", "answer-blind"];
+    const declarationsComplete = declarations.every((id) => document.getElementById(id).checked);
     const incomplete = incompleteItems();
-    if (!reviewerCode || !reviewerExperience || !independent || incomplete.length) {
-      const missingProfile = [!reviewerCode && "審查者代碼", !reviewerExperience && "圍棋經驗", !independent && "獨立聲明"].filter(Boolean);
+    if (reviewerCode.length < 3 || reviewerExperience.length < 5 || !declarationsComplete || incomplete.length) {
+      const missingProfile = [reviewerCode.length < 3 && "審查者代碼", reviewerExperience.length < 5 && "圍棋經驗", !declarationsComplete && "三項獨立聲明"].filter(Boolean);
       setMessage(`尚不能匯出完成回條：${missingProfile.length ? `還缺${missingProfile.join("、")}；` : ""}尚有 ${incomplete.length} 題未完成。選「一致」只需落子；其餘結果需補理由。可先按「匯出草稿」保存。`);
       return;
     }
@@ -203,11 +198,11 @@
   document.getElementById("cards").addEventListener("input", (event) => {
     if (event.target.matches(".notes")) { reviewFor(event.target.closest(".card").dataset.id).notes = event.target.value; progress(); persistDraft(); }
   });
-  for (const id of ["reviewer-code", "reviewer-experience", "independent"]) document.getElementById(id).addEventListener("input", persistDraft);
+  for (const id of ["reviewer-code", "reviewer-experience", "independent-authoring", "separate-learner", "answer-blind"]) document.getElementById(id).addEventListener("input", persistDraft);
   document.getElementById("export-draft").addEventListener("click", exportDraft);
   document.getElementById("export-final").addEventListener("click", exportFinalReceipt);
   document.getElementById("review-filter").addEventListener("change", applyFilter);
   document.getElementById("next-incomplete").addEventListener("click", jumpToNextIncomplete);
   progress();
-  window.GoR1Review = { reviewItems, fingerprint: fingerprint(reviewItems), incompleteItems };
+  window.GoR1Review = { reviewItems, fingerprint: reviewBank.contentFingerprint, incompleteItems };
 })();

@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="application-name" content="VT-COS｜一手一懂">
   <title>VT-COS｜一手一懂｜R1 獨立盲審</title>
@@ -51,20 +53,20 @@
     <p class="review-brand">VT-COS｜一手一懂</p>
     <h1>R1a 全題庫獨立內容審查</h1>
     <div class="notice">
-      <strong>本頁只給未參與編題、也不是目前學習者的外部審查者使用。</strong> 完整題庫已隨公開原始碼曝光，不能再作受控未見 holdout；本頁只保留答案盲審的內容核對流程。頁面不顯示既定答案、提示或解說；請先自行判斷成功手，再標記「一致、需修、歧義或多解」。選「一致」時只需選落子；選「需修、歧義或多解」時必須說明理由。共核對 148 題題庫的 43 個母題家族代表題及全部 48 題公開保留組，重複項合併後為 77 題；涵蓋提子、連接、救棋、直三與第二眼缺口。回條只提供單一審查者的內容核對證據，不證明難度等值、完整內容效度或學習成效。
+      <strong>本頁只給未參與編題、也不是目前學習者的外部審查者使用。</strong> 完整題庫已隨公開原始碼曝光，不能再作受控未見 holdout；本頁只保留答案盲審的內容核對流程，而且只載入去除既定答案、目標與解說的審查資料。請勿另行瀏覽 repository 內的題庫原始碼或機器稽核結果；先自行判斷成功手，再標記「一致、需修、歧義或多解」。選「一致」時只需選落子；選「需修、歧義或多解」時必須說明理由。共核對 148 題題庫的 43 個母題家族代表題及全部 48 題公開保留組，重複項合併後為 77 題；涵蓋提子、連接、救棋、直三與第二眼缺口。回條只提供單一審查者的內容核對證據，不證明難度等值、完整內容效度或學習成效。
     </div>
     <section class="reviewer">
       <label>審查者代碼<input id="reviewer-code" autocomplete="off" placeholder="例如 reviewer-01"></label>
       <label>圍棋經驗<input id="reviewer-experience" autocomplete="off" placeholder="例如業餘 3 段／教學 5 年"></label>
-      <label class="declaration"><input id="independent" type="checkbox"><span>我不是目前學習者、未參與這批題目的編寫，且在作答前沒有查看既定答案、提示、解說或機器稽核結果。</span></label>
+      <label class="declaration"><input id="independent-authoring" type="checkbox"><span>我沒有參與這批題目、答案、技能邊界或評分規則的編寫。</span></label>
+      <label class="declaration"><input id="separate-learner" type="checkbox"><span>我不是目前使用本平臺學習與參與個人 pilot 的學習者。</span></label>
+      <label class="declaration"><input id="answer-blind" type="checkbox"><span>我在完成判斷前沒有查看既定答案、提示、解說、題庫原始碼或機器稽核結果。</span></label>
     </section>
     <div class="toolbar"><div class="review-nav"><strong id="progress">已完成 0 / 77</strong><label for="review-filter">顯示<select id="review-filter"><option value="all">全部</option><option value="pending">待審</option><option value="completed">已完成</option></select></label><button id="next-incomplete" class="secondary" type="button">下一張待審</button></div><div class="actions"><button id="export-draft" class="secondary" type="button">匯出草稿</button><button id="export-final" type="button">匯出完成回條</button></div></div>
     <div id="message" role="status">可隨時匯出草稿；完成 77 題、審查者資料與獨立聲明後，才能匯出完成回條。</div>
     <section class="cards" id="cards"></section>
   </main>
-  <script src="phase2-foundation-bank.js"></script>
-  <script src="phase2-life-death-bank.js"></script>
-  <script src="phase2-content.js"></script>
+  <script src="r1-review-bank.js"></script>
   <script src="r1-review.js"></script>
 </body>
 </html>

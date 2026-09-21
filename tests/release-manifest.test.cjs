@@ -89,13 +89,16 @@ test("兩個題庫來源模組組回原有 148 題契約", () => {
   assert.equal(new Set(phase2.phase2Problems.map((problem) => problem.id)).size, 148);
 });
 
-test("兩個 HTML 入口按相依順序載入公開題庫模組", () => {
-  for (const entrypoint of manifest.hosting.entrypoints) {
-    const html = fs.readFileSync(path.join(root, entrypoint), "utf8");
-    const foundationIndex = html.indexOf('src="phase2-foundation-bank.js"');
-    const lifeAndDeathIndex = html.indexOf('src="phase2-life-death-bank.js"');
-    const assemblerIndex = html.indexOf('src="phase2-content.js"');
-    assert.ok(foundationIndex >= 0 && foundationIndex < assemblerIndex, `${entrypoint} foundation order`);
-    assert.ok(lifeAndDeathIndex >= 0 && lifeAndDeathIndex < assemblerIndex, `${entrypoint} life-and-death order`);
-  }
+test("學習入口載入完整題庫，R1 入口只載入去答案審查資料", () => {
+  const learningHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
+  const foundationIndex = learningHtml.indexOf('src="phase2-foundation-bank.js"');
+  const lifeAndDeathIndex = learningHtml.indexOf('src="phase2-life-death-bank.js"');
+  const assemblerIndex = learningHtml.indexOf('src="phase2-content.js"');
+  assert.ok(foundationIndex >= 0 && foundationIndex < assemblerIndex);
+  assert.ok(lifeAndDeathIndex >= 0 && lifeAndDeathIndex < assemblerIndex);
+
+  const reviewHtml = fs.readFileSync(path.join(root, "r1-review.html"), "utf8");
+  assert.match(reviewHtml, /src="r1-review-bank\.js"/);
+  assert.doesNotMatch(reviewHtml, /phase2-(foundation-bank|life-death-bank|content)\.js/);
+  assert.ok(reviewHtml.indexOf('src="r1-review-bank.js"') < reviewHtml.indexOf('src="r1-review.js"'));
 });

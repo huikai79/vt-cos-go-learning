@@ -1,2 +1,3 @@
 # Markdown uses two trailing spaces for intentional line breaks.
 *.md whitespace=-trailing-space
+r1-review-bank.js linguist-generated=true

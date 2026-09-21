@@ -1,8 +1,12 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { phase2Problems } = require("../phase2-content.js");
 const Trial = require("../trial.js");
 const ReviewVerifier = require("../r1-review-verify.cjs");
+const ReviewBank = require("../r1-review-bank.js");
+const ReviewBankBuilder = require("../scripts/build-r1-review-bank.cjs");
 
 const SIZE = 9;
 const EMPTY = 0;
@@ -114,6 +118,18 @@ test("R1 審題母體涵蓋 43 個題庫家族及全部 48 題 holdout", () => {
   assert.deepEqual(ReviewVerifier.reviewItems.map((problem) => problem.id), [...reviewSet.values()].map((problem) => problem.id));
 });
 
+test("瀏覽器 R1 審查資料可重建且不含答案、目標或評分欄位", () => {
+  const generatedPath = path.resolve(__dirname, "..", "r1-review-bank.js");
+  assert.equal(fs.readFileSync(generatedPath, "utf8"), ReviewBankBuilder.serializeBank());
+  assert.equal(ReviewBank.protocolId, ReviewVerifier.PROTOCOL_ID);
+  assert.equal(ReviewBank.contentFingerprint, ReviewVerifier.fingerprint(ReviewVerifier.reviewItems));
+  assert.deepEqual(ReviewBank.population, ReviewVerifier.population);
+  assert.deepEqual(ReviewBank.reviewItems.map((problem) => problem.id), ReviewVerifier.reviewItems.map((problem) => problem.id));
+  for (const problem of ReviewBank.reviewItems) {
+    assert.deepEqual(Object.keys(problem).sort(), ["focus", "id", "prompt", "stones"]);
+  }
+});
+
 test("pilot 基線與追蹤使用不同家族，已知結構特徵相同；R1b 難度仍未知", () => {
   const baseline = Trial.startOrResume(null, phase2Problems, 0);
   const completed = completeBatch(baseline.state, baseline.batch, 1);
@@ -134,11 +150,14 @@ test("pilot 基線與追蹤使用不同家族，已知結構特徵相同；R1b �
 
 test("R1 審查回條綁定目前內容，任何異議或答案不一致都不會誤判通過", () => {
   const receipt = {
-    protocolId: "go-r1-independent-content-review-v3",
+    schemaVersion: 1,
+    protocolId: ReviewVerifier.PROTOCOL_ID,
     draft: false,
     contentFingerprint: ReviewVerifier.fingerprint(ReviewVerifier.reviewItems),
+    reviewedAt: "2026-09-21T00:00:00.000Z",
     reviewer: { code: "fixture", experience: "fixture", independentOfContentAuthoring: true, separateFromLearner: true, answerBlindBeforeReview: true },
     reviewScope: { contentCorrectness: "single_reviewer_evidence", parallelFormComparability: "not_established", learningEffect: "not_measured" },
+    population: ReviewVerifier.population,
     reviews: ReviewVerifier.reviewItems.map((problem) => ({ problemId: problem.id, status: "consistent", proposedMove: problem.answer, notes: "" }))
   };
   const accepted = ReviewVerifier.verifyReceipt(receipt);
@@ -158,6 +177,15 @@ test("R1 審查回條綁定目前內容，任何異議或答案不一致都不�
   draft.draft = true;
   assert.ok(ReviewVerifier.verifyReceipt(draft).errors.some((error) => error.includes("草稿不能")));
   const oldProtocol = structuredClone(receipt);
-  oldProtocol.protocolId = "go-r1-independent-content-review-v2";
+  oldProtocol.protocolId = "go-r1-independent-content-review-v3";
   assert.ok(ReviewVerifier.verifyReceipt(oldProtocol).errors.some((error) => error.includes("protocolId")));
+  const notBlind = structuredClone(receipt);
+  notBlind.reviewer.answerBlindBeforeReview = false;
+  assert.ok(ReviewVerifier.verifyReceipt(notBlind).errors.some((error) => error.includes("未查看答案")));
+  const duplicate = structuredClone(receipt);
+  duplicate.reviews[1].problemId = duplicate.reviews[0].problemId;
+  assert.ok(ReviewVerifier.verifyReceipt(duplicate).errors.some((error) => error.includes("重複 problemId")));
+  const malformed = structuredClone(receipt);
+  malformed.reviews[0] = null;
+  assert.ok(ReviewVerifier.verifyReceipt(malformed).errors.some((error) => error.includes("無效 review")));
 });

@@ -488,9 +488,11 @@ async function main() {
       await delay(100);
     }
     assert.equal(reviewReady, true);
-    const reviewPageState = await evaluate(socket, `(() => { const card = document.querySelector('.card'); card.querySelector('.hit').dispatchEvent(new MouseEvent('click', {bubbles:true})); card.querySelector('.status').value = 'consistent'; card.querySelector('.status').dispatchEvent(new Event('change', {bubbles:true})); document.querySelector('#export-final').click(); return {items: window.GoR1Review.reviewItems.length, fingerprint: window.GoR1Review.fingerprint, selected: card.querySelectorAll('.selected').length, progress: document.querySelector('#progress').textContent, message: document.querySelector('#message').textContent, notice: document.querySelector('.notice').textContent, width: innerWidth, scrollWidth: document.documentElement.scrollWidth}; })()`);
+    const reviewPageState = await evaluate(socket, `(() => { const card = document.querySelector('.card'); card.querySelector('.hit').dispatchEvent(new MouseEvent('click', {bubbles:true})); card.querySelector('.status').value = 'consistent'; card.querySelector('.status').dispatchEvent(new Event('change', {bubbles:true})); document.querySelector('#export-final').click(); return {items: window.GoR1Review.reviewItems.length, fingerprint: window.GoR1Review.fingerprint, fullBankAbsent: typeof window.GoPhase2Content === 'undefined', declarations: document.querySelectorAll('.declaration input[type="checkbox"]').length, selected: card.querySelectorAll('.selected').length, progress: document.querySelector('#progress').textContent, message: document.querySelector('#message').textContent, notice: document.querySelector('.notice').textContent, width: innerWidth, scrollWidth: document.documentElement.scrollWidth}; })()`);
     assert.equal(reviewPageState.items, 77);
     assert.equal(reviewPageState.fingerprint, "fnv1a32-1afc0a13");
+    assert.equal(reviewPageState.fullBankAbsent, true);
+    assert.equal(reviewPageState.declarations, 3);
     assert.equal(reviewPageState.selected, 1);
     assert.equal(reviewPageState.progress, "已完成 1 / 77 · 待審 76");
     assert.match(reviewPageState.message, /尚不能匯出完成回條/);
@@ -508,6 +510,8 @@ async function main() {
     assert.deepEqual(completedFilter, {hidden: 76, visible: 1, label: "已完成（1）"});
     const reviewDraft = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__reviewDraftBlob = blob; return 'blob:review-draft'; }; URL.revokeObjectURL = () => {}; document.querySelector('#export-draft').click(); return JSON.parse(await window.__reviewDraftBlob.text()); })()`);
     assert.equal(reviewDraft.draft, true);
+    assert.equal(reviewDraft.protocolId, "go-r1-independent-content-review-v4");
+    assert.equal(reviewDraft.population.publicReviewGroupCount, 48);
     assert.equal(reviewDraft.reviews.length, 77);
     assert.equal(reviewDraft.reviews.filter((review) => review.status).length, 1);
     assert.equal(reviewDraft.reviewScope.parallelFormComparability, "not_established");
