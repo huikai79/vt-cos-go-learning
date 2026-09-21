@@ -30,9 +30,10 @@
     ]
   },
   "publicFiles": [
-    ".nojekyll",
-    ".gitignore",
     ".gitattributes",
+    ".github/workflows/verify.yml",
+    ".gitignore",
+    ".nojekyll",
     "AGENTS.md",
     "app.js",
     "ARCHITECTURE.md",
@@ -75,12 +76,6 @@
     "TEACHING_GATE.md",
     "teaching-gate-verify.cjs",
     "teaching-gate.json",
-    "trial.js",
-    "UI_UX_AUDIT.md",
-    "ui-audit-screenshots/first-entry-desktop.png",
-    "ui-audit-screenshots/first-entry-mobile.png",
-    "ui-audit-screenshots/go-learning-desktop.png",
-    "ui-audit-screenshots/go-learning-mobile.png",
     "tests/app-state.test.cjs",
     "tests/completion-matrix.test.cjs",
     "tests/evidence-taxonomy.test.cjs",
@@ -97,7 +92,13 @@
     "tests/teaching-gate.test.cjs",
     "tests/trial.test.cjs",
     "tests/ui-smoke.ps1",
-    "tests/ui.test.cjs"
+    "tests/ui.test.cjs",
+    "trial.js",
+    "UI_UX_AUDIT.md",
+    "ui-audit-screenshots/first-entry-desktop.png",
+    "ui-audit-screenshots/first-entry-mobile.png",
+    "ui-audit-screenshots/go-learning-desktop.png",
+    "ui-audit-screenshots/go-learning-mobile.png"
   ],
   "excludedPatterns": [
     "gtp_logs/",
