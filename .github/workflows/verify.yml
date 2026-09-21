@@ -54,6 +54,26 @@ jobs:
               node --check "$file"
             done
 
+  sabaki-sgf-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact event ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
+          git fetch --depth=1 origin "$GITHUB_REF"
+          git checkout --detach FETCH_HEAD
+      - name: Install pinned Sabaki SGF oracle
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --omit=optional @sabaki/sgf@3.5.0 doken@1.0.0
+      - name: Compare bounded parser with Sabaki SGF
+        shell: bash
+        run: node tests/sgf-sabaki-oracle.test.cjs
+
   windows-ui-and-boundary:
     runs-on: windows-latest
     steps:
