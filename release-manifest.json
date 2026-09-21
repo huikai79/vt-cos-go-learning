@@ -88,6 +88,7 @@
     "tests/release-manifest.test.cjs",
     "tests/repository-boundary.ps1",
     "tests/scheduler.test.cjs",
+    "tests/sgf-sabaki-oracle.test.cjs",
     "tests/sgf.test.cjs",
     "tests/teaching-gate.test.cjs",
     "tests/trial.test.cjs",
