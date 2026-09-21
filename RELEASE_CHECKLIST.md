@@ -2,13 +2,13 @@
 
 ## 發布方式
 
-- [ ] 以 `Go_Learning_Prototype` 建立獨立 repository；不要把父層 `VT-Workflow` 當公開專案。
+- [x] 已建立公開 GitHub repository：`https://github.com/huikai79/vt-cos-go-learning`；未把父層 `VT-Workflow` 當公開專案。
 - [x] 已接受題庫、答案與 R1 審題工具公開；`holdout` 不再具受控盲測資格。
 - [x] 題庫來源已拆成基礎技巧與基礎死活模組，原 ID、順序及內容指紋不變。
 - [x] 母品牌採 `VT-COS`、產品名採「一手一懂」，公開顯示與 metadata 已對齊。
 - [x] 加入 `LICENSE`：MIT，著作權標示為 `Copyright (c) 2026 huikai79`。
-- [ ] 只 stage 下方候選檔案；先以 `git status --short --untracked-files=all` 人工核對。
-- [ ] commit 後從實際 repository fresh clone，再執行全部測試。
+- [x] 首個 commit 只納入 manifest 的 56 個候選檔案，`gtp_logs/` 與個人資料均被排除。
+- [x] 已從實際 GitHub repository fresh clone，確認 `edbf17d` 可通過全部 81 項 Node 測試與 file URL UI suite。
 - [ ] 若啟用 GitHub Pages，在實際 URL 重跑 `GO_UI_BASE_URL=<url> node tests/ui.test.cjs`。
 - [ ] 不在本輪自動 commit、push、開 Pages 或部署。
 

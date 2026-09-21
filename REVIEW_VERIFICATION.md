@@ -18,6 +18,7 @@
 - 子專案狀態：全部未追蹤，沒有自身 Git 歷史。
 - runtime：Windows 10.0.19045、Node 24.14.1、Edge 153.0.4234.48、Python 3.14.4。
 - 測試使用隔離的瀏覽器暫存 profile；沒有讀寫真實瀏覽器 profile。
+- 公開遠端：`https://github.com/huikai79/vt-cos-go-learning`，`main` 首個發布 commit 為 `edbf17d3a2dcb28c6e634a14e704d75288665923`。
 
 ## 驗證結果
 
@@ -32,6 +33,7 @@
 | 外部 runtime 請求搜尋 | PASS | 非文件程式只有 UI smoke 連本機 DevTools；無 CDN、API、遙測 |
 | 敏感檔案盤點 | PASS with exclusion | `gtp_logs/` 確認含本機資訊並由 `.gitignore` 排除；截圖無可見個資 |
 | 乾淨 manifest 副本 | PASS | 精確複製 56 個公開檔案；81 項 Node 測試與 file URL UI suite 通過 |
+| GitHub fresh clone | PASS | 從公開 `main` clone `edbf17d`，確認 56 個檔案、81 項 Node 測試與 file URL UI suite 均通過 |
 | Codex Security Deep Scan | BLOCKED | worker permission-profile 驗證前 Codex executable code 1；未產生 finding 或 manifest |
 
 ## 失敗後修復紀錄
