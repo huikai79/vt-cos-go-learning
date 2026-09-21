@@ -79,10 +79,10 @@ jobs:
       - name: Run Edge smoke
         shell: pwsh
         run: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/ui-smoke.ps1
+          pwsh -NoProfile -File tests/ui-smoke.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Audit repository boundary
         shell: pwsh
         run: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1
+          pwsh -NoProfile -File tests/repository-boundary.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
