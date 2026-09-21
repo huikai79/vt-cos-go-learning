@@ -38,7 +38,7 @@ function pointTarget(dataset, selector) {
 }
 
 function createApp(saved = {}, options = {}) {
-  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "first-start-card", "first-start-button", "first-start-lesson-title", "first-start-concept", "first-start-demo", "first-start-demo-board", "first-start-check", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced"];
+  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced"];
   const elements = Object.fromEntries(ids.map((id) => [id, new Element()]));
   const storage = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   for (const [key, value] of Object.entries(options.rawStorage || {})) storage.set(key, value);
@@ -81,16 +81,26 @@ function createApp(saved = {}, options = {}) {
   return { elements, storage, downloads };
 }
 
-test("首次短講提供概念、示範與解題前檢查點", () => {
-  const { elements } = createApp();
-  assert.equal(elements["first-start-lesson-title"].textContent, "現在先學：認識氣");
-  assert.match(elements["first-start-concept"].textContent, /上下左右相鄰的空點/);
-  assert.match(elements["first-start-demo"].textContent, /角上的一顆黑棋/);
-  assert.match(elements["first-start-check"].textContent, /先找空點/);
+test("每課短講只自動顯示一次，並可隨時重開", () => {
+  const { elements, storage } = createApp();
+  assert.equal(elements["lesson-intro-dialog"].open, true);
+  assert.equal(elements["lesson-intro-title"].textContent, "現在先學：認識氣");
+  assert.match(elements["teaching-text"].textContent, /上下左右相鄰的空點/);
   assert.match(elements["teaching-demo"].textContent, /角上的一顆黑棋/);
-  assert.match(elements["first-start-demo-board"].innerHTML, /demo-liberty/);
+  assert.match(elements["teaching-check"].textContent, /先找空點/);
+  assert.match(elements["teaching-demo-board"].innerHTML, /demo-liberty/);
+  elements["lesson-intro-start-button"].listeners.click();
+  assert.equal(elements["lesson-intro-dialog"].open, false);
+  assert.deepEqual(JSON.parse(storage.get(STORAGE_KEY)).seenLessonIntros, [0]);
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "4" }, "[data-lesson]") });
+  assert.equal(elements["lesson-intro-dialog"].open, true);
   assert.match(elements["teaching-demo-board"].innerHTML, /兩顆黑棋的直接連接點/);
+  elements["lesson-intro-dismiss-button"].listeners.click();
+  elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "0" }, "[data-lesson]") });
+  assert.equal(elements["lesson-intro-dialog"].open, false, "已看過的課不應再次自動彈出短講");
+  elements["lesson-intro-button"].listeners.click();
+  assert.equal(elements["lesson-intro-dialog"].open, true, "仍可手動重開短講");
+  elements["lesson-intro-dismiss-button"].listeners.click();
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "7" }, "[data-lesson]") });
   assert.match(elements["teaching-demo-board"].innerHTML, /直三|三個連成一直線/);
 });
@@ -297,7 +307,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v27");
+  assert.equal(exported.uiVersion, "learner-flow-v28");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -463,7 +473,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v27");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v28");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);

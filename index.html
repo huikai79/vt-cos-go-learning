@@ -98,57 +98,13 @@
       </header>
 
       <div class="content-wrap">
-        <section class="first-start-card" id="first-start-card" aria-labelledby="first-start-title">
-          <span>第一次使用</span>
-          <h2 id="first-start-title">先完成第一題</h2>
-          <p>先讀完這一小段，再用第一題確認是否看懂。答錯後會進入修正；後續再用新棋形與 9 路局面確認是否用得出來。紀錄只存於這台電腦。</p>
-          <div class="first-start-preview" aria-labelledby="first-start-lesson-title">
-            <strong id="first-start-lesson-title">現在先學：認識氣</strong>
-            <p id="first-start-concept"></p>
-            <p><span>示範：</span><span id="first-start-demo"></span></p>
-            <figure class="teaching-board-preview" id="first-start-demo-board"></figure>
-            <p><span>解題前先做：</span><span id="first-start-check"></span></p>
-          </div>
-          <button class="primary-button" id="first-start-button" type="button">看完示範，開始第 1 題 <span aria-hidden="true">→</span></button>
-        </section>
-        <section class="learning-flow" aria-labelledby="learning-flow-title">
-          <div class="learning-flow-head">
-            <div><span>學習流水線</span><h2 id="learning-flow-title">從看懂，到在棋局裡用得出來</h2></div>
-            <p>一次答對只算完成當下題目。</p>
-          </div>
-          <ol class="learning-steps">
-            <li id="learning-step-0"><span>1</span><strong>先看懂</strong><small>短講與示範</small></li>
-            <li id="learning-step-1"><span>2</span><strong>自己作答</strong><small>不看答案先算</small></li>
-            <li id="learning-step-2"><span>3</span><strong>修正重算</strong><small>理解理由再做</small></li>
-            <li id="learning-step-3"><span>4</span><strong>延後新題</strong><small>隔日換形再測</small></li>
-            <li id="learning-step-4"><span>5</span><strong>局面應用</strong><small>9 路自行發現</small></li>
-          </ol>
-          <div class="learning-guidance" role="status" aria-live="polite">
-            <p><strong>現在：</strong><span id="learning-now">先看短講，理解本題只需要的一個概念。</span></p>
-            <p><strong>為什麼現在做：</strong><span id="learning-why">完成短講後，先在有明確焦點的題目自行判斷。</span></p>
-            <p><strong>下一步：</strong><span id="learning-next">不看答案，自己回答第一題。</span></p>
-          </div>
-          <p class="learning-proof">逐步學會的證據順序：當下能做 → 隔一段時間換新棋形仍能做 → 在 9 路局面能自己發現。缺少哪一段，就標示待驗證。</p>
-        </section>
         <div class="section-head"><span id="lesson-kicker">LESSON 01 / 19</span><span class="current-stage-badge" id="learning-stage-badge">目前 1/5 · 先看懂</span><span id="question-number">題目 01 / 98</span></div>
         <div class="title-row"><div><h2 id="lesson-title" tabindex="-1">認識氣</h2><p id="lesson-subtitle"></p></div><span class="lesson-badge" id="lesson-badge">基礎概念</span></div>
-
-        <section class="teaching-card" aria-labelledby="teaching-title">
-          <span class="teaching-icon" aria-hidden="true">✦</span>
-          <div>
-            <strong id="teaching-title">先懂這一點</strong>
-            <p id="teaching-text"></p>
-            <p class="teaching-demo"><span>示範：</span><span id="teaching-demo"></span></p>
-            <figure class="teaching-board-preview" id="teaching-demo-board"></figure>
-            <section class="demo-stepper" id="teaching-demo-stepper" aria-label="逐步棋形示範" hidden>
-              <p id="teaching-demo-caption" role="status" aria-live="polite"></p>
-              <div class="demo-stepper-actions">
-                <button class="subtle-button" id="teaching-demo-previous" type="button">← 上一步</button>
-                <span id="teaching-demo-count" aria-live="polite"></span>
-                <button class="subtle-button" id="teaching-demo-next" type="button">看下一步 →</button>
-              </div>
-            </section>
-            <p class="teaching-check"><span>解題前先做：</span><span id="teaching-check"></span></p>
+        <section class="lesson-context-bar" aria-label="目前學習提示">
+          <p><span>現在</span><strong id="learning-now-summary">先看本課短講，再開始作答。</strong></p>
+          <div class="lesson-context-actions">
+            <button class="subtle-button" id="lesson-intro-button" type="button">查看本課短講</button>
+            <button class="subtle-button" id="learning-flow-button" type="button">查看學習流程</button>
           </div>
         </section>
 
@@ -210,6 +166,56 @@
       </div>
     </main>
   </div>
+  <dialog class="lesson-intro-dialog" id="lesson-intro-dialog" aria-labelledby="lesson-intro-title">
+    <div class="lesson-intro-shell">
+      <div class="dialog-topline"><span class="dialog-kicker" id="lesson-intro-kicker">本課短講 · 每課只自動顯示一次</span><button class="dialog-close-button" id="lesson-intro-dismiss-button" type="button">關閉</button></div>
+      <h2 id="lesson-intro-title" tabindex="-1">現在先學：認識氣</h2>
+      <p class="lesson-intro-first-use" id="lesson-intro-first-use">先看一個概念與示範，再自己完成題目；答錯後會進入修正，日後再用新棋形確認。紀錄只存於這台電腦。</p>
+      <section class="teaching-card" aria-labelledby="teaching-title">
+        <span class="teaching-icon" aria-hidden="true">✦</span>
+        <div>
+          <strong id="teaching-title">先懂這一點</strong>
+          <p id="teaching-text"></p>
+          <p class="teaching-demo"><span>示範：</span><span id="teaching-demo"></span></p>
+          <figure class="teaching-board-preview" id="teaching-demo-board"></figure>
+          <section class="demo-stepper" id="teaching-demo-stepper" aria-label="逐步棋形示範" hidden>
+            <p id="teaching-demo-caption" role="status" aria-live="polite"></p>
+            <div class="demo-stepper-actions">
+              <button class="subtle-button" id="teaching-demo-previous" type="button">← 上一步</button>
+              <span id="teaching-demo-count" aria-live="polite"></span>
+              <button class="subtle-button" id="teaching-demo-next" type="button">看下一步 →</button>
+            </div>
+          </section>
+          <p class="teaching-check"><span>解題前先做：</span><span id="teaching-check"></span></p>
+        </div>
+      </section>
+      <div class="dialog-actions">
+        <button class="primary-button" id="lesson-intro-start-button" type="button">看完，開始作答 <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+  </dialog>
+  <dialog class="learning-flow-dialog" id="learning-flow-dialog" aria-labelledby="learning-flow-title">
+    <section class="learning-flow">
+      <div class="learning-flow-head">
+        <div><span>學習流程</span><h2 id="learning-flow-title">從看懂，到在棋局裡用得出來</h2></div>
+        <p>一次答對只算完成當下題目。</p>
+      </div>
+      <ol class="learning-steps">
+        <li id="learning-step-0"><span>1</span><strong>先看懂</strong><small>短講與示範</small></li>
+        <li id="learning-step-1"><span>2</span><strong>自己作答</strong><small>不看答案先算</small></li>
+        <li id="learning-step-2"><span>3</span><strong>修正重算</strong><small>理解理由再做</small></li>
+        <li id="learning-step-3"><span>4</span><strong>延後新題</strong><small>隔日換形再測</small></li>
+        <li id="learning-step-4"><span>5</span><strong>局面應用</strong><small>9 路自行發現</small></li>
+      </ol>
+      <div class="learning-guidance" role="status" aria-live="polite">
+        <p><strong>現在：</strong><span id="learning-now">先看短講，理解本題只需要的一個概念。</span></p>
+        <p><strong>為什麼現在做：</strong><span id="learning-why">完成短講後，先在有明確焦點的題目自行判斷。</span></p>
+        <p><strong>下一步：</strong><span id="learning-next">不看答案，自己回答第一題。</span></p>
+      </div>
+      <p class="learning-proof">逐步學會的證據順序：當下能做 → 隔一段時間換新棋形仍能做 → 在 9 路局面能自己發現。缺少哪一段，就標示待驗證。</p>
+      <div class="dialog-actions"><button class="primary-button" id="learning-flow-close-button" type="button">回到題目</button></div>
+    </section>
+  </dialog>
   <dialog class="evaluation-dialog" id="evaluation-dialog" aria-labelledby="evaluation-dialog-title">
     <h2 id="evaluation-dialog-title">開始七天流程試行？</h2>
     <p>這一批有 4 題，請預留幾分鐘完整作答。</p>

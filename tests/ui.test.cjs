@@ -129,7 +129,8 @@ async function main() {
       const title = document.querySelector('#question-title');
       const board = document.querySelector('#board');
       return {
-        startVisible: !document.querySelector('#first-start-card').hidden,
+        introOpen: document.querySelector('#lesson-intro-dialog').open,
+        introTitle: document.querySelector('#lesson-intro-title').textContent,
         startLabel: document.querySelector('#resume-button').textContent,
         reviewHidden: document.querySelector('#review-button').hidden,
         promptBeforeBoard: Boolean(title.compareDocumentPosition(board) & Node.DOCUMENT_POSITION_FOLLOWING),
@@ -138,15 +139,16 @@ async function main() {
         activeFlow: document.querySelector('.learning-steps li.active')?.id,
         flowNow: document.querySelector('#learning-now').textContent,
         flowWhy: document.querySelector('#learning-why').textContent,
-        concept: document.querySelector('#first-start-concept').textContent,
-        demo: document.querySelector('#first-start-demo').textContent,
-        check: document.querySelector('#first-start-check').textContent,
-        visualDemo: document.querySelectorAll('#first-start-demo-board .demo-liberty').length,
+        concept: document.querySelector('#teaching-text').textContent,
+        demo: document.querySelector('#teaching-demo').textContent,
+        check: document.querySelector('#teaching-check').textContent,
+        visualDemo: document.querySelectorAll('#teaching-demo-board .demo-liberty').length,
+        compactGuidance: document.querySelector('#learning-now-summary').textContent,
         currentLevel: document.querySelector('.level-path > .active')?.id,
         stageBadge: document.querySelector('#learning-stage-badge').textContent
       };
     })()`);
-    assert.deepEqual(firstUse, { startVisible: true, startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "示範：角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, currentLevel: "level-beginner", stageBadge: "目前 1/5 · 先看懂" });
+    assert.deepEqual(firstUse, { introOpen: true, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", stageBadge: "目前 1/5 · 先看懂" });
     const screenshotDirectory = process.env.GO_UI_SCREENSHOT_DIR;
     if (screenshotDirectory) {
       assert.ok(fs.existsSync(screenshotDirectory), "screenshot directory must already exist");
@@ -160,10 +162,12 @@ async function main() {
     }
     const steppedDemo = await evaluate(socket, `(() => { const before = {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, previousDisabled: document.querySelector('#teaching-demo-previous').disabled}; document.querySelector('#teaching-demo-next').click(); return {before, after: {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, nextDisabled: document.querySelector('#teaching-demo-next').disabled}}; })()`);
     assert.deepEqual(steppedDemo, { before: {step: "第 1 / 2 步", caption: "先看角上的黑棋：棋盤外不是交叉點，所以不算氣。", previousDisabled: true}, after: {step: "第 2 / 2 步", caption: "只剩右邊和下邊兩個盤內空點，因此這顆棋有 2 口氣；斜角不算。", nextDisabled: true} });
-    const started = await evaluate(socket, `(() => { document.querySelector('#first-start-button').click(); return {hidden: document.querySelector('#first-start-card').hidden, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id}; })()`);
-    assert.deepEqual(started, { hidden: true, label: "前往目前題目", focused: "question-title", activeFlow: "learning-step-1" });
-    let courseShape = await evaluate(socket, "({units: document.querySelector('#unit-select').options.length, shownUnits: document.querySelectorAll('.nav-unit').length, lessons: document.querySelectorAll('[data-lesson]').length, toolDescriptions: document.querySelectorAll('.tool-item p').length, r1LinkAbsent: document.querySelector('a[href=\"r1-review.html\"]') === null})");
-    assert.deepEqual(courseShape, { units: 15, shownUnits: 1, lessons: 3, toolDescriptions: 7, r1LinkAbsent: true });
+    const started = await evaluate(socket, `(() => { document.querySelector('#lesson-intro-start-button').click(); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros}; })()`);
+    assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-title", activeFlow: "learning-step-1", seen: [0] });
+    const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
+    assert.deepEqual(flowDialog, { inlineFlow: false, open: true, closed: true });
+    let courseShape = await evaluate(socket, "({units: document.querySelector('#unit-select').options.length, shownUnits: document.querySelectorAll('.nav-unit').length, lessons: document.querySelectorAll('[data-lesson]').length, toolDescriptions: document.querySelectorAll('.tool-item p').length, r1LinkAbsent: document.querySelector('a[href=\"r1-review.html\"]') === null, contextBars: document.querySelectorAll('.lesson-context-bar').length})");
+    assert.deepEqual(courseShape, { units: 15, shownUnits: 1, lessons: 3, toolDescriptions: 7, r1LinkAbsent: true, contextBars: 1 });
     const lastUnit = await evaluate(socket, "(() => { const select = document.querySelector('#unit-select'); const before = document.querySelector('#lesson-kicker').textContent; select.value = '14'; select.dispatchEvent(new Event('change', {bubbles: true})); return {unit: select.value, before, lessonKicker: document.querySelector('#lesson-kicker').textContent, shownLessons: document.querySelectorAll('[data-lesson]').length}; })()");
     assert.equal(lastUnit.unit, "14");
     assert.equal(lastUnit.lessonKicker, lastUnit.before, "changing the unit filter must not open a different lesson");
@@ -172,7 +176,9 @@ async function main() {
       document.querySelector('[data-lesson="18"]').click();
       const before = {lesson: document.querySelector('#lesson-title').textContent, step: document.querySelector('#teaching-demo-count').textContent, hidden: document.querySelector('#teaching-demo-stepper').hidden, label: document.querySelector('#teaching-demo-board svg').getAttribute('aria-label')};
       document.querySelector('#teaching-demo-next').click();
-      return {before, after: {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent}};
+      const after = {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent};
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      return {before, after};
     })()`);
     assert.deepEqual(finalLessonDemo.before, {lesson: "從一局找到下一個課題", step: "第 1 / 2 步", hidden: false, label: "複盤時先標記原本的轉折手"});
     assert.equal(finalLessonDemo.after.step, "第 2 / 2 步");
@@ -187,6 +193,7 @@ async function main() {
     assert.deepEqual(nextQuestion, { title: "邊上的一顆棋", focused: "question-title" });
     response = await evaluate(socket, `(() => {
       document.querySelector('[data-lesson="1"]').click();
+      document.querySelector('#lesson-intro-start-button').click();
       const initial = document.querySelector('[data-board-point][tabindex="0"]');
       const before = {
         points: document.querySelectorAll('[data-board-point]').length,
@@ -217,7 +224,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v27"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v28"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -234,16 +241,16 @@ async function main() {
     response = await evaluate(socket, `document.querySelector('#review-button').click(); document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); ({missed: document.querySelector('#review-count').textContent, progress: document.querySelector('#progress-count').textContent})`);
     assert.equal(response.missed, "0");
     assert.equal(response.progress, "2 / 106");
-    response = await evaluate(socket, `document.querySelector('#unit-select').value = '1'; document.querySelector('#unit-select').dispatchEvent(new Event('change', {bubbles:true})); document.querySelector('[data-lesson="3"]').click(); document.querySelector('[data-answer="true"]').click(); ({feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent})`);
+    response = await evaluate(socket, `document.querySelector('#unit-select').value = '1'; document.querySelector('#unit-select').dispatchEvent(new Event('change', {bubbles:true})); document.querySelector('[data-lesson="3"]').click(); document.querySelector('#lesson-intro-start-button').click(); document.querySelector('[data-answer="true"]').click(); ({feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent})`);
     assert.match(response.feedback, /答對了/);
     assert.equal(response.progress, "3 / 106");
-    response = await evaluate(socket, `document.querySelector('[data-lesson="4"]').click(); document.querySelector('[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); ({feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent})`);
+    response = await evaluate(socket, `document.querySelector('[data-lesson="4"]').click(); document.querySelector('#lesson-intro-start-button').click(); document.querySelector('[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); ({feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent})`);
     assert.match(response.feedback, /答對了/);
     assert.equal(response.progress, "4 / 106");
-    response = await evaluate(socket, `document.querySelector('[data-lesson="5"]').click(); document.querySelector('[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); ({feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent})`);
+    response = await evaluate(socket, `document.querySelector('[data-lesson="5"]').click(); document.querySelector('#lesson-intro-start-button').click(); document.querySelector('[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); ({feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent})`);
     assert.match(response.feedback, /答對了/);
     assert.equal(response.progress, "5 / 106");
-    response = await evaluate(socket, `document.querySelector('#unit-select').value = '2'; document.querySelector('#unit-select').dispatchEvent(new Event('change', {bubbles:true})); document.querySelector('[data-lesson="6"]').click(); document.querySelector('[data-answer="1"]').click(); ({feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent, title: document.querySelector('#lesson-title').textContent})`);
+    response = await evaluate(socket, `document.querySelector('#unit-select').value = '2'; document.querySelector('#unit-select').dispatchEvent(new Event('change', {bubbles:true})); document.querySelector('[data-lesson="6"]').click(); document.querySelector('#lesson-intro-start-button').click(); document.querySelector('[data-answer="1"]').click(); ({feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent, title: document.querySelector('#lesson-title').textContent})`);
     assert.match(response.feedback, /答對了/);
     assert.equal(response.progress, "6 / 106");
     assert.equal(response.title, "不能下與不能立刻提回");
@@ -260,7 +267,9 @@ async function main() {
       };
       document.querySelector('#teaching-demo-next').click();
       document.querySelector('#teaching-demo-next').click();
-      return {before, after: {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent}};
+      const after = {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent};
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      return {before, after};
     })()`);
     assert.equal(lifeAndDeath.before.lesson, "兩眼與急所");
     assert.equal(lifeAndDeath.before.title, "橫向直三做活");
@@ -332,7 +341,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v27");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v28");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -349,9 +358,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v27");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v28");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v27");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v28");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
@@ -364,6 +373,7 @@ async function main() {
       if (await evaluate(socket, "document.querySelector('#question-title')?.textContent === '中央的一顆棋'")) break;
       await delay(100);
     }
+    await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     const correctEvaluationView = await evaluate(socket, `(() => { document.querySelector('#evaluation-button').click(); document.querySelector('#evaluation-confirm-button').click(); const before = document.querySelector('#board').innerHTML; document.querySelector('[data-x="2"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); return {before, after: document.querySelector('#board').innerHTML, feedback: document.querySelector('#feedback').textContent, feedbackClass: document.querySelector('#feedback').className, nextDisabled: document.querySelector('#next-button').disabled, lastMoves: document.querySelectorAll('.last-move').length}; })()`);
     await evaluate(socket, "localStorage.clear()");
     await command(socket, "Page.reload");
@@ -371,6 +381,7 @@ async function main() {
       if (await evaluate(socket, "document.querySelector('#question-title')?.textContent === '中央的一顆棋'")) break;
       await delay(100);
     }
+    await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     const wrongEvaluationView = await evaluate(socket, `(() => { document.querySelector('#evaluation-button').click(); document.querySelector('#evaluation-confirm-button').click(); const before = document.querySelector('#board').innerHTML; document.querySelector('[data-x="8"][data-y="8"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); return {before, after: document.querySelector('#board').innerHTML, feedback: document.querySelector('#feedback').textContent, feedbackClass: document.querySelector('#feedback').className, nextDisabled: document.querySelector('#next-button').disabled, lastMoves: document.querySelectorAll('.last-move').length}; })()`);
     assert.equal(correctEvaluationView.after, correctEvaluationView.before);
     assert.equal(wrongEvaluationView.after, wrongEvaluationView.before);
@@ -381,11 +392,13 @@ async function main() {
       if (await evaluate(socket, "document.querySelector('#question-title')?.textContent === '中央的一顆棋'")) break;
       await delay(100);
     }
+    await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     const localSpot = await evaluate(socket, `(() => {
       const unit = document.querySelector('#unit-select');
       unit.value = '4';
       unit.dispatchEvent(new Event('change', {bubbles:true}));
       document.querySelector('[data-lesson="8"]').click();
+      document.querySelector('#lesson-intro-start-button').click();
       document.querySelector('[data-answer="0"]').click();
       document.querySelector('#next-button').click();
       document.querySelector('[data-answer="0"]').click();
@@ -412,6 +425,7 @@ async function main() {
       if (await evaluate(socket, "document.querySelector('#question-title')?.textContent === '中央的一顆棋'")) break;
       await delay(100);
     }
+    await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     const lessonTransition = await evaluate(socket, `(() => {
       const unit = document.querySelector('#unit-select');
       unit.value = '0';
@@ -420,8 +434,10 @@ async function main() {
       const opening = {
         lesson: document.querySelector('#lesson-title').textContent,
         stage: document.querySelector('#learning-stage-badge').textContent,
-        focused: document.activeElement.id
+        focused: document.activeElement.id,
+        introOpen: document.querySelector('#lesson-intro-dialog').open
       };
+      document.querySelector('#lesson-intro-start-button').click();
       document.querySelector('#board [data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));
       const boundaryButton = document.querySelector('#next-button').textContent.trim();
       document.querySelector('#next-button').click();
@@ -433,31 +449,38 @@ async function main() {
         nextStage: document.querySelector('#learning-stage-badge').textContent,
         guidance: document.querySelector('#learning-now').textContent,
         focused: document.activeElement.id,
-        demoVisible: !document.querySelector('#teaching-demo-stepper').hidden
+        demoVisible: !document.querySelector('#teaching-demo-stepper').hidden,
+        introOpen: document.querySelector('#lesson-intro-dialog').open
       };
     })()`);
-    assert.deepEqual(lessonTransition.opening, {lesson: "逃出打吃", stage: "目前 1/5 · 先看懂", focused: "lesson-title"});
+    assert.deepEqual(lessonTransition.opening, {lesson: "逃出打吃", stage: "目前 1/5 · 先看懂", focused: "lesson-intro-title", introOpen: true});
     assert.match(lessonTransition.boundaryButton, /進入第 2 單元短講/);
     assert.equal(lessonTransition.nextLesson, "辨認棋串");
     assert.equal(lessonTransition.nextQuestion, "左右相鄰");
     assert.equal(lessonTransition.nextStage, "目前 1/5 · 先看懂");
     assert.match(lessonTransition.guidance, /短講.*棋盤示範/);
-    assert.equal(lessonTransition.focused, "lesson-title");
+    assert.equal(lessonTransition.focused, "lesson-intro-title");
     assert.equal(lessonTransition.demoVisible, true);
+    assert.equal(lessonTransition.introOpen, true);
     assert.equal(await evaluate(socket, "JSON.parse(localStorage.getItem('go-learning-prototype-v7')).lessonIntroPending"), true);
     await command(socket, "Page.reload");
     for (let retry = 0; retry < 30; retry += 1) {
       if (await evaluate(socket, "document.querySelector('#lesson-title')?.textContent === '辨認棋串'")) break;
       await delay(100);
     }
-    const restoredLessonIntro = await evaluate(socket, `({lesson: document.querySelector('#lesson-title').textContent, stage: document.querySelector('#learning-stage-badge').textContent, guidance: document.querySelector('#learning-now').textContent, pending: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).lessonIntroPending})`);
-    assert.deepEqual(restoredLessonIntro, {lesson: "辨認棋串", stage: "目前 1/5 · 先看懂", guidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", pending: true});
+    const restoredLessonIntro = await evaluate(socket, `({lesson: document.querySelector('#lesson-title').textContent, stage: document.querySelector('#learning-stage-badge').textContent, guidance: document.querySelector('#learning-now').textContent, pending: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).lessonIntroPending, introOpen: document.querySelector('#lesson-intro-dialog').open})`);
+    assert.deepEqual(restoredLessonIntro, {lesson: "辨認棋串", stage: "目前 1/5 · 先看懂", guidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", pending: true, introOpen: true});
+    const seenAfterDismiss = await evaluate(socket, `(() => { document.querySelector('#lesson-intro-start-button').click(); document.querySelector('[data-lesson="4"]').click(); const reopened = document.querySelector('#lesson-intro-dialog').open; document.querySelector('#lesson-intro-dismiss-button').click(); document.querySelector('[data-lesson="4"]').click(); return {seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, reopened, repeatedOpen: document.querySelector('#lesson-intro-dialog').open}; })()`);
+    assert.equal(seenAfterDismiss.reopened, true);
+    assert.equal(seenAfterDismiss.repeatedOpen, false);
+    assert.ok(seenAfterDismiss.seen.includes(4));
     await evaluate(socket, "localStorage.clear()");
     await command(socket, "Page.reload");
     for (let retry = 0; retry < 30; retry += 1) {
       if (await evaluate(socket, "document.querySelector('#question-title')?.textContent === '中央的一顆棋'")) break;
       await delay(100);
     }
+    await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const typography = await evaluate(socket, `({body: getComputedStyle(document.querySelector('.teaching-card p')).fontSize, prompt: getComputedStyle(document.querySelector('.question-prompt')).fontSize, heading: getComputedStyle(document.querySelector('.title-row h2')).fontSize})`);
     assert.deepEqual(typography, { body: "16px", prompt: "16px", heading: "32px" });

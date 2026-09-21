@@ -12,7 +12,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v27";
+  const uiVersion = "learner-flow-v28";
   const contentCatalogVersion = 3;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -27,6 +27,7 @@
       : lessons[Number.isInteger(saved.index) && problems[saved.index] ? problems[saved.index].lesson : 0].unit,
     hasStarted: savedHasStarted,
     lessonIntroPending: typeof saved.lessonIntroPending === "boolean" ? saved.lessonIntroPending : !savedHasStarted,
+    seenLessonIntros: new Set((Array.isArray(saved.seenLessonIntros) ? saved.seenLessonIntros : []).filter((lessonIndex) => Number.isInteger(lessonIndex) && lessons[lessonIndex])),
     reviewMode: false,
     reviewQueue: [],
     solved: false,
@@ -86,7 +87,7 @@
   function savedShapeIsSafe(value) {
     if (value === null) return true;
     if (!asRecord(value)) return false;
-    for (const key of ["completed", "missed", "events", "applicationResults", "applicationEvents", "localExercises"]) {
+    for (const key of ["completed", "missed", "events", "applicationResults", "applicationEvents", "localExercises", "seenLessonIntros"]) {
       if (value[key] !== undefined && !Array.isArray(value[key])) return false;
     }
     for (const key of ["attempts", "exposures"]) {
@@ -152,6 +153,7 @@
         navUnitIndex: state.navUnitIndex,
         hasStarted: state.hasStarted,
         lessonIntroPending: state.lessonIntroPending,
+        seenLessonIntros: [...state.seenLessonIntros],
         completed: [...state.completed],
         missed: [...state.missed],
         attempts: state.attempts,
@@ -370,7 +372,7 @@
     state.scheduledProblem = null;
     state.externalMode = null;
     state.index = index;
-    state.lessonIntroPending = Boolean(showLessonIntro);
+    state.lessonIntroPending = Boolean(showLessonIntro && !state.seenLessonIntros.has(problems[index].lesson));
     if (updateNavUnit) state.navUnitIndex = lessons[problems[index].lesson].unit;
     state.solved = false;
     state.wrongThisTurn = 0;
@@ -421,8 +423,39 @@
     if (title && typeof title.focus === "function") title.focus({ preventScroll: true });
   }
 
-  function revealLessonStart() { revealElement("lesson-title"); }
+  function revealLessonStart() { revealElement($("lesson-intro-dialog").open ? "lesson-intro-title" : "lesson-title"); }
   function revealQuestionStart() { revealElement("question-title"); }
+
+  function markCurrentLessonIntroSeen() {
+    const lessonIndex = current().lesson;
+    if (Number.isInteger(lessonIndex)) state.seenLessonIntros.add(lessonIndex);
+    state.lessonIntroPending = false;
+  }
+
+  function showLessonIntroDialog() {
+    const dialog = $("lesson-intro-dialog");
+    if (!dialog || dialog.open) return;
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+    revealElement("lesson-intro-title");
+  }
+
+  function syncLessonIntroDialog() {
+    if (state.lessonIntroPending && !state.externalMode && !state.reviewMode) showLessonIntroDialog();
+  }
+
+  function dismissLessonIntro() {
+    if (!state.externalMode) {
+      state.hasStarted = true;
+      markCurrentLessonIntroSeen();
+      save();
+      renderLearningFlow();
+      renderProgress();
+    }
+    const dialog = $("lesson-intro-dialog");
+    if (dialog && dialog.open) dialog.close();
+    revealQuestionStart();
+  }
 
   function closeTools() {
     const tools = $("tools-menu");
@@ -723,6 +756,7 @@
       step.setAttribute("aria-current", index === activeStep ? "step" : "false");
     }
     $("learning-now").textContent = now;
+    $("learning-now-summary").textContent = now;
     $("learning-why").textContent = why;
     $("learning-next").textContent = next;
     $("learning-stage-badge").textContent = `目前 ${activeStep + 1}/5 · ${["先看懂", "自己作答", "修正重算", "延後新題", "局面應用"][activeStep]}`;
@@ -821,9 +855,6 @@
 
   function renderDemoBoards(lesson) {
     const markup = demoBoardMarkup(lesson.demoBoard);
-    const firstStart = $("first-start-demo-board");
-    firstStart.hidden = !markup;
-    firstStart.innerHTML = markup;
     if (demoLessonTitle !== lesson.title) {
       demoLessonTitle = lesson.title;
       demoStepIndex = 0;
@@ -909,12 +940,13 @@
     $("lesson-subtitle").textContent = lesson.subtitle;
     $("lesson-badge").textContent = lesson.badge || "概念練習";
     $("teaching-text").textContent = lesson.text;
-    $("teaching-demo").textContent = lesson.demo || "先依題目找出本課要觀察的棋形，再作答。";
+    $("teaching-demo").textContent = (lesson.demo || "先依題目找出本課要觀察的棋形，再作答。").replace(/^示範：\s*/, "");
     $("teaching-check").textContent = lesson.takeaway;
-    $("first-start-lesson-title").textContent = `現在先學：${lesson.title}`;
-    $("first-start-concept").textContent = lesson.text;
-    $("first-start-demo").textContent = lesson.demo || "先依題目找出本課要觀察的棋形，再作答。";
-    $("first-start-check").textContent = lesson.takeaway;
+    $("lesson-intro-title").textContent = `現在先學：${lesson.title}`;
+    $("lesson-intro-kicker").textContent = state.hasStarted ? "本課短講 · 每課只自動顯示一次" : "第一次使用 · 看完即可開始";
+    $("lesson-intro-first-use").hidden = state.hasStarted;
+    $("lesson-intro-start-button").innerHTML = `${state.hasStarted ? "開始本課練習" : "看完，開始第 1 題"} <span aria-hidden="true">→</span>`;
+    $("lesson-intro-button").textContent = state.externalMode ? "查看本題說明" : "查看本課短講";
     renderDemoBoards(lesson);
     const skill = currentSkill();
     $("question-tag").textContent = state.externalMode === "application" ? "固定應用探測" : state.externalMode === "evaluation" ? "無提示個人試行" : state.externalMode === "local_sgf" ? "棋譜局部複習" : skill ? `練習技能 · ${skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
@@ -946,8 +978,8 @@
     renderSgfReview();
     renderLearningFlow();
     renderProgress();
-    $("first-start-card").hidden = state.hasStarted || Boolean(state.externalMode) || state.index !== 0;
     showStorageWarning();
+    syncLessonIntroDialog();
   }
 
   function renderProgress() {
@@ -990,7 +1022,7 @@
     const problem = current();
     if (!state.externalMode) {
       state.hasStarted = true;
-      state.lessonIntroPending = false;
+      markCurrentLessonIntroSeen();
     }
     const isFirstAnswer = state.answersThisTurn === 0;
     state.answersThisTurn += 1;
@@ -1268,7 +1300,7 @@
     $("feedback").className = "feedback";
     $("feedback").textContent = current().hint;
     state.hintShown = true;
-    state.lessonIntroPending = false;
+    markCurrentLessonIntroSeen();
     recordEvent("hint", {
       firstAnswerPending: state.answersThisTurn === 0,
       firstExposure: state.activePresentation ? state.activePresentation.firstExposure : false,
@@ -1289,18 +1321,24 @@
     closeTools();
     if (state.externalMode) startProblem(state.index, "return_to_course");
     state.hasStarted = true;
-    state.lessonIntroPending = false;
+    markCurrentLessonIntroSeen();
     save();
     render();
     revealQuestionStart();
   });
-  $("first-start-button").addEventListener("click", () => {
-    state.hasStarted = true;
-    state.lessonIntroPending = false;
-    save();
-    render();
-    revealQuestionStart();
+  $("lesson-intro-button").addEventListener("click", showLessonIntroDialog);
+  $("lesson-intro-dismiss-button").addEventListener("click", dismissLessonIntro);
+  $("lesson-intro-start-button").addEventListener("click", dismissLessonIntro);
+  $("lesson-intro-dialog").addEventListener("cancel", (event) => {
+    event.preventDefault();
+    dismissLessonIntro();
   });
+  $("learning-flow-button").addEventListener("click", () => {
+    const dialog = $("learning-flow-dialog");
+    if (dialog && typeof dialog.showModal === "function") dialog.showModal();
+    else if (dialog) dialog.setAttribute("open", "");
+  });
+  $("learning-flow-close-button").addEventListener("click", () => $("learning-flow-dialog").close());
   $("unit-select").addEventListener("change", (event) => selectUnit(Number(event.target.value)));
   $("previous-unit-button").addEventListener("click", () => selectUnit(Math.max(0, state.navUnitIndex - 1)));
   $("next-unit-button").addEventListener("click", () => selectUnit(Math.min(units.length - 1, state.navUnitIndex + 1)));
