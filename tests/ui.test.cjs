@@ -55,7 +55,7 @@ class CdpPipe {
     this.pending.clear();
   }
 
-  command(method, params = {}, sessionId = this.sessionId) {
+  command(method, params = {}, sessionId = this.sessionId, timeoutMs = 10000) {
     const id = ++this.nextId;
     const payload = { id, method, params };
     if (sessionId) payload.sessionId = sessionId;
@@ -63,7 +63,7 @@ class CdpPipe {
       const timeout = setTimeout(() => {
         this.pending.delete(id);
         reject(new Error(`CDP ${method} timed out`));
-      }, 10000);
+      }, timeoutMs);
       this.pending.set(id, { resolve, reject, timeout });
       this.write.write(`${JSON.stringify(payload)}\0`);
     });
@@ -110,7 +110,7 @@ async function main() {
     socket = new CdpPipe(child.stdio[3], child.stdio[4]);
     let target;
     for (let retry = 0; retry < 50; retry += 1) {
-      const targets = await socket.command("Target.getTargets", {}, null);
+      const targets = await socket.command("Target.getTargets", {}, null, 30000);
       target = targets.targetInfos.find((item) => item.type === "page" && item.url === page);
       if (target) break;
       await delay(100);
