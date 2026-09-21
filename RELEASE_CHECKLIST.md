@@ -11,7 +11,8 @@
 - [x] 已從實際 GitHub repository fresh clone，確認 `edbf17d` 可通過全部 81 項 Node 測試與 file URL UI suite。
 - [x] 公開證據硬化版把 48 題逐題標為公開曝光，並加入 `.nojekyll` 與 repository boundary audit；manifest 現為 58 檔。
 - [x] repository boundary audit 未發現 workflow、submodule、gitlink、symlink、junction 或 reparse point。
-- [ ] 若啟用 GitHub Pages，在實際 URL 重跑 `GO_UI_BASE_URL=<url> node tests/ui.test.cjs`。
+- [x] 已從 GitHub fresh clone `039cfc76c84984a92305dfca681e892b49ed3f87`，確認 58 檔、82 項 Node、boundary audit 與 file URL UI suite 全部通過。
+- [x] GitHub Pages 已由 `main`／`/` 發布；`https://huikai79.github.io/vt-cos-go-learning/` 轉向 `https://huikai.com.kg/vt-cos-go-learning/`，正式網址完整 UI suite 通過。
 
 ## 候選公開檔案
 

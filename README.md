@@ -2,6 +2,8 @@
 
 > VT-COS（Vibe Thinking – Cognitive Operating System）旗下的個人圍棋學習原型。
 
+線上版本：[https://huikai.com.kg/vt-cos-go-learning/](https://huikai.com.kg/vt-cos-go-learning/)；GitHub 預設網址 [https://huikai79.github.io/vt-cos-go-learning/](https://huikai79.github.io/vt-cos-go-learning/) 會轉向同一網站。
+
 目前是可運作的個人離線學習原型，尚不是可判定學習成效的正式驗收系統。2026-09-21 已將七天批次升為 `personal-pilot-v3`：八題皆來自使用者舊 R1 自我審查中已看過的 22 題，只檢查操作、七天返回、資料完整性與負擔，`formalEligible=false`。一般原始匯出仍遮蔽公開保留組的答案，但完整題庫與答案已隨 GitHub 原始碼公開；48 題均標記為 `public_source`、`formalHoldoutEligible=false`，整個舊 formal holdout pool 已退役。正式評量若要重啟，必須建立從未公開的新題庫與角色分離流程。現況以[完成矩陣](COMPLETION_MATRIX.md)為準；產品修改順序見[開發與驗證流水線](EXECUTION_PIPELINE.md)，發布邊界見[公開發布架構](PUBLICATION_ARCHITECTURE.md)。
 
 同日完成導覽、工具說明、首次使用、棋盤鍵盤操作與學習者流水線：側欄區分初級 1–5、中級 6–10、高級 11–15；題目前固定顯示「先看懂 → 自己作答 → 修正重算 → 延後新題 → 局面應用」，並依新題、錯答、完成、間隔練習及局面小測驗更新現在、為什麼現在做與下一步。完成一課或一個單元後，下一步按鈕會明示「進入下一課短講」或「進入第 N 單元短講」，並自動把焦點與畫面帶到新課標題、短講及棋盤示範；同一課內才直接前往下一題。短講待看狀態會保存在本機，重新載入仍維持正確位置。第一次使用與每課短講都顯示概念、示範及解題前檢查點；19 課現都有至少兩步、可用「上一步／看下一步」播放的棋盤示範，第 4 單元的直三示範含三步做活／破眼短讀。第 9–19 課以 5×5 縮圖表達局部比較或階段順序，文字明示它們不是唯一全局答案。10 個後續單元另以 9×9 棋盤提供局部觀察點選題，題幹與解說都明示只判定指定局部，避免把教學要點誤當成全局唯一最佳手。匯入單一主線的 9 路 SGF 後可選任意可落子的原局著手重建局部，並保存候選手、預期應手、理由及人工確認紀錄；兩種匯出都帶有重建該手所需的原局面與來源指紋，局部復盤也可另匯出 SGF 交給 KaTrain。課程改為先選單元、再明確點選課程；棋盤每次只有一個 Tab 停駐點，可用方向鍵移動並以 Enter／Space 落子。側欄另顯示可觀察錯誤、SCD 階段、再犯間隔及資料不足原因；同一診斷寫入兩種匯出。有題目真正到期時，首頁才顯示「今日到期」直接入口。R1a 審查頁已從學習者工具選單移除，只供不同於學習者的外部審查者使用。此介面版號為 `learner-flow-v27`。設計判斷與未解事項見 [前端操作與視覺稽核](UI_UX_AUDIT.md)。
@@ -80,6 +82,7 @@
 - 公開品牌名稱為 `VT-COS｜一手一懂`；母品牌、產品名、對外說法與視覺使用邊界見 [BRAND.md](BRAND.md)。品牌歸屬不取代 `LICENSE`，也不代表已證明教學成效。
 
 - 本資料夾已建立為獨立公開 repository：[huikai79/vt-cos-go-learning](https://github.com/huikai79/vt-cos-go-learning)。父層 `VT-Workflow` 不在這個 Git 邊界內。
+- GitHub Pages 已從 `main`／`/` 發布。帳號層的 `huikai.com.kg` 自訂網域會自動套用到這個 project site；正式 HTTPS 網址與 `github.io` 轉址均已通過完整 Edge UI suite。
 - `gtp_logs/` 含本機使用者路徑、硬體及 KataGo 執行資訊，已由本資料夾的 `.gitignore` 排除。個人事件匯出、學習摘要、局部復盤及 R1 審題草稿／回條也預設排除。
 - 擁有者已於 2026-09-21 接受題庫、答案與 R1 審題工具公開。題庫來源拆成 `phase2-foundation-bank.js` 的 100 題基礎技巧與 `phase2-life-death-bank.js` 的 48 題基礎死活，再由 `phase2-content.js` 相容組裝。`pool: "holdout"` 僅保留排程與資料相容用途；48 題都帶有公開曝光時間與不得作 formal holdout 的機器可讀標記。
 - 公開檔案的機器可讀真相來源是 `release-manifest.json`；完整資料流、發布單位與 fresh-clone 閘門見 [PUBLICATION_ARCHITECTURE.md](PUBLICATION_ARCHITECTURE.md)。

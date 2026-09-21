@@ -18,6 +18,7 @@
 - runtime：Windows 10.0.19045、Node 24.14.1、Edge 153.0.4234.48、Python 3.14.4。
 - 測試使用隔離的瀏覽器暫存 profile；沒有讀寫真實瀏覽器 profile。
 - 公開遠端：`https://github.com/huikai79/vt-cos-go-learning`，`main` 首個發布 commit 為 `edbf17d3a2dcb28c6e634a14e704d75288665923`。
+- 公開 hardening commit：`039cfc76c84984a92305dfca681e892b49ed3f87`。
 
 ## 驗證結果
 
@@ -33,7 +34,10 @@
 | 敏感檔案盤點 | PASS with exclusion | `gtp_logs/` 確認含本機資訊並由 `.gitignore` 排除；截圖無可見個資 |
 | repository boundary audit | PASS | 58 個 tracked 檔與 manifest 相同；workflow、secret reference、Dependabot、submodule／symlink、reparse point均為 0 |
 | 乾淨 manifest 副本 | PASS（前一版） | 首次發布時精確複製 56 個公開檔案；81 項 Node 測試與 file URL UI suite 通過 |
-| GitHub fresh clone | PASS（前一版） | 從公開 `main` clone `edbf17d`，確認首次發布的 56 個檔案、81 項 Node 測試與 file URL UI suite 均通過；本輪 hardening commit 尚待重驗 |
+| GitHub fresh clone | PASS | 從公開 `main` clone `039cfc76c84984a92305dfca681e892b49ed3f87`，確認 58 檔、82 項 Node、boundary audit 與 file URL UI suite 均通過 |
+| GitHub Pages build | PASS | `main`／`/`、legacy branch publishing、`.nojekyll`；latest build 綁定 `039cfc76c84984a92305dfca681e892b49ed3f87` |
+| GitHub Pages HTTP | PASS | `github.io` 預設網址 301 到 `https://huikai.com.kg/vt-cos-go-learning/`；正式入口 HTTPS 200 |
+| GitHub Pages UI | PASS | 由 `GO_UI_BASE_URL=https://huikai79.github.io/vt-cos-go-learning/` 啟動完整 Edge suite，經轉址後主流程與 R1 頁均通過 |
 | Codex Security Deep Scan | BLOCKED | worker permission-profile 驗證前 Codex executable code 1；未產生 finding 或 manifest |
 
 ## 失敗後修復紀錄
@@ -42,11 +46,12 @@
 2. storage 新增測試先因 `completed.filter` TypeError 失敗；型別正規化與復原副本後 19／19 通過。
 3. storage 寫入拒絕測試先顯示「已在作答前保存」；修補後顯示未保存並保留錯誤提示。
 4. PowerShell UI smoke 依序暴露 pipeline 污染、舊導覽斷言、JavaScript 引號、固定等待與集合計數問題；逐項修正後通過。
+5. Pages 初次設定 `https_enforced=true` 時因 repository 沒有自己的憑證而被 GitHub API 拒絕；帳號自訂網域仍提供有效 HTTPS，HTTP 實測會轉向 HTTPS，因此保留 API 旗標差異而不覆寫帳號網域設定。
 
 ## 未測與限制
 
 - 未做真人螢幕閱讀器、真人首次任務、觸控誤觸與理解度測試。
-- 未測 Firefox、Safari、Android、iOS 或正式 GitHub Pages response headers；Pages 正式 URL 尚待本輪部署後驗證。
+- 未測 Firefox、Safari、Android 或 iOS；正式 GitHub Pages 已以 Edge 驗證。
 - 沒有外部依賴資料庫，因此沒有 CVE 套件掃描；Codex Security Deep Scan 另因工具啟動錯誤未執行。
 - 安全掃描 token 測量不可用；不得填 0 或估算。
-- 本輪 hardening 尚未由 GitHub fresh clone 重驗；前一公開 commit 已完成該檢查。
+- Pages repository API 的 `https_enforced` 旗標仍為 `false`；實際 HTTP→HTTPS 轉址與 HTTPS 200 已另行驗證。

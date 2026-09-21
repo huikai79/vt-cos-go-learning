@@ -1,16 +1,16 @@
 # GitHub 上傳前工程審核結果
 
 審核日期：2026-09-21  
-受測版本：獨立 repository 基準 `5602ed3e807959b93e79eb2ba48f48e96a9a4ca0`，加上本輪公開證據與 Pages 發布修補。  
+受測版本：公開 runtime hardening commit `039cfc76c84984a92305dfca681e892b49ed3f87`，加上不改 runtime 的最終發布紀錄。  
 範圍：只審核 `Go_Learning_Prototype`，不把父知識庫視為發布內容。
 
 ## 一句話結論
 
-程式已達可重現的個人離線原型品質，獨立 repository 與舊版 fresh clone 已驗證；48 題公開保留組已全部退出 formal holdout pool。本輪硬化版仍須推送、由 fresh clone 重驗並在正式 Pages URL 通過後，才能放行網站部署；正式教學使用仍阻擋。
+公開原始碼與 GitHub Pages 部署已通過工程閘門；48 題公開保留組已全部退出 formal holdout pool。正式教學使用仍因外部棋理審查與真人可用性證據不足而阻擋，學習成效維持未量測。
 
 ## 架構與資料流
 
-- 執行型態：純靜態 HTML／CSS／JavaScript，沒有後端、套件管理器、第三方 runtime 或正式部署設定。
+- 執行型態：純靜態 HTML／CSS／JavaScript，沒有後端、套件管理器或第三方 runtime；GitHub Pages 從 `main`／`/` 直接發布。
 - 主流程：選單元／課程 → 短講與棋盤示範 → 作答 → 即時回饋 → 重試／複習 → localStorage schema 7 → Markdown／JSON 匯出。
 - 棋譜流程：本機 SGF → 有界解析 → 選擇可落子的原局手數 → 重建局面 → 保存原判斷／人工確認 → SGF／Markdown／JSON 匯出。
 - 評量流程：一般課程、間隔複習、固定應用探測、個人 pilot 與 R1 外部審題分開；`formalEligible=false` 未被工程測試升格。
@@ -29,9 +29,9 @@
 | G SGF／匯入匯出 | parser、局部題、三種匯出 | 多盤、分支、pass、劫、非法落子及資源上限已測 | PASS |
 | H 安全、隱私與公開暴露 | DOM sinks、外連、log、截圖、保留題 | 公開題庫風險已由擁有者接受並落成不可盲測契約；Deep Scan 未啟動 | BLOCKED |
 | I 使用者體驗與無障礙 | 鍵盤、焦點、320px、200%、手機 | 自動工程檢查通過；真人鍵盤／螢幕閱讀器與理解度未測 | NOT TESTED |
-| J 效能、穩定性與相容性 | 最大 SGF、直接開檔、根／子路徑 | 10,001 節點與 1 MB 上限測試、三種載入方式通過；非 Chromium 未測 | PASS |
+| J 效能、穩定性與相容性 | 最大 SGF、直接開檔、根／子路徑、正式 Pages | 10,001 節點與 1 MB 上限測試、file／loopback／Pages 通過；非 Chromium 未測 | PASS |
 | K 測試與可維護性 | 全部測試、退出碼、語法、PowerShell smoke | 82 項 Node 測試、語法、file URL UI 與 Edge smoke 通過 | PASS |
-| L GitHub 發布與重現性 | Git 邊界、manifest、automation、link、乾淨副本 | 58 個 tracked 檔與 manifest 相同；無 workflow、Dependabot、gitlink、symlink 或 reparse point；本輪 hardening 尚待 remote fresh clone 與 Pages URL | BLOCKED |
+| L GitHub 發布與重現性 | Git 邊界、manifest、automation、link、fresh clone、Pages | 58 個 tracked 檔與 manifest 相同；無 workflow、Dependabot、gitlink、symlink 或 reparse point；remote fresh clone 與正式 Pages UI 通過 | PASS |
 
 ## 已確認問題
 
@@ -66,7 +66,7 @@
 - 影響：workflow、submodule、symlink 或 junction 可能在一般檔案清單之外取得權限、secret 或父目錄內容。
 - 修補：新增 `tests/repository-boundary.ps1`，要求 Git root 精確等於專案根、tracked 清單等於 manifest，拒絕 `.gitmodules`、gitlink、tracked symlink、reparse point、`pull_request_target`、`write-all` 與未鎖定 commit 的外部 Action，並盤點 Dependabot 與 secret references。
 - 回歸：58 個 tracked 檔與 manifest 相同；workflow、secret reference、Dependabot、submodule／symlink 及 reparse point皆為 0。
-- 狀態：本機閘門已修復；正式 remote 與 Pages 驗證完成前，L 類維持 `BLOCKED`。
+- 狀態：已修復；remote fresh clone 與正式 Pages 驗證均通過。
 
 ### GLR-004｜SGF 會靜默部分匯入、pass 編號錯位且缺少資源上限
 
@@ -105,17 +105,18 @@
 
 - Codex Security Deep Scan 沒有執行。穩定錯誤為：指定 Codex executable 在唯讀 worker 權限驗證完成前以 code 1 結束；沒有 manifest、finding 或 token measurement。本輪依技能規則未重試或改開替代掃描。
 - 沒有獨立真人 R1a 完成回條、R1b 難度可比性、真人首訪／螢幕閱讀器測試或學習成效資料。
-- Firefox、Safari、Android Chrome、iOS Safari 與正式 GitHub Pages URL 尚未測；已測環境為 Windows 10.0.19045、Node 24.14.1、Edge 153.0.4234.48、Python 3.14.4。
+- Firefox、Safari、Android Chrome 與 iOS Safari 尚未測；已測環境為 Windows 10.0.19045、Node 24.14.1、Edge 153.0.4234.48、Python 3.14.4。
+- Pages repository API 的 `https_enforced` 仍為 `false`，啟用請求回覆憑證尚不存在；實測 `http://huikai.com.kg/...` 會 301 到 HTTPS，正式 HTTPS 入口為 200。這個外部設定差異不影響目前 HTTPS 存取，但仍須保留紀錄。
 - 已採 MIT License；品牌名稱與程式／文件重用條款分離，未額外宣稱商標權利。
 
 ## 放行判定
 
 | 目標 | 判定 | 條件／原因 |
 |---|---|---|
-| 公開原始碼 | CONDITIONAL | 獨立 repository 已建立；本輪 hardening commit 尚待推送及 remote fresh clone 重驗。 |
-| 網站部署 | CONDITIONAL | file／loopback 工程通過；仍須啟用 Pages 並在正式 HTTPS URL 重跑完整 UI suite。 |
+| 公開原始碼 | PASS | 獨立 repository、58 檔 manifest、秘密特徵掃描、boundary audit 及 remote fresh clone 均通過。 |
+| 網站部署 | PASS | Pages 已發布；預設網址轉向帳號自訂網域，正式 HTTPS URL 的完整 Edge UI suite 通過。 |
 | 正式教學使用 | BLOCKED | 缺獨立內容審查、真人可用性／無障礙及學習成效證據。 |
-| 學習成效證據 | NOT MEASURED | 這是獨立證據狀態，不由 release 工程測試升格。 |
+| 學習成效證據 | 未量測 | 這是獨立證據狀態，不屬 release verdict，也不由工程測試升格。 |
 
 ## 邏輯檢修附注
 

@@ -56,7 +56,9 @@ test("Pages 採無 Jekyll 的 repository root 靜態發布", () => {
     pagesSource: "repository-root",
     pagesBranch: "main",
     pagesPath: "/",
-    pagesUrl: "https://huikai79.github.io/vt-cos-go-learning/",
+    pagesUrl: "https://huikai.com.kg/vt-cos-go-learning/",
+    defaultProjectUrl: "https://huikai79.github.io/vt-cos-go-learning/",
+    accountCustomDomainInherited: true,
     jekyllDisabled: true,
     entrypoints: ["index.html", "r1-review.html"]
   });
