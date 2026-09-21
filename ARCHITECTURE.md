@@ -26,12 +26,45 @@
 - **技能模型**：KC 是暫定假說；保存技能卡版本、題目對應、預測、修訂理由與新舊版關係。事件保留原版，另存新模型分析；不同曲線先查題目及情境差異，不自動拆分或合併。
 - **棋局事實**：SGF 保存初始局面、落子與變化；答案樹另記目標條件與可接受變化。單一固定座標不足以判定所有死活題。
 - **規則引擎**：處理相連、氣、提子、禁著與劫。題目評分先檢合法手，再檢教學目標。
-- **學習進度**：自動保存題目、技能卡 ID／版本、任務模式、呈現與機會資格、結果、嘗試序號、提示、曝光及時間；可能原因和回饋前後判斷只抽樣或主動填寫。`learning-metrics.js` 只從合格、無提示的可比較機會重算可觀察任務錯誤、SCD 與同類錯誤再犯間隔；舊事件若缺資格欄位即排除。錯誤類型不是粗心、誤解等心理根因。延後再測採實際經過時間，不記錄睡眠健康資料。個人版若題量增加，再由 `localStorage` 遷至本機 SQLite，並提供匯入／匯出。
-- **排程與驗收**：先提供固定間隔與已核對的回饋模板；有題目真正到期時，首頁顯示直接入口，仍須使用者主動開啟，不會自動打斷新課。自適應選題作可停用的候選方案，保存政策版本及理由。正式比較先建立包含 hard validity prerequisite、分散提取及合格題內簡單交錯／受限隨機的 P0 強基準，再依 DESIGN_PLAN 第 1.4 節逐層增加 repeated weakness、retention／transfer 與 decision-relevant diagnosis；沒有增量效益即回退。練習／流程檢核／獨立驗收以母題家族隔離，首次呈現即記曝光並退出未見池；固定應用探測與自然 T3 分開。
+- **學習進度**：自動保存題目、技能卡 ID／版本、任務模式、呈現與機會資格、結果、嘗試序號、提示、曝光及時間；可能原因和回饋前後判斷只抽樣或主動填寫。`learning-metrics.js` 只從合格、無提示的可比較機會重算可觀察任務錯誤、SCD 與同類錯誤再犯間隔；舊事件若缺資格欄位即排除。錯誤類型不是粗心、誤解等心理根因。延後再測採實際經過時間，不記錄睡眠健康資料。個人版目前維持 `localStorage`；只有在實際出現容量、查詢、交易一致性、遷移可靠性或資料耐久性 bottleneck 時，才評估本機 SQLite，並先保留匯入／匯出與回復路徑。
+- **排程與驗收**：先提供固定間隔與已核對的回饋模板；有題目真正到期時，首頁顯示直接入口，仍須使用者主動開啟，不會自動打斷新課。自適應選題作可停用的候選方案，保存政策版本及理由。正式比較先建立包含 hard validity prerequisite、分散提取及合格題內簡單交錯／受限隨機的 P0 強基準，再依 DESIGN_PLAN 第 1.4 節逐層增加 repeated weakness、retention／transfer 與 decision-relevant diagnosis；沒有增量效益即回退。練習／流程檢核／獨立驗收以母題家族隔離，首次呈現即記曝光並退出未見池；Evidence Taxonomy v2 將無技能提示的應用統一標為 T3，再以 `evaluationContext=standardized|live` 分開固定應用探測與自然實戰。舊 taxonomy v1 的 `T3=live only` 與 `fixed_local_probe` 保留原語義，不回溯改寫。
 - **AI 分析**：後期以本機 KataGo 處理實戰複盤。候選、勝率、目數及地盤歸屬是搜尋估計；規則合法性由規則引擎判定。LLM 如加入，依核對過的局面資料解說，與固定模板比較效益，不推定心理根因。
 - **VT-COS**：承接使用者主動匯出的反思筆記，不把答題原始事件自動寫進治理知識庫。
 
 詳細計數與延後驗收依 [DESIGN_PLAN.md](DESIGN_PLAN.md) 第 1 節；[研究查核](RESEARCH_LEARNING_METRICS.md)區分文獻支持與設計假設。AI 只標異常線索，錯誤原因允許未知；實戰機會須同時記錄正確與錯誤決策。現版對一手提子、直接連接、直三做活／破眼及第二眼補／破共六個技能實作事件：呈現、提示、首答與重試、離題結果、首次曝光、題目／技能／事件政策版本、任務特徵與可比較機會；驗收效度仍待外部內容審查與真人資料。
+
+## Authority Boundary
+
+各層權限固定如下；較高層不得把較低層未提供的事實補成確定結論：
+
+| Layer | Authority | Must not |
+|---|---|---|
+| Rules engine | 合法手、棋串、氣、提子、禁著與目前支援的劫規則 | 依 KataGo／LLM 輸出改寫規則事實 |
+| Item scoring | 依題目版本與 scoring contract 判定任務成功 | 把單一座標擴張成未定義的全局最佳手 |
+| KataGo / KaTrain | 候選、PV、score、ownership 等搜尋估計 | 定義 canonical history、心理根因或唯一教學正解 |
+| Learner events | 記錄實際呈現、首答、提示、重試、曝光與時間 | 以後來模型偷偷重寫當時發生的事件 |
+| Learner model / KC | 對可觀察事件提出可修訂推論 | 輸出未校準 mastery 百分比或把假說升格成事實 |
+| LLM | 根據已核對 evidence 解釋、比較、提問 | 生成棋局事實、合法性、引擎估計或已確認心理原因 |
+
+Provider、parser、engine、storage 或 analysis failure 必須保持 failure／unknown，不能 fallback 成看似成功的推測結果。
+
+## External Adoption Policy
+
+外部 OSS 的採用順序預設為：
+
+```text
+Reference -> Oracle -> Dependency -> Fork
+```
+
+只有觀察到 correctness、scope、maintainability 或 workflow bottleneck 時才升級採用層級。成熟度、star 數或功能較多本身不是 replacement 理由。
+
+目前決策：
+
+- `go.js`：維持 bounded rules implementation；需要 ruleset abstraction、superko、13×13／19×19 或實際 legality discrepancy 時，先以 Sabaki go-board／OGS goban 作 differential oracle。
+- `sgf.js`：維持 9×9、single game、single mainline 與明確資源上限；真實 corpus 出現 variation／collection／encoding／較大棋盤需求或 parser failure 時，再評估 `@sabaki/sgf`／immutable-gametree。導入時必須把 bundler、Pages、dependency、offline 與 rollback 成本一起評估。
+- Storage：目前維持 `localStorage` schema 7；沒有實際 bottleneck 不預建 SQLite abstraction。
+- Scheduler：先完成 P0 strong baseline；沒有增量 outcome evidence 不導入 FSRS、bandit、RL 或 learned policy。
+- LLM tooling：沒有固定模板對照與 LLM teaching experiment 前，不加入 Promptfoo 或多模型 orchestration。
 
 事件層已為兩個試行技能補上呈現、未答／中斷、獨立呈現 ID、曝光、題目／政策版本及完整 JSON 原始匯出；Markdown 仍是摘要，不能當完整資料備份。`elapsedMs` 是從開題起的經過時間，包含閒置及重試，成本分析另定可核對口徑。原始事件、題目版本、模型修訂與政策分開保存的目的，是能修訂解釋而不覆寫當時發生的事；第一版不因此引入資料庫或統計套件。
 
