@@ -1,0 +1,10 @@
+protocol_version
+name
+version
+boardsize 9
+clear_board
+komi 7.5
+play B D4
+play W E4
+genmove B
+quit

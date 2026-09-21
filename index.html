@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="color-scheme" content="light">
+  <meta name="application-name" content="VT-COS｜一手一懂">
+  <meta name="description" content="VT-COS 旗下的個人離線圍棋互動課程。">
+  <title>VT-COS｜一手一懂｜個人圍棋練習</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="go.js"></script>
+  <script defer src="content.js"></script>
+  <script defer src="phase2-foundation-bank.js"></script>
+  <script defer src="phase2-life-death-bank.js"></script>
+  <script defer src="phase2-content.js"></script>
+  <script defer src="phase4-content.js"></script>
+  <script defer src="sgf.js"></script>
+  <script defer src="scheduler.js"></script>
+  <script defer src="trial.js"></script>
+  <script defer src="learning-metrics.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#learning-main">跳到目前題目</a>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">●○</span><span>一手一懂<small>VT-COS · 個人圍棋練習</small></span></div>
+      <div class="side-label">你的圍棋學習地圖</div>
+      <h1>每一手，<br>都更懂圍棋。</h1>
+      <p class="side-intro">短教學、立刻練習、找出錯誤，再用變形題確認真的學會。全程在這台電腦上完成。</p>
+      <div class="progress-card">
+        <div class="progress-head"><span>課程完成</span><strong id="progress-count">0 / 98</strong></div>
+        <div class="progress-track"><div id="progress-bar"></div></div>
+        <small id="progress-caption">先從第一題開始</small>
+      </div>
+      <details class="diagnostic-card">
+        <summary>錯誤修正診斷</summary>
+        <p id="diagnostic-summary">尚無可比較的首答紀錄。</p>
+        <small>依同一技能的未提示首答分組；只描述題目結果，不判定心理根因。</small>
+      </details>
+      <div class="side-label level-label">15 單元學習方向</div>
+      <div class="level-path" aria-label="從初級到高級的課程方向">
+        <span id="level-beginner"><strong>初級</strong><small>單元 1–5 · 規則到 9 路</small></span>
+        <span id="level-intermediate"><strong>中級</strong><small>單元 6–10 · 讀棋與全局</small></span>
+        <span id="level-advanced"><strong>高級</strong><small>單元 11–15 · 取捨與複盤</small></span>
+      </div>
+      <div class="side-label course-label">課程目錄</div>
+      <div class="course-picker">
+        <label for="unit-select">選擇單元</label>
+        <select id="unit-select" aria-label="選擇課程單元"></select>
+      </div>
+      <div class="unit-actions" aria-label="切換課程單元">
+        <button id="previous-unit-button" type="button">← 上一單元</button>
+        <button id="next-unit-button" type="button">下一單元 →</button>
+      </div>
+      <p class="course-hint" id="course-hint">選擇單元後，再點課名開啟。</p>
+      <nav id="lesson-nav" aria-label="課程目錄"></nav>
+      <div class="sidebar-bottom"><span id="unit-meta">第 1 單元 · 氣與吃子</span><span>9 路棋盤</span></div>
+    </aside>
+
+    <main class="main-content" id="learning-main">
+      <header class="topbar">
+        <span class="eyebrow">VT-COS <span class="eyebrow-dot">●</span> PERSONAL GO STUDIO · OFFLINE</span>
+        <div class="top-actions">
+          <button class="primary-top-action" id="resume-button" type="button">開始第 1 題</button>
+          <button class="due-review-action" id="due-review-button" type="button" hidden>今日到期 <span id="due-review-count">0</span></button>
+          <button class="text-button" id="review-button" type="button">複習錯題 <span id="review-count">0</span></button>
+          <details class="tools-menu" id="tools-menu">
+            <summary>工具與資料 <span aria-hidden="true">⌄</span></summary>
+            <div class="tools-panel">
+              <section class="tool-group" aria-labelledby="review-tools-title">
+                <h2 id="review-tools-title">額外練習</h2>
+                <div class="tool-item"><button id="scheduled-practice-button" type="button">今日複習</button><p>依到期題目安排複習，不會跳過你的新課進度。</p></div>
+                <div class="tool-item"><button id="application-button" type="button">局面小測驗</button><p>用較少提示的局面檢查是否能自行發現學過的技巧；結果與實戰分開。</p></div>
+                <div class="tool-item"><button id="evaluation-button" type="button">七天流程試行</button><p>使用已看過的題目測試無提示作答、七天返回與操作負擔，不作正式學習驗收。</p></div>
+              </section>
+              <section class="tool-group" aria-labelledby="sgf-tools-title">
+                <h2 id="sgf-tools-title">棋譜練習</h2>
+                <div class="tool-item"><button id="sample-sgf-button" type="button">開啟示範棋譜</button><p>從內建 9 路棋譜重看局部落子。</p></div>
+                <div class="tool-item"><label class="tool-upload" for="sgf-file-input">匯入自己的 SGF</label><p>讀取這台電腦上的 9 路 SGF，建立局部複習題。</p></div>
+                <input id="sgf-file-input" type="file" accept=".sgf,application/x-go-sgf,text/plain" hidden>
+              </section>
+              <section class="tool-group" aria-labelledby="policy-tools-title">
+                <h2 id="policy-tools-title">複習安排（試行）</h2>
+                <p class="tool-intro">這只改變「今日複習」的出題順序，不會跳過新課。兩種安排都還沒有證明較能提升棋力；平日使用請保留固定間隔。</p>
+                <label class="policy-choice"><input id="policy-fixed" name="scheduler-policy" type="radio" value="fixed-spacing-v1">固定間隔（建議）：依 1、3、7、14 天安排。</label>
+                <label class="policy-choice"><input id="policy-adaptive" name="scheduler-policy" type="radio" value="adaptive-candidate-v1">候選自適應（試行）：首答錯誤後，優先安排未見變形。</label>
+              </section>
+              <section class="tool-group" aria-labelledby="data-tools-title">
+                <h2 id="data-tools-title">資料匯出</h2>
+                <div class="tool-item"><button id="export-button" type="button">匯出閱讀版紀錄</button><p>產生可回顧的學習摘要。</p></div>
+                <div class="tool-item"><button id="export-events-button" type="button">備份完整資料</button><p>產生供檢查與重算的 JSON，通常不需要每天使用。</p></div>
+              </section>
+            </div>
+          </details>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="first-start-card" id="first-start-card" aria-labelledby="first-start-title">
+          <span>第一次使用</span>
+          <h2 id="first-start-title">先完成第一題</h2>
+          <p>先讀完這一小段，再用第一題確認是否看懂。答錯後會進入修正；後續再用新棋形與 9 路局面確認是否用得出來。紀錄只存於這台電腦。</p>
+          <div class="first-start-preview" aria-labelledby="first-start-lesson-title">
+            <strong id="first-start-lesson-title">現在先學：認識氣</strong>
+            <p id="first-start-concept"></p>
+            <p><span>示範：</span><span id="first-start-demo"></span></p>
+            <figure class="teaching-board-preview" id="first-start-demo-board"></figure>
+            <p><span>解題前先做：</span><span id="first-start-check"></span></p>
+          </div>
+          <button class="primary-button" id="first-start-button" type="button">看完示範，開始第 1 題 <span aria-hidden="true">→</span></button>
+        </section>
+        <section class="learning-flow" aria-labelledby="learning-flow-title">
+          <div class="learning-flow-head">
+            <div><span>學習流水線</span><h2 id="learning-flow-title">從看懂，到在棋局裡用得出來</h2></div>
+            <p>一次答對只算完成當下題目。</p>
+          </div>
+          <ol class="learning-steps">
+            <li id="learning-step-0"><span>1</span><strong>先看懂</strong><small>短講與示範</small></li>
+            <li id="learning-step-1"><span>2</span><strong>自己作答</strong><small>不看答案先算</small></li>
+            <li id="learning-step-2"><span>3</span><strong>修正重算</strong><small>理解理由再做</small></li>
+            <li id="learning-step-3"><span>4</span><strong>延後新題</strong><small>隔日換形再測</small></li>
+            <li id="learning-step-4"><span>5</span><strong>局面應用</strong><small>9 路自行發現</small></li>
+          </ol>
+          <div class="learning-guidance" role="status" aria-live="polite">
+            <p><strong>現在：</strong><span id="learning-now">先看短講，理解本題只需要的一個概念。</span></p>
+            <p><strong>為什麼現在做：</strong><span id="learning-why">完成短講後，先在有明確焦點的題目自行判斷。</span></p>
+            <p><strong>下一步：</strong><span id="learning-next">不看答案，自己回答第一題。</span></p>
+          </div>
+          <p class="learning-proof">逐步學會的證據順序：當下能做 → 隔一段時間換新棋形仍能做 → 在 9 路局面能自己發現。缺少哪一段，就標示待驗證。</p>
+        </section>
+        <div class="section-head"><span id="lesson-kicker">LESSON 01 / 19</span><span class="current-stage-badge" id="learning-stage-badge">目前 1/5 · 先看懂</span><span id="question-number">題目 01 / 98</span></div>
+        <div class="title-row"><div><h2 id="lesson-title" tabindex="-1">認識氣</h2><p id="lesson-subtitle"></p></div><span class="lesson-badge" id="lesson-badge">基礎概念</span></div>
+
+        <section class="teaching-card" aria-labelledby="teaching-title">
+          <span class="teaching-icon" aria-hidden="true">✦</span>
+          <div>
+            <strong id="teaching-title">先懂這一點</strong>
+            <p id="teaching-text"></p>
+            <p class="teaching-demo"><span>示範：</span><span id="teaching-demo"></span></p>
+            <figure class="teaching-board-preview" id="teaching-demo-board"></figure>
+            <section class="demo-stepper" id="teaching-demo-stepper" aria-label="逐步棋形示範" hidden>
+              <p id="teaching-demo-caption" role="status" aria-live="polite"></p>
+              <div class="demo-stepper-actions">
+                <button class="subtle-button" id="teaching-demo-previous" type="button">← 上一步</button>
+                <span id="teaching-demo-count" aria-live="polite"></span>
+                <button class="subtle-button" id="teaching-demo-next" type="button">看下一步 →</button>
+              </div>
+            </section>
+            <p class="teaching-check"><span>解題前先做：</span><span id="teaching-check"></span></p>
+          </div>
+        </section>
+
+        <div class="practice-grid">
+          <section class="question-card" aria-labelledby="question-title">
+            <span class="question-tag" id="question-tag">觀察題</span>
+            <h3 id="question-title" tabindex="-1"></h3>
+            <p class="question-prompt" id="question-prompt"></p>
+            <p class="answer-policy" id="answer-policy"></p>
+          </section>
+
+          <section class="board-card" id="board-card" aria-label="題目棋盤">
+            <div class="card-top"><span>9 × 9 練習棋盤</span><span class="board-status"><i></i> 本機練習</span></div>
+            <div id="board" class="board" aria-label="9 路棋盤"></div>
+            <div class="board-foot"><span id="player-color">● 黑棋</span><span>○ 白棋</span><span id="board-instruction">點選棋盤上的交叉點</span></div>
+          </section>
+
+          <section class="answer-card" aria-label="作答與回饋">
+            <div id="answer-area" class="answer-area"></div>
+            <section class="sgf-reflection" id="sgf-reflection" hidden aria-labelledby="sgf-reflection-title">
+              <h4 id="sgf-reflection-title">先保存你的原判斷 <span>選填</span></h4>
+              <p>先記下當時想下的手與理由，再重建原局著手。這只保存復盤資料，不會判定哪一手最好。</p>
+              <label for="sgf-candidate-input">我先考慮的著手</label>
+              <input id="sgf-candidate-input" type="text" maxlength="80" autocomplete="off" placeholder="例如：第 5 行第 4 列，或簡短描述">
+              <label for="sgf-reason-input">理由或不確定點</label>
+              <textarea id="sgf-reason-input" rows="3" maxlength="500" placeholder="例如：以為這裡能吃子，但不確定外氣是否足夠"></textarea>
+              <label for="sgf-opponent-response-input">我預期對方會怎麼應手</label>
+              <textarea id="sgf-opponent-response-input" rows="2" maxlength="300" placeholder="例如：白棋會先補氣；若不確定可直接保留未知"></textarea>
+              <button class="subtle-button" id="sgf-reflection-save-button" type="button">保存原判斷</button>
+              <p class="sgf-reflection-status" id="sgf-reflection-status" role="status" aria-live="polite"></p>
+            </section>
+            <section class="sgf-review" id="sgf-review" hidden aria-labelledby="sgf-review-title">
+              <h4 id="sgf-review-title">看見原著後，補上確認 <span>選填</span></h4>
+              <p>原著手已由棋譜保存；只有在你用外部分析或人工複盤確認後，才標示可接受答案。未確認時請保留「尚未確認」。</p>
+              <label for="sgf-review-status-input">可接受答案的確認狀態</label>
+              <select id="sgf-review-status-input">
+                <option value="unconfirmed">尚未確認</option>
+                <option value="original_confirmed">已確認原著可接受</option>
+                <option value="alternative_confirmed">已確認另一候選可接受</option>
+              </select>
+              <label for="sgf-acceptable-answer-input">經確認的可接受答案或分析依據</label>
+              <textarea id="sgf-acceptable-answer-input" rows="3" maxlength="500" placeholder="例如：人工複盤後確認原著可吃子；或記下分析來源"></textarea>
+              <label for="sgf-next-cue-input">下次看到相似局面時的提醒</label>
+              <textarea id="sgf-next-cue-input" rows="2" maxlength="300" placeholder="例如：先數外氣，再決定是否打吃"></textarea>
+              <button class="subtle-button" id="sgf-review-save-button" type="button">保存確認紀錄</button>
+              <button class="subtle-button" id="sgf-export-button" type="button">匯出這筆 SGF 復盤，交給 KaTrain 分析</button>
+              <p class="field-help" id="sgf-export-help">會下載保留局面、原著手與你的復盤紀錄的 SGF；可用 KaTrain 開啟，這裡不會自動判定好壞。</p>
+              <p class="sgf-review-status" id="sgf-review-status" role="status" aria-live="polite"></p>
+            </section>
+            <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+            <div class="question-actions">
+              <button class="subtle-button" id="hint-button" type="button">給我一點提示</button>
+              <button class="primary-button" id="next-button" type="button" disabled>下一題 <span aria-hidden="true">→</span></button>
+            </div>
+            <div class="takeaway"><span>記住這句</span><p id="takeaway-text"></p></div>
+          </section>
+        </div>
+        <p class="footer-note">VT-COS 教育實驗專案。教材參照棋協課程順序重新編寫；題目與棋形為本原型原創。進度只存於此瀏覽器。</p>
+      </div>
+    </main>
+  </div>
+  <dialog class="evaluation-dialog" id="evaluation-dialog" aria-labelledby="evaluation-dialog-title">
+    <h2 id="evaluation-dialog-title">開始七天流程試行？</h2>
+    <p>這一批有 4 題，請預留幾分鐘完整作答。</p>
+    <ul>
+      <li>每題只記第一次作答，點選後不能修改。</li>
+      <li>完成整批前不顯示正誤。</li>
+      <li>這些題目已在舊 R1 自我審查中看過，不屬於正式未見題。</li>
+      <li>目前只檢查個人操作、七天返回與負擔，不判定保留、遷移或學習成效。</li>
+    </ul>
+    <div class="dialog-actions">
+      <button class="subtle-button" id="evaluation-cancel-button" type="button">先不要</button>
+      <button class="primary-button" id="evaluation-confirm-button" type="button">開始 4 題檢查 <span aria-hidden="true">→</span></button>
+    </div>
+  </dialog>
+  <dialog class="evaluation-dialog" id="sgf-picker-dialog" aria-labelledby="sgf-picker-title">
+    <h2 id="sgf-picker-title">選擇要回看的著手</h2>
+    <p>選一手後，先在該手之前的局面重建原著。原著不等於唯一最佳手，完成後再補自己的候選手與理由。</p>
+    <label class="dialog-field" for="sgf-picker-move">原局著手</label>
+    <select id="sgf-picker-move"></select>
+    <div class="dialog-actions">
+      <button class="subtle-button" id="sgf-picker-cancel-button" type="button">取消</button>
+      <button class="primary-button" id="sgf-picker-confirm-button" type="button">建立局部複習 <span aria-hidden="true">→</span></button>
+    </div>
+  </dialog>
+  <noscript><p class="noscript-note">這個練習需要啟用 JavaScript 才能顯示題目與保存進度。</p></noscript>
+</body>
+</html>
