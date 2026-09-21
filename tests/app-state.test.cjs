@@ -11,6 +11,7 @@ const GoScheduler = require("../scheduler.js");
 const GoSgf = require("../sgf.js");
 const GoTrial = require("../trial.js");
 const GoLearningMetrics = require("../learning-metrics.js");
+const GoEvidenceTaxonomy = require("../evidence-taxonomy.js");
 const STORAGE_KEY = "go-learning-prototype-v7";
 
 class Element {
@@ -54,7 +55,7 @@ function createApp(saved = {}, options = {}) {
       return element;
     }
   };
-  const window = { GoCore, GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics };
+  const window = { GoCore, GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy };
   const url = {
     createObjectURL(blob) { const href = `blob:test-${++blobId}`; blobs.set(href, blob); return href; },
     revokeObjectURL() {}
