@@ -31,7 +31,8 @@ jobs:
         run: |
           set -euo pipefail
           for test_file in tests/*.test.cjs; do
-            if [ "$(basename "$test_file")" = "ui.test.cjs" ]; then
+            test_name="$(basename "$test_file")"
+            if [ "$test_name" = "ui.test.cjs" ] || [ "$test_name" = "sgf-sabaki-oracle.test.cjs" ]; then
               continue
             fi
             node "$test_file"
@@ -53,6 +54,26 @@ jobs:
             while IFS= read -r -d '' file; do
               node --check "$file"
             done
+
+  sabaki-sgf-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact event ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
+          git fetch --depth=1 origin "$GITHUB_REF"
+          git checkout --detach FETCH_HEAD
+      - name: Install pinned Sabaki SGF oracle
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --omit=optional @sabaki/sgf@3.5.0 doken@1.0.0
+      - name: Compare bounded parser with Sabaki SGF
+        shell: bash
+        run: node tests/sgf-sabaki-oracle.test.cjs
 
   windows-ui-and-boundary:
     runs-on: windows-latest

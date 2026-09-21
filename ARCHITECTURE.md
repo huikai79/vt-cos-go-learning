@@ -61,7 +61,7 @@ Reference -> Oracle -> Dependency -> Fork
 目前決策：
 
 - `go.js`：維持 bounded rules implementation；需要 ruleset abstraction、superko、13×13／19×19 或實際 legality discrepancy 時，先以 Sabaki go-board／OGS goban 作 differential oracle。
-- `sgf.js`：維持 9×9、single game、single mainline 與明確資源上限；真實 corpus 出現 variation／collection／encoding／較大棋盤需求或 parser failure 時，再評估 `@sabaki/sgf`／immutable-gametree。導入時必須把 bundler、Pages、dependency、offline 與 rollback 成本一起評估。
+- `sgf.js`：維持 9×9、single game、single mainline 與明確資源上限；CI 以 pinned `@sabaki/sgf@3.5.0` 作 differential oracle，只比較雙方共同支援的子集，branch／collection 等本專案刻意拒絕的功能列為 expected divergence。真實 corpus 出現 variation／collection／encoding／較大棋盤需求或 parser failure 時，才評估把 `@sabaki/sgf`／immutable-gametree 從 Oracle 升為 Dependency。若升級，必須把 bundler、Pages、dependency、offline 與 rollback 成本一起評估。
 - Storage：目前維持 `localStorage` schema 7；沒有實際 bottleneck 不預建 SQLite abstraction。
 - Scheduler：先完成 P0 strong baseline；沒有增量 outcome evidence 不導入 FSRS、bandit、RL 或 learned policy。
 - LLM tooling：沒有固定模板對照與 LLM teaching experiment 前，不加入 Promptfoo 或多模型 orchestration。
