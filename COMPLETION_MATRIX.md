@@ -13,7 +13,9 @@
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
-- `known_current_learner_exposure`: 舊 R1 自我審查草稿中的 22 題；現行 pilot 八題全包含在內
+- `formal_holdout_pool_status`: `retired_due_to_publication`
+- `public_source_exposure`: 48 題公開保留組全部已公開，均不得再作 formal holdout
+- `known_current_learner_direct_exposure`: 舊 R1 自我審查草稿中的 22 題；現行 pilot 八題全包含在內
 - `r1a_content_review`: 待不同於學習者、且未參與編題的外部審查者
 - `r1b_parallel_form_comparability`: 未建立
 
@@ -31,13 +33,13 @@
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
-| 延後與未見題 | 固定複習、變形題與 holdout 候選題遮蔽；正式未見資格須另看個人曝光 | 排程、狀態、試行與 UI 測試 | 工程 | 條件通過；目前個人模式不提供正式未見驗收 |
+| 延後與未見題 | 一般匯出仍遮蔽公開保留組答案；48 題原 formal holdout 已因公開原始碼全部退役 | 排程、狀態、試行、公開契約與 UI 測試 | 工程 | 流程條件通過；正式未見驗收須另建從未公開的新題庫 |
 | 固定應用探測 | 5 個減少技能線索的固定局面 | SGF、試行、UI 測試 | 工程 | 條件通過；不代表全局判斷或實戰遷移 |
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
 | 首頁下一步清楚 | 可繼續課程、錯題與工具入口；只有確實有題目到期時顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試 | 工程 | 條件通過；是否容易理解仍待真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講，並自動聚焦新課短講與示範 | UI 測試 | 工程 | 條件通過；真人是否感覺自然仍待最後觀察 |
-| R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題 holdout 候選題；學習頁不再提供入口 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | 條件通過；外部回條仍待不同於學習者的審查者完成 |
+| R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | 答案盲審流程條件通過；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
 | R1b 平行題可比性 | 基線與追蹤在已知結構特徵上配對 | 結構比對 | 真人難度資料 | 未建立；不得由 R1a 自動升格 |
 | 初學者使用順手 | 有導覽、鍵盤與窄版工程檢查 | UI 測試 | 真人可用性 | 待短任務觀察 |
@@ -47,7 +49,7 @@
 ## 目前執行順序
 
 1. Completion Truth P0–P3：已完成工程驗證。
-2. Evidence Boundary P0：個人 pilot v3、22 題已知曝光及永久 holdout 匯出遮蔽已完成。
+2. Evidence Boundary P0：個人 pilot v3、22 題直接曝光、48 題公開來源曝光、formal holdout pool 退役及一般匯出遮蔽已完成。
 3. Evidence Boundary P1：R1 已從學習者介面隔離，審查頁明示 reviewer-only。
 4. Evidence Boundary P2：同步現況文件與回歸測試。
 5. Demonstration Coverage P0–P2：19 課逐步棋盤示範、內容結構檢查與介面回歸已完成。

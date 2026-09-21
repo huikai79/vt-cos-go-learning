@@ -2,7 +2,7 @@
 
 > VT-COS（Vibe Thinking – Cognitive Operating System）旗下的個人圍棋學習原型。
 
-目前是可運作的個人離線學習原型，尚不是可判定學習成效的正式驗收系統。2026-09-21 已將七天批次升為 `personal-pilot-v3`：八題皆來自使用者舊 R1 自我審查中已看過的 22 題，只檢查操作、七天返回、資料完整性與負擔，`formalEligible=false`。所有 holdout 候選題在一般原始匯出中持續遮蔽，不會因 pilot 完成而揭露；但擁有者已接受完整題庫與答案隨 GitHub 原始碼公開，所以這些題目不得再作受控盲測證據。正式成效判斷仍暫停。現況以[完成矩陣](COMPLETION_MATRIX.md)為準；產品修改順序見[開發與驗證流水線](EXECUTION_PIPELINE.md)，發布邊界見[公開發布架構](PUBLICATION_ARCHITECTURE.md)。
+目前是可運作的個人離線學習原型，尚不是可判定學習成效的正式驗收系統。2026-09-21 已將七天批次升為 `personal-pilot-v3`：八題皆來自使用者舊 R1 自我審查中已看過的 22 題，只檢查操作、七天返回、資料完整性與負擔，`formalEligible=false`。一般原始匯出仍遮蔽公開保留組的答案，但完整題庫與答案已隨 GitHub 原始碼公開；48 題均標記為 `public_source`、`formalHoldoutEligible=false`，整個舊 formal holdout pool 已退役。正式評量若要重啟，必須建立從未公開的新題庫與角色分離流程。現況以[完成矩陣](COMPLETION_MATRIX.md)為準；產品修改順序見[開發與驗證流水線](EXECUTION_PIPELINE.md)，發布邊界見[公開發布架構](PUBLICATION_ARCHITECTURE.md)。
 
 同日完成導覽、工具說明、首次使用、棋盤鍵盤操作與學習者流水線：側欄區分初級 1–5、中級 6–10、高級 11–15；題目前固定顯示「先看懂 → 自己作答 → 修正重算 → 延後新題 → 局面應用」，並依新題、錯答、完成、間隔練習及局面小測驗更新現在、為什麼現在做與下一步。完成一課或一個單元後，下一步按鈕會明示「進入下一課短講」或「進入第 N 單元短講」，並自動把焦點與畫面帶到新課標題、短講及棋盤示範；同一課內才直接前往下一題。短講待看狀態會保存在本機，重新載入仍維持正確位置。第一次使用與每課短講都顯示概念、示範及解題前檢查點；19 課現都有至少兩步、可用「上一步／看下一步」播放的棋盤示範，第 4 單元的直三示範含三步做活／破眼短讀。第 9–19 課以 5×5 縮圖表達局部比較或階段順序，文字明示它們不是唯一全局答案。10 個後續單元另以 9×9 棋盤提供局部觀察點選題，題幹與解說都明示只判定指定局部，避免把教學要點誤當成全局唯一最佳手。匯入單一主線的 9 路 SGF 後可選任意可落子的原局著手重建局部，並保存候選手、預期應手、理由及人工確認紀錄；兩種匯出都帶有重建該手所需的原局面與來源指紋，局部復盤也可另匯出 SGF 交給 KaTrain。課程改為先選單元、再明確點選課程；棋盤每次只有一個 Tab 停駐點，可用方向鍵移動並以 Enter／Space 落子。側欄另顯示可觀察錯誤、SCD 階段、再犯間隔及資料不足原因；同一診斷寫入兩種匯出。有題目真正到期時，首頁才顯示「今日到期」直接入口。R1a 審查頁已從學習者工具選單移除，只供不同於學習者的外部審查者使用。此介面版號為 `learner-flow-v27`。設計判斷與未解事項見 [前端操作與視覺稽核](UI_UX_AUDIT.md)。
 
@@ -79,22 +79,21 @@
 
 - 公開品牌名稱為 `VT-COS｜一手一懂`；母品牌、產品名、對外說法與視覺使用邊界見 [BRAND.md](BRAND.md)。品牌歸屬不取代 `LICENSE`，也不代表已證明教學成效。
 
-- 建議以本資料夾建立獨立 repository；不要從父層 `VT-Workflow` 直接整庫公開。這個子專案目前在父 Git 中仍是未追蹤目錄，尚沒有自身的 Git 歷史。
+- 本資料夾已建立為獨立公開 repository：[huikai79/vt-cos-go-learning](https://github.com/huikai79/vt-cos-go-learning)。父層 `VT-Workflow` 不在這個 Git 邊界內。
 - `gtp_logs/` 含本機使用者路徑、硬體及 KataGo 執行資訊，已由本資料夾的 `.gitignore` 排除。個人事件匯出、學習摘要、局部復盤及 R1 審題草稿／回條也預設排除。
-- 擁有者已於 2026-09-21 接受題庫、答案與 R1 審題工具公開。題庫來源拆成 `phase2-foundation-bank.js` 的 100 題基礎技巧與 `phase2-life-death-bank.js` 的 48 題基礎死活，再由 `phase2-content.js` 相容組裝。`pool: "holdout"` 僅保留排程與資料相容用途，不代表保密；公開後不得用這批題目證明受控盲測。
+- 擁有者已於 2026-09-21 接受題庫、答案與 R1 審題工具公開。題庫來源拆成 `phase2-foundation-bank.js` 的 100 題基礎技巧與 `phase2-life-death-bank.js` 的 48 題基礎死活，再由 `phase2-content.js` 相容組裝。`pool: "holdout"` 僅保留排程與資料相容用途；48 題都帶有公開曝光時間與不得作 formal holdout 的機器可讀標記。
 - 公開檔案的機器可讀真相來源是 `release-manifest.json`；完整資料流、發布單位與 fresh-clone 閘門見 [PUBLICATION_ARCHITECTURE.md](PUBLICATION_ARCHITECTURE.md)。
 
 ## 授權
 
 本專案以 [MIT License](LICENSE) 發布。品牌名稱與呈現方式見 [BRAND.md](BRAND.md)；MIT 授權適用於程式與文件的重用，不額外建立商標權利。
-- 專案目前沒有 `LICENSE`。公開上傳仍會受預設著作權保護，但他人沒有明確的重用授權；如希望開源協作，需由擁有者自行選定授權條款。
 
 ## 驗證
 
-在本資料夾執行 `node tests/go.test.cjs`，驗證 15 單元、106 題的資料完整性，及棋盤題的氣數、提子、救棋、連接、斷點、基礎死活急所、禁著和簡單劫；執行 `node tests/phase2-content.test.cjs` 驗證 148 題變形庫、直三的一至三手結果及第二眼真眼區域；執行 `node tests/sgf.test.cjs`，驗證 9 路 SGF 解析、停一手編號、簡單劫、多盤／分支拒絕及資源上限。Windows 若有 Chrome 或 Edge，也可執行 `node tests/ui.test.cjs`，在獨立瀏覽器設定中驗證直接選取第 15 單元、跨單元答題、錯題複習、到期入口、R1 篩選與下一張定位、工具說明、匯出、字級、320px 窄視窗與 200% 字體放大後無橫向溢出。
+在本資料夾執行 `node tests/go.test.cjs`，驗證 15 單元、106 題的資料完整性，及棋盤題的氣數、提子、救棋、連接、斷點、基礎死活急所、禁著和簡單劫；執行 `node tests/phase2-content.test.cjs` 驗證 148 題變形庫、公開曝光契約、直三的一至三手結果及第二眼真眼區域；執行 `node tests/sgf.test.cjs`，驗證 9 路 SGF 解析、停一手編號、簡單劫、多盤／分支拒絕及資源上限。Windows 可執行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1`，檢查獨立 Git 根目錄、workflow、gitlink、symlink 與 reparse point；若有 Chrome 或 Edge，也可執行 `node tests/ui.test.cjs` 驗證主要使用流程與版面。
 
 2026-09-21 的規則、題庫、排程、SGF、trial、狀態與 Chrome 測試均通過。新增反證測試會比較驗收正答與錯答後的棋盤快照、驗證同題先錯後對仍保留首答錯誤、檢查固定應用呈現分母、v3 至 v6→v7 遷移、兩輪內容插題後的索引保存及保留題匯出遮蔽。這些結果只保留為工程證據。
 
 ## 下一步
 
-R0 已通過。R1a 已完成第二套規則實作的 70 題核心唯一解窮舉，外部審查母體涵蓋完整 148 題題庫的 43 個家族代表與全部 48 題 holdout 候選題，合併為 77 題；尚未取得不同於學習者的外部回條。舊自我審查草稿已使其中 22 題對目前使用者成為已知曝光題；`personal-pilot-v3` 只從這 22 題選八題作流程試行。R1b 的基線／追蹤難度可比性仍未建立。KaTrain 已改用 KataGo 1.18.1 同版本官方設定並補齊桌面 `analysis` 模式所需欄位，GPU 校準快取已保存；固定 9 路局面（黑 D4、白 E4）已由 GTP 回應 `E5`，並由 `analysis` 回傳 JSON，原版桌面程式也已建立分析引擎子程序。這只證明分析工具可用，不證明候選手是唯一教學正解。詳細狀態見 [R1 內容核對](R1_CONTENT_AUDIT.md) 與 [設計計畫 Phase 4](DESIGN_PLAN.md#phase-4固定應用探測與實戰局部回流)。
+R0 已通過。R1a 已完成第二套規則實作的 70 題核心唯一解窮舉，外部審查母體涵蓋完整 148 題題庫的 43 個家族代表與全部 48 題公開保留組，合併為 77 題；尚未取得不同於學習者的外部回條。舊自我審查草稿使其中 22 題曾被目前使用者直接看過，`personal-pilot-v3` 只從這 22 題選八題作流程試行；GitHub 公開則使全部 48 題退出正式未見池。R1b 的基線／追蹤難度可比性仍未建立。KaTrain 已改用 KataGo 1.18.1 同版本官方設定並補齊桌面 `analysis` 模式所需欄位，GPU 校準快取已保存；固定 9 路局面（黑 D4、白 E4）已由 GTP 回應 `E5`，並由 `analysis` 回傳 JSON，原版桌面程式也已建立分析引擎子程序。這只證明分析工具可用，不證明候選手是唯一教學正解。詳細狀態見 [R1 內容核對](R1_CONTENT_AUDIT.md) 與 [設計計畫 Phase 4](DESIGN_PLAN.md#phase-4固定應用探測與實戰局部回流)。

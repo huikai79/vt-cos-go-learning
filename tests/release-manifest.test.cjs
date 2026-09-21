@@ -18,12 +18,19 @@ test("公開發布決策與題庫用途為機器可讀契約", () => {
     product: "一手一懂",
     publicName: "VT-COS｜一手一懂"
   });
-  assert.equal(manifest.publicationDecision.questionBankVisibility, "public");
-  assert.equal(manifest.publicationDecision.blindAssessmentEligible, false);
+  assert.deepEqual(manifest.publicationDecision, {
+    questionBankVisibility: "public",
+    acceptedOn: "2026-09-21",
+    blindAssessmentEligible: false,
+    formalHoldoutPoolStatus: "retired_due_to_publication",
+    replacementRequiredForFormalEvaluation: true
+  });
   assert.deepEqual(phase2.publicationPolicy, {
     sourceVisibility: "public",
     confidential: false,
     blindAssessmentEligible: false,
+    formalHoldoutPoolStatus: "retired_due_to_publication",
+    replacementRequiredForFormalEvaluation: true,
     decision: "accepted_public",
     acceptedOn: "2026-09-21"
   });
@@ -40,6 +47,20 @@ test("兩個公開入口與 README 使用同一品牌名稱", () => {
   for (const file of ["index.html", "r1-review.html", "README.md"]) {
     assert.match(fs.readFileSync(path.join(root, file), "utf8"), /VT-COS｜一手一懂/, file);
   }
+});
+
+test("Pages 採無 Jekyll 的 repository root 靜態發布", () => {
+  assert.deepEqual(manifest.hosting, {
+    kind: "static",
+    buildRequired: false,
+    pagesSource: "repository-root",
+    pagesBranch: "main",
+    pagesPath: "/",
+    pagesUrl: "https://huikai79.github.io/vt-cos-go-learning/",
+    jekyllDisabled: true,
+    entrypoints: ["index.html", "r1-review.html"]
+  });
+  assert.equal(fs.statSync(path.join(root, ".nojekyll")).isFile(), true);
 });
 
 test("公開清單沒有重複、絕對路徑或排除項目，且每個檔案都存在", () => {

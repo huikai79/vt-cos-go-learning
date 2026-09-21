@@ -30,7 +30,7 @@ test("完成矩陣區分已實作診斷與尚未取得的正式資料或外部�
 
 test("完成矩陣記錄 Phase 3 導覽工程完成但保留真人閘門", () => {
   assert.match(matrix, /只有確實有題目到期時顯示「今日到期」及數量[\s\S]*?條件通過；是否容易理解仍待真人觀察/);
-  assert.match(matrix, /reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題 holdout 候選題/);
+  assert.match(matrix, /reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組/);
   assert.match(matrix, /學習頁不再提供入口[\s\S]*?外部回條仍待不同於學習者的審查者完成/);
 });
 

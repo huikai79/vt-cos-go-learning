@@ -2,11 +2,17 @@
 
 審核日期：2026-09-21  
 目標：`Go_Learning_Prototype` 子專案  
-發布假設：公開此子專案原始碼；不發布父知識庫、不部署網站、不執行 commit 或 push。
+發布範圍：公開獨立 repository `huikai79/vt-cos-go-learning`，並由 `main` 分支根目錄發布 GitHub Pages；父知識庫不在發布範圍。
 
 ## 執行路徑
 
 `凍結基準 -> 架構與資料流 -> 十二類掃描 -> 缺陷重現與最小修補 -> 全量回歸 -> 乾淨公開副本 -> 放行判定`
+
+## 基準與可追溯性
+
+本輪「公開證據硬化與 Pages」修改以前的不可變基準是獨立 repository commit `5602ed3e807959b93e79eb2ba48f48e96a9a4ca0`；當時 `HEAD` 與 `origin/main` 相同、working tree 乾淨，manifest 為 56 檔，已記錄 81 項 Node 測試與 file URL UI suite 通過。關鍵 Git blob 為 `app.js`＝`5c84bb9d70bb71cfe15b5804ae81251b38c4716f`、`phase2-content.js`＝`6eca13d7312ff0a42b050ffd3e559e9e78fe6dc7`、`release-manifest.json`＝`26dfe630f054ba2f1836be5fbc39e1dfe11b30ad`。本輪所有變更由該 commit 的 diff 回溯。
+
+最初工程審核開始前，子專案仍是父 repository `a2147ea01b43e4376d30e36cb3eb600175035df8` 下的未追蹤目錄；當時沒有在第一次修改前凍結完整逐檔 hash 清單。這是歷史 provenance 限制，不能用修補後結果回寫成原始基準。往後每輪審核都必須在首次修改前記錄 Git 狀態、候選發布清單、關鍵 hash、既有測試、已觀察缺陷與未測項目，且不得用批次格式化、重排或 rename 淹沒缺陷 diff。
 
 ## 完成狀態
 
@@ -16,6 +22,7 @@
 - [x] P3：重現並修補授權範圍內已確認的 P0／P1／P2 缺陷
 - [x] P4：執行針對性、整合、瀏覽器及乾淨副本驗證
 - [x] P5：交付問題、驗證、發布清單與三項放行判定
+- [ ] P6：啟用 GitHub Pages，於正式 HTTPS URL 重跑完整瀏覽器流程
 
 ## 分類覆蓋矩陣
 
@@ -35,6 +42,17 @@
 | J 效能、穩定性與相容性 | 載入、長 SGF、大量事件 | 阻塞、記憶體累積、路徑不相容 | 有界壓力、file 與 loopback 驗證 | PASS |
 | K 測試品質與可維護性 | `tests/`、驗證腳本 | 假 PASS、吞例外、順序依賴 | 腳本審閱、全量執行、失敗碼核對 | PASS |
 | L GitHub 發布與重現性 | Git 邊界、候選公開檔案 | 混入父庫／私人資料、授權不清 | tracked 清單、歷史範圍、乾淨副本 | BLOCKED |
+
+## 跨分類硬閘門
+
+1. 衝突優先順序固定為：資料與隱私完整性 → 棋規／答案正確性 → 證據資格 → 核心流程可用性 → 發布可重現性 → 效能／相容性 → UX／維護改善。上游問題使下游結論失效時，下游仍可唯讀檢查，但不得升格為 `PASS`。
+2. 公開內容若足以重建題目、答案或評分規則，公開當下即視為 exposed。現有 48 題公開保留組全部退出 formal holdout pool；正式評量必須建立從未公開的新題庫與角色分離流程。
+3. 工程測試不得替代獨立棋理審查、真人可用性或學習成效證據。最終判定分為公開原始碼、網站部署、正式教學使用；學習成效另列證據狀態，不作 release verdict。
+4. 治理文件若衝突，先列作用域與權威來源；無法判定寫入權限時，該寫入列為 `BLOCKED`，不得自行採用較方便的版本。
+5. 棋規與答案測試要標示 oracle 來源。production code、題庫答案與測試共用定義時只能稱 consistency test；目前第二套 R1 規則實作提供較強工程反證，但仍不等於外部真人內容審查。
+6. fuzz、長 SGF、效能與窮舉必須有 deterministic 輸入、最大尺寸與合理時間界線。現行 SGF 上限為 1,000,000 bytes、10,000 節點、128 層；超出範圍列 `NOT TESTED`，不得無界執行。
+7. GitHub public 與 open-source 授權分開判定。本專案已有 MIT License；第三方素材相容性與品牌使用邊界仍分別依來源及 `BRAND.md` 判定。
+8. L 類另查 `.github/workflows`、Dependabot、Pages source、submodule／gitlink、symlink、junction／reparse point，以及任何可引用專案外檔案的建置步驟。若有 workflow，必查觸發事件、最小權限、secret 使用與第三方 Action commit pin。
 
 ## 已知限制
 

@@ -10,15 +10,22 @@
   "publicationDecision": {
     "questionBankVisibility": "public",
     "acceptedOn": "2026-09-21",
-    "blindAssessmentEligible": false
+    "blindAssessmentEligible": false,
+    "formalHoldoutPoolStatus": "retired_due_to_publication",
+    "replacementRequiredForFormalEvaluation": true
   },
   "hosting": {
     "kind": "static",
     "buildRequired": false,
     "pagesSource": "repository-root",
+    "pagesBranch": "main",
+    "pagesPath": "/",
+    "pagesUrl": "https://huikai79.github.io/vt-cos-go-learning/",
+    "jekyllDisabled": true,
     "entrypoints": ["index.html", "r1-review.html"]
   },
   "publicFiles": [
+    ".nojekyll",
     ".gitignore",
     ".gitattributes",
     "app.js",
@@ -65,6 +72,7 @@
     "tests/lesson-content.test.cjs",
     "tests/phase2-content.test.cjs",
     "tests/r1-content-audit.test.cjs",
+    "tests/repository-boundary.ps1",
     "tests/release-manifest.test.cjs",
     "tests/scheduler.test.cjs",
     "tests/sgf.test.cjs",

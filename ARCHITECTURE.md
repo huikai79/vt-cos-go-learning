@@ -49,4 +49,4 @@
 
 ## 目前限制
 
-這是 15 單元的教材與資料原型。驗收畫面洩漏、首答被重試覆寫、固定應用分母缺漏，以及 storage／trial 版本責任已由測試驗證。Evidence Boundary 修正後，`personal-pilot-v3` 明確使用舊 R1 自我審查中已曝光的八題，`formalEligible=false`；v1／v2 保留為 legacy，所有 holdout 候選答案在一般匯出中永久遮蔽。R1a 已從學習者介面隔離，只供不同於學習者的外部審查者。擁有者已接受原始碼公開，故 `holdout` 只剩排程相容語意，不能支撐保密或受控盲測主張；`publicationPolicy.blindAssessmentEligible=false` 是發布契約。R1b 難度可比性未知。SCD 與再犯間隔的計算、介面和匯出已完成工程驗證，變形庫也已有非 holdout T2 流程題，但尚無真人延後資料。內容效度、完整死活課綱、固定應用與 SGF 可落子著手重建的任務效度、方案比較及實戰遷移仍未完成。完整狀態以 [完成矩陣](COMPLETION_MATRIX.md) 為準，正式成效判斷不得開始。
+這是 15 單元的教材與資料原型。驗收畫面洩漏、首答被重試覆寫、固定應用分母缺漏，以及 storage／trial 版本責任已由測試驗證。Evidence Boundary 修正後，`personal-pilot-v3` 明確使用舊 R1 自我審查中已曝光的八題，`formalEligible=false`；v1／v2 保留為 legacy，一般匯出仍遮蔽公開保留組答案。R1a 已從學習者介面隔離，只供不同於學習者的外部審查者。擁有者已接受原始碼公開，因此 48 題均標記 `exposureStatus="public_source"`、`formalHoldoutEligible=false`，`formalHoldoutPoolStatus="retired_due_to_publication"`；`holdout` 只剩排程相容語意。正式評量必須建立從未公開的新題庫與角色分離流程。R1b 難度可比性未知。SCD 與再犯間隔的計算、介面和匯出已完成工程驗證，變形庫也已有非 holdout T2 流程題，但尚無真人延後資料。內容效度、完整死活課綱、固定應用與 SGF 可落子著手重建的任務效度、方案比較及實戰遷移仍未完成。完整狀態以 [完成矩陣](COMPLETION_MATRIX.md) 為準，正式成效判斷不得開始。

@@ -9,14 +9,16 @@
 - [x] 加入 `LICENSE`：MIT，著作權標示為 `Copyright (c) 2026 huikai79`。
 - [x] 首個 commit 只納入 manifest 的 56 個候選檔案，`gtp_logs/` 與個人資料均被排除。
 - [x] 已從實際 GitHub repository fresh clone，確認 `edbf17d` 可通過全部 81 項 Node 測試與 file URL UI suite。
+- [x] 公開證據硬化版把 48 題逐題標為公開曝光，並加入 `.nojekyll` 與 repository boundary audit；manifest 現為 58 檔。
+- [x] repository boundary audit 未發現 workflow、submodule、gitlink、symlink、junction 或 reparse point。
 - [ ] 若啟用 GitHub Pages，在實際 URL 重跑 `GO_UI_BASE_URL=<url> node tests/ui.test.cjs`。
-- [ ] 不在本輪自動 commit、push、開 Pages 或部署。
 
 ## 候選公開檔案
 
-`release-manifest.json` 是唯一機器可讀公開清單，目前共 56 個檔案。下列清單供人工核對：
+`release-manifest.json` 是唯一機器可讀公開清單，目前共 58 個檔案。下列清單供人工核對：
 
 ```text
+.nojekyll
 .gitignore
 .gitattributes
 app.js
@@ -63,6 +65,7 @@ tests/learning-metrics.test.cjs
 tests/lesson-content.test.cjs
 tests/phase2-content.test.cjs
 tests/r1-content-audit.test.cjs
+tests/repository-boundary.ps1
 tests/release-manifest.test.cjs
 tests/scheduler.test.cjs
 tests/sgf.test.cjs
@@ -96,6 +99,7 @@ R1_獨立審題回條.json
 Get-ChildItem tests -Filter *.cjs | Where-Object Name -ne ui.test.cjs | Sort-Object Name | ForEach-Object { node $_.FullName; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
 node tests/ui.test.cjs
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/ui-smoke.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1
 git status --short --untracked-files=all
 ```
 
@@ -105,4 +109,6 @@ git status --short --untracked-files=all
 - `gtp_logs/`、個人匯出或 R1 回條出現在 staged 清單：停止上傳。
 - `release-manifest.json` 的公開決策、題庫用途或實際 staged 清單不一致：停止上傳。
 - fresh clone 需要父目錄檔案、個人絕對路徑或被忽略資產才能啟動：停止上傳。
+- workflow 權限過大、第三方 Action 未鎖定 commit，或出現 submodule、symlink、junction／reparse point：停止上傳。
+- 正式 Pages URL 的完整瀏覽器流程失敗：停止宣稱網站部署可用。
 - 若把原型描述成已證明有效的正式教學系統：停止發布該宣稱。

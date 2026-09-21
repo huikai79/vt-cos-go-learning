@@ -1,12 +1,12 @@
 # GitHub 上傳前工程審核結果
 
 審核日期：2026-09-21  
-受測版本：父 repository `a2147ea01b43e4376d30e36cb3eb600175035df8` 上的未追蹤子專案，加上本輪修補。  
+受測版本：獨立 repository 基準 `5602ed3e807959b93e79eb2ba48f48e96a9a4ca0`，加上本輪公開證據與 Pages 發布修補。  
 範圍：只審核 `Go_Learning_Prototype`，不把父知識庫視為發布內容。
 
 ## 一句話結論
 
-程式已達可重現的個人離線原型品質；擁有者已接受 holdout 題與答案公開，GitHub 發布只剩獨立 repository 與 fresh-clone 閘門，正式教學服務仍阻擋。
+程式已達可重現的個人離線原型品質，獨立 repository 與舊版 fresh clone 已驗證；48 題公開保留組已全部退出 formal holdout pool。本輪硬化版仍須推送、由 fresh clone 重驗並在正式 Pages URL 通過後，才能放行網站部署；正式教學使用仍阻擋。
 
 ## 架構與資料流
 
@@ -30,26 +30,26 @@
 | H 安全、隱私與公開暴露 | DOM sinks、外連、log、截圖、保留題 | 公開題庫風險已由擁有者接受並落成不可盲測契約；Deep Scan 未啟動 | BLOCKED |
 | I 使用者體驗與無障礙 | 鍵盤、焦點、320px、200%、手機 | 自動工程檢查通過；真人鍵盤／螢幕閱讀器與理解度未測 | NOT TESTED |
 | J 效能、穩定性與相容性 | 最大 SGF、直接開檔、根／子路徑 | 10,001 節點與 1 MB 上限測試、三種載入方式通過；非 Chromium 未測 | PASS |
-| K 測試與可維護性 | 全部測試、退出碼、語法、PowerShell smoke | 修正 smoke test 假失敗；79 項 Node 測試及三種瀏覽器載入方式通過 | PASS |
-| L GitHub 發布與重現性 | Git 邊界、manifest、ignore、乾淨副本 | 公開範圍與題庫決策已固定；仍需建立獨立 repository 並從 fresh clone 驗證 | BLOCKED |
+| K 測試與可維護性 | 全部測試、退出碼、語法、PowerShell smoke | 82 項 Node 測試、語法、file URL UI 與 Edge smoke 通過 | PASS |
+| L GitHub 發布與重現性 | Git 邊界、manifest、automation、link、乾淨副本 | 58 個 tracked 檔與 manifest 相同；無 workflow、Dependabot、gitlink、symlink 或 reparse point；本輪 hardening 尚待 remote fresh clone 與 Pages URL | BLOCKED |
 
 ## 已確認問題
 
-### GLR-001｜公開範圍尚未形成獨立 Git 邊界
+### GLR-001｜公開範圍原先沒有獨立 Git 邊界
 
 - 分類／嚴重度／信心：L／P1／高。
-- 證據：Git root 是父層 `VT-Workflow`；本子專案全部為未追蹤檔，`git log --all -- <path>` 無既有歷史。
+- 原始證據：Git root 是父層 `VT-Workflow`；本子專案當時全部為未追蹤檔，`git log --all -- <path>` 無既有歷史。
 - 影響：若在父 repository 直接操作，可能把無關知識庫或歷史一起公開。
-- 處置：建立候選公開清單、乾淨副本驗證及 README 邊界；未代使用者建立 repository、commit 或 push。
-- 狀態：未完全修復。上傳時必須以本資料夾建立獨立 repository 或精確 stage 清單。
+- 處置：本資料夾已初始化為獨立 repository，公開遠端為 `https://github.com/huikai79/vt-cos-go-learning`；tracked 清單必須與 manifest 完全相同，並由 boundary audit 驗證 Git root。
+- 狀態：已修復。
 
 ### GLR-002｜公開原始碼會暴露 holdout 題與答案
 
 - 分類／嚴重度／信心：E／H／L；P1；高。
 - 證據：`phase2-content.js` 包含完整題目、棋形、答案與 goal；R1 工具直接載入同一靜態資產。
 - 影響：一般匯出雖遮蔽答案，GitHub 原始碼讀者仍可取得；相關題目不能再靠 UI 隱藏保證未見。
-- 處置：擁有者於 2026-09-21 接受公開；題庫來源拆成 100 題基礎技巧與 48 題基礎死活，組裝層保留原 ID、順序、答案與內容指紋。另加入 `publicationPolicy.blindAssessmentEligible=false`、機器可讀發布 manifest 與公開發布架構。
-- 狀態：風險已接受並完成契約化。這批題仍可供練習、透明審查及個人流程試行，但不得再作受控盲測證據。
+- 處置：擁有者於 2026-09-21 接受公開；題庫來源拆成 100 題基礎技巧與 48 題基礎死活，組裝層保留原 ID、順序、答案與內容指紋。48 題逐題加入 `public_source` 曝光時間與 `formalHoldoutEligible=false`；整體政策標記 formal holdout pool 已退役且正式評量需要替代題庫。
+- 狀態：風險已接受並完成契約化。這批題仍可供練習、透明內容審查及個人流程試行，但不得再作受控盲測證據。
 
 ### GLR-003｜本機 GTP log 會洩露裝置與路徑資訊
 
@@ -59,6 +59,14 @@
 - 修補：新增 `.gitignore` 排除 `gtp_logs/`、個人匯出與 R1 回條；log 原檔保留在本機。
 - 回歸：`git check-ignore -v` 命中；54 檔乾淨 manifest 副本不含 `gtp_logs/` 且測試通過。
 - 狀態：已修復。
+
+### GLR-008｜GitHub automation 與檔案連結邊界原先未形成硬閘門
+
+- 分類／嚴重度／信心：H／L；P1；高。
+- 影響：workflow、submodule、symlink 或 junction 可能在一般檔案清單之外取得權限、secret 或父目錄內容。
+- 修補：新增 `tests/repository-boundary.ps1`，要求 Git root 精確等於專案根、tracked 清單等於 manifest，拒絕 `.gitmodules`、gitlink、tracked symlink、reparse point、`pull_request_target`、`write-all` 與未鎖定 commit 的外部 Action，並盤點 Dependabot 與 secret references。
+- 回歸：58 個 tracked 檔與 manifest 相同；workflow、secret reference、Dependabot、submodule／symlink 及 reparse point皆為 0。
+- 狀態：本機閘門已修復；正式 remote 與 Pages 驗證完成前，L 類維持 `BLOCKED`。
 
 ### GLR-004｜SGF 會靜默部分匯入、pass 編號錯位且缺少資源上限
 
@@ -97,16 +105,17 @@
 
 - Codex Security Deep Scan 沒有執行。穩定錯誤為：指定 Codex executable 在唯讀 worker 權限驗證完成前以 code 1 結束；沒有 manifest、finding 或 token measurement。本輪依技能規則未重試或改開替代掃描。
 - 沒有獨立真人 R1a 完成回條、R1b 難度可比性、真人首訪／螢幕閱讀器測試或學習成效資料。
-- Firefox、Safari、Android Chrome、iOS Safari 與實際 GitHub Pages 尚未測；已測環境為 Windows 10.0.19045、Node 24.14.1、Edge 153.0.4234.48、Python 3.14.4 本機 loopback。
+- Firefox、Safari、Android Chrome、iOS Safari 與正式 GitHub Pages URL 尚未測；已測環境為 Windows 10.0.19045、Node 24.14.1、Edge 153.0.4234.48、Python 3.14.4。
 - 已採 MIT License；品牌名稱與程式／文件重用條款分離，未額外宣稱商標權利。
 
 ## 放行判定
 
 | 目標 | 判定 | 條件／原因 |
 |---|---|---|
-| 公開原始碼 | CONDITIONAL | 題庫公開已接受；須依 manifest 建立獨立 repository，並從 fresh clone 重跑驗證。 |
-| 網站部署 | CONDITIONAL | 根／子路徑工程通過；仍須在實際託管 URL 重跑 smoke test。 |
+| 公開原始碼 | CONDITIONAL | 獨立 repository 已建立；本輪 hardening commit 尚待推送及 remote fresh clone 重驗。 |
+| 網站部署 | CONDITIONAL | file／loopback 工程通過；仍須啟用 Pages 並在正式 HTTPS URL 重跑完整 UI suite。 |
 | 正式教學使用 | BLOCKED | 缺獨立內容審查、真人可用性／無障礙及學習成效證據。 |
+| 學習成效證據 | NOT MEASURED | 這是獨立證據狀態，不由 release 工程測試升格。 |
 
 ## 邏輯檢修附注
 

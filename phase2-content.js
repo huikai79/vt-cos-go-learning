@@ -185,6 +185,14 @@
     }));
   }));
 
+  const publicExposureAt = "2026-09-21";
+  for (const problem of phase2Problems) {
+    if (problem.pool !== "holdout") continue;
+    problem.exposureStatus = "public_source";
+    problem.exposedAt = publicExposureAt;
+    problem.formalHoldoutEligible = false;
+  }
+
   const applicationSources = [
     ...phase2Problems.filter((problem) => problem.pool === "holdout" && problem.skillId === "capture-last-liberty-v1").slice(0, 2),
     ...phase2Problems.filter((problem) => problem.pool === "holdout" && problem.skillId === "direct-join-v1").slice(0, 2)
@@ -202,8 +210,10 @@
     sourceVisibility: "public",
     confidential: false,
     blindAssessmentEligible: false,
+    formalHoldoutPoolStatus: "retired_due_to_publication",
+    replacementRequiredForFormalEvaluation: true,
     decision: "accepted_public",
-    acceptedOn: "2026-09-21"
+    acceptedOn: publicExposureAt
   });
   const api = { phase2Problems, applicationProbes, publicationPolicy };
   if (typeof module !== "undefined" && module.exports) module.exports = api;

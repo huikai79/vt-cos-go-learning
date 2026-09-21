@@ -51,8 +51,14 @@ test("公開發布不把相容用 holdout 欄位誤作保密盲測資格", () =>
   assert.equal(publicationPolicy.sourceVisibility, "public");
   assert.equal(publicationPolicy.confidential, false);
   assert.equal(publicationPolicy.blindAssessmentEligible, false);
+  assert.equal(publicationPolicy.formalHoldoutPoolStatus, "retired_due_to_publication");
+  assert.equal(publicationPolicy.replacementRequiredForFormalEvaluation, true);
   assert.equal(publicationPolicy.decision, "accepted_public");
-  assert.equal(phase2Problems.filter((problem) => problem.pool === "holdout").length, 48);
+  const publishedHoldouts = phase2Problems.filter((problem) => problem.pool === "holdout");
+  assert.equal(publishedHoldouts.length, 48);
+  assert.ok(publishedHoldouts.every((problem) => problem.exposureStatus === "public_source"));
+  assert.ok(publishedHoldouts.every((problem) => problem.exposedAt === "2026-09-21"));
+  assert.ok(publishedHoldouts.every((problem) => problem.formalHoldoutEligible === false));
 });
 
 test("第二眼缺口題在落子後形成兩個真眼或只保留一眼", () => {
