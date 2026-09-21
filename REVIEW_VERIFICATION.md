@@ -49,6 +49,7 @@
 3. storage 寫入拒絕測試先顯示「已在作答前保存」；修補後顯示未保存並保留錯誤提示。
 4. PowerShell UI smoke 依序暴露 pipeline 污染、舊導覽斷言、JavaScript 引號、固定等待與集合計數問題；逐項修正後通過。
 5. Pages 初次在 project 層設定 `https_enforced=true` 時因 repository 沒有自己的憑證而被 GitHub API 拒絕；後續確認帳號 user site 為 `CNAME=huikai.com.kg`、`https_enforced=true`，project site 依 GitHub 規則繼承該網域。HTTP 實測會轉向 HTTPS，因此保留兩層 API 旗標差異而不覆寫帳號網域設定。
+6. R1 v4 首次 fresh clone 在 Windows 因 Git checkout 將產物換成 CRLF，嚴格字串比較誤判為重建不一致；已固定產物為 LF，並讓測試在比較前正規化換行。此問題不影響題目資料、指紋或瀏覽器執行。
 
 ## 未測與限制
 

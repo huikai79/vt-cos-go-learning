@@ -120,7 +120,8 @@ test("R1 審題母體涵蓋 43 個題庫家族及全部 48 題 holdout", () => {
 
 test("瀏覽器 R1 審查資料可重建且不含答案、目標或評分欄位", () => {
   const generatedPath = path.resolve(__dirname, "..", "r1-review-bank.js");
-  assert.equal(fs.readFileSync(generatedPath, "utf8"), ReviewBankBuilder.serializeBank());
+  const generated = fs.readFileSync(generatedPath, "utf8").replace(/\r\n/g, "\n");
+  assert.equal(generated, ReviewBankBuilder.serializeBank().replace(/\r\n/g, "\n"));
   assert.equal(ReviewBank.protocolId, ReviewVerifier.PROTOCOL_ID);
   assert.equal(ReviewBank.contentFingerprint, ReviewVerifier.fingerprint(ReviewVerifier.reviewItems));
   assert.deepEqual(ReviewBank.population, ReviewVerifier.population);
