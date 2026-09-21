@@ -106,7 +106,7 @@
 - Codex Security Deep Scan 沒有執行。穩定錯誤為：指定 Codex executable 在唯讀 worker 權限驗證完成前以 code 1 結束；沒有 manifest、finding 或 token measurement。本輪依技能規則未重試或改開替代掃描。
 - 沒有獨立真人 R1a 完成回條、R1b 難度可比性、真人首訪／螢幕閱讀器測試或學習成效資料。
 - Firefox、Safari、Android Chrome 與 iOS Safari 尚未測；已測環境為 Windows 10.0.19045、Node 24.14.1、Edge 153.0.4234.48、Python 3.14.4。
-- Pages repository API 的 `https_enforced` 仍為 `false`，啟用請求回覆憑證尚不存在；實測 `http://huikai.com.kg/...` 會 301 到 HTTPS，正式 HTTPS 入口為 200。這個外部設定差異不影響目前 HTTPS 存取，但仍須保留紀錄。
+- project repository 的 Pages API `https_enforced` 為 `false`，因為它沒有自己的 CNAME；帳號 user-site API 顯示 `CNAME=huikai.com.kg`、`https_enforced=true`。實測預設網址與 HTTP 自訂網域都轉向正式 HTTPS 入口。若帳號 user-site 網域日後改動，本 project site 的正式網址也會隨之改變。
 - 已採 MIT License；品牌名稱與程式／文件重用條款分離，未額外宣稱商標權利。
 
 ## 放行判定

@@ -46,7 +46,7 @@
 2. storage 新增測試先因 `completed.filter` TypeError 失敗；型別正規化與復原副本後 19／19 通過。
 3. storage 寫入拒絕測試先顯示「已在作答前保存」；修補後顯示未保存並保留錯誤提示。
 4. PowerShell UI smoke 依序暴露 pipeline 污染、舊導覽斷言、JavaScript 引號、固定等待與集合計數問題；逐項修正後通過。
-5. Pages 初次設定 `https_enforced=true` 時因 repository 沒有自己的憑證而被 GitHub API 拒絕；帳號自訂網域仍提供有效 HTTPS，HTTP 實測會轉向 HTTPS，因此保留 API 旗標差異而不覆寫帳號網域設定。
+5. Pages 初次在 project 層設定 `https_enforced=true` 時因 repository 沒有自己的憑證而被 GitHub API 拒絕；後續確認帳號 user site 為 `CNAME=huikai.com.kg`、`https_enforced=true`，project site 依 GitHub 規則繼承該網域。HTTP 實測會轉向 HTTPS，因此保留兩層 API 旗標差異而不覆寫帳號網域設定。
 
 ## 未測與限制
 
@@ -54,4 +54,4 @@
 - 未測 Firefox、Safari、Android 或 iOS；正式 GitHub Pages 已以 Edge 驗證。
 - 沒有外部依賴資料庫，因此沒有 CVE 套件掃描；Codex Security Deep Scan 另因工具啟動錯誤未執行。
 - 安全掃描 token 測量不可用；不得填 0 或估算。
-- Pages repository API 的 `https_enforced` 旗標仍為 `false`；實際 HTTP→HTTPS 轉址與 HTTPS 200 已另行驗證。
+- project repository 的 `https_enforced` 旗標為 `false`，帳號 user site 的旗標為 `true`；實際 HTTP→HTTPS 轉址與 HTTPS 200 已另行驗證。

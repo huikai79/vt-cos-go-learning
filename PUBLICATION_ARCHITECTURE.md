@@ -13,7 +13,7 @@
 
 網站採無建置步驟的靜態發布：GitHub Pages 從 `main` 分支的 repository root 提供 `index.html`，`.nojekyll` 關閉 Jekyll 處理。所有 runtime 路徑維持相對路徑，因此可同時支援直接開檔、網域根目錄與 `/repository-name/` 子路徑。專案不加入自訂 GitHub Actions workflow，減少不必要的 token、secret 與第三方 Action 攻擊面。
 
-GitHub 帳號的 user site 已設定 `huikai.com.kg`，所以 GitHub 會把相同自訂網域套用到本 project site。正式入口是 `https://huikai.com.kg/vt-cos-go-learning/`；預設入口 `https://huikai79.github.io/vt-cos-go-learning/` 會以 301 轉向正式入口。2026-09-21 已確認前者 HTTPS 200、後者轉址成功，且由預設入口啟動的完整 Edge UI suite 通過。repository Pages API 的 `https_enforced` 旗標仍為 `false`，手動開啟時回覆 `The certificate does not exist yet`；目前實際 HTTP 入口已轉向 HTTPS，但不能把 API 旗標記成已啟用。
+GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=true`，所以 GitHub 會把相同自訂網域與 HTTPS 行為套用到本 project site。正式入口是 `https://huikai.com.kg/vt-cos-go-learning/`；預設入口 `https://huikai79.github.io/vt-cos-go-learning/` 會以 301 轉向正式入口。2026-09-21 已確認前者 HTTPS 200、兩個 HTTP 入口轉向 HTTPS，且由預設入口啟動的完整 Edge UI suite 通過。project repository 本身沒有 CNAME，其 Pages API 的 `https_enforced` 因而仍為 `false`；手動在 project 層開啟時會回覆 `The certificate does not exist yet`。HTTPS 的實際控制層在帳號 user site，不得把 project 層旗標誤記成已啟用。
 
 ## 題庫邊界
 
