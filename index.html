@@ -70,10 +70,9 @@
             <summary>工具與資料 <span aria-hidden="true">⌄</span></summary>
             <div class="tools-panel">
               <section class="tool-group" aria-labelledby="review-tools-title">
-                <h2 id="review-tools-title">額外練習</h2>
+                <h2 id="review-tools-title">練習與複盤</h2>
                 <div class="tool-item"><button id="scheduled-practice-button" type="button">今日複習</button><p>依到期題目安排複習，不會跳過你的新課進度。</p></div>
                 <div class="tool-item"><button id="application-button" type="button">局面小測驗</button><p>用較少提示的局面檢查是否能自行發現學過的技巧；結果與實戰分開。</p></div>
-                <div class="tool-item"><button id="evaluation-button" type="button">七天流程試行</button><p>使用已看過的題目測試無提示作答、七天返回與操作負擔，不作正式學習驗收。</p></div>
               </section>
               <section class="tool-group" aria-labelledby="sgf-tools-title">
                 <h2 id="sgf-tools-title">棋譜練習</h2>
@@ -81,17 +80,26 @@
                 <div class="tool-item"><label class="tool-upload" for="sgf-file-input">匯入自己的 SGF</label><p>讀取這台電腦上的 9 路 SGF，建立局部複習題。</p></div>
                 <input id="sgf-file-input" type="file" accept=".sgf,application/x-go-sgf,text/plain" hidden>
               </section>
-              <section class="tool-group" aria-labelledby="policy-tools-title">
-                <h2 id="policy-tools-title">複習安排（試行）</h2>
-                <p class="tool-intro">這只改變「今日複習」的出題順序，不會跳過新課。兩種安排都還沒有證明較能提升棋力；平日使用請保留固定間隔。</p>
-                <label class="policy-choice"><input id="policy-fixed" name="scheduler-policy" type="radio" value="fixed-spacing-v1">固定間隔（建議）：依 1、3、7、14 天安排。</label>
-                <label class="policy-choice"><input id="policy-adaptive" name="scheduler-policy" type="radio" value="adaptive-candidate-v1">候選自適應（試行）：首答錯誤後，優先安排未見變形。</label>
-              </section>
-              <section class="tool-group" aria-labelledby="data-tools-title">
-                <h2 id="data-tools-title">資料匯出</h2>
-                <div class="tool-item"><button id="export-button" type="button">匯出閱讀版紀錄</button><p>產生可回顧的學習摘要。</p></div>
-                <div class="tool-item"><button id="export-events-button" type="button">備份完整資料</button><p>產生供檢查與重算的 JSON，通常不需要每天使用。</p></div>
-              </section>
+              <details class="tool-disclosure" id="advanced-tools">
+                <summary>進階設定與資料 <span>通常不需要現在處理</span></summary>
+                <div class="tool-disclosure-body">
+                  <section class="tool-group" aria-labelledby="evaluation-tools-title">
+                    <h2 id="evaluation-tools-title">流程試行</h2>
+                    <div class="tool-item"><button id="evaluation-button" type="button">七天流程試行</button><p>使用已看過的題目檢查無提示作答、七天返回與操作負擔；不作正式學習驗收。</p></div>
+                  </section>
+                  <section class="tool-group" aria-labelledby="policy-tools-title">
+                    <h2 id="policy-tools-title">複習安排（試行）</h2>
+                    <p class="tool-intro">這只改變「今日複習」的出題順序，不會跳過新課。平日請保留固定間隔；兩種安排都尚未證明較能提升棋力。</p>
+                    <label class="policy-choice"><input id="policy-fixed" name="scheduler-policy" type="radio" value="fixed-spacing-v1">固定間隔（建議）：依 1、3、7、14 天安排。</label>
+                    <label class="policy-choice"><input id="policy-adaptive" name="scheduler-policy" type="radio" value="adaptive-candidate-v1">候選自適應（試行）：首答錯誤後，優先安排未見變形。</label>
+                  </section>
+                  <section class="tool-group" aria-labelledby="data-tools-title">
+                    <h2 id="data-tools-title">匯出與備份</h2>
+                    <div class="tool-item"><button id="export-button" type="button">匯出學習摘要</button><p>下載可閱讀的 Markdown 紀錄，適合自己回顧；內容包含本機學習進度與作答摘要。</p></div>
+                    <div class="tool-item"><button id="export-events-button" type="button">備份完整資料</button><p>下載可重算的 JSON 原始事件與局部復盤資料；請自行妥善保存，不需要每天匯出。</p></div>
+                  </section>
+                </div>
+              </details>
             </div>
           </details>
         </div>

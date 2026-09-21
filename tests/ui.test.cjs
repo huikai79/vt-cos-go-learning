@@ -166,8 +166,10 @@ async function main() {
     assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-title", activeFlow: "learning-step-1", seen: [0] });
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
     assert.deepEqual(flowDialog, { inlineFlow: false, open: true, closed: true });
-    let courseShape = await evaluate(socket, "({units: document.querySelector('#unit-select').options.length, shownUnits: document.querySelectorAll('.nav-unit').length, lessons: document.querySelectorAll('[data-lesson]').length, toolDescriptions: document.querySelectorAll('.tool-item p').length, r1LinkAbsent: document.querySelector('a[href=\"r1-review.html\"]') === null, contextBars: document.querySelectorAll('.lesson-context-bar').length})");
-    assert.deepEqual(courseShape, { units: 15, shownUnits: 1, lessons: 3, toolDescriptions: 7, r1LinkAbsent: true, contextBars: 1 });
+    let courseShape = await evaluate(socket, "({units: document.querySelector('#unit-select').options.length, shownUnits: document.querySelectorAll('.nav-unit').length, lessons: document.querySelectorAll('[data-lesson]').length, toolDescriptions: document.querySelectorAll('.tool-item p').length, r1LinkAbsent: document.querySelector('a[href=\"r1-review.html\"]') === null, contextBars: document.querySelectorAll('.lesson-context-bar').length, advancedClosed: !document.querySelector('#advanced-tools').open, advancedLabel: document.querySelector('#advanced-tools summary').textContent.trim(), rawBackupHint: document.querySelector('#export-events-button').nextElementSibling.textContent})");
+    assert.deepEqual(courseShape, { units: 15, shownUnits: 1, lessons: 3, toolDescriptions: 7, r1LinkAbsent: true, contextBars: 1, advancedClosed: true, advancedLabel: "進階設定與資料 通常不需要現在處理", rawBackupHint: "下載可重算的 JSON 原始事件與局部復盤資料；請自行妥善保存，不需要每天匯出。" });
+    const advancedTools = await evaluate(socket, `(() => { const section = document.querySelector('#advanced-tools'); section.open = true; const visible = section.offsetHeight > 0 && getComputedStyle(section).display !== 'none'; const labels = [...section.querySelectorAll('.tool-item button')].map((button) => button.textContent.trim()); section.open = false; return {visible, labels, closed: !section.open}; })()`);
+    assert.deepEqual(advancedTools, { visible: true, labels: ["七天流程試行", "匯出學習摘要", "備份完整資料"], closed: true });
     const lastUnit = await evaluate(socket, "(() => { const select = document.querySelector('#unit-select'); const before = document.querySelector('#lesson-kicker').textContent; select.value = '14'; select.dispatchEvent(new Event('change', {bubbles: true})); return {unit: select.value, before, lessonKicker: document.querySelector('#lesson-kicker').textContent, shownLessons: document.querySelectorAll('[data-lesson]').length}; })()");
     assert.equal(lastUnit.unit, "14");
     assert.equal(lastUnit.lessonKicker, lastUnit.before, "changing the unit filter must not open a different lesson");
@@ -224,7 +226,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v28"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v29"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -341,7 +343,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v28");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v29");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -358,9 +360,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v28");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v29");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v28");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v29");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");

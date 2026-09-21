@@ -9,6 +9,7 @@
 - 新增 `release-manifest.json` 與發布契約測試；GitHub Pages 採 `main`／repository root 靜態發布，`.nojekyll` 關閉 Jekyll，無自訂建置步驟。
 - 加入 R1 v4 去答案資料、正式教學 gate 與匿名真人證據範本後，manifest 共 65 個公開檔案；本機已通過 87 項 Node 測試。
 - `learner-flow-v28` 將重複的首次使用卡、五階段流程與每題短講收斂成按需視窗；每課短講只自動顯示一次，`seenLessonIntros` 會保存，仍可手動重開。Edge 已驗證桌面、320px、200% 文字與跨課重載流程。
+- `learner-flow-v29` 將工具面板分成日常練習與預設收合的「進階設定與資料」；完整 JSON 備份明示包含原始事件與局部復盤資料。Edge 驗證進階區預設收合、可展開及既有工具流程。
 
 驗證日期：2026-09-21
 
