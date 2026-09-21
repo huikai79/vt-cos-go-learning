@@ -1,5 +1,19 @@
 # GitHub 上傳前驗證履歷
 
+## 2026-09-22 Evidence Taxonomy v2 與 CI hardening
+
+- 實作分支：`hardening/evidence-semantics-v2`；PR #1。
+- Evidence Taxonomy 升為 v2：T3 表示無技能提示的 application，再以 `evaluationContext=standardized|live` 分流；legacy v1 的 `T3=live only` 與 `fixed_local_probe` 保持原語義，不回溯升格。
+- 新增薄版 `AGENTS.md`、authority boundary 與 bottleneck-gated external adoption policy；沒有導入 SGF/rules replacement、SQLite、FSRS、Promptfoo 或 LLM runtime。
+- 新增 `.github/workflows/verify.yml`，不使用第三方 Action、不讀 secrets，權限為 `contents: read`；公開 manifest 共 69 檔。
+- GitHub Actions run `35623872155`（head `aa4f30a6162ed1fad884cb78786de4d5dc591550`）驗證結果：
+  - Ubuntu `node-contracts`：PASS。所有非瀏覽器 Node tests、R1 review bank deterministic rebuild、`teaching-gate-verify.cjs --report-only`、全部 JS/CJS syntax 均通過。
+  - Windows `windows-ui-and-boundary`：PASS。`node tests/ui.test.cjs`、Edge `ui-smoke.ps1`、`repository-boundary.ps1` 均通過。
+- CI 建立過程曾捕捉兩個驗證環境問題並留下修復歷史：app-state VM harness 未注入新 taxonomy module；GitHub Windows runner 的 Windows PowerShell 5 對 UTF-8 無 BOM 中文腳本解碼失敗。前者補齊測試 dependency，後者改由 PowerShell 7 `pwsh` 執行，未降低任何產品 assertion。
+- Windows hosted runner 曾出現一次 headless CDP startup 10 秒 timeout；只將首次 `Target.getTargets` discovery 的 timeout 有界放寬至 30 秒，其餘 CDP command 維持 10 秒。後續完整 run 通過。
+- 這些結果只證明工程 contract 與 release boundary；正式教學仍受 `TEACHING_GATE.md` 約束，formal evaluation、retention／transfer 與 adaptive benefit 仍未因此升格。
+
+
 ## 2026-09-21 題庫公開決策與發布架構
 
 - 擁有者選擇接受題庫與答案公開；相容用 `holdout` 欄位不再具受控盲測資格。48 題均標記 `public_source` 與 `formalHoldoutEligible=false`，舊 formal holdout pool 已退役。

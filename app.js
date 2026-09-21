@@ -8,6 +8,7 @@
   const Scheduler = window.GoScheduler;
   const Trial = window.GoTrial;
   const Metrics = window.GoLearningMetrics;
+  const EvidenceTaxonomy = window.GoEvidenceTaxonomy;
   const storageKey = "go-learning-prototype-v7";
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
@@ -218,6 +219,7 @@
     state.events.push({
       schemaVersion: 3,
       eventPolicyVersion,
+      evidenceTaxonomyVersion: EvidenceTaxonomy.CURRENT_VERSION,
       id: eventId(),
       occurredAt: new Date().toISOString(),
       ...details,
@@ -292,6 +294,8 @@
       skillVersion: active.skillVersion,
       taskMode: active.taskMode,
       pool: active.pool,
+      transferLevel: active.transferLevel || null,
+      evidenceTaxonomyVersion: active.evidenceTaxonomyVersion || 1,
       uiVersion: active.uiVersion || "unknown_pre_navigation-v2",
       firstExposure: active.firstExposure,
       answerCount: state.answersThisTurn,
@@ -319,6 +323,8 @@
       skillVersion: active.skillVersion,
       taskMode: active.taskMode,
       pool: active.pool,
+      transferLevel: active.transferLevel || null,
+      evidenceTaxonomyVersion: active.evidenceTaxonomyVersion || 1,
       uiVersion: active.uiVersion || "unknown_pre_navigation-v2",
       firstExposure: active.firstExposure,
       answerCount: null,
@@ -347,6 +353,9 @@
       hintShown: recovered ? null : state.hintShown,
       endedReason: reason,
       recovered,
+      evidenceTaxonomyVersion: active.evidenceTaxonomyVersion || 1,
+      transferLevel: active.evidenceTaxonomyVersion ? (active.transferLevel || "T3") : "fixed_local_probe",
+      evaluationContext: active.evidenceTaxonomyVersion ? (active.evaluationContext || "standardized") : null,
       uiVersion: active.uiVersion || "unknown_pre_navigation-v2"
     });
     state.activeApplicationPresentation = null;
@@ -355,8 +364,8 @@
   function beginApplicationPresentation(problem) {
     const presentationId = eventId();
     const presentedAt = new Date().toISOString();
-    state.activeApplicationPresentation = { presentationId, problemId: problem.id, presentedAt, uiVersion };
-    state.applicationEvents.push({ type: "presented", occurredAt: presentedAt, presentedAt, presentationId, problemId: problem.id, applicability: problem.applicability || "applicable", uiVersion });
+    state.activeApplicationPresentation = { presentationId, problemId: problem.id, presentedAt, evidenceTaxonomyVersion: problem.evidenceTaxonomyVersion || EvidenceTaxonomy.CURRENT_VERSION, transferLevel: problem.transferLevel || "T3", evaluationContext: problem.evaluationContext || "standardized", uiVersion };
+    state.applicationEvents.push({ type: "presented", occurredAt: presentedAt, presentedAt, presentationId, problemId: problem.id, applicability: problem.applicability || "applicable", evidenceTaxonomyVersion: problem.evidenceTaxonomyVersion || EvidenceTaxonomy.CURRENT_VERSION, transferLevel: problem.transferLevel || "T3", evaluationContext: problem.evaluationContext || "standardized", uiVersion });
     save();
   }
 
@@ -396,6 +405,8 @@
         skillVersion: skill.version,
         taskMode: problem.taskMode,
         pool: problem.pool,
+        transferLevel: problem.transferLevel || "T0",
+        evidenceTaxonomyVersion: EvidenceTaxonomy.CURRENT_VERSION,
         presentedAt: state.presentedAt,
         firstExposure,
         uiVersion
@@ -1050,11 +1061,11 @@
       errorTypeId: !correct && isFirstAnswer && !state.hintShown ? Metrics.errorTypeForSkill(problem.skillId)?.id || null : null
     });
     if (state.externalMode === "application" && isFirstAnswer) {
-      state.applicationResults.push({ occurredAt: new Date().toISOString(), problemId: problem.id, correct: Boolean(correct), unhinted: !state.hintShown, applicability: problem.applicability || "applicable", answerValue, uiVersion });
+      state.applicationResults.push({ occurredAt: new Date().toISOString(), problemId: problem.id, correct: Boolean(correct), unhinted: !state.hintShown, applicability: problem.applicability || "applicable", evidenceTaxonomyVersion: problem.evidenceTaxonomyVersion || EvidenceTaxonomy.CURRENT_VERSION, transferLevel: problem.transferLevel || "T3", evaluationContext: problem.evaluationContext || "standardized", answerValue, uiVersion });
     }
     if (state.externalMode === "application") {
       const active = state.activeApplicationPresentation;
-      state.applicationEvents.push({ type: "answer", occurredAt: new Date().toISOString(), presentationId: active && active.presentationId, problemId: problem.id, answerValue, correct: Boolean(correct), firstAnswer: isFirstAnswer, unhinted: !state.hintShown, answerAttempt: state.answersThisTurn, uiVersion: active && active.uiVersion || uiVersion });
+      state.applicationEvents.push({ type: "answer", occurredAt: new Date().toISOString(), presentationId: active && active.presentationId, problemId: problem.id, evidenceTaxonomyVersion: problem.evidenceTaxonomyVersion || EvidenceTaxonomy.CURRENT_VERSION, transferLevel: problem.transferLevel || "T3", evaluationContext: problem.evaluationContext || "standardized", answerValue, correct: Boolean(correct), firstAnswer: isFirstAnswer, unhinted: !state.hintShown, answerAttempt: state.answersThisTurn, uiVersion: active && active.uiVersion || uiVersion });
     }
     if (state.externalMode === "scheduled" && isFirstAnswer) state.scheduler = Scheduler.recordResponse(state.scheduler, problem, state.schedulerPolicy, correct, Date.now(), {
       unhinted: !state.hintShown,
@@ -1236,6 +1247,7 @@
       scope: "收錄兩個試行技能、排程、固定應用探測、SGF 局部複習及個人 pilot 資料；只作個人描述，不推論正式未見、保留、遷移、因果或實戰棋力。",
       claimMode: Trial.protocol.claimMode,
       formalEvaluationAvailable: Trial.protocol.formalEvaluationAvailable,
+      evidenceTaxonomy: EvidenceTaxonomy.descriptor,
       skills,
       trialProblems: problems.filter((problem) => trialProblemIds.has(problem.id)),
       phase2Catalog,
@@ -1309,7 +1321,7 @@
     });
     if (state.externalMode === "application") {
       const active = state.activeApplicationPresentation;
-      state.applicationEvents.push({ type: "hint", occurredAt: new Date().toISOString(), presentationId: active && active.presentationId, problemId: current().id, firstAnswerPending: state.answersThisTurn === 0, uiVersion: active && active.uiVersion || uiVersion });
+      state.applicationEvents.push({ type: "hint", occurredAt: new Date().toISOString(), presentationId: active && active.presentationId, problemId: current().id, firstAnswerPending: state.answersThisTurn === 0, evidenceTaxonomyVersion: current().evidenceTaxonomyVersion || EvidenceTaxonomy.CURRENT_VERSION, transferLevel: current().transferLevel || "T3", evaluationContext: current().evaluationContext || "standardized", uiVersion: active && active.uiVersion || uiVersion });
     }
     $("hint-button").textContent = "提示已顯示";
     $("hint-button").disabled = true;

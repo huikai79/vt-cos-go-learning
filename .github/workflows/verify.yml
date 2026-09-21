@@ -1,0 +1,88 @@
+name: verify
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  node-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact event ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
+          git fetch --depth=1 origin "$GITHUB_REF"
+          git checkout --detach FETCH_HEAD
+      - name: Report runtime
+        shell: bash
+        run: |
+          node --version
+          git rev-parse HEAD
+      - name: Run non-browser Node tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test_file in tests/*.test.cjs; do
+            if [ "$(basename "$test_file")" = "ui.test.cjs" ]; then
+              continue
+            fi
+            node "$test_file"
+          done
+      - name: Rebuild deterministic R1 review bank
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-r1-review-bank.cjs
+          git diff --exit-code -- r1-review-bank.js
+      - name: Verify teaching gate behavior
+        shell: bash
+        run: node teaching-gate-verify.cjs --report-only
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          find . -type f \( -name '*.js' -o -name '*.cjs' \) -not -path './.git/*' -print0 |
+            while IFS= read -r -d '' file; do
+              node --check "$file"
+            done
+
+  windows-ui-and-boundary:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout exact event ref
+        shell: pwsh
+        run: |
+          git init .
+          git remote add origin "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY.git"
+          git fetch --depth=1 origin "$env:GITHUB_REF"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git checkout --detach FETCH_HEAD
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Report runtime
+        shell: pwsh
+        run: |
+          node --version
+          git rev-parse HEAD
+      - name: Run file URL UI suite
+        shell: pwsh
+        run: |
+          node tests/ui.test.cjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Run Edge smoke
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -File tests/ui-smoke.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Audit repository boundary
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -File tests/repository-boundary.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

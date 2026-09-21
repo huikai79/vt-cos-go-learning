@@ -13,16 +13,18 @@
 - [x] repository boundary audit 未發現 workflow、submodule、gitlink、symlink、junction 或 reparse point。
 - [x] 已從 GitHub fresh clone `039cfc76c84984a92305dfca681e892b49ed3f87`，確認 58 檔、82 項 Node、boundary audit 與 file URL UI suite 全部通過。
 - [x] GitHub Pages 已由 `main`／`/` 發布；`https://huikai79.github.io/vt-cos-go-learning/` 轉向 `https://huikai.com.kg/vt-cos-go-learning/`，正式網址完整 UI suite 通過。
-- [x] R1a 已升為 v4 去答案審查頁，並加入可執行的正式教學／正式評量 gate；manifest 現為 65 檔。
+- [x] R1a 已升為 v4 去答案審查頁，並加入可執行的正式教學／正式評量 gate；manifest 現為 69 檔。
 
 ## 候選公開檔案
 
-`release-manifest.json` 是唯一機器可讀公開清單，目前共 65 個檔案。下列清單供人工核對：
+`release-manifest.json` 是唯一機器可讀公開清單，目前共 69 個檔案。下列清單供人工核對：
 
 ```text
+.github/workflows/verify.yml
 .nojekyll
 .gitignore
 .gitattributes
+AGENTS.md
 app.js
 ARCHITECTURE.md
 BRAND.md
@@ -30,6 +32,7 @@ COMPLETION_MATRIX.md
 content.js
 CURRICULUM.md
 DESIGN_PLAN.md
+evidence-taxonomy.js
 EXECUTION_PIPELINE.md
 favicon.svg
 formal-teaching-evidence.example.json
@@ -67,6 +70,7 @@ trial.js
 UI_UX_AUDIT.md
 tests/app-state.test.cjs
 tests/completion-matrix.test.cjs
+tests/evidence-taxonomy.test.cjs
 tests/fixtures/katrain-gpt-smoke-input.txt
 tests/go.test.cjs
 tests/learning-metrics.test.cjs
