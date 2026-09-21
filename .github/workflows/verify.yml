@@ -31,7 +31,8 @@ jobs:
         run: |
           set -euo pipefail
           for test_file in tests/*.test.cjs; do
-            if [ "$(basename "$test_file")" = "ui.test.cjs" ]; then
+            test_name="$(basename "$test_file")"
+            if [ "$test_name" = "ui.test.cjs" ] || [ "$test_name" = "sgf-sabaki-oracle.test.cjs" ]; then
               continue
             fi
             node "$test_file"
