@@ -323,6 +323,8 @@
       skillVersion: active.skillVersion,
       taskMode: active.taskMode,
       pool: active.pool,
+      transferLevel: active.transferLevel || null,
+      evidenceTaxonomyVersion: active.evidenceTaxonomyVersion || 1,
       uiVersion: active.uiVersion || "unknown_pre_navigation-v2",
       firstExposure: active.firstExposure,
       answerCount: null,
