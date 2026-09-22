@@ -309,7 +309,7 @@ test("棋盤頁在回合開始先建立 live assessment，首答與 retry 分離
   assert.match(page, /recordLiveResponse\(/);
   assert.match(page, /existingResponseCount\(assessmentId\)/);
   assert.match(page, /lastMoveActorForEvidence\(\)/);
-  assert.match(indexHtml, /learner-progress\.js\?v=learner-evidence-progress-v1/);
+  assert.match(indexHtml, /learner-progress\.js\?v=learner-evidence-progress-v2/);
   assert.match(indexHtml, /id="live-evidence-summary"/);
   assert.match(indexHtml, /id="integrated-progress-summary"/);
   assert.match(appJs, /liveEvidenceEvents:/);
