@@ -61,6 +61,7 @@
 
 | 項目 | 現況 | 驗證 | 證據層級 | 判定 |
 |---|---|---|---|---|
+| 四尺寸本機電腦對手 | 3／5／7／9 路皆可選雙人同機或和電腦下；可執黑／白。電腦只從規則引擎合法候選中，用 bounded heuristic 選手，無合理手可 Pass；不是 KataGo | `practice-bot.js` 契約測試：四尺寸只產生合法 play／pass、3 路立即提子案例、UI 載入與 practice-only 邊界 | 工程 | 待本輪測試執行；不得宣稱棋力、最佳手或教學成效 |
 | 3×3／5×5／7×7／9×9 棋盤練習 | 共用 `live-game.html` 與尺寸切換；3／5／7 路作微型／過渡練習，9 路保留完整小棋盤對局。四種尺寸共用合法手／提子／自殺禁著／simple ko、Pass、人工終局、悔棋、獨立續局與 SGF；課程依單元推薦尺寸但可隨時切換 | `tests/live-game.test.cjs` 新增尺寸邊界、3 路提子、四尺寸 SGF round-trip、9 路相容與入口契約；main 原始碼以隔離 V8 harness 執行該測試檔 15/15 PASS，另回歸 106 題課程中的 count/connect/move 規則檢查無失敗 | 工程 | 條件通過；精確 repo-wide CI 本輪狀態 UNKNOWN；全部維持 `practice_only`，不自動成為 T2／T3 或學習成效 |
 
 
@@ -81,3 +82,14 @@
 - **Migration：** 9×9 繼續使用 `go-live-game-v1`；3／5／7 路新增分尺寸 storage key。課程 SGF 復盤仍只支援 9 路，因此小棋盤 SGF 不會被誤導成可回課程複盤。
 - **Rollback：** 移除課程階段入口與尺寸切換，將 live 頁固定回 9×9；既有課程資料與 9×9 保存鍵不需遷移。
 - **Validation：** 新增反證測試確認 3×3 邊線提子不借用 9×9 外部空間、四尺寸 SGF 保留 `SZ`、舊 9×9 預設不變；直接讀取 main 原始碼後，以隔離 V8 harness 執行 `tests/live-game.test.cjs` 為 15/15 PASS，並回歸既有 106 題中的 count/connect/move 規則檢查，無失敗。由於現有 GitHub connector 無法取得 push-triggered workflow run，本輪完整 GitHub Actions／Windows file-URL UI 狀態仍記為 `UNKNOWN`，不得寫成已全部通過。
+
+
+## 2026-09-22 Change note｜四尺寸本機電腦對手
+
+- **改動：** 新增 `practice-bot.js`；`live-game.html`／`live-game-page.js` 加入雙人同機／和電腦下切換與執黑／白選項，四種棋盤皆可用。
+- **為何現在改：** 多尺寸自由練習已能完整走規則流程，但單一使用者若沒有第二人操作，Experience 層仍缺可反覆實戰的對手。
+- **權威邊界：** bot 只排序 `Live.play` 已驗證合法的候選手；不取得規則 authority，不冒充 KataGo，不輸出最佳手或人的認知診斷。
+- **歷史語義：** 不改 KC、scheduler、Evidence Taxonomy、formal holdout 或既有課程事件；人機對局全部 `practice_only`、`formalEligible=false`。
+- **Migration：** 既有各尺寸棋局保存 envelope 保持 schema 1；新增 opponent 設定可缺省，舊資料預設雙人同機。9×9 原保存 key 不變。
+- **Rollback：** 移除 `practice-bot.js` 載入與對手控制即可回到雙人同機；棋局與課程資料不需 migration。
+- **Validation：** 已新增四尺寸合法手、立即提子與 UI contract 反證測試；完整執行結果須在測試實跑後更新，不先寫 PASS。
