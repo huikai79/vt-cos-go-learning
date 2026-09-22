@@ -12,7 +12,7 @@
   <script defer src="go.js"></script>
   <script defer src="sgf.js"></script>
   <script defer src="live-game.js"></script>
-  <script defer src="practice-bot.js"></script>
+  <script defer src="practice-bot.js"></script>\n  <script defer src="move-provider.js?v=move-provider-v1"></script>
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="live-game-page.js?v=live-game-ui-v6"></script>
@@ -44,9 +44,9 @@
 
     <section class="live-mode-panel" aria-label="練習對手設定">
       <div><span>對手</span><strong id="opponent-summary">雙人同機</strong></div>
-      <label><span>模式</span><select id="opponent-mode"><option value="local">雙人同機</option><option value="computer">和電腦下</option></select></label>
+      <label><span>模式</span><select id="opponent-mode"><option value="local">雙人同機</option><option value="computer">本機啟發式電腦</option><option value="katago">本機 KataGo</option><option value="remote">Remote API</option></select></label>
       <label id="human-color-field"><span>你執</span><select id="human-color"><option value="1">黑棋</option><option value="2">白棋</option></select></label>
-      <p id="bot-boundary">電腦是本機啟發式練習對手，只從合法手中選擇；不是 KataGo，也不代表最佳手或棋力評量。</p>
+      <label id="provider-endpoint-field" hidden><span>API</span><input id="provider-endpoint" type="url" value="http://127.0.0.1:8765/v1/move" spellcheck="false"></label>\n      <p id="bot-boundary">對手 provider 只提出候選動作；所有落子仍由本機規則引擎重新驗證。KataGo／API failure 不會 fallback 成猜測落子。</p>
     </section>
 
     <section class="live-status-grid" aria-label="棋局狀態">
