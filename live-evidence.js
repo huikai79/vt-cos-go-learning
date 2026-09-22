@@ -255,11 +255,24 @@
       const skillAssessments = eligible.filter((event) => event.skillId === skillId);
       const responses = skillAssessments.map((assessment) => responseByAssessment.get(assessment.assessmentId)).filter(Boolean);
       const recent = responses.slice(-5);
+      const sessionMap = new Map();
+      for (const response of responses) {
+        if (!sessionMap.has(response.sessionId)) sessionMap.set(response.sessionId, []);
+        sessionMap.get(response.sessionId).push(response);
+      }
+      const sessionOutcomes = [...sessionMap.entries()].map(([sessionId, sessionResponses]) => ({
+        sessionId,
+        responseCount: sessionResponses.length,
+        allSatisfied: sessionResponses.every((item) => item.taskSuccess === true),
+        anyNotSatisfied: sessionResponses.some((item) => item.taskSuccess !== true)
+      }));
+      const recentSessions = sessionOutcomes.slice(-3);
       let evidenceState = "no_live_opportunity";
-      if (responses.length > 0 && responses.length < 3) evidenceState = "accumulating";
-      else if (responses.length >= 3 && responses.slice(-3).every((item) => item.taskSuccess === true)) evidenceState = "recent_consistent";
-      else if (responses.length >= 3 && responses.at(-1)?.taskSuccess === false) evidenceState = "needs_review";
-      else if (responses.length >= 3) evidenceState = "mixed";
+      if (skillAssessments.length > 0 && responses.length === 0) evidenceState = "awaiting_response";
+      else if (sessionOutcomes.length > 0 && sessionOutcomes.length < 3) evidenceState = "accumulating";
+      else if (sessionOutcomes.length >= 3 && sessionOutcomes.at(-1).anyNotSatisfied) evidenceState = "needs_review";
+      else if (sessionOutcomes.length >= 3 && recentSessions.every((item) => item.allSatisfied)) evidenceState = "recent_consistent";
+      else if (sessionOutcomes.length >= 3) evidenceState = "mixed";
       return {
         skillId,
         label: CONTRACTS[skillId].label,
@@ -270,6 +283,8 @@
         notSatisfiedFirstResponses: responses.filter((item) => item.taskSuccess !== true).length,
         unansweredOpportunities: skillAssessments.length - responses.length,
         eventualCorrections: retries.filter((item) => item.skillId === skillId && item.eventualCorrection === true).length,
+        distinctSessionsWithFirstResponse: sessionOutcomes.length,
+        sessionOutcomes,
         recentOutcomes: recent.map((item) => item.outcome),
         evidenceState
       };
@@ -287,7 +302,7 @@
       unscoredHumanTurns: assessments.length - eligible.length,
       unscoredReasons: reasonCounts,
       firstResponses: firstResponses.length,
-      interpretationBoundary: "只把 9×9 人機局中預先判定、唯一且可由規則引擎客觀核對的局部任務列為 live T3。任務達成不代表全局最佳手；未達成也不等於全局錯著。進度狀態是描述性證據狀態，不是 mastery 百分比。",
+      interpretationBoundary: "只把 9×9 人機局中預先判定、唯一且可由規則引擎客觀核對的局部任務列為 live T3。任務達成不代表全局最佳手；未達成也不等於全局錯著。決策機會照實計數，但進度狀態的跨局一致性以不同 session 為單位，不把同局連續手冒充獨立樣本；這仍不是 mastery 百分比。",
       skills
     };
   }
