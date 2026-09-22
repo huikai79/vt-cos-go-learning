@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  const Go = window.GoCore, Live = window.GoLiveGame, Sgf = window.GoSgf;
+  const Go = window.GoCore, Live = window.GoLiveGame, Sgf = window.GoSgf, Bot = window.GoPracticeBot;
   const { BLACK, WHITE, EMPTY } = Go;
   const requestedSize = (() => {
     try { return Live.normalizeBoardSize(new URLSearchParams(window.location.search).get("size"), Live.DEFAULT_SIZE); }
@@ -8,7 +8,7 @@
   })();
   const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
   const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
-  const UI_VERSION = "live-game-ui-v2";
+  const UI_VERSION = "live-game-ui-v3";
   const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
   const boardProfiles = {
     3: { title: "3×3 微型練習棋盤", heading: "氣與提子的最小練習", description: "適合剛開始學氣、提子、邊角與合法手。棋盤很小，目的是看清局部規則，不把它當完整圍棋對局。", purpose: "氣、提子、合法手" },
@@ -17,10 +17,26 @@
     9: { title: "9×9 完整實戰練習", heading: "完整 9×9 實戰棋盤", description: "兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。", purpose: "完整小棋盤對局" }
   };
   const $ = (id) => document.getElementById(id);
-  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "";
+  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "local", humanColor = BLACK, botPending = false;
 
   function centerCursor(size) { const middle = Math.floor(size / 2); return [middle, middle]; }
   function currentProfile() { return boardProfiles[game ? game.boardSize : requestedSize] || boardProfiles[9]; }
+  function isComputerMode() { return opponentMode === "computer"; }
+  function computerColor() { return humanColor === BLACK ? WHITE : BLACK; }
+  function isComputerTurn() { return isComputerMode() && game && game.status === "playing" && game.toPlay === computerColor(); }
+  function isHumanTurn() { return !isComputerMode() || (game && game.status === "playing" && game.toPlay === humanColor); }
+  function saveOpponentSettings() {
+    try { localStorage.setItem(`go-live-opponent-v1-size-${requestedSize}`, JSON.stringify({ opponentMode, humanColor })); } catch (_) {}
+  }
+  function loadOpponentSettings() {
+    try {
+      const raw = localStorage.getItem(`go-live-opponent-v1-size-${requestedSize}`);
+      if (!raw) return;
+      const value = JSON.parse(raw);
+      if (value && ["local", "computer"].includes(value.opponentMode)) opponentMode = value.opponentMode;
+      if (value && [BLACK, WHITE].includes(Number(value.humanColor))) humanColor = Number(value.humanColor);
+    } catch (_) {}
+  }
 
   function event(type, details = {}) {
     auditEvents.push({
@@ -52,6 +68,8 @@
       game = Live.hydrate(payload.game);
       if (game.boardSize !== requestedSize) throw new Error("saved_board_size_mismatch");
       auditEvents = Array.isArray(payload.auditEvents) ? payload.auditEvents.filter((entry) => entry && typeof entry === "object") : [];
+      if (["local", "computer"].includes(payload.opponentMode)) opponentMode = payload.opponentMode;
+      if ([BLACK, WHITE].includes(Number(payload.humanColor))) humanColor = Number(payload.humanColor);
       loadNotice = game.status === "playing" ? `已從這台電腦續接上次未完成的 ${game.boardSize}×${game.boardSize} 棋局。` : `已載入這台電腦保存的 ${game.boardSize}×${game.boardSize} 棋局。`;
       event("session_loaded", { status: game.status });
     } catch (error) {
@@ -61,7 +79,7 @@
   }
   function save() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 1, uiVersion: UI_VERSION, savedAt: new Date().toISOString(), game, auditEvents }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 1, uiVersion: UI_VERSION, savedAt: new Date().toISOString(), game, auditEvents, opponentMode, humanColor }));
       $("save-state").textContent = "已保存於這台電腦";
       return true;
     } catch (_) {
@@ -133,6 +151,10 @@
     $("practice-purpose").textContent = profile.purpose;
     $("rules-summary").textContent = size === 9 ? `中國式面積 · 貼 ${game.komi} · 簡單劫` : `微型練習盤 · ${game.komi ? `貼 ${game.komi}` : "無貼目"} · 簡單劫`;
     $("import-label").textContent = `匯入 ${size} 路 SGF`;
+    $("opponent-mode").value = opponentMode;
+    $("human-color").value = String(humanColor);
+    $("human-color-field").hidden = !isComputerMode();
+    $("opponent-summary").textContent = isComputerMode() ? `你執${colorLabel(humanColor)} · 電腦執${colorLabel(computerColor())}` : "雙人同機";
     $("footer-boundary").textContent = size === 9
       ? "9×9 提供目前已支援的完整小棋盤對局流程；使用 simple ko，不宣稱涵蓋各棋規的 superko、終局爭議或裁判規則。"
       : `${size}×${size} 定位為規則與局部技能的微型練習盤；雖可走完整 Pass／計分流程，但不把其勝負當正式棋力、T3 或完整對局能力證據。`;
@@ -147,16 +169,69 @@
     renderBoard();
     $("move-count").textContent = String(game.moves.length);
     $("capture-count").textContent = `黑 ${game.captures.black} · 白 ${game.captures.white}`;
-    $("turn-status").textContent = game.status === "playing" ? `${colorLabel(game.toPlay)}棋落子` : game.status === "scoring" ? "終局確認" : Live.resultText(game);
-    $("pass-button").disabled = game.status !== "playing"; $("resign-button").disabled = game.status !== "playing";
+    $("turn-status").textContent = game.status === "playing" ? (isComputerTurn() ? `電腦（${colorLabel(game.toPlay)}）思考中` : `${colorLabel(game.toPlay)}棋落子`) : game.status === "scoring" ? "終局確認" : Live.resultText(game);
+    const playerLocked = botPending || isComputerTurn();
+    $("live-board").classList.toggle("computer-turn", playerLocked);
+    $("pass-button").disabled = game.status !== "playing" || playerLocked; $("resign-button").disabled = game.status !== "playing" || playerLocked;
     $("undo-button").disabled = game.status === "finished" || !game.moves.length;
     $("scoring-panel").hidden = game.status !== "scoring"; $("result-panel").hidden = game.status !== "finished";
     $("score-lines").innerHTML = game.status === "scoring" ? scoreLineHtml(Live.currentScore(game)) : "";
     $("result-text").textContent = game.status === "finished" ? Live.resultText(game) : "";
-    $("board-help").textContent = game.status === "playing" ? `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／Space 落子。` : game.status === "scoring" ? "兩次 Pass 後進入終局確認。點棋串切換死子標記；系統不自動判死活。" : game.boardSize === 9 ? "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。" : "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。";
+    $("board-help").textContent = game.status === "playing" ? (isComputerTurn() ? "電腦正在選擇合法練習手；完成後會自動輪到你。" : `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／Space 落子。`) : game.status === "scoring" ? "兩次 Pass 後進入終局確認。點棋串切換死子標記；系統不自動判死活。" : game.boardSize === 9 ? "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。" : "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。";
     const recentMoves = game.moves.slice(-30);
     $("move-log").innerHTML = recentMoves.length ? recentMoves.map((move) => `<li class="${move.type === "pass" ? "pass" : ""}">${moveLabel(move)}</li>`).join("") : "<li>尚未落子。</li>";
   }
+  function runComputerTurn() {
+    if (!isComputerTurn() || botPending) return;
+    if (!Bot || typeof Bot.chooseAction !== "function") {
+      showFeedback("電腦練習對手無法載入；本次不會自動猜測落子。", "error");
+      return;
+    }
+    botPending = true;
+    render();
+    setTimeout(() => {
+      try {
+        const action = Bot.chooseAction(game);
+        const color = game.toPlay;
+        if (action.type === "play" && Array.isArray(action.point)) {
+          const result = Live.play(game, action.point[0], action.point[1]);
+          if (!result.ok) throw new Error("電腦候選手未通過規則引擎：" + (result.error || "unknown"));
+          game = result.game;
+          event("computer_move", { color, point: action.point.slice(), botVersion: action.botVersion || "unknown", selectionReason: action.reason || "unknown" });
+          showFeedback(`電腦${colorLabel(color)}棋下在 ${coordName(action.point[0], action.point[1])}。`, "success");
+        } else if (action.type === "pass") {
+          const result = Live.pass(game);
+          if (!result.ok) throw new Error(result.error || "電腦 Pass 失敗");
+          game = result.game;
+          event("computer_pass", { color, botVersion: action.botVersion || "unknown", selectionReason: action.reason || "unknown" });
+          showFeedback(result.game.status === "scoring" ? "電腦 Pass；雙方已連續 Pass，請確認終局。" : `電腦${colorLabel(color)}棋 Pass。`, "success");
+        } else {
+          throw new Error("電腦沒有產生可執行動作。");
+        }
+        save();
+      } catch (error) {
+        showFeedback(`電腦回合失敗：${error.message}`, "error");
+      } finally {
+        botPending = false;
+        render();
+      }
+    }, 180);
+  }
+  function scheduleComputerTurn() {
+    if (isComputerTurn()) setTimeout(runComputerTurn, 0);
+  }
+  function startNewGame(reason) {
+    game = Live.createGame({ boardSize: requestedSize });
+    auditEvents = [];
+    cursor = centerCursor(requestedSize);
+    event("new_game", { reason, opponentMode, humanColor: isComputerMode() ? humanColor : null, botVersion: isComputerMode() && Bot ? Bot.BOT_VERSION : null });
+    saveOpponentSettings();
+    save();
+    render();
+    showFeedback(`已開始新的 ${requestedSize}×${requestedSize} ${isComputerMode() ? "人機練習" : "棋局"}。`, "success");
+    scheduleComputerTurn();
+  }
+
   function applyResult(result, auditType, details = {}) {
     if (!result.ok) { showFeedback(result.error || "操作失敗。", "error"); return false; }
     game = result.game; event(auditType, details); const saved = save(); render();
@@ -166,9 +241,10 @@
   function actAt(x, y, refocus = false) {
     cursor = [x, y];
     if (game.status === "playing") {
+      if (!isHumanTurn() || botPending) { showFeedback("現在是電腦回合。", "error"); return; }
       if (game.board[y][x] !== EMPTY) { showFeedback(`${coordName(x, y)} 已有棋子。`, "error"); return; }
       const color = game.toPlay, result = Live.play(game, x, y);
-      if (applyResult(result, "move", { color, point: [x, y], successMessage: `${colorLabel(color)}棋下在 ${coordName(x, y)}。` }) && refocus) setTimeout(focusCursor, 0);
+      if (applyResult(result, "move", { color, point: [x, y], successMessage: `${colorLabel(color)}棋下在 ${coordName(x, y)}。` })) { if (refocus) setTimeout(focusCursor, 0); scheduleComputerTurn(); }
       return;
     }
     if (game.status === "scoring") {
@@ -213,10 +289,23 @@
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); actAt(cursor[0], cursor[1], true); }
   });
   $("pass-button").addEventListener("click", () => {
+    if (!isHumanTurn() || botPending) return;
     const color = game.toPlay, result = Live.pass(game);
-    applyResult(result, "pass", { color, successMessage: result.ok && result.game.status === "scoring" ? "雙方連續 Pass，請確認死子與終局分數。" : `${colorLabel(color)}棋 Pass。` });
+    if (applyResult(result, "pass", { color, successMessage: result.ok && result.game.status === "scoring" ? "雙方連續 Pass，請確認死子與終局分數。" : `${colorLabel(color)}棋 Pass。` })) scheduleComputerTurn();
   });
-  $("undo-button").addEventListener("click", () => applyResult(Live.undo(game), "undo", { successMessage: "已悔一手；棋局依剩餘手順重新重建。" }));
+  $("undo-button").addEventListener("click", () => {
+    if (botPending) return;
+    let first = Live.undo(game);
+    if (!first.ok) { applyResult(first, "undo", {}); return; }
+    game = first.game;
+    let undone = 1;
+    if (isComputerMode() && game.moves.length && game.toPlay === computerColor()) {
+      const second = Live.undo(game);
+      if (second.ok) { game = second.game; undone += 1; }
+    }
+    event("undo", { movesUndone: undone, opponentMode });
+    save(); render(); showFeedback(isComputerMode() ? "已回到你上一個決策前。" : "已悔一手；棋局依剩餘手順重新重建。", "success");
+  });
   $("resign-button").addEventListener("click", () => {
     if (!confirm(`${colorLabel(game.toPlay)}棋確定認輸？`)) return;
     const loser = game.toPlay;
@@ -234,8 +323,20 @@
   });
   $("new-game-button").addEventListener("click", () => {
     if (game.moves.length && !confirm("開始新局會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定開始新局？")) return;
-    game = Live.createGame({ boardSize: requestedSize }); auditEvents = []; event("new_game", { reason: "user_started" }); cursor = centerCursor(requestedSize);
-    save(); render(); showFeedback(`已開始新的 ${requestedSize}×${requestedSize} 棋局。`, "success");
+    startNewGame("user_started");
+  });
+  $("opponent-mode").addEventListener("change", (event) => {
+    const nextMode = event.target.value === "computer" ? "computer" : "local";
+    if (game.moves.length && !confirm("切換對手模式需要開始同尺寸新局。若要保留這盤，請先匯出 SGF。確定切換？")) { event.target.value = opponentMode; return; }
+    opponentMode = nextMode;
+    startNewGame("opponent_mode_changed");
+  });
+  $("human-color").addEventListener("change", (event) => {
+    const nextColor = Number(event.target.value) === WHITE ? WHITE : BLACK;
+    if (game.moves.length && !confirm("更換執棋顏色需要開始同尺寸新局。若要保留這盤，請先匯出 SGF。確定更換？")) { event.target.value = String(humanColor); return; }
+    humanColor = nextColor;
+    opponentMode = "computer";
+    startNewGame("human_color_changed");
   });
   $("export-sgf-button").addEventListener("click", () => {
     try {
@@ -254,7 +355,7 @@
         if (imported.boardSize !== requestedSize) throw new Error(`這是 ${imported.boardSize}×${imported.boardSize} 棋譜；請先切換到相同尺寸的練習棋盤再匯入。`);
         game = imported; auditEvents = [];
         event("sgf_import", { sourceName: file.name, importedStatus: game.status }); cursor = centerCursor(game.boardSize);
-        save(); render(); showFeedback(`已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, "success");
+        save(); render(); showFeedback(`已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, "success"); scheduleComputerTurn();
       } catch (error) { showFeedback(error.message, "error"); }
       e.target.value = "";
     };
@@ -262,6 +363,6 @@
     reader.readAsText(file, "UTF-8");
   });
 
-  load(); save(); render();
+  loadOpponentSettings(); load(); save(); render(); scheduleComputerTurn();
   if (loadNotice) showFeedback(loadNotice, loadNotice.includes("損壞") || loadNotice.includes("無法") ? "error" : "success");
 })();
