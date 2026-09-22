@@ -20,6 +20,7 @@
   <script defer src="scheduler.js"></script>
   <script defer src="trial.js"></script>
   <script defer src="learning-metrics.js"></script>
+  <script defer src="practice-events.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -35,6 +36,11 @@
         <div class="progress-track"><div id="progress-bar"></div></div>
         <small id="progress-caption">先從第一題開始</small>
       </div>
+      <details class="diagnostic-card">
+        <summary>實戰練習紀錄</summary>
+        <p id="live-practice-summary">尚無人機實戰紀錄。</p>
+        <small>只顯示 practice observation；不更新技能、排程或正式評量。</small>
+      </details>
       <details class="diagnostic-card">
         <summary>錯誤修正診斷</summary>
         <p id="diagnostic-summary">尚無可比較的首答紀錄。</p>
