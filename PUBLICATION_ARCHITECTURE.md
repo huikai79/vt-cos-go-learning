@@ -29,13 +29,16 @@ GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=t
 
 ## 信任與資料流
 
-公開 repository 只提供教材、題庫、前端程式、測試、文件及審核截圖。學習進度與 9×9 實戰續局都留在瀏覽器 `localStorage`，但使用不同 key；匯出由使用者下載到本機；沒有帳號、後端、遙測或外部 runtime 請求。實戰頁的 audit event 固定為 practice-only，不進正式評量分母。
+公開 repository 只提供教材、題庫、前端程式、測試、文件及審核截圖。學習進度、棋局續局、raw practice events 與 bounded live evidence 都留在瀏覽器 `localStorage`，使用分開的 key；匯出由使用者下載到本機；沒有帳號、後端、遙測或外部 runtime 請求。`practice-events.js` 的 raw audit event 永遠維持 practice-only；`live-evidence.js` 另依版本化 eligibility/scoring contract 保存少數 9×9 局部 live T3，且 `formalEligible=false`，不進正式評量分母。
 
 ```text
 公開題庫模組 ─┐
                ├─ phase2-content.js ─ app.js／r1-review.js
 公開死活模組 ─┘                         │
-                                        └─ localStorage／本機匯出
+                                        ├─ 課程／scheduler localStorage
+                                        ├─ raw practice event localStorage
+                                        ├─ bounded live evidence localStorage
+                                        └─ 本機匯出
 ```
 
 ## 發布閘門
