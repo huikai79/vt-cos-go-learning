@@ -16,7 +16,7 @@
 
 2026-09-22 本機電腦對手更新：四種棋盤皆可選雙人同機或和電腦下，使用者可執黑或白。第一版對手是 bounded heuristic bot，只從規則引擎確認合法的候選手中排序，優先立即提子並避免明顯自填；它不是 KataGo、不是棋力模型，也不把勝負、落子選擇或完成局數寫入 KC／scheduler／formal evaluation。其目的只是在單人離線情境補足可反覆操作的 Experience；若真人觀察顯示 bot 行為誤導學習，應降低權重或改以 KataGo bounded integration，而不是把 heuristic 包裝成教學權威。
 
-2026-09-22 人機實戰事件回流更新：新增獨立 `live-practice-events-v1` 事件流，保存自由／人機棋局中實際發生的學習者與電腦操作，並在課程首頁顯示只讀摘要、完整 JSON 備份帶出原始事件。這些事件固定為 unscored practice observation，不進既有 KC、SCD、scheduler、T2/T3 或 mastery；後續若要升格為自然實戰 evidence，需先為可枚舉決策定義版本化 eligibility、scoring 與分母，並避免只抽 AI 找到的壞手。
+2026-09-22 人機實戰事件回流更新：`live-practice-events-v1` 繼續保存全部自由／人機操作，維持 unscored practice observation；另新增 `live-eligibility-v1`／`live-scoring-v1`，只把 9×9 人機局中**在學習者落子前已整盤掃描並唯一符合 contract** 的一手提子、以及 computer 上一手新造成打吃後的唯一直接延長救棋，升為 bounded live T3。assessment、first response、retry、未答分母與 contract version 分開保存；多候選、5×5／7×7、actor 不明與全局取捨均不評分。`learner-evidence-progress-v1` 再把既有 T0–T2 與 bounded live T3 並列為描述性 evidence state，不輸出 mastery 百分比，也不直接改 scheduler。
 
 ## 1. 北極星
 
@@ -357,7 +357,7 @@ engagement、frustration、boredom、session completion 與 learner agency 分�
 - 已能匯出合格機會、首答、提示與原始事件，並由 `learning-metrics.js` 重算可觀察任務錯誤、SCD 與再犯間隔。錯誤類型只描述技能任務結果，不推定粗心、誤解或其他心理根因；缺少 `qualifiedOpportunity`／`unhinted` 的舊事件不納入診斷。SCD 必須通過約 24 小時與 7 天的非 holdout T2 首答；變形庫已提供這類流程檢核題，但目前仍沒有真人完成樣本。
 - 後續以手動、可留痕方式補母題關係並修訂技能假說，不實作自動模型發現。
 
-完成門檻：實際瀏覽器重開後資料仍在；呈現、首答、提示及機會資格可由完整匯出與版本規則重算。涵蓋零機會、分類未知、有提示、同題重點、未作答及中斷；兩個技能的正反例、邊界與答案可核對。SCD／再犯計算器須驗證未達標、兩段延後 T2、holdout 隔離、缺失資格的舊事件及尚未再犯下限；工程完成不偽造正式題庫或真人學習結果。
+完成門檻：實際瀏覽器重開後資料仍在；呈現、首答、提示及機會資格可由完整匯出與版本規則重算。涵蓋零機會、分類未知、有提示、同題重點、未作答及中斷；兩個技能的正反例、邊界與答案可核對。SCD／再犯計算器須驗證未達標、兩段延後 T2、holdout 隔離、缺失資格的舊事件及尚未再犯下限。live T3 另須驗證 eligibility 在結果前凍結、未答不消失、first response 不被 retry／reload 覆寫、不同 contract version 不混算、同局多手不冒充跨局獨立樣本；工程完成不偽造正式題庫或真人學習結果。
 
 ### Phase 2｜基礎吃子／死活變形庫
 
@@ -383,7 +383,7 @@ engagement、frustration、boredom、session completion 與 learner agency 分�
 
 ### Phase 4｜固定應用探測與實戰局部回流
 
-2026-09-20 實作狀態：已加入五個減少技能線索的固定應用探測，含兩個適用局面與三個「不適用」對照；每題明列可支持的局部判斷，且不進入間隔排程。這些局面能檢查局部技能的自行發現與誤用，**不能稱完整全局應用。** 9 路 SGF 可解析，使用者匯入後可選任意實際著手，再重建該手前的原局局部；作答前可保存候選手與理由，完成後可另記原著或另一候選是否經人工確認為可接受答案。兩段紀錄都會連同保存時點寫入 Markdown 與 JSON，且預設為尚未確認；完成後也可匯出保留原局面、原著手與復盤註記的標準 SGF，交給 KaTrain 開啟分析。此匯出只交接資料，不顯示或判定分析結果。仍只測原著手回想，未驗證原著是修正手或最佳手。Phase 4 的局部探測、任意手數重建及反思資料留存工程通過，實戰錯誤回流尚未完成。
+2026-09-22 實作狀態：五個減少技能線索的固定應用探測仍與自然實戰分開；9 路 SGF 任意手數重建與反思資料留存維持原邊界。自然實戰另已建立 bounded live T3 管線：每個 9×9 人機學習者回合先整盤判 eligibility，v1 只支援唯一一手提子與 computer-provoked 唯一直接救棋，並保存未答、首答、retry 與版本。**這只完成兩個局部 scoring contracts 的自然實戰資料管線；其他技能、策略選擇、全局方向與棋局勝負仍不可自動評成學習進度。**
 
 - 先用減少技能線索的固定局面，檢查局部技能的自行發現；混入不適用局面。只有具備足夠全局條件及經核對的可接受候選手時，才另報全局評分。此成績與 live T3 自然實戰分開，不能換名稱後宣稱實戰已驗證。
 
