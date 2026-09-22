@@ -175,3 +175,22 @@ test("摘要不以新版語義靜默重算舊 contract 事件", () => {
   assert.equal(summary.assessedHumanTurns, 1);
   assert.equal(summary.excludedContractVersionEvents, 1);
 });
+
+
+test("同一盤多個成功機會不冒充三個跨局樣本", () => {
+  const assessments = [1,2,3].map((n) => ({
+    schemaVersion:1,type:"assessment",eventId:"a"+n,assessmentId:"a"+n,sessionId:"same-game",occurredAt:`2026-09-22T12:00:0${n}.000Z`,
+    eligibilityContractVersion:LiveEvidence.ELIGIBILITY_CONTRACT_VERSION,scoringContractVersion:LiveEvidence.SCORING_CONTRACT_VERSION,evidenceTaxonomyVersion:2,
+    status:"eligible",qualifiedOpportunity:true,skillId:"capture-last-liberty-v1",reason:"unique_rule_scored_local_contract"
+  }));
+  const responses = assessments.map((a,n) => ({
+    schemaVersion:1,type:"first_response",eventId:"r"+(n+1),assessmentId:a.assessmentId,sessionId:"same-game",occurredAt:`2026-09-22T12:00:1${n}.000Z`,
+    eligibilityContractVersion:LiveEvidence.ELIGIBILITY_CONTRACT_VERSION,scoringContractVersion:LiveEvidence.SCORING_CONTRACT_VERSION,evidenceTaxonomyVersion:2,
+    skillId:"capture-last-liberty-v1",qualifiedOpportunity:true,taskSuccess:true,outcome:"satisfied"
+  }));
+  const summary = LiveEvidence.summarize([...assessments, ...responses]);
+  const skill = summary.skills.find((item) => item.skillId === "capture-last-liberty-v1");
+  assert.equal(skill.firstResponses, 3);
+  assert.equal(skill.distinctSessionsWithFirstResponse, 1);
+  assert.equal(skill.evidenceState, "accumulating");
+});
