@@ -26,6 +26,7 @@
     "jekyllDisabled": true,
     "entrypoints": [
       "index.html",
+      "live-game.html",
       "r1-review.html"
     ]
   },
@@ -51,6 +52,10 @@
     "LEARNING_MODEL_REVIEW.md",
     "learning-metrics.js",
     "LICENSE",
+    "live-game-page.js",
+    "live-game.css",
+    "live-game.html",
+    "live-game.js",
     "PHASE_1_5_JOHARI_REVIEW.md",
     "phase2-content.js",
     "phase2-foundation-bank.js",
@@ -83,6 +88,7 @@
     "tests/go.test.cjs",
     "tests/learning-metrics.test.cjs",
     "tests/lesson-content.test.cjs",
+    "tests/live-game.test.cjs",
     "tests/phase2-content.test.cjs",
     "tests/r1-content-audit.test.cjs",
     "tests/release-manifest.test.cjs",
