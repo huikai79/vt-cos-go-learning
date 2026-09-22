@@ -72,7 +72,7 @@
 
 ## 設計邊界
 
-- 原型具備短教學、點選棋盤、即時判定、錯題複習、固定應用探測、9 路 SGF 可落子著手重建與復盤紀錄匯出；停一手會保留原局手數，但不能建立落子題。完成局部復盤後，也可匯出標準 SGF 交給 KaTrain 開啟。資料／狀態層與 Chrome 瀏覽器流程已有自動測試。沒有完整對弈、勝負結算或 KataGo 自動連接。
+- 原型具備短教學、點選棋盤、即時判定、錯題複習、固定應用探測、3×3／5×5／7×7 微型與過渡棋盤、9×9 完整小棋盤對局，以及 9 路 SGF 可落子著手重建與復盤紀錄匯出。3／5／7 路只作 practice scaffold，9×9 才定位為完整小棋盤對局；四種尺寸都不自動成為正式 T2／T3。完成 9 路局部復盤後可另匯出標準 SGF 交給 KaTrain 開啟；目前沒有內建 AI 對手或 KataGo 自動連接。
 - 題目棋形為教學局面；答題引擎檢查氣、提子、自殺手、簡單劫，並對照題目指定目標。後續若擴充到實戰，需補規則集與棋譜格式。
 - 本機瀏覽器可直接使用；沒有網路請求、外部字體或第三方程式庫。
 - SGF 匯入只接受單一 9 路主線棋譜，不接受多盤 collection 或分支變化；檔案上限 1,000,000 bytes、10,000 個節點、128 層巢狀。格式錯誤、不合法落子與超限輸入會明確拒絕，不會靜默截斷。
@@ -93,7 +93,7 @@
 
 ## 驗證
 
-在本資料夾執行 `node tests/go.test.cjs`，驗證 15 單元、106 題的資料完整性，及棋盤題的氣數、提子、救棋、連接、斷點、基礎死活急所、禁著和簡單劫；執行 `node tests/phase2-content.test.cjs` 驗證 148 題變形庫、公開曝光契約、直三的一至三手結果及第二眼真眼區域；執行 `node tests/sgf.test.cjs`，驗證 9 路 SGF 解析、停一手編號、簡單劫、多盤／分支拒絕及資源上限。Windows 可執行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1`，檢查獨立 Git 根目錄、workflow、gitlink、symlink 與 reparse point；若有 Chrome 或 Edge，也可執行 `node tests/ui.test.cjs` 驗證主要使用流程與版面。
+在本資料夾執行 `node tests/go.test.cjs`，驗證 15 單元、106 題的資料完整性，及棋盤題的氣數、提子、救棋、連接、斷點、基礎死活急所、禁著和簡單劫；執行 `node tests/live-game.test.cjs` 驗證 3／5／7／9 路棋盤邊界、提子、Pass、計分、續局、SGF round-trip 與 9×9 相容；執行 `node tests/phase2-content.test.cjs` 驗證 148 題變形庫、公開曝光契約、直三的一至三手結果及第二眼真眼區域；執行 `node tests/sgf.test.cjs`，驗證課程端 9 路 SGF 解析、停一手編號、簡單劫、多盤／分支拒絕及資源上限。Windows 可執行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1`，檢查獨立 Git 根目錄、workflow、gitlink、symlink 與 reparse point；若有 Chrome 或 Edge，也可執行 `node tests/ui.test.cjs` 驗證主要使用流程與版面。
 
 2026-09-21 的規則、題庫、排程、SGF、trial、狀態與 Chrome 測試均通過。新增反證測試會比較驗收正答與錯答後的棋盤快照、驗證同題先錯後對仍保留首答錯誤、檢查固定應用呈現分母、v3 至 v6→v7 遷移、兩輪內容插題後的索引保存及保留題匯出遮蔽。這些結果只保留為工程證據。
 
