@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="VT-COS 一手一懂的 9×9 本機實戰練習模式。">
-  <title>VT-COS｜9×9 實戰練習</title>
+  <meta name="description" content="VT-COS 一手一懂的 3×3、5×5、7×7 與 9×9 本機棋盤練習。">
+  <title>VT-COS｜棋盤練習</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="live-game.css">
   <script defer src="go.js"></script>
@@ -15,10 +15,10 @@
   <script defer src="live-game-page.js"></script>
 </head>
 <body class="live-page">
-  <a class="skip-link" href="#live-main">跳到實戰棋盤</a>
+  <a class="skip-link" href="#live-main">跳到練習棋盤</a>
   <header class="live-topbar">
-    <a class="live-brand" href="index.html"><span aria-hidden="true">●○</span><strong>一手一懂</strong><small>VT-COS · 9×9 實戰</small></a>
-    <nav class="live-top-actions" aria-label="實戰練習導覽">
+    <a class="live-brand" href="index.html"><span aria-hidden="true">●○</span><strong>一手一懂</strong><small id="live-brand-mode">VT-COS · 棋盤練習</small></a>
+    <nav class="live-top-actions" aria-label="棋盤練習導覽">
       <a href="index.html">回課程</a>
       <button id="new-game-button" type="button">開始新局</button>
     </nav>
@@ -26,25 +26,34 @@
   <main class="live-main" id="live-main">
     <section class="live-intro" aria-labelledby="live-title">
       <div>
-        <span class="live-kicker">LIVE PRACTICE · OFFLINE</span>
-        <h1 id="live-title">完整 9×9 實戰練習</h1>
-        <p>兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。</p>
+        <span class="live-kicker">BOARD PRACTICE · OFFLINE</span>
+        <h1 id="live-title">棋盤練習</h1>
+        <p id="live-description">依目前學習階段選擇 3×3、5×5、7×7 或 9×9 棋盤。</p>
       </div>
-      <p class="live-boundary"><strong>證據邊界：</strong>這裡是練習，不是正式未見評量。完成後可匯出 SGF，再回課程做局部複盤。</p>
+      <p class="live-boundary"><strong>證據邊界：</strong>3×3／5×5／7×7 是微型與過渡練習盤；9×9 才定位為完整小棋盤對局。這裡全部屬 practice，不自動成為正式 T2／T3 或棋力評量。</p>
     </section>
+
+    <nav class="board-size-switcher" aria-label="選擇練習棋盤尺寸">
+      <a href="live-game.html?size=3" data-board-size-choice="3"><strong>3×3</strong><span>氣與提子</span></a>
+      <a href="live-game.html?size=5" data-board-size-choice="5"><strong>5×5</strong><span>連斷與眼形</span></a>
+      <a href="live-game.html?size=7" data-board-size-choice="7"><strong>7×7</strong><span>局部攻防</span></a>
+      <a href="live-game.html?size=9" data-board-size-choice="9"><strong>9×9</strong><span>完整對局</span></a>
+    </nav>
+
     <section class="live-status-grid" aria-label="棋局狀態">
       <article><span>目前</span><strong id="turn-status">黑棋落子</strong></article>
       <article><span>手數</span><strong id="move-count">0</strong></article>
       <article><span>提子</span><strong id="capture-count">黑 0 · 白 0</strong></article>
-      <article><span>規則</span><strong>中國式面積 · 貼 7.5 · 簡單劫</strong></article>
+      <article><span>規則</span><strong id="rules-summary">中國式面積 · 簡單劫</strong></article>
     </section>
     <div class="live-layout">
       <section class="live-board-card" aria-labelledby="board-heading">
         <div class="live-card-head">
-          <div><span>9 × 9</span><h2 id="board-heading">實戰棋盤</h2></div>
+          <div><span id="board-size-label">9 × 9</span><h2 id="board-heading">實戰棋盤</h2></div>
           <span class="live-save-state" id="save-state" role="status" aria-live="polite">只存這台電腦</span>
         </div>
-        <div id="live-board" class="live-board" aria-label="9 路實戰棋盤"></div>
+        <p class="live-purpose">這個尺寸主要練：<strong id="practice-purpose">完整小棋盤對局</strong></p>
+        <div id="live-board" class="live-board" aria-label="棋盤練習"></div>
         <p class="live-board-help" id="board-help">黑棋先下。滑鼠、觸控或鍵盤方向鍵移動，Enter／Space 落子。</p>
         <div class="live-primary-actions" aria-label="棋局操作">
           <button class="primary-button" id="pass-button" type="button">Pass</button>
@@ -75,11 +84,11 @@
           <h2 id="record-title">保存這盤棋</h2>
           <div class="live-record-actions">
             <button class="subtle-button" id="export-sgf-button" type="button">匯出 SGF</button>
-            <label class="subtle-button file-button" for="import-sgf-input">匯入 9 路 SGF</label>
+            <label class="subtle-button file-button" id="import-label" for="import-sgf-input">匯入 SGF</label>
             <input id="import-sgf-input" type="file" accept=".sgf,application/x-go-sgf,text/plain" hidden>
           </div>
-          <p class="field-help">未結束棋局也可匯出；重新載入本頁會從 localStorage 續局。匯入含結果的棋譜會以已結束棋局顯示。</p>
-          <a class="review-link" href="index.html">回課程匯入 SGF 做局部複盤 →</a>
+          <p class="field-help">每個棋盤尺寸各自保存續局。匯入時必須與目前尺寸相同；未結束棋局也可匯出。</p>
+          <a class="review-link" href="index.html">回課程繼續學習 →</a>
         </section>
         <section class="live-panel move-log-panel" aria-labelledby="move-log-title">
           <span class="live-panel-kicker">最近手順</span>
@@ -88,7 +97,7 @@
         </section>
       </aside>
     </div>
-    <p class="footer-note">實戰模式只提供目前已支援的 9 路規則範圍；使用 simple ko，不宣稱涵蓋各棋規的 superko、終局爭議或裁判規則。</p>
+    <p class="footer-note" id="footer-boundary">棋盤練習使用目前已支援的 simple ko 與人工終局確認範圍。</p>
   </main>
 </body>
 </html>
