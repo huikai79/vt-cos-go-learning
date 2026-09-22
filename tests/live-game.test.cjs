@@ -5,6 +5,7 @@ const path = require("node:path");
 const Go = require("../go.js");
 const Live = require("../live-game.js");
 const Bot = require("../practice-bot.js");
+const PracticeEvents = require("../practice-events.js");
 
 function playOk(game, x, y) {
   const result = Live.play(game, x, y);
@@ -219,4 +220,33 @@ test("棋盤頁提供雙人同機與和電腦下模式，並載入 bounded bot",
   assert.match(page, /evaluationRole: "practice"/);
   assert.match(page, /formalEligible: false/);
   assert.match(page, /GoPracticeBot/);
+});
+
+
+test("practice event stream 只把人類人機操作計入可觀察決策，且重複 ID 不加倍", () => {
+  const values = new Map();
+  const storage = { getItem: (key) => values.get(key) || null, setItem: (key, value) => values.set(key, value) };
+  const base = { sessionId: "s1", occurredAt: "2026-09-22T12:00:00.000Z", boardSize: 5, opponentMode: "computer", humanColor: Go.BLACK, formalEligible: false, qualifiedOpportunity: false };
+  const human = PracticeEvents.append(storage, { ...base, eventId: "e1", type: "move", actor: "human", moveCount: 1, point: [2,2], actionColor: Go.BLACK });
+  assert.equal(human.ok, true);
+  const duplicate = PracticeEvents.append(storage, { ...base, eventId: "e1", type: "move", actor: "human", moveCount: 1, point: [2,2], actionColor: Go.BLACK });
+  assert.equal(duplicate.duplicate, true);
+  const computer = PracticeEvents.append(storage, { ...base, eventId: "e2", type: "computer_move", actor: "computer", moveCount: 2, point: [1,1], actionColor: Go.WHITE, botVersion: "local-practice-bot-v1" });
+  assert.equal(computer.ok, true);
+  const undo = PracticeEvents.append(storage, { ...base, eventId: "e3", type: "undo", actor: "human", moveCount: 0 });
+  assert.equal(undo.ok, true);
+  const summary = PracticeEvents.summarize(PracticeEvents.read(storage).store);
+  assert.equal(summary.totalEvents, 3);
+  assert.equal(summary.humanDecisions, 1);
+  assert.equal(summary.computerActions, 1);
+  assert.equal(summary.computerSessions, 1);
+  assert.equal(summary.formalEligible, false);
+});
+
+test("損壞的 practice event store 保持失敗，不回退成空白成功", () => {
+  const storage = { getItem: () => "{broken", setItem() {} };
+  const result = PracticeEvents.read(storage);
+  assert.equal(result.ok, false);
+  assert.equal(result.error, "practice_event_store_malformed");
+  assert.equal(result.store, null);
 });
