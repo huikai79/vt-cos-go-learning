@@ -394,5 +394,8 @@
   });
 
   loadOpponentSettings(); load(); save(); render(); scheduleComputerTurn();
-  if (loadNotice) showFeedback(loadNotice, loadNotice.includes("損壞") || loadNotice.includes("無法") ? "error" : "success");
+  if (practiceEventFailure) {
+    showFeedback(`棋局可以繼續，但練習事件流目前失敗（${practiceEventFailure}）；本次不會假裝已回流學習紀錄。`, "error");
+    practiceEventFailure = "";
+  } else if (loadNotice) showFeedback(loadNotice, loadNotice.includes("損壞") || loadNotice.includes("無法") ? "error" : "success");
 })();
