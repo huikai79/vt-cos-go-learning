@@ -2,17 +2,21 @@
   "use strict";
   const Go = window.GoCore, Live = window.GoLiveGame, Sgf = window.GoSgf, Bot = window.GoPracticeBot, PracticeEvents = window.GoPracticeEvents;
   const { BLACK, WHITE, EMPTY } = Go;
+  const requestedSizeParam = new URLSearchParams(window.location.search).get("size");
+  const retiredThreeByThreeRequested = Number(requestedSizeParam) === 3;
   const requestedSize = (() => {
-    try { return Live.normalizeBoardSize(new URLSearchParams(window.location.search).get("size"), Live.DEFAULT_SIZE); }
+    try {
+      const size = Live.normalizeBoardSize(requestedSizeParam, Live.DEFAULT_SIZE);
+      return (Live.ACTIVE_PRACTICE_SIZES || [5, 7, 9]).includes(size) ? size : 5;
+    }
     catch (_) { return Live.DEFAULT_SIZE; }
   })();
   const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
   const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
-  const UI_VERSION = "live-game-ui-v4";
+  const UI_VERSION = "live-game-ui-v5";
   const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
   const boardProfiles = {
-    3: { title: "3×3 微型練習棋盤", heading: "氣與提子的最小練習", description: "適合剛開始學氣、提子、邊角與合法手。棋盤很小，目的是看清局部規則，不把它當完整圍棋對局。", purpose: "氣、提子、合法手" },
-    5: { title: "5×5 微型練習棋盤", heading: "連斷、禁著與眼形練習", description: "空間比 3×3 多一些，適合練連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "連斷、禁著、眼形" },
+    5: { title: "5×5 基礎練習棋盤", heading: "氣、提子、連斷與規則練習", description: "作為第一個可自由操作的練習棋盤，適合練氣、提子、連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "氣、提子、連斷、禁著、眼形" },
     7: { title: "7×7 過渡練習棋盤", heading: "局部攻防與小局過渡", description: "用來把局部手筋、死活與攻防放進較完整的局面，再銜接 9×9。它仍是過渡練習盤，不作正式棋力評量。", purpose: "局部攻防、死活、過渡" },
     9: { title: "9×9 完整實戰練習", heading: "完整 9×9 實戰棋盤", description: "兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。", purpose: "完整小棋盤對局" }
   };
@@ -397,5 +401,6 @@
   if (practiceEventFailure) {
     showFeedback(`棋局可以繼續，但練習事件流目前失敗（${practiceEventFailure}）；本次不會假裝已回流學習紀錄。`, "error");
     practiceEventFailure = "";
-  } else if (loadNotice) showFeedback(loadNotice, loadNotice.includes("損壞") || loadNotice.includes("無法") ? "error" : "success");
+  } else if (retiredThreeByThreeRequested) showFeedback("3×3 已退出學習者練習階段；已改開 5×5 基礎練習棋盤。舊 3×3 紀錄仍保留，不會被覆寫。", "success");
+  else if (loadNotice) showFeedback(loadNotice, loadNotice.includes("損壞") || loadNotice.includes("無法") ? "error" : "success");
 })();
