@@ -14,6 +14,7 @@ const GoLearningMetrics = require("../learning-metrics.js");
 const GoEvidenceTaxonomy = require("../evidence-taxonomy.js");
 const GoPracticeEvents = require("../practice-events.js");
 const GoLiveEvidence = require("../live-evidence.js");
+const GoLearnerProgress = require("../learner-progress.js");
 const STORAGE_KEY = "go-learning-prototype-v7";
 
 class Element {
@@ -41,7 +42,7 @@ function pointTarget(dataset, selector) {
 }
 
 function createApp(saved = {}, options = {}) {
-  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "live-practice-summary", "live-evidence-summary"];
+  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary"];
   const elements = Object.fromEntries(ids.map((id) => [id, new Element()]));
   const storage = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   for (const [key, value] of Object.entries(options.rawStorage || {})) storage.set(key, value);
@@ -57,7 +58,7 @@ function createApp(saved = {}, options = {}) {
       return element;
     }
   };
-  const window = { GoCore, GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy, GoPracticeEvents, GoLiveEvidence };
+  const window = { GoCore, GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy, GoPracticeEvents, GoLiveEvidence, GoLearnerProgress };
   const url = {
     createObjectURL(blob) { const href = `blob:test-${++blobId}`; blobs.set(href, blob); return href; },
     revokeObjectURL() {}
@@ -547,6 +548,9 @@ test("live eligibility/scoring contract 的資料只進 live evidence，不污�
   assert.equal(exported.liveEvidenceContracts.eligibility, "live-eligibility-v1");
   assert.equal(exported.liveEvidenceContracts.scoring, "live-scoring-v1");
   assert.equal(exported.liveEvidenceSummary.eligibleOpportunities, 1);
+  assert.equal(exported.learnerProgressSummary.progressPolicyVersion, "learner-evidence-progress-v1");
+  assert.equal(exported.learnerProgressSummary.schedulerAuthority, false);
+  assert.match(elements["integrated-progress-summary"].textContent, /live 應用|live 證據|資料不足|正在累積/);
   assert.equal(exported.learningDiagnostics.skills.length, 0);
 });
 
