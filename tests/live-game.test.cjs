@@ -262,3 +262,10 @@ test("課程端只讀 practice stream 摘要與備份，不餵入 Metrics 或 sc
   assert.match(appJs, /learningDiagnostics: Metrics\.summarize\(\{ events: state\.events/);
   assert.match(appJs, /practice observation only/);
 });
+
+
+test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑棋", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "live-game.css"), "utf8");
+  assert.match(css, /\.live-board \.point-focus\{fill:none;stroke:transparent;pointer-events:none\}/);
+  assert.match(css, /\.live-point:focus \.point-focus\{fill:none;stroke:#174a31;stroke-width:4\}/);
+});
