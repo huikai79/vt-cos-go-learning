@@ -95,6 +95,7 @@
     "tests/fixtures/katrain-gpt-smoke-input.txt",
     "tests/go.test.cjs",
     "tests/learner-progress.test.cjs",
+    "tests/katago-bridge-smoke.ps1",
     "tests/learning-metrics.test.cjs",
     "tests/lesson-content.test.cjs",
     "tests/live-evidence.test.cjs",
