@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v29`；棋盤練習頁 `live-game-ui-v3`
+- `ui_version`: `learner-flow-v29`；棋盤練習頁 `live-game-ui-v4`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -104,3 +104,11 @@
 - **Migration：** 使用新的獨立 localStorage key；舊棋局與課程資料不搬移。沒有舊事件時顯示零紀錄；損壞 store 保留失敗狀態，不覆寫成空 store。
 - **Rollback：** 移除 `practice-events.js` 載入、首頁摘要與 raw export 欄位即可；既有課程與棋局資料仍可運作。
 - **Validation：** targeted contract 以 main 原始碼隔離 V8 harness 執行 `tests/live-game.test.cjs` 21/21 PASS，涵蓋 duplicate ID、human/computer actor 分離、malformed store fail-closed 及課程端不餵入 Metrics/scheduler。已新增 `app-state.test.cjs` 的整合反證測試，但目前環境無法以真實 Node `vm`／完整 repo 執行；push-triggered GitHub Actions 與 Windows file-URL UI 也未能從 connector 取得，故維持 `UNKNOWN`。
+
+
+## 2026-09-22 Change note｜空交叉點渲染修正
+
+- **問題：** live 棋盤的 SVG `.point-focus` 未定義預設 fill，瀏覽器依 SVG 預設值以黑色填滿，造成空交叉點視覺上像整盤黑棋。
+- **改動：** `live-game.css` 新增 `.live-board .point-focus{fill:none;stroke:transparent;pointer-events:none}`；鍵盤 focus 時仍只顯示既有綠色外框。棋子本身仍只由 `.stone-black`／`.stone-white` 繪製。
+- **影響：** 只修 UI rendering，不修改盤面資料、規則、SGF、事件、KC、scheduler 或 scoring。
+- **Validation：** targeted contract 新增空點 focus circle 必須透明的反回歸測試；main 原始碼隔離 V8 harness `tests/live-game.test.cjs` 22/22 PASS。完整 Windows／browser CI 本輪仍維持 UNKNOWN。
