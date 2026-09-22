@@ -12,7 +12,7 @@
 
 2026-09-21 跨課銜接修正：完成同課題目時維持「下一題」；完成一課或一個單元時，按鈕明示將進入下一課／下一單元短講，操作後自動聚焦新課標題並回到「先看懂」。短講待看狀態寫入本機進度，重新載入不會誤跳回練習。這只驗證操作連續性；實際舒適度仍待最後真人觀察。
 
-2026-09-22 棋盤支架更新：在既有 9×9 完整實戰之外，新增 3×3、5×5、7×7 微型／過渡練習盤。課程依單元推薦 3×3（單元 1）、5×5（單元 2–3）、7×7（單元 4）、9×9（單元 5 起），自由練習頁則隨時可切換。這是 Experience 層的支架，不改 KC、scheduler、Evidence Taxonomy 或 formal evaluation；3×3／5×5／7×7 的勝負與完成紀錄不得升格為正式 T2／T3 或棋力證據。
+2026-09-22 棋盤支架更新：active learner practice 簡化為 5×5、7×7、9×9。課程依單元推薦 5×5（單元 1–3）、7×7（單元 4）、9×9（單元 5 起），自由練習頁可在三種尺寸切換。3×3 曾作試行 scaffold，但依目前單一使用者實際操作觀察空間過小、額外價值不足，因此退出 active Experience；底層相容與 regression test 保留。這不代表已證明 3×3 對所有初學者無效。
 
 2026-09-22 本機電腦對手更新：四種棋盤皆可選雙人同機或和電腦下，使用者可執黑或白。第一版對手是 bounded heuristic bot，只從規則引擎確認合法的候選手中排序，優先立即提子並避免明顯自填；它不是 KataGo、不是棋力模型，也不把勝負、落子選擇或完成局數寫入 KC／scheduler／formal evaluation。其目的只是在單人離線情境補足可反覆操作的 Experience；若真人觀察顯示 bot 行為誤導學習，應降低權重或改以 KataGo bounded integration，而不是把 heuristic 包裝成教學權威。
 
@@ -218,7 +218,7 @@ engagement、frustration、boredom、session completion 與 learner agency 分�
 
 | 層級 | 能力 | 代表練習 |
 |---|---|---|
-| Level 0 | 規則、氣、提子 | 數氣、一手提子、禁著；可用 3×3 降低局面負擔 |
+| Level 0 | 規則、氣、提子 | 數氣、一手提子、禁著；active 練習以 5×5 降低局面負擔 |
 | Level 1 | 吃子、連接、切斷 | 一步吃子、補斷點、直接連接；可用 5×5 練連斷 |
 | Level 2 | 眼、真眼與假眼 | 辨認眼形、找眼形缺陷；可用 7×7 作局部過渡 |
 | Level 3 | 最簡單死活 | 一手做活、一手殺棋、三目空間要點；7×7 可作過渡練習 |
@@ -311,7 +311,7 @@ engagement、frustration、boredom、session completion 與 learner agency 分�
 
 > 模式辨識 → 深度計算 → 實戰找題 → 自我提取 → 外部修正 → 分散再測 → 跨時段／跨日再測
 
-本程式現已提供 9×9 完整小棋盤對局，以及 3×3／5×5／7×7 微型與過渡練習；13×13、19×19 與外部 AI 分析仍由 KaTrain、實體棋盤或其他棋譜工具承接。內建小棋盤練習屬 practice experience，不自動成為正式 retention／transfer 證據。
+本程式現已提供 9×9 完整小棋盤對局，以及 5×5／7×7 基礎與過渡練習；3×3 只保留 legacy/runtime compatibility 與 regression coverage；13×13、19×19 與外部 AI 分析仍由 KaTrain、實體棋盤或其他棋譜工具承接。內建小棋盤練習屬 practice experience，不自動成為正式 retention／transfer 證據。
 
 ## 9. 產品資料需求
 
