@@ -11,6 +11,7 @@
   const EvidenceTaxonomy = window.GoEvidenceTaxonomy;
   const PracticeEvents = window.GoPracticeEvents;
   const LiveEvidence = window.GoLiveEvidence;
+  const LearnerProgress = window.GoLearnerProgress;
   const storageKey = "go-learning-prototype-v7";
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
@@ -242,6 +243,40 @@
       .map((skill) => `${skill.label}：${skill.satisfiedFirstResponses}/${skill.firstResponses} 首答完成；${liveEvidenceStateLabel(skill.evidenceState)}`)
       .join("；");
     target.textContent = `已掃描 ${summary.assessedHumanTurns} 個人類回合；合格 live 機會 ${summary.eligibleOpportunities}，其餘 ${summary.unscoredHumanTurns} 回合不評分。${skillText ? " " + skillText + "。" : " 目前沒有符合安全 scoring contract 的局面。"}`;
+  }
+
+  function computeIntegratedProgress(diagnostics = null, liveSummary = null) {
+    if (!LearnerProgress || typeof LearnerProgress.summarize !== "function") return null;
+    const learningDiagnostics = diagnostics || Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses });
+    const liveEvidence = liveSummary || (() => {
+      const result = readLiveEvidence();
+      return result.ok ? result.summary : null;
+    })();
+    return LearnerProgress.summarize({ learningDiagnostics, liveEvidenceSummary: liveEvidence || { skills: [] } });
+  }
+
+  function renderIntegratedProgressSummary(diagnostics = null) {
+    const target = $("integrated-progress-summary");
+    if (!target) return;
+    const liveResult = readLiveEvidence();
+    if (!liveResult.ok) {
+      target.textContent = `整合證據無法更新：live evidence 讀取失敗（${liveResult.error}）。`;
+      return;
+    }
+    const summary = computeIntegratedProgress(diagnostics, liveResult.summary);
+    if (!summary || !summary.skills.length) {
+      target.textContent = "尚無足夠的可比較技能證據。";
+      return;
+    }
+    const visible = summary.skills.filter((skill) => skill.practiceQualifiedOpportunities || skill.liveEligibleOpportunities);
+    if (!visible.length) {
+      target.textContent = "尚無足夠的可比較技能證據。";
+      return;
+    }
+    target.textContent = visible.map((skill) => {
+      const name = (skills.find((item) => item.id === skill.skillId) || { name: skill.skillId }).name;
+      return `${name}：${skill.label}；${skill.nextEvidenceNeed}`;
+    }).join("；");
   }
 
   function showStorageWarning() {
@@ -1078,6 +1113,7 @@
     $("diagnostic-summary").textContent = diagnosticSummaryText(diagnostics);
     renderLivePracticeSummary();
     renderLiveEvidenceSummary();
+    renderIntegratedProgressSummary(diagnostics);
   }
 
   function diagnosticSummaryText(diagnostics) {
@@ -1285,6 +1321,16 @@
     } else if (!liveEvidence.ok) {
       lines.push("", "## 9×9 人機實戰證據", "", `- live evidence 讀取失敗：${liveEvidence.error}；未以推測資料補值。`);
     }
+    if (liveEvidence.ok) {
+      const integrated = computeIntegratedProgress(diagnostics, liveEvidence.summary || { skills: [] });
+      if (integrated) {
+        lines.push("", "## 整合學習證據狀態", "", `- Policy：${integrated.progressPolicyVersion}`, `- 邊界：${integrated.interpretationBoundary}`, "");
+        for (const skill of integrated.skills) {
+          const name = (skills.find((item) => item.id === skill.skillId) || { name: skill.skillId }).name;
+          lines.push(`- ${name}：${skill.label}；課程可比較機會 ${skill.practiceQualifiedOpportunities}；延後 T2 完成週期 ${skill.completedDelayedT2Cycles}；live eligible ${skill.liveEligibleOpportunities}；live 首答完成 ${skill.liveSatisfiedFirstResponses}/${skill.liveFirstResponses}；下一個證據需求：${skill.nextEvidenceNeed}`);
+        }
+      }
+    }
         const trialSummary = Trial.summarize(state.trial, state.applicationResults, state.applicationEvents);
     lines.push("", "## 個人縱向試行", "", `- 目前判斷：${trialSummaryText(trialSummary)}`, `- 固定應用探測：${trialSummary.application.correct} / ${trialSummary.application.total}；呈現 ${trialSummary.application.presented} 次；未答／中斷 ${trialSummary.application.unansweredOrInterrupted} 次；不適用局面誤用 ${trialSummary.application.inappropriateUseErrors} 次；提示後或重複結果排除 ${trialSummary.application.excludedHintedOrRepeated} 次`, `- 判讀限制：${Trial.protocol.interpretation}`);
     if (state.localExercises.length) {
@@ -1365,7 +1411,13 @@
         definitions: LiveEvidence.CONTRACTS
       } : null,
       liveEvidenceSummary: liveEvidence.ok ? liveEvidence.summary : null,
-      liveEvidenceReadError: liveEvidence.ok ? null : liveEvidence.error
+      liveEvidenceReadError: liveEvidence.ok ? null : liveEvidence.error,
+      learnerProgressSummary: liveEvidence.ok && LearnerProgress
+        ? LearnerProgress.summarize({
+            learningDiagnostics: Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses }),
+            liveEvidenceSummary: liveEvidence.summary || { skills: [] }
+          })
+        : null
     };
     downloadFile(JSON.stringify(payload, null, 2), "application/json;charset=utf-8", "個人圍棋原始事件.json");
   }
