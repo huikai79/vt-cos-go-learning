@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v30";
+  const uiVersion = "learner-flow-v31";
   const contentCatalogVersion = 3;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -171,9 +171,6 @@
         applicationEvents: state.applicationEvents,
         activeApplicationPresentation: state.activeApplicationPresentation,
         localExercises: state.localExercises,
-      livePracticeEvents: livePractice.ok ? livePractice.store.events : null,
-      livePracticeEventDescriptor: PracticeEvents ? PracticeEvents.DESCRIPTOR : null,
-      livePracticeReadError: livePractice.ok ? null : livePractice.error,
         activeLocalSgfReflection: state.activeLocalSgfReflection,
         trial: state.trial
       }));
