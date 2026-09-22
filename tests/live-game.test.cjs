@@ -1,5 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const Go = require("../go.js");
 const Live = require("../live-game.js");
 
@@ -173,4 +175,15 @@ test("舊 9 路預設建立方式維持相容", () => {
   assert.equal(game.boardSize, 9);
   assert.equal(game.komi, 7.5);
   assert.equal(game.board.length, 9);
+});
+
+
+test("棋盤練習頁明示四種尺寸，課程頁提供階段推薦入口", () => {
+  const liveHtml = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
+  for (const size of [3, 5, 7, 9]) assert.match(liveHtml, new RegExp(`live-game\\.html\\?size=${size}`));
+  assert.match(indexHtml, /id="stage-board-practice-link"/);
+  assert.match(indexHtml, /3×3、5×5、7×7、9×9/);
+  assert.match(appJs, /courseUnit === 0 \? 3 : courseUnit <= 2 \? 5 : courseUnit === 3 \? 7 : 9/);
 });
