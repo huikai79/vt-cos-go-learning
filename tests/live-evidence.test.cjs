@@ -60,7 +60,7 @@ test("只接受電腦上一手新造成打吃的唯一直接延長救棋", () =>
     toPlay: W
   });
   game = Live.play(game, 5, 4).game;
-  const assessment = LiveEvidence.assessTurn(game, { opponentMode: "computer", humanColor: B, computerColor: W });
+  const assessment = LiveEvidence.assessTurn(game, { opponentMode: "computer", humanColor: B, computerColor: W, lastMoveActor: "computer" });
   assert.equal(assessment.status, "eligible");
   assert.equal(assessment.skillId, "rescue-last-liberty-foundation-v1");
   assert.deepEqual(assessment.successPoint, [4,5]);
@@ -149,4 +149,29 @@ test("損壞 live evidence store fail-closed，不回退成零進度", () => {
   assert.equal(result.ok, false);
   assert.equal(result.error, "live_evidence_store_malformed");
   assert.equal(result.store, null);
+});
+
+
+test("SGF 或 actor 不明的上一著不能冒充電腦打吃", () => {
+  let game = Live.createGame({
+    boardSize: 9,
+    initialBoard: Go.boardFromStones([[4,4,B],[3,4,W],[4,3,W]], 9),
+    toPlay: W
+  });
+  game = Live.play(game, 5, 4).game;
+  const assessment = LiveEvidence.assessTurn(game, { opponentMode: "computer", humanColor: B, computerColor: W, lastMoveActor: null });
+  assert.equal(assessment.status, "not_eligible");
+  assert.equal(assessment.skillId, null);
+});
+
+test("摘要不以新版語義靜默重算舊 contract 事件", () => {
+  const current = {
+    schemaVersion:1,type:"assessment",eventId:"a",assessmentId:"a",sessionId:"s",occurredAt:"2026-09-22T12:00:00.000Z",
+    eligibilityContractVersion:LiveEvidence.ELIGIBILITY_CONTRACT_VERSION,scoringContractVersion:LiveEvidence.SCORING_CONTRACT_VERSION,evidenceTaxonomyVersion:2,
+    status:"not_eligible",qualifiedOpportunity:false,skillId:null,reason:"no_supported_unique_local_contract"
+  };
+  const legacy = { ...current, eventId:"legacy", assessmentId:"legacy", eligibilityContractVersion:"live-eligibility-v0" };
+  const summary = LiveEvidence.summarize([current, legacy]);
+  assert.equal(summary.assessedHumanTurns, 1);
+  assert.equal(summary.excludedContractVersionEvents, 1);
 });
