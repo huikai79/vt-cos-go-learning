@@ -68,6 +68,16 @@ Provider、parser、engine、storage 或 analysis failure 必須保持 failure�
 - 使用者可執黑或白；執白時 bot 先走。人機悔棋回到使用者上一個決策前。
 - bot failure 必須保留 ERROR 並停止該次自動回合，不能 fallback 成不合法落子或看似成功的推測結果。
 
+## Live practice event stream contract
+
+2026-09-22 起，人機／自由棋盤把實際操作另存到 `practice-events.js` 的 append-only event stream（`go-live-practice-events-v1`）。此事件流只保存 Experience/Response 層觀察：session、棋盤尺寸、對手模式、actor、落子／Pass／認輸／悔棋等操作、座標、提子數與 bot 版本。
+
+- 每筆事件固定 `formalEligible=false`、`qualifiedOpportunity=false`、`evidenceUse=practice_observation_only`、`scoringStatus=unscored`，且 `skillId=null`、`transferLevel=null`。
+- 電腦手與學習者手分 actor 保存；summary 的「你的可觀察決策」只計人機模式下 human 的 move／pass／resign，不把 computer action 或 undo 當獨立學習機會。
+- 課程首頁只能讀摘要；完整 JSON 備份可匯出原始 live practice events，但 `learning-metrics.js` 與 scheduler 仍只讀既有 `state.events`／scheduler responses。
+- event store malformed、不可讀或不可寫時保持 ERROR；不回退成空陣列成功，也不把遺失資料補成成功紀錄。
+- 若未來要把某類 live event 升格為 T3 或 KC opportunity，必須另有版本化 eligibility/scoring contract、正反例、人工／引擎核對與分母規則；不能直接重用本 v1 stream 的 unscored event。
+
 ## External Adoption Policy
 
 外部 OSS 的採用順序預設為：
