@@ -109,6 +109,16 @@ v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個�
 - `formalEvaluationAuthority=false`：practice/live evidence 不能取代 private holdout、R1b 或 formal evaluation。
 - 首頁只顯示 evidence state 與下一個需要的證據；完整 JSON 匯出保存 raw events、contract 定義、summary 與 policy version，讓之後可重算而不覆寫歷史事件。
 
+## Move Provider / KataGo bridge contract
+
+2026-09-23 起，live practice 的電腦回合先經 `move-provider-v1`，provider 只可提出 `play`／`pass`／`resign` 候選；`live-game.js`／`go.js` 仍是唯一落子 legality authority。現有 heuristic bot 是 provider 之一；新增 `katago` 與 `remote` HTTP provider。
+
+- 瀏覽器不能直接啟動 `katago.exe`；`katago-bridge.cjs` 只監聽 `127.0.0.1`，把 canonical game history 轉成 GTP，呼叫使用者本機既有 KataGo，再回傳一個候選 action。bridge 不保存 API key、不代理任意 shell command。
+- Remote API 與 localhost bridge 共用 JSON contract。endpoint／timeout／HTTP／JSON／非法座標／KataGo failure 都保持 ERROR；不得 fallback 到 heuristic bot 或隨機手。
+- provider 回傳的每一個 `play` 都再次送進 `Live.play`；若與目前 bounded simple-ko rules 不相容，該回合停止並留下 provider error，而不是接受引擎輸出改寫規則事實。
+- provider／model version 隨 computer event 保存；KataGo 候選仍只是搜尋結果，不是 canonical 教學答案、learner diagnosis 或正式 T3 scoring authority。
+- `katago-bridge.cjs` 是本機 optional integration，不改 Pages 的離線核心。Remote API 模式明示會產生網路請求；只有使用者主動選擇才啟用。
+
 ## External Adoption Policy
 
 外部 OSS 的採用順序預設為：

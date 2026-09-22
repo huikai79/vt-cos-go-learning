@@ -68,7 +68,7 @@
 | 5×5／7×7／9×9 active 棋盤練習 | 共用 `live-game.html` 與尺寸切換；5／7 路作基礎／過渡練習，9 路保留完整小棋盤對局。3×3 已退出學習者 UI，但底層與歷史資料相容保留。規則、Pass、人工終局、悔棋、續局與 SGF 共用 bounded runtime | `tests/live-game.test.cjs` 目前 targeted suite 26/26 PASS，含尺寸、3×3 legacy、SGF、bot、rendering、cache-bust 與 live evidence 靜態接線 | 工程 | 5×5／7×7 仍只作 practice；9×9 只有 `live-eligibility-v1` 明列的少數局部回合可成 bounded live T3，其餘仍 unscored；不代表學習成效 |
 
 
-## 2026-09-22 Change note｜9×9 完整實戰
+| 可替換對弈 provider | `move-provider-v1` 統一 heuristic／本機 KataGo bridge／Remote HTTP API；provider 只提候選，規則引擎再次驗證 | `tests/move-provider.test.cjs` 覆蓋 canonical payload、malformed/out-of-range、HTTP success 與 fail-closed；完整 CI 待分支 workflow | 工程 | 候選實作完成；KataGo 真機路徑仍需 Windows bridge 實測，不代表棋力或教學效度 |\n\n## 2026-09-22 Change note｜9×9 完整實戰
 
 - **改動：** 新增 `live-game.js`／`live-game.html`／`live-game-page.js`／`live-game.css`，規則契約固定為 `cn-area-simple-ko-v1`，本機續局 envelope 為 `go-live-game-v1`。
 - **為何現在改：** 現有底盤已能處理 9 路合法落子與 SGF 局部回流，但缺完整棋局生命週期；本次只補這個 learning-loop experience bottleneck。
@@ -167,3 +167,4 @@
 - **階段：** `not_started`、`scanning_no_eligible`、`eligible_waiting_response`、`collecting_single_session`、`collecting_multi_session`。
 - **證據邊界：** readiness 不是「樣本量已足夠」、mastery、棋力、學習成效或 formal evaluation；沒有 eligible 機會不代表退步。
 - **Validation：** `tests/learner-progress.test.cjs` 6/6 PASS；現行 live evidence contract 11/11 PASS；board/UI targeted suite 26/26 PASS。
+\n## 2026-09-23 Change note｜Move Provider + KataGo／Remote API\n\n- **改動：** 新增 `move-provider.js`、`katago-bridge.cjs` 與 provider UI；既有 heuristic bot、localhost KataGo 與 Remote API 共用 `move-provider-v1` action contract。\n- **不可破壞 invariant：** provider 不取得 rules/scoring authority；任何候選 play 都再次經 `Live.play`。timeout、HTTP、JSON、KataGo process 或非法手維持 ERROR，不 fallback。\n- **歷史語義：** 不修改既有 practice event、live T3 eligibility/scoring、KC、scheduler 或 formal evaluation；provider/model metadata 只附加在 computer practice event。\n- **Migration／rollback：** 舊 opponent 設定仍可讀；移除 provider script／UI 與 bridge 即回到 heuristic/local mode，棋局與 evidence store 不需 migration。\n- **Validation：** provider contract tests 已加入；分支完整 CI 與 Windows 真機 KataGo bridge 尚待執行，因此目前不標示完整 PASS。\n
