@@ -44,7 +44,7 @@
 
     <section class="live-mode-panel" aria-label="練習對手設定">
       <div><span>對手</span><strong id="opponent-summary">雙人同機</strong></div>
-      <label><span>模式</span><select id="opponent-mode"><option value="local">雙人同機</option><option value="computer">本機啟發式電腦</option><option value="katago">本機 KataGo</option><option value="remote">Remote API</option></select></label>
+      <label><span>模式</span><select id="opponent-mode"><option value="local">雙人同機</option><option value="computer">和電腦下（本機啟發式）</option><option value="katago">本機 KataGo</option><option value="remote">Remote API</option></select></label>
       <label id="human-color-field"><span>你執</span><select id="human-color"><option value="1">黑棋</option><option value="2">白棋</option></select></label>
       <label id="provider-endpoint-field" hidden><span>API</span><input id="provider-endpoint" type="url" value="http://127.0.0.1:8765/v1/move" spellcheck="false"></label>\n      <p id="bot-boundary">對手 provider 只提出候選動作；所有落子仍由本機規則引擎重新驗證。KataGo／API failure 不會 fallback 成猜測落子。</p>
     </section>
