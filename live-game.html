@@ -12,6 +12,7 @@
   <script defer src="go.js"></script>
   <script defer src="sgf.js"></script>
   <script defer src="live-game.js"></script>
+  <script defer src="practice-bot.js"></script>
   <script defer src="live-game-page.js"></script>
 </head>
 <body class="live-page">
@@ -39,6 +40,13 @@
       <a href="live-game.html?size=7" data-board-size-choice="7"><strong>7×7</strong><span>局部攻防</span></a>
       <a href="live-game.html?size=9" data-board-size-choice="9"><strong>9×9</strong><span>完整對局</span></a>
     </nav>
+
+    <section class="live-mode-panel" aria-label="練習對手設定">
+      <div><span>對手</span><strong id="opponent-summary">雙人同機</strong></div>
+      <label><span>模式</span><select id="opponent-mode"><option value="local">雙人同機</option><option value="computer">和電腦下</option></select></label>
+      <label id="human-color-field"><span>你執</span><select id="human-color"><option value="1">黑棋</option><option value="2">白棋</option></select></label>
+      <p id="bot-boundary">電腦是本機啟發式練習對手，只從合法手中選擇；不是 KataGo，也不代表最佳手或棋力評量。</p>
+    </section>
 
     <section class="live-status-grid" aria-label="棋局狀態">
       <article><span>目前</span><strong id="turn-status">黑棋落子</strong></article>
