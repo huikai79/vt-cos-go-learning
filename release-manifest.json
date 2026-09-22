@@ -5,7 +5,9 @@
     "parent": "VT-COS",
     "parentExpanded": "Vibe Thinking – Cognitive Operating System",
     "product": "悟之一手",
-    "publicName": "VT-COS｜悟之一手"
+    "publicName": "VT-COS｜悟之一手",
+    "productEn": "A Move of Insight",
+    "publicNameEn": "VT-COS｜A Move of Insight"
   },
   "publicationDecision": {
     "questionBankVisibility": "public",
@@ -63,6 +65,8 @@
     "phase2-foundation-bank.js",
     "phase2-life-death-bank.js",
     "phase4-content.js",
+    "practice-bot.js",
+    "practice-events.js",
     "PUBLICATION_ARCHITECTURE.md",
     "R1_CONTENT_AUDIT.md",
     "r1-review-bank.js",
