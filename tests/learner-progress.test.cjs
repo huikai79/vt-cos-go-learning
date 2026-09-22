@@ -32,7 +32,7 @@ test("延後 T2 與最近 live 應用都存在時只輸出證據狀態，不輸�
     learningDiagnostics: { skills: [diagnosticSkill({ scd: { status:"completed", completed:[{ completedAt:"2026-09-22" }], active:null } })] },
     liveEvidenceSummary: { skills: [liveSkill()] }
   });
-  assert.equal(summary.progressPolicyVersion, "learner-evidence-progress-v1");
+  assert.equal(summary.progressPolicyVersion, "learner-evidence-progress-v2");
   assert.equal(summary.schedulerAuthority, false);
   assert.equal(summary.formalEvaluationAuthority, false);
   assert.equal(summary.skills[0].state, "delayed_t2_and_live_observed");
@@ -73,4 +73,38 @@ test("沒有 live 機會時保留延後 T2 已觀察、live 待機會", () => {
   });
   assert.equal(summary.skills[0].state, "delayed_t2_observed_live_pending");
   assert.match(summary.skills[0].nextEvidenceNeed, /沒有機會不算退步/);
+});
+
+
+test("資料收集 readiness 分開未開始、掃描、未答、單局與跨局", () => {
+  const notStarted = Progress.summarize({ learningDiagnostics:{skills:[]}, liveEvidenceSummary:{assessedHumanTurns:0,eligibleOpportunities:0,skills:[]} }).collectionReadiness;
+  assert.equal(notStarted.stage, "not_started");
+
+  const scanning = Progress.summarize({ learningDiagnostics:{skills:[]}, liveEvidenceSummary:{assessedHumanTurns:12,eligibleOpportunities:0,skills:[]} }).collectionReadiness;
+  assert.equal(scanning.stage, "scanning_no_eligible");
+
+  const waiting = Progress.summarize({
+    learningDiagnostics:{skills:[]},
+    liveEvidenceSummary:{assessedHumanTurns:12,eligibleOpportunities:1,skills:[liveSkill({eligibleOpportunities:1,firstResponses:0,satisfiedFirstResponses:0,unansweredOpportunities:1,sessionOutcomes:[]})]}
+  }).collectionReadiness;
+  assert.equal(waiting.stage, "eligible_waiting_response");
+  assert.equal(waiting.unansweredOpportunities, 1);
+
+  const single = Progress.summarize({
+    learningDiagnostics:{skills:[]},
+    liveEvidenceSummary:{assessedHumanTurns:20,eligibleOpportunities:3,skills:[liveSkill({sessionOutcomes:[{sessionId:"g1",responseCount:3,allSatisfied:true,anyNotSatisfied:false}]})]}
+  }).collectionReadiness;
+  assert.equal(single.stage, "collecting_single_session");
+  assert.equal(single.distinctSessionsWithFirstResponse, 1);
+
+  const multi = Progress.summarize({
+    learningDiagnostics:{skills:[]},
+    liveEvidenceSummary:{assessedHumanTurns:30,eligibleOpportunities:4,skills:[liveSkill({firstResponses:4,satisfiedFirstResponses:4,sessionOutcomes:[
+      {sessionId:"g1",responseCount:2,allSatisfied:true,anyNotSatisfied:false},
+      {sessionId:"g2",responseCount:2,allSatisfied:true,anyNotSatisfied:false}
+    ]})]}
+  }).collectionReadiness;
+  assert.equal(multi.stage, "collecting_multi_session");
+  assert.equal(multi.distinctSessionsWithFirstResponse, 2);
+  assert.match(multi.interpretationBoundary, /不是樣本量充分性/);
 });
