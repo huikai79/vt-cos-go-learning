@@ -707,7 +707,7 @@
     const reflection = entry.reflection || {};
     const review = entry.review || {};
     const note = [
-      "本檔由『一手一懂』局部復盤匯出。原著手僅是棋譜事實，不代表唯一最佳手。",
+      "本檔由『悟之一手』局部復盤匯出。原著手僅是棋譜事實，不代表唯一最佳手。",
       `來源：${source.sourceName}；來源指紋：${source.sourceId || "舊紀錄未提供"}；原局第 ${source.moveNumber} 手。`,
       `候選手：${reflection.candidate || "未填寫"}`,
       `預期對方應手：${reflection.expectedOpponentResponse || "未填寫"}`,
