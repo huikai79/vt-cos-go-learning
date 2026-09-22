@@ -313,7 +313,7 @@
   });
   $("resume-play-button").addEventListener("click", () => {
     const result = Live.resumeFromScoring(game);
-    applyResult(result, "resume_after_scoring_dispute", { successMessage: result.ok ? `恢復下棋，輪到${colorLabel(result.game.toPlay)}棋。` : "" });
+    if (applyResult(result, "resume_after_scoring_dispute", { successMessage: result.ok ? `恢復下棋，輪到${colorLabel(result.game.toPlay)}棋。` : "" })) scheduleComputerTurn();
   });
   $("confirm-score-button").addEventListener("click", () => {
     const preview = Live.currentScore(game);
