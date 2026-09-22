@@ -1,0 +1,131 @@
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const Go = require("../go.js");
+const Live = require("../live-game.js");
+
+function playOk(game, x, y) {
+  const result = Live.play(game, x, y);
+  assert.equal(result.ok, true, result.error);
+  return result.game;
+}
+
+test("完整對局會輪流落子、保存前後盤面並計提子", () => {
+  const initial = Go.boardFromStones([[1,1,Go.WHITE],[0,1,Go.BLACK],[1,0,Go.BLACK],[2,1,Go.BLACK]]);
+  let game = Live.createGame({ initialBoard: initial, toPlay: Go.BLACK });
+  game = playOk(game, 1, 2);
+  assert.equal(game.toPlay, Go.WHITE);
+  assert.equal(game.board[1][1], Go.EMPTY);
+  assert.equal(game.captures.black, 1);
+  assert.equal(game.moves[0].captured.length, 1);
+  assert.equal(game.moves[0].boardBefore[1][1], Go.WHITE);
+  assert.equal(game.moves[0].boardAfter[1][1], Go.EMPTY);
+});
+
+test("非法手不改變棋局狀態", () => {
+  let game = Live.createGame();
+  game = playOk(game, 4, 4);
+  const before = JSON.stringify(game);
+  const illegal = Live.play(game, 4, 4);
+  assert.equal(illegal.ok, false);
+  assert.equal(JSON.stringify(game), before);
+});
+
+test("兩次 pass 進入人工計分，恢復下棋後可繼續", () => {
+  let game = Live.createGame();
+  game = Live.pass(game).game;
+  assert.equal(game.status, "playing");
+  game = Live.pass(game).game;
+  assert.equal(game.status, "scoring");
+  assert.equal(game.consecutivePasses, 2);
+  game = Live.resumeFromScoring(game).game;
+  assert.equal(game.status, "playing");
+  assert.equal(game.consecutivePasses, 0);
+  game = playOk(game, 4, 4);
+  assert.equal(game.moves.length, 3);
+});
+
+test("簡單劫禁止立即回提；隔手後可依法再提", () => {
+  const beforeCapture = Go.boardFromStones([[3,3,Go.WHITE],[2,2,Go.WHITE],[4,2,Go.WHITE],[3,1,Go.WHITE],[2,3,Go.BLACK],[4,3,Go.BLACK],[3,4,Go.BLACK]]);
+  let game = Live.createGame({ initialBoard: beforeCapture, toPlay: Go.BLACK });
+  game = playOk(game, 3, 2);
+  const immediate = Live.play(game, 3, 3);
+  assert.equal(immediate.ok, false);
+  assert.match(immediate.error, /簡單劫/);
+  game = Live.pass(game).game;
+  game = playOk(game, 8, 8);
+  game = playOk(game, 3, 3);
+  assert.equal(game.board[3][3], Go.WHITE);
+});
+
+test("中國式面積計分分開棋子、地、雙方相鄰中立點與貼目", () => {
+  const board = Go.boardFromStones([[0,0,Go.BLACK],[0,1,Go.BLACK],[8,7,Go.WHITE],[8,8,Go.WHITE]]);
+  const score = Live.areaScore(board, 7.5);
+  assert.equal(score.blackStones, 2);
+  assert.equal(score.whiteStones, 2);
+  assert.equal(score.neutral, 77);
+  assert.equal(score.blackTerritory, 0);
+  assert.equal(score.whiteTerritory, 0);
+  assert.equal(score.whiteTotal, 9.5);
+  assert.equal(score.winner, Go.WHITE);
+});
+
+test("人工死子以整串切換，確認計分後結果不可直接悔棋", () => {
+  const initial = Go.boardFromStones([[1,1,Go.WHITE],[0,1,Go.BLACK],[1,0,Go.BLACK],[2,1,Go.BLACK],[1,2,Go.BLACK]]);
+  let game = Live.createGame({ initialBoard: initial });
+  game = Live.pass(game).game;
+  game = Live.pass(game).game;
+  game = Live.toggleDeadGroup(game, 1, 1).game;
+  assert.deepEqual(game.deadStones, ["1,1"]);
+  assert.equal(Live.scoringBoard(game)[1][1], Go.EMPTY);
+  game = Live.finalizeScore(game).game;
+  assert.equal(game.status, "finished");
+  assert.equal(Live.undo(game).ok, false);
+});
+
+test("悔棋以重播重建輪次、pass 與劫歷史", () => {
+  let game = Live.createGame();
+  game = playOk(game, 0, 0);
+  game = Live.pass(game).game;
+  game = playOk(game, 1, 0);
+  game = Live.undo(game).game;
+  assert.equal(game.moves.length, 2);
+  assert.equal(game.toPlay, Go.BLACK);
+  assert.equal(game.board[0][1], Go.EMPTY);
+  assert.equal(game.consecutivePasses, 1);
+});
+
+test("SGF 匯出再匯入保留 9 路手順、pass、貼目與輪到誰", () => {
+  let game = Live.createGame({ komi: 7.5 });
+  game = playOk(game, 2, 2);
+  game = Live.pass(game).game;
+  game = playOk(game, 4, 4);
+  const sgf = Live.toSgf(game);
+  assert.match(sgf, /SZ\[9\]/);
+  assert.match(sgf, /KM\[7.5\]/);
+  assert.match(sgf, /;W\[\]/);
+  const imported = Live.fromSgf(sgf);
+  assert.equal(imported.moves.length, 3);
+  assert.equal(imported.moves[1].type, "pass");
+  assert.equal(imported.toPlay, Go.WHITE);
+  assert.equal(imported.board[2][2], Go.BLACK);
+  assert.equal(imported.board[4][4], Go.BLACK);
+});
+
+test("hydrate 不信任保存的盤面，依手順重新重建", () => {
+  let game = Live.createGame();
+  game = playOk(game, 3, 3);
+  const saved = JSON.parse(JSON.stringify(game));
+  saved.board[3][3] = Go.WHITE;
+  const restored = Live.hydrate(saved);
+  assert.equal(restored.board[3][3], Go.BLACK);
+  assert.equal(restored.toPlay, Go.WHITE);
+});
+
+test("認輸留下明確結果碼，SGF 帶 RE 但不假裝是計分結果", () => {
+  let game = Live.createGame();
+  game = playOk(game, 4, 4);
+  game = Live.resign(game).game;
+  assert.equal(game.status, "finished");
+  assert.equal(game.result.resultCode, "B+R");
+  assert.match(Live.toSgf(game), /RE\[B\+R\]/);
+});
