@@ -48,22 +48,22 @@
 
 Provider、parser、engine、storage 或 analysis failure 必須保持 failure／unknown，不能 fallback 成看似成功的推測結果。
 
-## 3×3／5×5／7×7／9×9 Board Practice contract
+## 5×5／7×7／9×9 Active Board Practice contract
 
 2026-09-22 起，`live-game.html` 由單一 9×9 頁泛化為共用棋盤練習頁；規則 authority 仍只有 `go.js`，不為不同尺寸建立平行規則來源。
 
-- `go.js` 保留 9×9 為預設值以相容既有課程題目，但棋串、氣、提子、自殺禁著與 simple ko 會依實際方形棋盤尺寸計算。`live-game.js` 只開放 3、5、7、9 路。
-- 3×3／5×5／7×7 分別定位為 micro／transitional practice；9×9 是第一個完整小棋盤對局。所有 live audit event 仍固定 `evaluationRole=practice`、`evaluationContext=live`、`formalEligible=false`，不得因完成或勝負自動升格為 T2、T3 或學習成效。
-- 9×9 延續黑先、白貼 7.5；3×3／5×5／7×7 目前預設貼目 0，只是本專案練習預設，不宣稱為通用正式棋規。四種尺寸都沿用 Chinese area scoring 流程、兩次 Pass、人工整串死子標記與 `cn-area-simple-ko-v1`；系統不自動判死活或終局爭議。
-- 續局依尺寸隔離：9×9 繼續使用既有 `go-live-game-v1`，避免破壞歷史資料；3／5／7 路使用各自的 `go-live-game-v1-size-N`。hydrate 仍由初始盤面＋手順重播，不信任保存的衍生盤面；不合法或版本不符資料保留 recovery 副本後開新局。
-- live-game SGF 使用共用 bounded node parser，支援單盤、單主線、根節點 setup、落子與 pass 的 3／5／7／9 路子集；匯入尺寸必須與目前練習頁一致。課程 `sgf.js::parseSgf` 仍維持 9×9 限制，因此只有 9×9 live SGF 可直接回到既有課程局部複盤；較小棋盤匯出只作保存或外部工具使用。
-- 課程頁只做 Experience 層推薦：單元 1 → 3×3、單元 2–3 → 5×5、單元 4 → 7×7、單元 5 起 → 9×9；自由練習頁可隨時切換。這個映射不是 mastery threshold，也不修改 scheduler。
+- `go.js` 保留 9×9 為預設值以相容既有課程題目，但棋串、氣、提子、自殺禁著與 simple ko 會依實際方形棋盤尺寸計算。`live-game.js` 的 runtime/legacy 相容仍接受 3、5、7、9 路，但 active learner practice 只開放 5、7、9 路；3×3 不再作可玩的學習階段。
+- 5×5／7×7 分別定位為 basic／transitional practice；9×9 是第一個完整小棋盤對局。3×3 只保留 legacy/runtime compatibility 與 regression coverage。所有 live audit event 仍固定 `evaluationRole=practice`、`evaluationContext=live`、`formalEligible=false`，不得因完成或勝負自動升格為 T2、T3 或學習成效。
+- 9×9 延續黑先、白貼 7.5；5×5／7×7 active practice 目前預設貼目 0；legacy 3×3 仍按舊契約貼目 0，只是本專案練習預設，不宣稱為通用正式棋規。四種尺寸都沿用 Chinese area scoring 流程、兩次 Pass、人工整串死子標記與 `cn-area-simple-ko-v1`；系統不自動判死活或終局爭議。
+- 續局依尺寸隔離：9×9 繼續使用既有 `go-live-game-v1`，避免破壞歷史資料；3／5／7 路歷史資料仍使用各自的 `go-live-game-v1-size-N`；其中 3×3 不再建立新的 active learner session。hydrate 仍由初始盤面＋手順重播，不信任保存的衍生盤面；不合法或版本不符資料保留 recovery 副本後開新局。
+- live-game SGF 使用共用 bounded node parser，runtime parser 仍支援單盤、單主線、根節點 setup、落子與 pass 的 3／5／7／9 路子集，以保留舊資料可讀性；新 active UI 只提供 5／7／9；匯入尺寸必須與目前練習頁一致。課程 `sgf.js::parseSgf` 仍維持 9×9 限制，因此只有 9×9 live SGF 可直接回到既有課程局部複盤；較小棋盤匯出只作保存或外部工具使用。
+- 課程頁只做 Experience 層推薦：單元 1–3 → 5×5、單元 4 → 7×7、單元 5 起 → 9×9；自由練習頁可隨時切換。這個映射不是 mastery threshold，也不修改 scheduler。
 ## Local practice bot contract
 
-2026-09-22 起，3×3／5×5／7×7／9×9 都可選「雙人同機」或「和電腦下」。第一版電腦對手由 `practice-bot.js` 提供 bounded heuristic policy：只枚舉 `live-game.js`／`go.js` 判定為合法的候選手，再依立即提子、接觸對手、己方連接、落子後氣數、中央偏好與避免明顯自填等簡單特徵排序；沒有合理候選時可 Pass。
+2026-09-22 起，5×5／7×7／9×9 active practice 可選「雙人同機」或「和電腦下」。legacy 3×3 runtime 只保留相容，不再從學習者 UI 建立新局。第一版電腦對手由 `practice-bot.js` 提供 bounded heuristic policy：只枚舉 `live-game.js`／`go.js` 判定為合法的候選手，再依立即提子、接觸對手、己方連接、落子後氣數、中央偏好與避免明顯自填等簡單特徵排序；沒有合理候選時可 Pass。
 
 - bot 不是 KataGo、不是棋力模型，也不輸出勝率、目數或「最佳手」主張。
-- 四種尺寸共用同一 bot 邏輯；規則 authority 仍只有 `go.js`／`live-game.js`。
+- 三種 active 尺寸共用同一 bot 邏輯；legacy 3×3 仍可由底層測試覆蓋；規則 authority 仍只有 `go.js`／`live-game.js`。
 - 對電腦模式的事件仍固定 `evaluationRole=practice`、`evaluationContext=live`、`formalEligible=false`；勝負不能升格成 T2／T3、mastery 或學習成效。
 - 使用者可執黑或白；執白時 bot 先走。人機悔棋回到使用者上一個決策前。
 - bot failure 必須保留 ERROR 並停止該次自動回合，不能 fallback 成不合法落子或看似成功的推測結果。
