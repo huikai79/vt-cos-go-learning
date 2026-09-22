@@ -9,6 +9,7 @@
   const Trial = window.GoTrial;
   const Metrics = window.GoLearningMetrics;
   const EvidenceTaxonomy = window.GoEvidenceTaxonomy;
+  const PracticeEvents = window.GoPracticeEvents;
   const storageKey = "go-learning-prototype-v7";
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
@@ -168,6 +169,9 @@
         applicationEvents: state.applicationEvents,
         activeApplicationPresentation: state.activeApplicationPresentation,
         localExercises: state.localExercises,
+      livePracticeEvents: livePractice.ok ? livePractice.store.events : null,
+      livePracticeEventDescriptor: PracticeEvents ? PracticeEvents.DESCRIPTOR : null,
+      livePracticeReadError: livePractice.ok ? null : livePractice.error,
         activeLocalSgfReflection: state.activeLocalSgfReflection,
         trial: state.trial
       }));
@@ -181,6 +185,28 @@
       showStorageWarning();
       return false;
     }
+  }
+
+  function readLivePractice() {
+    if (!PracticeEvents || typeof PracticeEvents.read !== "function") return { ok: false, error: "practice_event_module_unavailable", store: null, summary: null };
+    const result = PracticeEvents.read(localStorage);
+    return { ...result, summary: result.ok ? PracticeEvents.summarize(result.store) : null };
+  }
+
+  function renderLivePracticeSummary() {
+    const target = $("live-practice-summary");
+    if (!target) return;
+    const result = readLivePractice();
+    if (!result.ok) {
+      target.textContent = `實戰練習紀錄無法讀取（${result.error}）；不會以推測資料取代。`;
+      return;
+    }
+    const summary = result.summary;
+    if (!summary || !summary.totalEvents) {
+      target.textContent = "尚無人機實戰紀錄。";
+      return;
+    }
+    target.textContent = `人機練習 ${summary.computerSessions} 局；你的可觀察決策 ${summary.humanDecisions} 次。這些只作 practice observation，不更新技能或排程。`;
   }
 
   function showStorageWarning() {
@@ -1180,6 +1206,7 @@
   }
 
   function exportNotes() {
+    const livePractice = readLivePractice();
     const lines = ["# 個人圍棋練習紀錄", "", `匯出時間：${new Date().toLocaleString("zh-TW")}`, `介面版本：${uiVersion}`, "", `已完成：${state.completed.size} / ${problems.length}`, `待複習：${state.missed.size} 題`, "", "## 題目紀錄", ""];
     for (const problem of problems) lines.push(`- ${problem.title}：${state.completed.has(problem.id) ? "已完成" : "未完成"}；作答 ${state.attempts[problem.id] || 0} 次${state.missed.has(problem.id) ? "；待複習" : ""}`);
     const skillEvents = state.events.filter((event) => event.skillId);
@@ -1206,7 +1233,12 @@
         lines.push(`| ${event.occurredAt} | ${event.skillId} | ${event.problemId} | ${eventName} | ${condition} | ${outcome} | ${duration} |`);
       }
     }
-    const trialSummary = Trial.summarize(state.trial, state.applicationResults, state.applicationEvents);
+    if (livePractice.ok && livePractice.summary && livePractice.summary.totalEvents) {
+      lines.push("", "## 人機實戰練習", "", `- 練習局數：${livePractice.summary.computerSessions}`, `- 你的可觀察決策：${livePractice.summary.humanDecisions} 次`, "- 證據邊界：practice observation only；未經 scoring contract，不更新 KC、scheduler、T2/T3 或 mastery。");
+    } else if (!livePractice.ok) {
+      lines.push("", "## 人機實戰練習", "", `- 事件流讀取失敗：${livePractice.error}；未以推測資料補值。`);
+    }
+        const trialSummary = Trial.summarize(state.trial, state.applicationResults, state.applicationEvents);
     lines.push("", "## 個人縱向試行", "", `- 目前判斷：${trialSummaryText(trialSummary)}`, `- 固定應用探測：${trialSummary.application.correct} / ${trialSummary.application.total}；呈現 ${trialSummary.application.presented} 次；未答／中斷 ${trialSummary.application.unansweredOrInterrupted} 次；不適用局面誤用 ${trialSummary.application.inappropriateUseErrors} 次；提示後或重複結果排除 ${trialSummary.application.excludedHintedOrRepeated} 次`, `- 判讀限制：${Trial.protocol.interpretation}`);
     if (state.localExercises.length) {
       lines.push("", "## 棋譜局部複習", "", "以下是原局著手重建，不能單獨證明實戰改善；原判斷僅供日後人工復盤。", "");
@@ -1247,8 +1279,9 @@
       taskFeatures: problem.taskFeatures,
       redacted: true
     });
+    const livePractice = readLivePractice();
     const payload = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       eventPolicyVersion,
       uiVersion,
       exportedAt: new Date().toISOString(),
@@ -1431,6 +1464,7 @@
   $("policy-adaptive").addEventListener("change", () => setSchedulerPolicy("adaptive-candidate-v1"));
   $("export-button").addEventListener("click", exportNotes);
   $("export-events-button").addEventListener("click", exportRawEvents);
+  renderLivePracticeSummary();
   recoverInterruptedApplicationPresentation();
   recoverInterruptedPresentation();
   setSchedulerPolicy(state.schedulerPolicy);
