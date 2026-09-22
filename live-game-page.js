@@ -8,7 +8,7 @@
   })();
   const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
   const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
-  const UI_VERSION = "live-game-ui-v3";
+  const UI_VERSION = "live-game-ui-v4";
   const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
   const boardProfiles = {
     3: { title: "3×3 微型練習棋盤", heading: "氣與提子的最小練習", description: "適合剛開始學氣、提子、邊角與合法手。棋盤很小，目的是看清局部規則，不把它當完整圍棋對局。", purpose: "氣、提子、合法手" },
