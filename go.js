@@ -2,18 +2,36 @@
   "use strict";
 
   const SIZE = 9;
+  const MIN_SIZE = 2;
+  const MAX_SIZE = 19;
   const EMPTY = 0;
   const BLACK = 1;
   const WHITE = 2;
 
-  function emptyBoard() {
-    return Array.from({ length: SIZE }, () => Array(SIZE).fill(EMPTY));
+  function normalizeSize(value = SIZE) {
+    const size = Number(value);
+    if (!Number.isInteger(size) || size < MIN_SIZE || size > MAX_SIZE) throw new Error("Invalid board size");
+    return size;
   }
 
-  function boardFromStones(stones) {
-    const board = emptyBoard();
+  function boardSize(board) {
+    if (!Array.isArray(board) || !board.length) return null;
+    const size = board.length;
+    if (!Number.isInteger(size) || size < MIN_SIZE || size > MAX_SIZE) return null;
+    if (!board.every((row) => Array.isArray(row) && row.length === size && row.every((v) => [EMPTY, BLACK, WHITE].includes(v)))) return null;
+    return size;
+  }
+
+  function emptyBoard(size = SIZE) {
+    const normalized = normalizeSize(size);
+    return Array.from({ length: normalized }, () => Array(normalized).fill(EMPTY));
+  }
+
+  function boardFromStones(stones, size = SIZE) {
+    const normalized = normalizeSize(size);
+    const board = emptyBoard(normalized);
     for (const [x, y, color] of stones) {
-      if (!inside(x, y) || board[y][x] !== EMPTY || ![BLACK, WHITE].includes(color)) {
+      if (!inside(x, y, normalized) || board[y][x] !== EMPTY || ![BLACK, WHITE].includes(color)) {
         throw new Error("Invalid setup stone");
       }
       board[y][x] = color;
@@ -21,23 +39,25 @@
     return board;
   }
 
-  function inside(x, y) {
-    return Number.isInteger(x) && Number.isInteger(y) && x >= 0 && x < SIZE && y >= 0 && y < SIZE;
+  function inside(x, y, size = SIZE) {
+    const normalized = Number(size);
+    return Number.isInteger(x) && Number.isInteger(y) && Number.isInteger(normalized) && x >= 0 && x < normalized && y >= 0 && y < normalized;
   }
 
-  function neighbors(x, y) {
-    return [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]].filter(([a, b]) => inside(a, b));
+  function neighbors(x, y, size = SIZE) {
+    return [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]].filter(([a, b]) => inside(a, b, size));
   }
 
   function groupAt(board, x, y) {
-    if (!inside(x, y) || board[y][x] === EMPTY) return null;
+    const size = boardSize(board);
+    if (!size || !inside(x, y, size) || board[y][x] === EMPTY) return null;
     const color = board[y][x];
     const queue = [[x, y]];
     const seen = new Set([`${x},${y}`]);
     const liberties = new Set();
     for (let index = 0; index < queue.length; index += 1) {
       const [cx, cy] = queue[index];
-      for (const [nx, ny] of neighbors(cx, cy)) {
+      for (const [nx, ny] of neighbors(cx, cy, size)) {
         if (board[ny][nx] === EMPTY) liberties.add(`${nx},${ny}`);
         else if (board[ny][nx] === color && !seen.has(`${nx},${ny}`)) {
           seen.add(`${nx},${ny}`);
@@ -49,11 +69,14 @@
   }
 
   function sameBoard(first, second) {
-    return Array.isArray(first) && Array.isArray(second) && first.length === SIZE && second.length === SIZE && first.every((row, y) => Array.isArray(row) && row.length === SIZE && row.every((value, x) => value === second[y][x]));
+    const firstSize = boardSize(first);
+    const secondSize = boardSize(second);
+    return Boolean(firstSize && firstSize === secondSize && first.every((row, y) => row.every((value, x) => value === second[y][x])));
   }
 
   function playMove(board, x, y, color, options = {}) {
-    if (!inside(x, y) || ![BLACK, WHITE].includes(color) || board[y][x] !== EMPTY) {
+    const size = boardSize(board);
+    if (!size || !inside(x, y, size) || ![BLACK, WHITE].includes(color) || board[y][x] !== EMPTY) {
       return { legal: false, reason: "只能下在空的交叉點。", board };
     }
     const next = board.map((row) => row.slice());
@@ -61,7 +84,7 @@
     const opponent = color === BLACK ? WHITE : BLACK;
     const captured = [];
     const processed = new Set();
-    for (const [nx, ny] of neighbors(x, y)) {
+    for (const [nx, ny] of neighbors(x, y, size)) {
       if (next[ny][nx] !== opponent || processed.has(`${nx},${ny}`)) continue;
       const group = groupAt(next, nx, ny);
       for (const [gx, gy] of group.stones) processed.add(`${gx},${gy}`);
@@ -81,7 +104,7 @@
     return { legal: true, board: next, captured };
   }
 
-  const api = { SIZE, EMPTY, BLACK, WHITE, emptyBoard, boardFromStones, groupAt, sameBoard, playMove };
+  const api = { SIZE, MIN_SIZE, MAX_SIZE, EMPTY, BLACK, WHITE, normalizeSize, boardSize, emptyBoard, boardFromStones, groupAt, sameBoard, playMove };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.GoCore = api;
 })(typeof window !== "undefined" ? window : globalThis);
