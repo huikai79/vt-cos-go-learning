@@ -76,7 +76,36 @@ Provider、parser、engine、storage 或 analysis failure 必須保持 failure�
 - 電腦手與學習者手分 actor 保存；summary 的「你的可觀察決策」只計人機模式下 human 的 move／pass／resign，不把 computer action 或 undo 當獨立學習機會。
 - 課程首頁只能讀摘要；完整 JSON 備份可匯出原始 live practice events，但 `learning-metrics.js` 與 scheduler 仍只讀既有 `state.events`／scheduler responses。
 - event store malformed、不可讀或不可寫時保持 ERROR；不回退成空陣列成功，也不把遺失資料補成成功紀錄。
-- 若未來要把某類 live event 升格為 T3 或 KC opportunity，必須另有版本化 eligibility/scoring contract、正反例、人工／引擎核對與分母規則；不能直接重用本 v1 stream 的 unscored event。
+- raw practice stream 永遠保留原本 unscored 語義；需要升格的自然實戰證據另走 `live-evidence.js`，不得回頭把舊 `practice-events.js` 事件改寫成 scored evidence。
+
+## Versioned live T3 eligibility / scoring contract
+
+2026-09-22 起，`live-evidence.js` 提供 `live-eligibility-v1` 與 `live-scoring-v1`。它不是從「AI 覺得這手不好」回頭找樣本，而是在每個 **9×9 人機局、輪到學習者的回合**，先掃描整盤、凍結 assessment，再接受學習者第一個操作。
+
+v1 只允許兩類可由規則引擎客觀核對的局部機會：
+
+1. `capture-last-liberty-v1`：整盤恰有一個本 contract 支援的一手提子機會；目標對方棋串恰一氣，唯一氣上的合法落子立即且只提掉該串。
+2. `rescue-last-liberty-foundation-v1`：上一著的 actor 已確認為 computer，且它把既存己方棋串從至少兩氣降為一氣；唯一氣上的直接延長合法、不靠提子，並使原串回到至少兩氣。
+
+共同不可變條件：
+
+- eligibility 在看到本回合結果前決定；整盤若同時有多個支援機會，整回合標 `multiple_supported_opportunities` 並排除，不事後挑一個方便的技能。
+- 5×5／7×7、SGF 匯入後 actor 不明、複雜劫／倒撲／征子、靠提子救棋、棄子補償與任何全局好壞判斷都維持 unscored。
+- assessment、`first_response`、`retry_response` 分開保存。非法首答也是首答；重新載入會由 `go-live-evidence-v1` 恢復該 assessment 已有 response 數，不得把 retry 變成新的 first response。
+- eligible assessment 一旦建立，即使學習者離開或未作答也留在 denominator；不得因結果不利而事後移除。
+- 局部 task success 只表示符合該 scoring contract，不表示該手是全局最佳手；task failure 也不等於全局錯著。
+- 每筆 scored event 保存 eligibility/scoring/taxonomy version。彙總只使用語義相容的目前版本，不相容歷史事件另列 `excludedContractVersionEvents`。
+- 決策機會逐次計分；但「近期跨局一致」只以不同 `sessionId` 的棋局為單位，同局連續多手不能冒充獨立樣本。
+- storage／parser／rules failure 必須保留 ERROR；不能回退成零機會、成功或推測分數。
+
+## Learner evidence progress contract
+
+`learner-progress.js` 的 `learner-evidence-progress-v1` 只做可重算的描述性 Evidence → Update 摘要：把既有課程／排程 T0–T2 診斷與上述 bounded live T3 **並列**，輸出「資料不足」「仍需更多證據」「已觀察延後 T2、live 待機會」「已觀察 live、T2 待驗」「已觀察延後 T2 與 live」等狀態。
+
+- 不輸出未校準 mastery 百分比、段位、棋力或學習成效。
+- `schedulerAuthority=false`：此狀態目前不直接改 scheduler；若未來要影響選題，需另證明 decision value 並升版 policy。
+- `formalEvaluationAuthority=false`：practice/live evidence 不能取代 private holdout、R1b 或 formal evaluation。
+- 首頁只顯示 evidence state 與下一個需要的證據；完整 JSON 匯出保存 raw events、contract 定義、summary 與 policy version，讓之後可重算而不覆寫歷史事件。
 
 ## External Adoption Policy
 
