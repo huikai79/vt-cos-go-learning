@@ -22,6 +22,7 @@
   <script defer src="learning-metrics.js"></script>
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js"></script>
+  <script defer src="learner-progress.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -46,6 +47,11 @@
         <summary>實戰證據進度</summary>
         <p id="live-evidence-summary">尚無可判定的 9×9 人機實戰證據。</p>
         <small>只計落子前已由版本化 contract 判定 eligible、且可由規則引擎客觀評分的局部機會；不是 mastery 百分比。</small>
+      </details>
+      <details class="diagnostic-card">
+        <summary>整合學習證據</summary>
+        <p id="integrated-progress-summary">尚無足夠的可比較證據。</p>
+        <small>把課程／延後 T0–T2 與 live T3 並列成可重算狀態；不輸出未校準 mastery，也不直接改 scheduler。</small>
       </details>
       <details class="diagnostic-card">
         <summary>錯誤修正診斷</summary>
