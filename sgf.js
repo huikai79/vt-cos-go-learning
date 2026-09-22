@@ -58,7 +58,7 @@
       board[p[1]][p[0]] = color;
     }
   }
-  function parseSgf(text) {
+  function parseSgfNodes(text) {
     if (typeof text !== "string" || !text.trim()) fail("檔案是空的");
     if (text.length > MAX_SGF_FILE_BYTES) fail(`檔案過大（上限 ${MAX_SGF_FILE_BYTES} bytes）`);
     const state = { i: 0, nodes: 0 }; skip(text, state);
@@ -68,7 +68,10 @@
       if (text[state.i] === "(") fail("一次只能匯入一盤棋");
       fail(`結尾含無法辨識的字元 ${text[state.i]}`);
     }
-    const nodes = mainline(tree);
+    return mainline(tree);
+  }
+  function parseSgf(text) {
+    const nodes = parseSgfNodes(text);
     const size = (nodes[0] && nodes[0].SZ && nodes[0].SZ[0]) || "19";
     if (size !== "9") fail("目前只支援 9 路棋譜");
     let board = boardFromStones([]); let previousBoard = null; let moveNumber = 0; const moves = [];
@@ -139,7 +142,7 @@
       }
     };
   }
-  const api = { MAX_SGF_FILE_BYTES, parseSgf, makeLocalExercise, sourceFingerprint };
+  const api = { MAX_SGF_FILE_BYTES, parseSgfNodes, parseSgf, makeLocalExercise, sourceFingerprint };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.GoSgf = api;
 })(typeof window !== "undefined" ? window : globalThis);
