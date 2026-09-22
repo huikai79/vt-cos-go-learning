@@ -5,7 +5,7 @@
 - [x] 已建立公開 GitHub repository：`https://github.com/huikai79/vt-cos-go-learning`；未把父層 `VT-Workflow` 當公開專案。
 - [x] 已接受題庫、答案與 R1 審題工具公開；`holdout` 不再具受控盲測資格。
 - [x] 題庫來源已拆成基礎技巧與基礎死活模組，原 ID、順序及內容指紋不變。
-- [x] 母品牌採 `VT-COS`、產品名採「一手一懂」，公開顯示與 metadata 已對齊。
+- [x] 母品牌採 `VT-COS`、產品名採「悟之一手」，公開顯示與 metadata 已對齊。
 - [x] 加入 `LICENSE`：MIT，著作權標示為 `Copyright (c) 2026 huikai79`。
 - [x] 首個 commit 只納入 manifest 的 56 個候選檔案，`gtp_logs/` 與個人資料均被排除。
 - [x] 已從實際 GitHub repository fresh clone，確認 `edbf17d` 可通過全部 81 項 Node 測試與 file URL UI suite。
