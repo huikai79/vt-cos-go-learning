@@ -97,6 +97,19 @@
 
 在本資料夾執行 `node tests/go.test.cjs`，驗證 15 單元、106 題的資料完整性，及棋盤題的氣數、提子、救棋、連接、斷點、基礎死活急所、禁著和簡單劫；執行 `node tests/live-game.test.cjs` 驗證 5／7／9 路 active practice，以及 3×3 legacy 邊界 regression、提子、Pass、計分、續局、SGF round-trip、live evidence UI 接線與 9×9 相容；執行 `node tests/live-evidence.test.cjs` 驗證結果前 eligibility、first response／retry、未答分母、actor provenance、版本隔離與跨局 session；執行 `node tests/learner-progress.test.cjs` 驗證 T0–T2 與 bounded live T3 的描述性 evidence state；執行 `node tests/phase2-content.test.cjs` 驗證 148 題變形庫、公開曝光契約、直三的一至三手結果及第二眼真眼區域；執行 `node tests/sgf.test.cjs`，驗證課程端 9 路 SGF 解析、停一手編號、簡單劫、多盤／分支拒絕及資源上限。Windows 可執行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1`，檢查獨立 Git 根目錄、workflow、gitlink、symlink 與 reparse point；若有 Chrome 或 Edge，也可執行 `node tests/ui.test.cjs` 驗證主要使用流程與版面。
 
+### Windows 本機 KataGo bridge smoke
+
+Move Provider 的 CI contract 通過後，真正的 Windows KataGo executable 全鏈路仍需在有 KataGo、config 與 model 的本機執行一次：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katago-bridge-smoke.ps1 `
+  -KataGoExe "C:\path\to\katago.exe" `
+  -KataGoConfig "C:\path\to\gtp_example.cfg" `
+  -KataGoModel "C:\path\to\model.bin.gz"
+```
+
+只有腳本輸出 `PASS: Windows KataGo bridge returned ...` 才能把「本機 KataGo bridge 真機 smoke」記為 PASS。缺檔、bridge 未啟動、KataGo failure、HTTP/JSON failure 或超時都維持 FAIL／ERROR，不以 heuristic bot 代替。
+
 2026-09-21 的規則、題庫、排程、SGF、trial、狀態與 Chrome 測試均通過。新增反證測試會比較驗收正答與錯答後的棋盤快照、驗證同題先錯後對仍保留首答錯誤、檢查固定應用呈現分母、v3 至 v6→v7 遷移、兩輪內容插題後的索引保存及保留題匯出遮蔽。這些結果只保留為工程證據。
 
 ## 下一步
