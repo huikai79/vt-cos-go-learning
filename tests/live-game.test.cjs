@@ -135,8 +135,8 @@ test("認輸留下明確結果碼，SGF 帶 RE 但不假裝是計分結果", () 
 });
 
 
-test("3、5、7、9 路都使用實際棋盤邊界，預設貼目依尺寸分開", () => {
-  for (const size of [3, 5, 7, 9]) {
+test("5、7、9 路 active practice 都使用實際棋盤邊界，預設貼目依尺寸分開", () => {
+  for (const size of [5, 7, 9]) {
     const board = Go.boardFromStones([[0, 0, Go.BLACK]], size);
     assert.equal(board.length, size);
     assert.equal(Go.groupAt(board, 0, 0).liberties.length, 2, `${size} 路角上單子應只有兩口氣`);
@@ -155,8 +155,8 @@ test("3 路邊線提子依 3 路真實邊界判定，不借用 9 路外部空間
   assert.equal(game.board[0][1], Go.EMPTY);
 });
 
-test("3、5、7、9 路 SGF 都保留 SZ、手順、Pass 與棋盤尺寸", () => {
-  for (const size of [3, 5, 7, 9]) {
+test("5、7、9 路 active practice SGF 都保留 SZ、手順、Pass 與棋盤尺寸", () => {
+  for (const size of [5, 7, 9]) {
     let game = Live.createGame({ boardSize: size });
     game = playOk(game, 0, 0);
     game = Live.pass(game).game;
@@ -180,19 +180,21 @@ test("舊 9 路預設建立方式維持相容", () => {
 });
 
 
-test("棋盤練習頁明示四種尺寸，課程頁提供階段推薦入口", () => {
+test("棋盤練習頁只明示 5、7、9 路，課程頁提供新的階段推薦入口", () => {
   const liveHtml = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
   const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
-  for (const size of [3, 5, 7, 9]) assert.match(liveHtml, new RegExp(`live-game\\.html\\?size=${size}`));
+  for (const size of [5, 7, 9]) assert.match(liveHtml, new RegExp(`live-game\\.html\\?size=${size}`));
+  assert.equal(/live-game\\.html\\?size=3/.test(liveHtml), false);
   assert.match(indexHtml, /id="stage-board-practice-link"/);
-  assert.match(indexHtml, /3×3、5×5、7×7、9×9/);
-  assert.match(appJs, /courseUnit === 0 \? 3 : courseUnit <= 2 \? 5 : courseUnit === 3 \? 7 : 9/);
+  assert.match(indexHtml, /5×5、7×7、9×9/);
+  assert.equal(/3×3、5×5/.test(indexHtml), false);
+  assert.match(appJs, /courseUnit <= 2 \? 5 : courseUnit === 3 \? 7 : 9/);
 });
 
 
-test("本機練習電腦在四種棋盤都只選合法手", () => {
-  for (const size of [3, 5, 7, 9]) {
+test("本機練習電腦在三種 active practice 棋盤都只選合法手", () => {
+  for (const size of [5, 7, 9]) {
     const game = Live.createGame({ boardSize: size });
     const action = Bot.chooseAction(game);
     assert.ok(["play", "pass"].includes(action.type));
@@ -273,5 +275,24 @@ test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑
 
 test("棋盤頁用版本參數載入 live CSS，避免瀏覽器沿用舊渲染樣式", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
-  assert.match(html, /live-game\.css\?v=live-game-ui-v4/);
+  assert.match(html, /live-game\.css\?v=live-game-ui-v5/);
+});
+
+
+test("3×3 保留底層相容但退出 active practice", () => {
+  assert.deepEqual(Live.ACTIVE_PRACTICE_SIZES, [5, 7, 9]);
+  assert.ok(Live.SUPPORTED_SIZES.includes(3), "3×3 必須保留 legacy/runtime 相容");
+  const legacy = Live.createGame({ boardSize: 3 });
+  assert.equal(legacy.boardSize, 3);
+  const page = fs.readFileSync(path.join(__dirname, "..", "live-game-page.js"), "utf8");
+  assert.match(page, /retiredThreeByThreeRequested/);
+  assert.match(page, /includes\(size\) \? size : 5/);
+});
+
+test("3×3 邊界 regression 仍保留，不因退出 UI 而失去規則覆蓋", () => {
+  const initial = Go.boardFromStones([[1, 0, Go.WHITE], [0, 0, Go.BLACK], [2, 0, Go.BLACK]], 3);
+  let game = Live.createGame({ boardSize: 3, initialBoard: initial, toPlay: Go.BLACK });
+  game = playOk(game, 1, 1);
+  assert.equal(game.captures.black, 1);
+  assert.equal(game.board[0][1], Go.EMPTY);
 });
