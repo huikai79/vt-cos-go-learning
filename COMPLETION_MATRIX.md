@@ -61,6 +61,7 @@
 
 | 項目 | 現況 | 驗證 | 證據層級 | 判定 |
 |---|---|---|---|---|
+| 人機實戰事件回流 | `practice-events.js` 以獨立 append-only store 保存 live practice 操作；課程首頁顯示人機局數與使用者可觀察決策，完整 JSON 備份帶出原始事件。事件固定 unscored／practice-only，不進 KC、Metrics 或 scheduler | targeted contract：重複 event ID 不加倍、computer action 不算 human decision、malformed store 維持 ERROR、課程端只讀摘要／備份；隔離 V8 harness `tests/live-game.test.cjs` 21/21 PASS | 工程 | 條件通過；完整 `app-state`／Windows UI／push-triggered CI 本輪仍 UNKNOWN；不得升格為 T3 或 mastery |
 | 四尺寸本機電腦對手 | 3／5／7／9 路皆可選雙人同機或和電腦下；可執黑／白。電腦只從規則引擎合法候選中，用 bounded heuristic 選手，無合理手可 Pass；不是 KataGo | `practice-bot.js` 契約測試：四尺寸只產生合法 play／pass、3 路立即提子案例、UI 載入與 practice-only 邊界 | 工程 | 隔離 V8 harness 執行 `tests/live-game.test.cjs` 18/18 PASS；repo-wide push-triggered CI 仍 UNKNOWN。不得宣稱棋力、最佳手或教學成效 |
 | 3×3／5×5／7×7／9×9 棋盤練習 | 共用 `live-game.html` 與尺寸切換；3／5／7 路作微型／過渡練習，9 路保留完整小棋盤對局。四種尺寸共用合法手／提子／自殺禁著／simple ko、Pass、人工終局、悔棋、獨立續局與 SGF；課程依單元推薦尺寸但可隨時切換 | `tests/live-game.test.cjs` 新增尺寸邊界、3 路提子、四尺寸 SGF round-trip、9 路相容與入口契約；main 原始碼以隔離 V8 harness 執行該測試檔 15/15 PASS，另回歸 106 題課程中的 count/connect/move 規則檢查無失敗 | 工程 | 條件通過；精確 repo-wide CI 本輪狀態 UNKNOWN；全部維持 `practice_only`，不自動成為 T2／T3 或學習成效 |
 
@@ -93,3 +94,13 @@
 - **Migration：** 既有各尺寸棋局保存 envelope 保持 schema 1；新增 opponent 設定可缺省，舊資料預設雙人同機。9×9 原保存 key 不變。
 - **Rollback：** 移除 `practice-bot.js` 載入與對手控制即可回到雙人同機；棋局與課程資料不需 migration。
 - **Validation：** 直接讀取 main 原始碼，以隔離 V8 harness 執行 `tests/live-game.test.cjs` 18/18 PASS；其中新增測試覆蓋四尺寸只產生合法 play／pass、3×3 立即提子與 UI practice-only 契約。`live-game-page.js` 與 bot 核心語法檢查通過。由於 connector 無法取得 push-triggered workflow run，完整 GitHub Actions／Windows file-URL UI 仍為 `UNKNOWN`。
+
+
+## 2026-09-22 Change note｜人機實戰事件回流
+
+- **改動：** 新增 `practice-events.js` 與 `go-live-practice-events-v1`；live 棋盤把 human／computer／system 操作分 actor 追加保存。課程首頁顯示人機練習局數與使用者可觀察決策，完整 JSON 備份新增 `livePracticeEvents` 與 descriptor。
+- **為何現在改：** 棋盤已接到學習介面且能人機對局，但先前對局只留在各棋局保存 envelope，學習平臺無法觀察實際 Response；本次只補「Response → Evidence 的可追溯原始事件」，不做 Learner Model update。
+- **歷史語義：** 既有 `state.events`、KC、SCD、scheduler、Evidence Taxonomy、formal holdout 完全不改。新 live event 固定 `formalEligible=false`、`qualifiedOpportunity=false`、`scoringStatus=unscored`。
+- **Migration：** 使用新的獨立 localStorage key；舊棋局與課程資料不搬移。沒有舊事件時顯示零紀錄；損壞 store 保留失敗狀態，不覆寫成空 store。
+- **Rollback：** 移除 `practice-events.js` 載入、首頁摘要與 raw export 欄位即可；既有課程與棋局資料仍可運作。
+- **Validation：** targeted contract 以 main 原始碼隔離 V8 harness 執行 `tests/live-game.test.cjs` 21/21 PASS，涵蓋 duplicate ID、human/computer actor 分離、malformed store fail-closed 及課程端不餵入 Metrics/scheduler。已新增 `app-state.test.cjs` 的整合反證測試，但目前環境無法以真實 Node `vm`／完整 repo 執行；push-triggered GitHub Actions 與 Windows file-URL UI 也未能從 connector 取得，故維持 `UNKNOWN`。
