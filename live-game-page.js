@@ -38,7 +38,8 @@
       const raw = localStorage.getItem(`go-live-opponent-v1-size-${requestedSize}`);
       if (!raw) return;
       const value = JSON.parse(raw);
-      if (value && ["local", "computer", "katago", "remote"].includes(value.opponentMode)) opponentMode = value.opponentMode;\n      if (value && typeof value.providerEndpoint === "string" && value.providerEndpoint) providerEndpoint = value.providerEndpoint;
+      if (value && ["local", "computer", "katago", "remote"].includes(value.opponentMode)) opponentMode = value.opponentMode;
+      if (value && typeof value.providerEndpoint === "string" && value.providerEndpoint) providerEndpoint = value.providerEndpoint;
       if (value && [BLACK, WHITE].includes(Number(value.humanColor))) humanColor = Number(value.humanColor);
     } catch (_) {}
   }
@@ -172,7 +173,8 @@
       if (game.boardSize !== requestedSize) throw new Error("saved_board_size_mismatch");
       if (typeof payload.practiceSessionId === "string" && payload.practiceSessionId) practiceSessionId = payload.practiceSessionId;
       auditEvents = Array.isArray(payload.auditEvents) ? payload.auditEvents.filter((entry) => entry && typeof entry === "object") : [];
-      if (["local", "computer", "katago", "remote"].includes(payload.opponentMode)) opponentMode = payload.opponentMode;\n      if (typeof payload.providerEndpoint === "string" && payload.providerEndpoint) providerEndpoint = payload.providerEndpoint;
+      if (["local", "computer", "katago", "remote"].includes(payload.opponentMode)) opponentMode = payload.opponentMode;
+      if (typeof payload.providerEndpoint === "string" && payload.providerEndpoint) providerEndpoint = payload.providerEndpoint;
       if ([BLACK, WHITE].includes(Number(payload.humanColor))) humanColor = Number(payload.humanColor);
       loadNotice = game.status === "playing" ? `已從這台電腦續接上次未完成的 ${game.boardSize}×${game.boardSize} 棋局。` : `已載入這台電腦保存的 ${game.boardSize}×${game.boardSize} 棋局。`;
       event("session_loaded", { status: game.status });
@@ -257,7 +259,9 @@
     $("import-label").textContent = `匯入 ${size} 路 SGF`;
     $("opponent-mode").value = opponentMode;
     $("human-color").value = String(humanColor);
-    $("human-color-field").hidden = !isComputerMode();\n    $("provider-endpoint-field").hidden = !["katago", "remote"].includes(opponentMode);\n    $("provider-endpoint").value = providerEndpoint;
+    $("human-color-field").hidden = !isComputerMode();
+    $("provider-endpoint-field").hidden = !["katago", "remote"].includes(opponentMode);
+    $("provider-endpoint").value = providerEndpoint;
     $("opponent-summary").textContent = isComputerMode() ? `你執${colorLabel(humanColor)} · ${opponentMode === "katago" ? "KataGo" : opponentMode === "remote" ? "Remote API" : "本機電腦"}執${colorLabel(computerColor())}` : "雙人同機";
     $("footer-boundary").textContent = size === 9
       ? "9×9 提供目前已支援的完整小棋盤對局流程；使用 simple ko，不宣稱涵蓋各棋規的 superko、終局爭議或裁判規則。"
@@ -450,7 +454,9 @@
   $("confirm-score-button").addEventListener("click", () => {
     const preview = Live.currentScore(game);
     const previewText = preview && preview.winner ? `${colorLabel(preview.winner)}棋領先 ${preview.difference} 目` : "目前同分";
-    if (!confirm(`確認目前死子標記與分數？\n${previewText}\n確認後這局將標示為結束。`)) return;
+    if (!confirm(`確認目前死子標記與分數？
+${previewText}
+確認後這局將標示為結束。`)) return;
     applyResult(Live.finalizeScore(game), "score_confirmed", { deadStones: [...(game.deadStones || [])], successMessage: "終局結果已確認並保存。" });
   });
   $("new-game-button").addEventListener("click", () => {
@@ -463,7 +469,11 @@
     opponentMode = nextMode;
     startNewGame("opponent_mode_changed");
   });
-  $("provider-endpoint").addEventListener("change", (event) => {\n    providerEndpoint = String(event.target.value || "").trim(); saveOpponentSettings(); save();\n    showFeedback("Provider API 位址已保存；下一個電腦回合會使用此端點。", "success");\n  });\n  $("human-color").addEventListener("change", (event) => {
+  $("provider-endpoint").addEventListener("change", (event) => {
+    providerEndpoint = String(event.target.value || "").trim(); saveOpponentSettings(); save();
+    showFeedback("Provider API 位址已保存；下一個電腦回合會使用此端點。", "success");
+  });
+  $("human-color").addEventListener("change", (event) => {
     const nextColor = Number(event.target.value) === WHITE ? WHITE : BLACK;
     if (game.moves.length && !confirm("更換執棋顏色需要開始同尺寸新局。若要保留這盤，請先匯出 SGF。確定更換？")) { event.target.value = String(humanColor); return; }
     humanColor = nextColor;
