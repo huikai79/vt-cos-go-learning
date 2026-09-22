@@ -1,5 +1,7 @@
 # VT-COS｜悟之一手：個人圍棋互動課程
 
+**English name:** `A Move of Insight`
+
 > VT-COS（Vibe Thinking – Cognitive Operating System）旗下的個人圍棋學習原型。
 
 線上版本：[https://huikai.com.kg/vt-cos-go-learning/](https://huikai.com.kg/vt-cos-go-learning/)；GitHub 預設網址 [https://huikai79.github.io/vt-cos-go-learning/](https://huikai79.github.io/vt-cos-go-learning/) 會轉向同一網站。
@@ -79,7 +81,7 @@
 
 ## GitHub 公開邊界
 
-- 公開品牌名稱為 `VT-COS｜悟之一手`；母品牌、產品名、對外說法與視覺使用邊界見 [BRAND.md](BRAND.md)。品牌歸屬不取代 `LICENSE`，也不代表已證明教學成效。
+- 公開品牌名稱為 `VT-COS｜悟之一手`；英文名稱為 `VT-COS｜A Move of Insight`。母品牌、產品名、對外說法與視覺使用邊界見 [BRAND.md](BRAND.md)。品牌歸屬不取代 `LICENSE`，也不代表已證明教學成效。
 
 - 本資料夾已建立為獨立公開 repository：[huikai79/vt-cos-go-learning](https://github.com/huikai79/vt-cos-go-learning)。父層 `VT-Workflow` 不在這個 Git 邊界內。
 - GitHub Pages 已從 `main`／`/` 發布。帳號層的 `huikai.com.kg` 自訂網域會自動套用到這個 project site；正式 HTTPS 網址與 `github.io` 轉址均已通過完整 Edge UI suite。

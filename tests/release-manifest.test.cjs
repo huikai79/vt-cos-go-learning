@@ -16,7 +16,9 @@ test("公開發布決策與題庫用途為機器可讀契約", () => {
     parent: "VT-COS",
     parentExpanded: "Vibe Thinking – Cognitive Operating System",
     product: "悟之一手",
-    publicName: "VT-COS｜悟之一手"
+    publicName: "VT-COS｜悟之一手",
+    productEn: "A Move of Insight",
+    publicNameEn: "VT-COS｜A Move of Insight"
   });
   assert.deepEqual(manifest.publicationDecision, {
     questionBankVisibility: "public",
