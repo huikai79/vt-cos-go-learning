@@ -217,7 +217,7 @@ test("棋盤頁提供雙人同機與和電腦下模式，並載入 bounded bot",
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
   const page = fs.readFileSync(path.join(__dirname, "..", "live-game-page.js"), "utf8");
   assert.match(html, /practice-bot\.js/);
-  assert.match(html, /和電腦下/);
+  assert.match(html, /練習電腦/);
   assert.match(html, /id="human-color"/);
   assert.match(page, /evaluationRole: "practice"/);
   assert.match(page, /formalEligible: false/);
