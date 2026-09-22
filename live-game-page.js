@@ -46,6 +46,18 @@
   function currentAssessmentId(assessment) {
     return `${practiceSessionId}:${assessment.moveCount}:${assessment.boardFingerprint}`;
   }
+  function lastMoveActorForEvidence() {
+    if (!game || !Array.isArray(auditEvents) || !game.moves.length) return null;
+    for (let index = auditEvents.length - 1; index >= 0; index -= 1) {
+      const item = auditEvents[index];
+      if (!item || typeof item !== "object") continue;
+      if (["undo", "sgf_import", "new_game", "recovery_after_invalid_save"].includes(item.type)) return null;
+      if (item.moveCount !== game.moves.length) continue;
+      if (item.type === "computer_move" || item.type === "computer_pass") return "computer";
+      if (item.type === "move" || item.type === "pass") return item.actor || "human";
+    }
+    return null;
+  }
   function appendLiveEvidence(event) {
     if (!LiveEvidence || typeof LiveEvidence.append !== "function") {
       liveEvidenceFailure = "live_evidence_module_unavailable";
@@ -74,7 +86,7 @@
       liveEvidenceFailure = "live_evidence_module_unavailable";
       return null;
     }
-    const candidate = LiveEvidence.assessTurn(game, { opponentMode, humanColor, computerColor: computerColor() });
+    const candidate = LiveEvidence.assessTurn(game, { opponentMode, humanColor, computerColor: computerColor(), lastMoveActor: lastMoveActorForEvidence() });
     const assessmentId = currentAssessmentId(candidate);
     if (activeAssessment && activeAssessment.assessmentId === assessmentId) return activeAssessment;
     activeAssessment = { ...candidate, assessmentId, sessionId: practiceSessionId };
