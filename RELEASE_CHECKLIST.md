@@ -14,7 +14,7 @@
 - [x] 已從 GitHub fresh clone `039cfc76c84984a92305dfca681e892b49ed3f87`，確認 58 檔、82 項 Node、boundary audit 與 file URL UI suite 全部通過。
 - [x] GitHub Pages 已由 `main`／`/` 發布；`https://huikai79.github.io/vt-cos-go-learning/` 轉向 `https://huikai.com.kg/vt-cos-go-learning/`，正式網址完整 UI suite 通過。
 - [x] R1a 已升為 v4 去答案審查頁，並加入可執行的正式教學／正式評量 gate。
-- [ ] 9×9 完整實戰候選已加入分支與 manifest；合併／部署前仍須等待 GitHub Actions 的 Node、Sabaki oracle 與 Windows UI／boundary jobs 全部 PASS。
+- [x] 9×9 完整實戰候選已加入 manifest；GitHub Actions run #12 的 Node、Sabaki oracle、Windows file-URL UI、Edge smoke 與 repository boundary 全部 PASS。
 
 ## 候選公開檔案
 
