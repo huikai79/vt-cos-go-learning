@@ -112,3 +112,11 @@
 - **改動：** `live-game.css` 新增 `.live-board .point-focus{fill:none;stroke:transparent;pointer-events:none}`；鍵盤 focus 時仍只顯示既有綠色外框。棋子本身仍只由 `.stone-black`／`.stone-white` 繪製。
 - **影響：** 只修 UI rendering，不修改盤面資料、規則、SGF、事件、KC、scheduler 或 scoring。
 - **Validation：** targeted contract 新增空點 focus circle 必須透明的反回歸測試；main 原始碼隔離 V8 harness `tests/live-game.test.cjs` 22/22 PASS。完整 Windows／browser CI 本輪仍維持 UNKNOWN。
+
+
+## 2026-09-22 Change note｜live CSS cache-bust
+
+- **問題：** rendering fix 已在 main，但使用者刷新後仍看到舊棋盤樣式；相同資產 URL 可能讓瀏覽器／CDN 延用舊 `live-game.css`。
+- **改動：** `live-game.html` 改以 `live-game.css?v=live-game-ui-v4` 載入，強制新 UI 版本使用不同資產 URL。
+- **邊界：** 只影響靜態資產快取，不修改規則、棋局、事件或學習模型。
+- **Validation：** 新增 HTML contract，要求 live CSS 帶 `live-game-ui-v4` 版本參數；完整線上 Pages propagation 仍需以實際站點重新載入確認。
