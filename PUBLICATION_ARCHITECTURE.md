@@ -25,7 +25,7 @@ GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=t
 
 ## GitHub 邊界
 
-發布前執行 `tests/repository-boundary.ps1`。它要求 Git root 等於專案根目錄，拒絕 `.gitmodules`、gitlink、tracked symlink 與 Windows reparse point，並在 workflow 存在時拒絕 `pull_request_target`、`write-all` 與未鎖定 40 位 commit 的第三方 Action。現版沒有 repository workflow、Dependabot 設定、submodule、symlink、junction 或建置步驟。
+發布前執行 `tests/repository-boundary.ps1`。它要求 Git root 等於專案根目錄，拒絕 `.gitmodules`、gitlink、tracked symlink 與 Windows reparse point，並在 workflow 存在時拒絕 `pull_request_target`、`write-all` 與未鎖定 40 位 commit 的第三方 Action。現版有一條唯讀驗證 workflow（`.github/workflows/verify.yml`），用於 Node contracts、SGF oracle、Windows file-URL UI、Edge smoke 與 repository boundary；沒有 Dependabot 設定、submodule、symlink、junction 或建置步驟。
 
 ## 信任與資料流
 
