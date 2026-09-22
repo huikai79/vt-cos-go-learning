@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const Go = require("../go.js");
 const Live = require("../live-game.js");
+const Bot = require("../practice-bot.js");
 
 function playOk(game, x, y) {
   const result = Live.play(game, x, y);
@@ -186,4 +187,36 @@ test("棋盤練習頁明示四種尺寸，課程頁提供階段推薦入口", ()
   assert.match(indexHtml, /id="stage-board-practice-link"/);
   assert.match(indexHtml, /3×3、5×5、7×7、9×9/);
   assert.match(appJs, /courseUnit === 0 \? 3 : courseUnit <= 2 \? 5 : courseUnit === 3 \? 7 : 9/);
+});
+
+
+test("本機練習電腦在四種棋盤都只選合法手", () => {
+  for (const size of [3, 5, 7, 9]) {
+    const game = Live.createGame({ boardSize: size });
+    const action = Bot.chooseAction(game);
+    assert.ok(["play", "pass"].includes(action.type));
+    if (action.type === "play") {
+      const result = Live.play(game, action.point[0], action.point[1]);
+      assert.equal(result.ok, true, size + " 路電腦手必須經規則引擎判定合法");
+    }
+  }
+});
+
+test("練習電腦優先吃立即可吃的棋串", () => {
+  const initial = Go.boardFromStones([[1, 0, Go.WHITE], [0, 0, Go.BLACK], [2, 0, Go.BLACK]], 3);
+  const game = Live.createGame({ boardSize: 3, initialBoard: initial, toPlay: Go.BLACK });
+  const action = Bot.chooseAction(game);
+  assert.equal(action.type, "play");
+  assert.deepEqual(action.point, [1, 1]);
+});
+
+test("棋盤頁提供雙人同機與和電腦下模式，並載入 bounded bot", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  const page = fs.readFileSync(path.join(__dirname, "..", "live-game-page.js"), "utf8");
+  assert.match(html, /practice-bot\.js/);
+  assert.match(html, /和電腦下/);
+  assert.match(html, /id="human-color"/);
+  assert.match(page, /evaluationRole: "practice"/);
+  assert.match(page, /formalEligible: false/);
+  assert.match(page, /GoPracticeBot/);
 });
