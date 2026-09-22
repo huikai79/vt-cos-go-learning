@@ -12,6 +12,7 @@
 | 工作線 | 目前狀態 | 現在可做 | 現在不可做 |
 |---|---|---|---|
 | 證據與量測 | R0 已通過；`personal-pilot-v3` 使用舊 R1 已曝光題；正式評量停用 | 檢查資料完整性、七天返回、遮蔽、操作負擔與流程中斷 | 宣稱正式未見、題目效度、保留、遷移或學習改善；比較排程優劣 |
+| live practice evidence intake | `live-practice-events-v1` 已能收原始 practice observation，但尚未有 eligibility/scoring contract | 檢查事件完整性、actor 分離、匯出與人工抽樣；可作後續 scoring 設計輸入 | 直接把所有人機著手當 T3／KC opportunity、用勝負更新 mastery 或 scheduler |
 | 日常使用介面 | P0、P1b、19 課逐步棋盤示範、第 5–14 單元的局部棋形點選及跨課短講自動銜接已完成；真人短任務待進行 | 收集首次使用、跨單元、隔日返回與鍵盤／手機任務紀錄 | 依單一主觀印象大改視覺風格或增加遊戲化功能 |
 
 ## 優先順序與閘門
