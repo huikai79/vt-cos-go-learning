@@ -48,6 +48,17 @@
 
 Provider、parser、engine、storage 或 analysis failure 必須保持 failure／unknown，不能 fallback 成看似成功的推測結果。
 
+## 9×9 Live Game contract
+
+2026-09-22 新增獨立完整實戰模組，但不改寫課程作答生命週期。
+
+- `live-game.js` 只組合既有 `go.js` authority：9×9、合法手、提子、自殺禁著與 simple ko；完整對局規則版本為 `cn-area-simple-ko-v1`。
+- 黑先、白貼 7.5，採 Chinese area scoring；兩次連續 Pass 進入 `scoring`，死子由人工作整串標記。系統不把死活判定或終局爭議偽裝成規則引擎已知事實；有爭議時恢復下棋。
+- 實戰 localStorage 使用獨立 `go-live-game-v1`，不升既有學習 storage schema。hydrate 以初始盤面＋手順重播重建，不信任保存的衍生盤面；版本不符或資料損壞時保留 recovery 副本。
+- live audit event 固定為 `practice/live`、`formalEligible=false`，不寫入正式 evaluation 分母、不調整同輪 scheduler，也不把單局勝負當學習成效。
+- SGF 可匯出／續局的共同子集為單盤、9×9、單主線、根節點 setup、落子與 pass；含分支、collection、中途 setup 仍維持 bounded parser 的拒絕邊界。
+- 未支援 superko、日本式領地／提子計分、裁判式死活、自動 AI 對手。若真實使用出現這些 correctness/scope bottleneck，再依 Reference → Oracle → Dependency → Fork 評估升級。
+
 ## External Adoption Policy
 
 外部 OSS 的採用順序預設為：
