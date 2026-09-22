@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v29`；9×9 實戰頁 `live-game-ui-v1`
+- `ui_version`: `learner-flow-v29`；棋盤練習頁 `live-game-ui-v2`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -55,5 +55,13 @@
 4. Evidence Boundary P2：同步現況文件與回歸測試。
 5. Demonstration Coverage P0–P2：19 課逐步棋盤示範、內容結構檢查與介面回歸已完成。
 6. Interaction Coverage P0–P2：第 5–14 單元局部棋形點選、內容邊界與介面回歸已完成。
-7. 依 `TEACHING_GATE.md` 收集外部 R1a 回條、三位初學者關鍵任務及真人無障礙證據；R1b 與新 private holdout 另屬正式評量，不以工程測試代替。\n| 9×9 完整實戰練習 | 獨立 `live-game.html`：雙人同機輪流落子、Pass、認輸、兩次 Pass 後人工死子確認、中國式面積計分（貼 7.5）、悔棋、本機續局與 SGF 匯入／匯出；沿用 `go.js` 的合法手／提子／自殺禁著／simple ko | `tests/live-game.test.cjs`；Chromium 功能流程驗證落子 → 兩次 Pass → 計分 → 恢復下棋 → localStorage 續局 | 工程 | 條件通過；僅 `practice/live`，不自動成為 T3 正式證據；未支援 superko、各棋規終局裁判、AI 對手或自動死活判定 |
+7. 依 `TEACHING_GATE.md` 收集外部 R1a 回條、三位初學者關鍵任務及真人無障礙證據；R1b 與新 private holdout 另屬正式評量，不以工程測試代替。\n| 3×3／5×5／7×7／9×9 棋盤練習 | 共用 `live-game.html` 與尺寸切換；3／5／7 路作微型／過渡練習，9 路保留完整小棋盤對局。四種尺寸共用合法手／提子／自殺禁著／simple ko、Pass、人工終局、悔棋、獨立續局與 SGF；課程依單元推薦尺寸但可隨時切換 | `tests/live-game.test.cjs` 新增尺寸邊界、3 路提子、四尺寸 SGF round-trip、9 路相容與入口契約；等價本機 Node 合約 5/5 PASS | 工程 | 條件通過；精確 repo-wide CI 本輪狀態 UNKNOWN；全部維持 `practice_only`，不自動成為 T2／T3 或學習成效 |
 \n\n## 2026-09-22 Change note｜9×9 完整實戰\n\n- **改動：** 新增 `live-game.js`／`live-game.html`／`live-game-page.js`／`live-game.css`，規則契約固定為 `cn-area-simple-ko-v1`，本機續局 envelope 為 `go-live-game-v1`。\n- **為何現在改：** 現有底盤已能處理 9 路合法落子與 SGF 局部回流，但缺完整棋局生命週期；本次只補這個 learning-loop experience bottleneck。\n- **歷史語義：** 不改既有課程事件、KC、scheduler、Evidence Taxonomy 或 `go-learning-prototype-v7`；live audit event 固定 `evaluationRole=practice`、`evaluationContext=live`、`formalEligible=false`。\n- **Migration：** 舊使用者無需遷移；實戰棋局使用獨立 localStorage key。若保存資料版本或規則版本不符，保留 recovery 副本並開新局，不猜測修復。\n- **Rollback：** 移除實戰入口與四個 live-game runtime 檔即可回到既有課程；既有學習資料不受影響。\n- **Validation：** 核心 10 項 Node 測試通過；Chromium 驗證 81 點棋盤、落子輪替、兩次 Pass 計分、恢復下棋與重新載入續局。GitHub Actions run #12 全部 PASS：Node contracts、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均通過。\n
+## 2026-09-22 Change note｜多尺寸棋盤練習
+
+- **改動：** `go.js` 改為依實際棋盤尺寸計算邊界與氣；`live-game.js`／`live-game-page.js`／`live-game.html` 支援 3、5、7、9 路。課程推薦單元 1→3×3、單元 2–3→5×5、單元 4→7×7、單元 5 起→9×9，自由練習可隨時切換。
+- **為何現在改：** 既有 9×9 完整對局已成立，但規則初學、連斷與死活仍可用較小棋盤降低非目標局面負擔；這次只擴充 Experience 層，不新增成效主張。
+- **歷史語義：** 不改 KC、scheduler、Evidence Taxonomy、formal holdout 或既有課程事件。四尺寸 audit event 仍為 `evaluationRole=practice`、`formalEligible=false`；3／5／7 路不視為正式 T2／T3。
+- **Migration：** 9×9 繼續使用 `go-live-game-v1`；3／5／7 路新增分尺寸 storage key。課程 SGF 復盤仍只支援 9 路，因此小棋盤 SGF 不會被誤導成可回課程複盤。
+- **Rollback：** 移除課程階段入口與尺寸切換，將 live 頁固定回 9×9；既有課程資料與 9×9 保存鍵不需遷移。
+- **Validation：** 新增反證測試確認 3×3 邊線提子不借用 9×9 外部空間、四尺寸 SGF 保留 `SZ`、舊 9×9 預設不變；等價本機 Node 合約 5/5 PASS。由於現有 GitHub connector 無法取得 push-triggered workflow run，本輪 repo-wide CI 記為 `UNKNOWN`，不得寫成已全部通過。
