@@ -16,6 +16,8 @@
 
 2026-09-22 本機電腦對手更新：四種棋盤皆可選雙人同機或和電腦下，使用者可執黑或白。第一版對手是 bounded heuristic bot，只從規則引擎確認合法的候選手中排序，優先立即提子並避免明顯自填；它不是 KataGo、不是棋力模型，也不把勝負、落子選擇或完成局數寫入 KC／scheduler／formal evaluation。其目的只是在單人離線情境補足可反覆操作的 Experience；若真人觀察顯示 bot 行為誤導學習，應降低權重或改以 KataGo bounded integration，而不是把 heuristic 包裝成教學權威。
 
+2026-09-22 人機實戰事件回流更新：新增獨立 `live-practice-events-v1` 事件流，保存自由／人機棋局中實際發生的學習者與電腦操作，並在課程首頁顯示只讀摘要、完整 JSON 備份帶出原始事件。這些事件固定為 unscored practice observation，不進既有 KC、SCD、scheduler、T2/T3 或 mastery；後續若要升格為自然實戰 evidence，需先為可枚舉決策定義版本化 eligibility、scoring 與分母，並避免只抽 AI 找到的壞手。
+
 ## 1. 北極星
 
 > 讓每次失敗留下可用的回饋，以可比較機會中的長期表現，以及未見局面的保留與應用，判斷進步。
