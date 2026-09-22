@@ -1,6 +1,6 @@
 # 產品開發與驗證流水線
 
-更新日期：2026-09-21  
+更新日期：2026-09-22  
 用途：把介面改善與學習量測分成兩條工程工作線，再以明確閘門決定先後。此檔管理產品開發與驗證順序，**不是學習者從不會到會的學習路徑**；學習者流水線見 [設計計畫第 3.1 節](DESIGN_PLAN.md#31-學習者從不會到會的介面流水線)。
 
 ## 一句話判斷
@@ -12,7 +12,7 @@
 | 工作線 | 目前狀態 | 現在可做 | 現在不可做 |
 |---|---|---|---|
 | 證據與量測 | R0 已通過；`personal-pilot-v3` 使用舊 R1 已曝光題；正式評量停用 | 檢查資料完整性、七天返回、遮蔽、操作負擔與流程中斷 | 宣稱正式未見、題目效度、保留、遷移或學習改善；比較排程優劣 |
-| live practice evidence intake | `live-practice-events-v1` 已能收原始 practice observation，但尚未有 eligibility/scoring contract | 檢查事件完整性、actor 分離、匯出與人工抽樣；可作後續 scoring 設計輸入 | 直接把所有人機著手當 T3／KC opportunity、用勝負更新 mastery 或 scheduler |
+| live practice evidence intake | raw `live-practice-events-v1` 與 scored `live-eligibility-v1`／`live-scoring-v1` 已分層；9×9 每個學習者回合先掃描 eligibility，v1 只支援唯一一手提子與 computer-provoked 唯一直接救棋 | 收集合格／不合格回合、first response、未答、跨局 session 與 contract 版本；以 `learner-evidence-progress-v1` 描述證據狀態 | 把不支援的全局決策、5×5／7×7、SGF actor 不明、單局勝負或 bot 選手升格成 T3；直接用 live state 改 scheduler 或宣稱 mastery |
 | 日常使用介面 | P0、P1b、19 課逐步棋盤示範、第 5–14 單元的局部棋形點選及跨課短講自動銜接已完成；真人短任務待進行 | 收集首次使用、跨單元、隔日返回與鍵盤／手機任務紀錄 | 依單一主觀印象大改視覺風格或增加遊戲化功能 |
 
 ## 優先順序與閘門
