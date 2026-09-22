@@ -64,7 +64,8 @@ T0/T1/T2/T3 分開呈現；T2 流程檢核初步通過不能代替獨立驗收�
 5. **局部 scoring 不等於全局好壞**：task success 只表示符合該局部 contract；未達成不等於全局錯著，也不因棋局勝負回頭改分。
 6. **機會與獨立樣本分開**：每個 eligible 決策點都進機會分母；但描述「近期跨局一致」時只以不同 game `sessionId` 為單位，同一盤連續多手不能當三個獨立棋局樣本。
 7. **版本不靜默重算**：每筆 event 保存 eligibility、scoring 與 evidence-taxonomy version；當前 summary 只讀語義相容版本，不相容舊事件另列 excluded count。
-8. **進度只作 evidence state**：`learner-evidence-progress-v1` 把既有 T0–T2 與 bounded live T3 並列成「資料不足／待更多證據／已有延後 T2／已有 live 應用」等狀態，不輸出 mastery 百分比、不直接寫 scheduler，也不取得 formal evaluation authority。
+8. **進度只作 evidence state**：`learner-evidence-progress-v2` 把既有 T0–T2 與 bounded live T3 並列成「資料不足／待更多證據／已有延後 T2／已有 live 應用」等狀態，不輸出 mastery 百分比、不直接寫 scheduler，也不取得 formal evaluation authority。
+9. **資料收集 readiness**：只報 assessed turns、eligible opportunities、first response、unanswered 與跨局 session 是否開始累積；`collecting_multi_session` 只表示已跨至少兩個 session 收到首答，不表示樣本量充分、穩定學會或可作正式推論。
 
 這套 contract 的工程驗證只能證明計數與生命週期符合規格；是否能預測之後的新局面、是否值得影響選題、以及是否對真人學習有效，仍需獨立 retention／transfer 與跨批次真人資料。
 
