@@ -2,15 +2,31 @@
   "use strict";
   const Go = window.GoCore, Live = window.GoLiveGame, Sgf = window.GoSgf;
   const { BLACK, WHITE, EMPTY } = Go;
-  const STORAGE_KEY = "go-live-game-v1", RECOVERY_KEY = "go-live-game-recovery-v1", UI_VERSION = "live-game-ui-v1";
+  const requestedSize = (() => {
+    try { return Live.normalizeBoardSize(new URLSearchParams(window.location.search).get("size"), Live.DEFAULT_SIZE); }
+    catch (_) { return Live.DEFAULT_SIZE; }
+  })();
+  const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
+  const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
+  const UI_VERSION = "live-game-ui-v2";
   const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
+  const boardProfiles = {
+    3: { title: "3×3 微型練習棋盤", heading: "氣與提子的最小練習", description: "適合剛開始學氣、提子、邊角與合法手。棋盤很小，目的是看清局部規則，不把它當完整圍棋對局。", purpose: "氣、提子、合法手" },
+    5: { title: "5×5 微型練習棋盤", heading: "連斷、禁著與眼形練習", description: "空間比 3×3 多一些，適合練連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "連斷、禁著、眼形" },
+    7: { title: "7×7 過渡練習棋盤", heading: "局部攻防與小局過渡", description: "用來把局部手筋、死活與攻防放進較完整的局面，再銜接 9×9。它仍是過渡練習盤，不作正式棋力評量。", purpose: "局部攻防、死活、過渡" },
+    9: { title: "9×9 完整實戰練習", heading: "完整 9×9 實戰棋盤", description: "兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。", purpose: "完整小棋盤對局" }
+  };
   const $ = (id) => document.getElementById(id);
-  let game, auditEvents = [], cursor = [4, 4], loadNotice = "";
+  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "";
+
+  function centerCursor(size) { const middle = Math.floor(size / 2); return [middle, middle]; }
+  function currentProfile() { return boardProfiles[game ? game.boardSize : requestedSize] || boardProfiles[9]; }
 
   function event(type, details = {}) {
     auditEvents.push({
       type, occurredAt: new Date().toISOString(), uiVersion: UI_VERSION,
       evaluationRole: "practice", evaluationContext: "live", formalEligible: false, evidenceUse: "practice_only",
+      boardSize: game ? game.boardSize : requestedSize,
       moveCount: game ? game.moves.length : 0, ...details
     });
     if (auditEvents.length > 1000) auditEvents = auditEvents.slice(-1000);
@@ -29,17 +45,18 @@
   }
   function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) { game = Live.createGame(); event("new_game", { reason: "first_open" }); return; }
+    if (!raw) { game = Live.createGame({ boardSize: requestedSize }); event("new_game", { reason: "first_open" }); return; }
     try {
       const payload = JSON.parse(raw);
       if (!payload || payload.schemaVersion !== 1 || !payload.game) throw new Error("envelope_invalid");
       game = Live.hydrate(payload.game);
+      if (game.boardSize !== requestedSize) throw new Error("saved_board_size_mismatch");
       auditEvents = Array.isArray(payload.auditEvents) ? payload.auditEvents.filter((entry) => entry && typeof entry === "object") : [];
-      loadNotice = game.status === "playing" ? "已從這台電腦續接上次未完成的棋局。" : "已載入這台電腦保存的棋局。";
+      loadNotice = game.status === "playing" ? `已從這台電腦續接上次未完成的 ${game.boardSize}×${game.boardSize} 棋局。` : `已載入這台電腦保存的 ${game.boardSize}×${game.boardSize} 棋局。`;
       event("session_loaded", { status: game.status });
     } catch (error) {
       preserveBrokenSave(raw, error && error.message || "unknown_error");
-      game = Live.createGame(); auditEvents = []; event("new_game", { reason: "recovery_after_invalid_save" });
+      game = Live.createGame({ boardSize: requestedSize }); auditEvents = []; event("new_game", { reason: "recovery_after_invalid_save" });
     }
   }
   function save() {
@@ -53,7 +70,7 @@
       return false;
     }
   }
-  function coordName(x, y) { return `${columns[x]}${9 - y}`; }
+  function coordName(x, y) { return `${columns[x]}${game.boardSize - y}`; }
   function colorLabel(color) { return color === BLACK ? "黑" : "白"; }
   function lastPlayedMove() { return [...game.moves].reverse().find((move) => move.type === "play") || null; }
   function pointAria(x, y) {
@@ -62,41 +79,71 @@
     if (game.status === "scoring") return `${coordName(x, y)}，${state}${stone === EMPTY ? "" : "，可切換死子標記"}`;
     return `${coordName(x, y)}，${state}`;
   }
+  function starPoints(size) {
+    if (size === 9) return [[2, 2], [6, 2], [4, 4], [2, 6], [6, 6]];
+    const middle = Math.floor(size / 2);
+    return [[middle, middle]];
+  }
   function renderBoard() {
-    const size = 9, offset = 60, pitch = 50, end = offset + pitch * (size - 1);
+    const size = game.boardSize, offset = 60, end = 460, pitch = (end - offset) / (size - 1);
+    const stoneRadius = Math.max(18, Math.min(25, pitch * 0.38));
+    const hitRadius = stoneRadius + 7;
     const dead = new Set(game.deadStones || []), last = lastPlayedMove();
-    const parts = [`<svg viewBox="0 0 520 520" role="group" aria-label="9 路棋盤；${game.status === "playing" ? `輪到${colorLabel(game.toPlay)}棋` : game.status === "scoring" ? "終局死子確認" : "棋局已結束"}">`];
+    const parts = [`<svg viewBox="0 0 520 520" role="group" aria-label="${size} 路棋盤；${game.status === "playing" ? `輪到${colorLabel(game.toPlay)}棋` : game.status === "scoring" ? "終局死子確認" : "棋局已結束"}">`];
     for (let i = 0; i < size; i += 1) {
       const p = offset + i * pitch;
       parts.push(`<line class="grid-line" x1="${offset}" y1="${p}" x2="${end}" y2="${p}"/>`);
       parts.push(`<line class="grid-line" x1="${p}" y1="${offset}" x2="${p}" y2="${end}"/>`);
-      parts.push(`<text class="coord" x="${p}" y="30">${columns[i]}</text><text class="coord" x="28" y="${p}">${9 - i}</text>`);
+      parts.push(`<text class="coord" x="${p}" y="30">${columns[i]}</text><text class="coord" x="28" y="${p}">${size - i}</text>`);
     }
-    for (const [x, y] of [[2, 2], [6, 2], [4, 4], [2, 6], [6, 6]]) parts.push(`<circle class="star" cx="${offset + x * pitch}" cy="${offset + y * pitch}" r="4"/>`);
+    for (const [x, y] of starPoints(size)) parts.push(`<circle class="star" cx="${offset + x * pitch}" cy="${offset + y * pitch}" r="4"/>`);
     for (let y = 0; y < size; y += 1) for (let x = 0; x < size; x += 1) {
       const cx = offset + x * pitch, cy = offset + y * pitch, stone = game.board[y][x], isDead = dead.has(`${x},${y}`);
       const current = cursor[0] === x && cursor[1] === y;
-      parts.push(`<g class="live-point" data-x="${x}" data-y="${y}" role="button" tabindex="${current ? 0 : -1}" aria-label="${pointAria(x, y)}"><circle class="point-hit" cx="${cx}" cy="${cy}" r="22"/><circle class="point-focus" cx="${cx}" cy="${cy}" r="21"/>`);
-      if (stone === BLACK) parts.push(`<circle class="stone-black${isDead ? " dead-stone" : ""}" cx="${cx}" cy="${cy}" r="20"/>`);
-      if (stone === WHITE) parts.push(`<circle class="stone-white${isDead ? " dead-stone" : ""}" cx="${cx}" cy="${cy}" r="20"/>`);
-      if (last && last.point && last.point[0] === x && last.point[1] === y) parts.push(`<circle class="last-move" cx="${cx}" cy="${cy}" r="9"/>`);
-      if (isDead && stone !== EMPTY) parts.push(`<line class="dead-cross" x1="${cx - 9}" y1="${cy - 9}" x2="${cx + 9}" y2="${cy + 9}"/><line class="dead-cross" x1="${cx + 9}" y1="${cy - 9}" x2="${cx - 9}" y2="${cy + 9}"/>`);
+      parts.push(`<g class="live-point" data-x="${x}" data-y="${y}" role="button" tabindex="${current ? 0 : -1}" aria-label="${pointAria(x, y)}"><circle class="point-hit" cx="${cx}" cy="${cy}" r="${hitRadius}"/><circle class="point-focus" cx="${cx}" cy="${cy}" r="${hitRadius - 1}"/>`);
+      if (stone === BLACK) parts.push(`<circle class="stone-black${isDead ? " dead-stone" : ""}" cx="${cx}" cy="${cy}" r="${stoneRadius}"/>`);
+      if (stone === WHITE) parts.push(`<circle class="stone-white${isDead ? " dead-stone" : ""}" cx="${cx}" cy="${cy}" r="${stoneRadius}"/>`);
+      if (last && last.point && last.point[0] === x && last.point[1] === y) parts.push(`<circle class="last-move" cx="${cx}" cy="${cy}" r="${Math.max(7, stoneRadius * 0.42)}"/>`);
+      if (isDead && stone !== EMPTY) parts.push(`<line class="dead-cross" x1="${cx - stoneRadius * 0.45}" y1="${cy - stoneRadius * 0.45}" x2="${cx + stoneRadius * 0.45}" y2="${cy + stoneRadius * 0.45}"/><line class="dead-cross" x1="${cx + stoneRadius * 0.45}" y1="${cy - stoneRadius * 0.45}" x2="${cx - stoneRadius * 0.45}" y2="${cy + stoneRadius * 0.45}"/>`);
       parts.push("</g>");
     }
     parts.push("</svg>");
     $("live-board").innerHTML = parts.join("");
+    $("live-board").setAttribute("aria-label", `${size} 路${size === 9 ? "實戰" : "微型練習"}棋盤`);
     $("live-board").setAttribute("aria-disabled", game.status === "finished" ? "true" : "false");
   }
   function scoreLineHtml(score) {
     if (!score) return "";
     const winner = score.winner === null ? "目前同分" : `目前${colorLabel(score.winner)}領先 ${score.difference} 目`;
-    return `<div><strong>黑</strong>：棋子 ${score.blackStones} ＋ 地 ${score.blackTerritory} ＝ ${score.blackTotal}</div><div><strong>白</strong>：棋子 ${score.whiteStones} ＋ 地 ${score.whiteTerritory} ＋ 貼目 ${score.komi} ＝ ${score.whiteTotal}</div><div><strong>中立空點</strong>：${score.neutral}</div><div><strong>${winner}</strong></div>`;
+    const komiText = score.komi ? ` ＋ 貼目 ${score.komi}` : "";
+    return `<div><strong>黑</strong>：棋子 ${score.blackStones} ＋ 地 ${score.blackTerritory} ＝ ${score.blackTotal}</div><div><strong>白</strong>：棋子 ${score.whiteStones} ＋ 地 ${score.whiteTerritory}${komiText} ＝ ${score.whiteTotal}</div><div><strong>中立空點</strong>：${score.neutral}</div><div><strong>${winner}</strong></div>`;
   }
   function moveLabel(move) {
     const prefix = `${move.number}. ${colorLabel(move.color)}`;
     return move.type === "pass" ? `${prefix} Pass` : `${prefix} ${coordName(move.point[0], move.point[1])}${move.captured && move.captured.length ? ` · 提 ${move.captured.length}` : ""}`;
   }
+  function renderChrome() {
+    const size = game.boardSize, profile = currentProfile();
+    document.title = `VT-COS｜${profile.title}`;
+    $("live-brand-mode").textContent = `VT-COS · ${size}×${size} 棋盤練習`;
+    $("live-title").textContent = profile.title;
+    $("live-description").textContent = profile.description;
+    $("board-size-label").textContent = `${size} × ${size}`;
+    $("board-heading").textContent = profile.heading;
+    $("practice-purpose").textContent = profile.purpose;
+    $("rules-summary").textContent = size === 9 ? `中國式面積 · 貼 ${game.komi} · 簡單劫` : `微型練習盤 · ${game.komi ? `貼 ${game.komi}` : "無貼目"} · 簡單劫`;
+    $("import-label").textContent = `匯入 ${size} 路 SGF`;
+    $("footer-boundary").textContent = size === 9
+      ? "9×9 提供目前已支援的完整小棋盤對局流程；使用 simple ko，不宣稱涵蓋各棋規的 superko、終局爭議或裁判規則。"
+      : `${size}×${size} 定位為規則與局部技能的微型練習盤；雖可走完整 Pass／計分流程，但不把其勝負當正式棋力、T3 或完整對局能力證據。`;
+    for (const link of document.querySelectorAll("[data-board-size-choice]")) {
+      const active = Number(link.dataset.boardSizeChoice) === size;
+      link.classList.toggle("active", active);
+      if (active) link.setAttribute("aria-current", "page"); else link.removeAttribute("aria-current");
+    }
+  }
   function render() {
+    renderChrome();
     renderBoard();
     $("move-count").textContent = String(game.moves.length);
     $("capture-count").textContent = `黑 ${game.captures.black} · 白 ${game.captures.white}`;
@@ -140,7 +187,8 @@
     const delta = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] }[key];
     if (!delta) return;
     const [x, y] = cursor;
-    cursor = [Math.max(0, Math.min(8, x + delta[0])), Math.max(0, Math.min(8, y + delta[1]))];
+    const max = game.boardSize - 1;
+    cursor = [Math.max(0, Math.min(max, x + delta[0])), Math.max(0, Math.min(max, y + delta[1]))];
     for (const point of $("live-board").querySelectorAll(".live-point")) point.setAttribute("tabindex", Number(point.dataset.x) === cursor[0] && Number(point.dataset.y) === cursor[1] ? "0" : "-1");
     focusCursor();
   }
@@ -151,7 +199,7 @@
   }
   function timestampFilename() {
     const d = new Date(), pad = (n) => String(n).padStart(2, "0");
-    return `9x9_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}.sgf`;
+    return `${game.boardSize}x${game.boardSize}_${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}.sgf`;
   }
 
   $("live-board").addEventListener("click", (e) => {
@@ -185,25 +233,27 @@
     applyResult(Live.finalizeScore(game), "score_confirmed", { deadStones: [...(game.deadStones || [])], successMessage: "終局結果已確認並保存。" });
   });
   $("new-game-button").addEventListener("click", () => {
-    if (game.moves.length && !confirm("開始新局會取代目前本機續局狀態。若要保留這盤，請先匯出 SGF。確定開始新局？")) return;
-    game = Live.createGame(); auditEvents = []; event("new_game", { reason: "user_started" }); cursor = [4, 4];
-    save(); render(); showFeedback("已開始新的 9×9 棋局。", "success");
+    if (game.moves.length && !confirm("開始新局會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定開始新局？")) return;
+    game = Live.createGame({ boardSize: requestedSize }); auditEvents = []; event("new_game", { reason: "user_started" }); cursor = centerCursor(requestedSize);
+    save(); render(); showFeedback(`已開始新的 ${requestedSize}×${requestedSize} 棋局。`, "success");
   });
   $("export-sgf-button").addEventListener("click", () => {
     try {
       download(Live.toSgf(game), timestampFilename()); event("sgf_export", { status: game.status }); save();
-      showFeedback("SGF 已建立；可用 KaTrain／其他棋譜工具開啟，或回課程匯入複盤。", "success");
+      showFeedback("SGF 已建立；可用 KaTrain／其他棋譜工具開啟。9×9 棋譜也可回課程匯入做局部複盤。", "success");
     } catch (error) { showFeedback(error.message, "error"); }
   });
   $("import-sgf-input").addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0]; if (!file) return;
     if (file.size > Sgf.MAX_SGF_FILE_BYTES) { showFeedback(`SGF 無法匯入：檔案過大（上限 ${Sgf.MAX_SGF_FILE_BYTES} bytes）。`, "error"); e.target.value = ""; return; }
-    if (game.moves.length && !confirm("匯入棋譜會取代目前本機續局狀態。若要保留這盤，請先匯出 SGF。確定匯入？")) { e.target.value = ""; return; }
+    if (game.moves.length && !confirm("匯入棋譜會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定匯入？")) { e.target.value = ""; return; }
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        game = Live.fromSgf(String(reader.result || "")); auditEvents = [];
-        event("sgf_import", { sourceName: file.name, importedStatus: game.status }); cursor = [4, 4];
+        const imported = Live.fromSgf(String(reader.result || ""));
+        if (imported.boardSize !== requestedSize) throw new Error(`這是 ${imported.boardSize}×${imported.boardSize} 棋譜；請先切換到相同尺寸的練習棋盤再匯入。`);
+        game = imported; auditEvents = [];
+        event("sgf_import", { sourceName: file.name, importedStatus: game.status }); cursor = centerCursor(game.boardSize);
         save(); render(); showFeedback(`已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, "success");
       } catch (error) { showFeedback(error.message, "error"); }
       e.target.value = "";
