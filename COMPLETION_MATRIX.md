@@ -62,8 +62,8 @@
 | 項目 | 現況 | 驗證 | 證據層級 | 判定 |
 |---|---|---|---|---|
 | 人機實戰事件回流 | `practice-events.js` 以獨立 append-only store 保存 live practice 操作；課程首頁顯示人機局數與使用者可觀察決策，完整 JSON 備份帶出原始事件。事件固定 unscored／practice-only，不進 KC、Metrics 或 scheduler | targeted contract：重複 event ID 不加倍、computer action 不算 human decision、malformed store 維持 ERROR、課程端只讀摘要／備份；隔離 V8 harness `tests/live-game.test.cjs` 21/21 PASS | 工程 | 條件通過；完整 `app-state`／Windows UI／push-triggered CI 本輪仍 UNKNOWN；不得升格為 T3 或 mastery |
-| 四尺寸本機電腦對手 | 3／5／7／9 路皆可選雙人同機或和電腦下；可執黑／白。電腦只從規則引擎合法候選中，用 bounded heuristic 選手，無合理手可 Pass；不是 KataGo | `practice-bot.js` 契約測試：四尺寸只產生合法 play／pass、3 路立即提子案例、UI 載入與 practice-only 邊界 | 工程 | 隔離 V8 harness 執行 `tests/live-game.test.cjs` 18/18 PASS；repo-wide push-triggered CI 仍 UNKNOWN。不得宣稱棋力、最佳手或教學成效 |
-| 3×3／5×5／7×7／9×9 棋盤練習 | 共用 `live-game.html` 與尺寸切換；3／5／7 路作微型／過渡練習，9 路保留完整小棋盤對局。四種尺寸共用合法手／提子／自殺禁著／simple ko、Pass、人工終局、悔棋、獨立續局與 SGF；課程依單元推薦尺寸但可隨時切換 | `tests/live-game.test.cjs` 新增尺寸邊界、3 路提子、四尺寸 SGF round-trip、9 路相容與入口契約；main 原始碼以隔離 V8 harness 執行該測試檔 15/15 PASS，另回歸 106 題課程中的 count/connect/move 規則檢查無失敗 | 工程 | 條件通過；精確 repo-wide CI 本輪狀態 UNKNOWN；全部維持 `practice_only`，不自動成為 T2／T3 或學習成效 |
+| 三尺寸本機電腦對手 | 5／7／9 路 active practice 可選雙人同機或和電腦下；可執黑／白。3×3 只保留 legacy/runtime 相容。電腦只從規則引擎合法候選中，用 bounded heuristic 選手，無合理手可 Pass；不是 KataGo | `practice-bot.js` 契約測試：四尺寸只產生合法 play／pass、3 路立即提子案例、UI 載入與 practice-only 邊界 | 工程 | 隔離 V8 harness 執行 `tests/live-game.test.cjs` 18/18 PASS；repo-wide push-triggered CI 仍 UNKNOWN。不得宣稱棋力、最佳手或教學成效 |
+| 5×5／7×7／9×9 active 棋盤練習 | 共用 `live-game.html` 與尺寸切換；5／7 路作基礎／過渡練習，9 路保留完整小棋盤對局。3×3 已退出學習者 UI，但底層與歷史資料相容保留。四種尺寸共用合法手／提子／自殺禁著／simple ko、Pass、人工終局、悔棋、獨立續局與 SGF；課程依單元推薦尺寸但可隨時切換 | `tests/live-game.test.cjs` 新增尺寸邊界、3 路提子、四尺寸 SGF round-trip、9 路相容與入口契約；main 原始碼以隔離 V8 harness 執行該測試檔 15/15 PASS，另回歸 106 題課程中的 count/connect/move 規則檢查無失敗 | 工程 | 條件通過；精確 repo-wide CI 本輪狀態 UNKNOWN；全部維持 `practice_only`，不自動成為 T2／T3 或學習成效 |
 
 
 ## 2026-09-22 Change note｜9×9 完整實戰
@@ -120,3 +120,13 @@
 - **改動：** `live-game.html` 改以 `live-game.css?v=live-game-ui-v4` 載入，強制新 UI 版本使用不同資產 URL。
 - **邊界：** 只影響靜態資產快取，不修改規則、棋局、事件或學習模型。
 - **Validation：** 新增 HTML contract，要求 live CSS 帶 `live-game-ui-v4` 版本參數；完整線上 Pages propagation 仍需以實際站點重新載入確認。
+
+
+## 2026-09-22 Change note｜3×3 active practice 退役
+
+- **Johari 缺口檢查：** 開放區顯示 3×3 本來就是本專案自行加入的 scaffold，且目前單一使用者實際操作後認為空間過小；盲點是此觀察不能推廣成「3×3 對所有初學者無效」；隱藏風險是 repo 已有 3×3 存檔、SGF、bot 與 event 語義；未知則是 5×5 對其他學習者的相對效益仍未驗證。
+- **改動：** active learner practice 簡化為 5×5 → 7×7 → 9×9；單元 1–3 推薦 5×5，單元 4 推薦 7×7，單元 5 起推薦 9×9。自由練習與人機入口不再顯示 3×3。
+- **歷史相容：** `go.js` 與 `live-game.js` 仍可讀／重建 3×3 legacy game、SGF 與事件；既有 `go-live-game-v1-size-3` 不遷移、不覆寫。舊 `?size=3` 入口改開 5×5，並提示 3×3 已退出 active practice。
+- **證據邊界：** 這是目前產品的 usability/complexity 決策，不是圍棋教學的一般化結論；不改 KC、scheduler、formal evaluation 或既有事件語義。
+- **Rollback：** 恢復 3×3 selector 與課程 mapping 即可；legacy runtime 從未移除，因此不需資料 migration。
+- **Validation：** 新增 active/legacy 分離契約；3×3 真實邊界提子 regression 繼續保留。完整 repo-wide CI／Windows browser 需另行確認。
