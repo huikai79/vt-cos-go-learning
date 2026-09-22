@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  const POLICY_VERSION = "learner-evidence-progress-v1";
+  const POLICY_VERSION = "learner-evidence-progress-v2";
 
   function byId(list) {
     return new Map((Array.isArray(list) ? list : []).filter((item) => item && item.skillId).map((item) => [item.skillId, item]));
@@ -63,6 +63,46 @@
     return labels[state] || state;
   }
 
+  function collectionReadiness(live = {}) {
+    const skills = Array.isArray(live.skills) ? live.skills : [];
+    const assessedHumanTurns = Number(live.assessedHumanTurns) || 0;
+    const eligibleOpportunities = Number(live.eligibleOpportunities) || 0;
+    const firstResponses = skills.reduce((sum, skill) => sum + (Number(skill.firstResponses) || 0), 0);
+    const unansweredOpportunities = skills.reduce((sum, skill) => sum + (Number(skill.unansweredOpportunities) || 0), 0);
+    const sessionIds = new Set();
+    for (const skill of skills) {
+      for (const session of Array.isArray(skill.sessionOutcomes) ? skill.sessionOutcomes : []) {
+        if (session && typeof session.sessionId === "string" && session.sessionId) sessionIds.add(session.sessionId);
+      }
+    }
+    const distinctSessionsWithFirstResponse = sessionIds.size;
+    let stage = "not_started";
+    let label = "尚未開始掃描 9×9 人機回合";
+    if (assessedHumanTurns > 0 && eligibleOpportunities === 0) {
+      stage = "scanning_no_eligible";
+      label = "已開始整盤掃描，但尚未出現 v1 合格局部機會";
+    } else if (eligibleOpportunities > 0 && firstResponses === 0) {
+      stage = "eligible_waiting_response";
+      label = "已出現合格局部機會，但尚無首答";
+    } else if (firstResponses > 0 && distinctSessionsWithFirstResponse < 2) {
+      stage = "collecting_single_session";
+      label = "已開始收集合格首答；目前仍只來自單一棋局";
+    } else if (distinctSessionsWithFirstResponse >= 2) {
+      stage = "collecting_multi_session";
+      label = "已跨不同棋局收集合格首答";
+    }
+    return {
+      stage,
+      label,
+      assessedHumanTurns,
+      eligibleOpportunities,
+      firstResponses,
+      unansweredOpportunities,
+      distinctSessionsWithFirstResponse,
+      interpretationBoundary: "這只是資料收集 readiness，不是樣本量充分性、mastery、棋力或學習成效判定；沒有 eligible 機會不表示退步。"
+    };
+  }
+
   function summarize(input = {}) {
     const diagnostic = input.learningDiagnostics || { skills: [] };
     const live = input.liveEvidenceSummary || { skills: [] };
@@ -96,11 +136,12 @@
       interpretationBoundary: "這是證據狀態彙總，不是校準後 mastery、棋力或學習成效分數。T0–T2 練習／延後證據與 live T3 分開保存後才並列；單局勝負、bot 強度與不合格回合不改變技能狀態。",
       schedulerAuthority: false,
       formalEvaluationAuthority: false,
+      collectionReadiness: collectionReadiness(live),
       skills
     };
   }
 
-  const api = { POLICY_VERSION, practiceState, liveState, summarize };
+  const api = { POLICY_VERSION, practiceState, liveState, collectionReadiness, summarize };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.GoLearnerProgress = api;
 })(typeof window !== "undefined" ? window : globalThis);
