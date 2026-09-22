@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v30`；棋盤練習頁 `live-game-ui-v6`
+- `ui_version`: `learner-flow-v32`；棋盤練習頁 `live-game-ui-v6`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -63,7 +63,7 @@
 |---|---|---|---|---|
 | 人機實戰原始事件回流 | `practice-events.js` 繼續以獨立 append-only store 保存全部 live practice 操作；這一層仍是 unscored observation，不因新增 live T3 contract 而回溯升格 | duplicate ID、actor 分離、malformed store fail-closed 與匯出 contract 持續由 board suite 覆蓋 | 工程 | 條件通過；原始事件與可評分 live evidence 分層保存 |
 | 9×9 live eligibility + scoring | 新增 `live-evidence.js`：每個 9×9 人機學習者回合在落子前掃描整盤，先決定 eligibility，再保存 assessment／first response／retry。v1 只升格「整盤唯一一手提子」與「電腦上一手新造成打吃後的唯一直接延長救棋」；多候選、5×5／7×7、SGF actor 不明、全局取捨均不評分 | `tests/live-evidence.test.cjs` 11/11 PASS；包含多機會排除、actor provenance、未答分母、首答／retry、舊 contract 隔離與同局多手不冒充跨局樣本 | 工程／自然實戰 T3 管線 | 條件通過；`formalEligible=false`，只支持這兩個 bounded local contracts，不支持全局最佳手或棋力 |
-| 整合學習證據狀態 | 新增 `learner-progress.js`，將既有 T0–T2 診斷與 bounded live T3 以版本化 policy 並列成「資料不足／待更多證據／已有延後 T2／已有 live 應用」等可重算狀態；不輸出 mastery %、不直接寫 scheduler | `tests/learner-progress.test.cjs` 5/5 PASS；board/UI contract suite 26/26 PASS | 工程／Learner Model 描述層 | 條件通過；尚未取得真人效度或學習成效證據 |
+| 整合學習證據狀態 | `learner-progress.js` v2 將既有 T0–T2 診斷與 bounded live T3 並列成可重算 evidence state，另加入 live 資料收集 readiness（未開始／只掃描／eligible 未答／單局收集／跨局收集）；不輸出 mastery %、不直接寫 scheduler | `tests/learner-progress.test.cjs` 6/6 PASS；board/UI contract suite 26/26 PASS | 工程／Learner Model 描述層 | 條件通過；readiness 只描述資料是否開始累積，不代表樣本量充分、真人效度或學習成效 |
 | 三尺寸本機電腦對手 | 5／7／9 路 active practice 可選雙人同機或和電腦下；可執黑／白。3×3 只保留 legacy/runtime 相容。電腦只從規則引擎合法候選中，用 bounded heuristic 選手，無合理手可 Pass；不是 KataGo | `tests/live-game.test.cjs` 持續驗證 active 尺寸合法 play／pass、bot 基本行為與 UI 接線；3×3 只保留 legacy regression | 工程 | 條件通過；bot 強度與教學價值未驗，不得宣稱棋力、最佳手或學習成效 |
 | 5×5／7×7／9×9 active 棋盤練習 | 共用 `live-game.html` 與尺寸切換；5／7 路作基礎／過渡練習，9 路保留完整小棋盤對局。3×3 已退出學習者 UI，但底層與歷史資料相容保留。規則、Pass、人工終局、悔棋、續局與 SGF 共用 bounded runtime | `tests/live-game.test.cjs` 目前 targeted suite 26/26 PASS，含尺寸、3×3 legacy、SGF、bot、rendering、cache-bust 與 live evidence 靜態接線 | 工程 | 5×5／7×7 仍只作 practice；9×9 只有 `live-eligibility-v1` 明列的少數局部回合可成 bounded live T3，其餘仍 unscored；不代表學習成效 |
 
@@ -136,7 +136,7 @@
 
 ## 2026-09-22 Change note｜9×9 live evidence 與整合進度
 
-- **改動：** 新增 `live-evidence.js`、`learner-progress.js`、`tests/live-evidence.test.cjs`、`tests/learner-progress.test.cjs`。9×9 人機局每個學習者回合在第一個操作前先凍結整盤 assessment；eligible 與 scoring contract 分別版本化為 `live-eligibility-v1`／`live-scoring-v1`，整合狀態 policy 為 `learner-evidence-progress-v1`。
+- **改動：** 新增 `live-evidence.js`、`learner-progress.js`、`tests/live-evidence.test.cjs`、`tests/learner-progress.test.cjs`。9×9 人機局每個學習者回合在第一個操作前先凍結整盤 assessment；eligible 與 scoring contract 分別版本化為 `live-eligibility-v1`／`live-scoring-v1`，整合狀態 policy 為 `learner-evidence-progress-v2`。
 - **Eligibility v1：** 只接受兩類可由 rules engine 客觀核對的局部任務：整盤唯一的一手提子；以及 actor 已確認為 computer 的上一手新造成打吃後，唯一直接延長且不靠提子的救棋。整盤有多個支援機會時整回合排除；5×5／7×7、SGF 匯入 actor 不明與其他全局決策維持 unscored。
 - **First-response invariant：** assessment、first response、retry 分開保存；非法首答後重載會從 event store 恢復 response count，不把 retry 改寫成新的 first response。eligible assessment 沒有 response 仍保留在 denominator。
 - **Historical semantics：** summary 只聚合目前 eligibility/scoring/taxonomy 版本；不相容舊事件另計 `excludedContractVersionEvents`，不以新語義靜默重算。
@@ -145,3 +145,25 @@
 - **Migration：** 新增獨立 `go-live-evidence-v1` store；不搬移、不覆寫既有 `state.events`、scheduler、`go-live-practice-events-v1` 或棋局存檔。
 - **Rollback：** 移除兩個新 runtime 檔與首頁兩個 evidence summary 即可；既有課程、棋局與 raw practice events 不需 migration。
 - **Validation：** live evidence contract 11/11 PASS；integrated progress policy 5/5 PASS；既有 board/UI targeted suite 26/26 PASS。已補 `app-state.test.cjs` 整合反證，但本環境仍無真實 Node `vm`／Windows browser；repo-wide push CI 狀態維持 UNKNOWN。
+
+
+## 2026-09-22 Change note｜悟之一手改名
+
+- **改動：** 現行產品名稱由「一手一懂」改為「悟之一手」；公開名稱改為 `VT-COS｜悟之一手`。同步首頁、棋盤頁、R1 reviewer 頁、SGF 匯出註記、README、`BRAND.md`、release manifest、release checklist、品牌測試與 current-truth 標題。
+- **歷史語義：** 明確屬於歷史 review／舊證據快照的文字不因品牌改名而重寫；storage key、event schema、KC、item/scoring policy、holdout exposure、trial protocol 與歷史事件均不 migration。
+- **英文 metadata：** 不硬譯新中文產品名；品牌規格改用中性 `VT-COS · Go Learning` 作英文 metadata 用語。
+- **Rollback：** 只需恢復 display/metadata 品牌字串；學習資料與 evidence store 不受影響。
+
+## 2026-09-22 Change note｜課程 save envelope P0 修復
+
+- **問題：** `app.js::save()` 曾誤插 `livePracticeEvents`／descriptor／read error 三個 raw-export 欄位，但該作用域不存在 `livePractice`，可能導致主課程 localStorage 寫入失敗。
+- **修正：** 從主課程 `go-learning-prototype-v7` envelope 移除這三個欄位；raw practice events 與 scored live evidence 繼續各自使用獨立 store，只有完整 JSON 匯出時才聚合。
+- **Invariant：** 主課程 save 不得複製 `livePractice`／`liveEvidence` source of truth；stream failure 也不得污染課程保存。
+- **Validation：** 新增 `app-state.test.cjs` negative contract；targeted board/UI harness 26/26 PASS，且直接檢查 `save()` block 不含 `livePractice`。完整 Node vm／Windows browser 本輪仍需 repo-wide CI／實機驗證。
+
+## 2026-09-22 Change note｜live evidence collection readiness v2
+
+- **改動：** `learner-evidence-progress-v2` 新增 `collectionReadiness`，只描述 9×9 live evidence 是否已開始掃描、是否出現 eligible、是否有 first response，以及是否跨不同 game session 累積。
+- **階段：** `not_started`、`scanning_no_eligible`、`eligible_waiting_response`、`collecting_single_session`、`collecting_multi_session`。
+- **證據邊界：** readiness 不是「樣本量已足夠」、mastery、棋力、學習成效或 formal evaluation；沒有 eligible 機會不代表退步。
+- **Validation：** `tests/learner-progress.test.cjs` 6/6 PASS；現行 live evidence contract 11/11 PASS；board/UI targeted suite 26/26 PASS。
