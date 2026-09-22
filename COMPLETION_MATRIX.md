@@ -129,4 +129,4 @@
 - **歷史相容：** `go.js` 與 `live-game.js` 仍可讀／重建 3×3 legacy game、SGF 與事件；既有 `go-live-game-v1-size-3` 不遷移、不覆寫。舊 `?size=3` 入口改開 5×5，並提示 3×3 已退出 active practice。
 - **證據邊界：** 這是目前產品的 usability/complexity 決策，不是圍棋教學的一般化結論；不改 KC、scheduler、formal evaluation 或既有事件語義。
 - **Rollback：** 恢復 3×3 selector 與課程 mapping 即可；legacy runtime 從未移除，因此不需資料 migration。
-- **Validation：** 新增 active/legacy 分離契約；3×3 真實邊界提子 regression 繼續保留。完整 repo-wide CI／Windows browser 需另行確認。
+- **Validation：** 新增 active/legacy 分離契約；3×3 真實邊界提子 regression 繼續保留。main 原始碼隔離 V8 harness `tests/live-game.test.cjs` 25/25 PASS。完整 repo-wide CI／Windows browser 仍需另行確認。
