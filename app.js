@@ -950,6 +950,14 @@
     $("lesson-title").textContent = lesson.title;
     $("lesson-subtitle").textContent = lesson.subtitle;
     $("lesson-badge").textContent = lesson.badge || "概念練習";
+    if ($("stage-board-practice-link")) {
+      const courseUnit = Number.isInteger(lesson.unit) ? lesson.unit : 0;
+      const recommendedBoardSize = courseUnit === 0 ? 3 : courseUnit <= 2 ? 5 : courseUnit === 3 ? 7 : 9;
+      const practiceNames = { 3: "氣與提子", 5: "連斷與規則", 7: "死活與局部攻防", 9: "完整小棋盤對局" };
+      $("stage-board-practice-link").href = `live-game.html?size=${recommendedBoardSize}`;
+      $("stage-board-practice-link").textContent = `本階段棋盤練習 · ${recommendedBoardSize}×${recommendedBoardSize}`;
+      $("stage-board-practice-link").setAttribute("aria-label", `開啟 ${recommendedBoardSize}×${recommendedBoardSize} 棋盤練習：${practiceNames[recommendedBoardSize]}`);
+    }
     $("teaching-text").textContent = lesson.text;
     $("teaching-demo").textContent = (lesson.demo || "先依題目找出本課要觀察的棋形，再作答。").replace(/^示範：\s*/, "");
     $("teaching-check").textContent = lesson.takeaway;
