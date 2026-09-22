@@ -48,17 +48,16 @@
 
 Provider、parser、engine、storage 或 analysis failure 必須保持 failure／unknown，不能 fallback 成看似成功的推測結果。
 
-## 9×9 Live Game contract
+## 3×3／5×5／7×7／9×9 Board Practice contract
 
-2026-09-22 新增獨立完整實戰模組，但不改寫課程作答生命週期。
+2026-09-22 起，`live-game.html` 由單一 9×9 頁泛化為共用棋盤練習頁；規則 authority 仍只有 `go.js`，不為不同尺寸建立平行規則來源。
 
-- `live-game.js` 只組合既有 `go.js` authority：9×9、合法手、提子、自殺禁著與 simple ko；完整對局規則版本為 `cn-area-simple-ko-v1`。
-- 黑先、白貼 7.5，採 Chinese area scoring；兩次連續 Pass 進入 `scoring`，死子由人工作整串標記。系統不把死活判定或終局爭議偽裝成規則引擎已知事實；有爭議時恢復下棋。
-- 實戰 localStorage 使用獨立 `go-live-game-v1`，不升既有學習 storage schema。hydrate 以初始盤面＋手順重播重建，不信任保存的衍生盤面；版本不符或資料損壞時保留 recovery 副本。
-- live audit event 固定為 `practice/live`、`formalEligible=false`，不寫入正式 evaluation 分母、不調整同輪 scheduler，也不把單局勝負當學習成效。
-- SGF 可匯出／續局的共同子集為單盤、9×9、單主線、根節點 setup、落子與 pass；含分支、collection、中途 setup 仍維持 bounded parser 的拒絕邊界。
-- 未支援 superko、日本式領地／提子計分、裁判式死活、自動 AI 對手。若真實使用出現這些 correctness/scope bottleneck，再依 Reference → Oracle → Dependency → Fork 評估升級。
-
+- `go.js` 保留 9×9 為預設值以相容既有課程題目，但棋串、氣、提子、自殺禁著與 simple ko 會依實際方形棋盤尺寸計算。`live-game.js` 只開放 3、5、7、9 路。
+- 3×3／5×5／7×7 分別定位為 micro／transitional practice；9×9 是第一個完整小棋盤對局。所有 live audit event 仍固定 `evaluationRole=practice`、`evaluationContext=live`、`formalEligible=false`，不得因完成或勝負自動升格為 T2、T3 或學習成效。
+- 9×9 延續黑先、白貼 7.5；3×3／5×5／7×7 目前預設貼目 0，只是本專案練習預設，不宣稱為通用正式棋規。四種尺寸都沿用 Chinese area scoring 流程、兩次 Pass、人工整串死子標記與 `cn-area-simple-ko-v1`；系統不自動判死活或終局爭議。
+- 續局依尺寸隔離：9×9 繼續使用既有 `go-live-game-v1`，避免破壞歷史資料；3／5／7 路使用各自的 `go-live-game-v1-size-N`。hydrate 仍由初始盤面＋手順重播，不信任保存的衍生盤面；不合法或版本不符資料保留 recovery 副本後開新局。
+- live-game SGF 使用共用 bounded node parser，支援單盤、單主線、根節點 setup、落子與 pass 的 3／5／7／9 路子集；匯入尺寸必須與目前練習頁一致。課程 `sgf.js::parseSgf` 仍維持 9×9 限制，因此只有 9×9 live SGF 可直接回到既有課程局部複盤；較小棋盤匯出只作保存或外部工具使用。
+- 課程頁只做 Experience 層推薦：單元 1 → 3×3、單元 2–3 → 5×5、單元 4 → 7×7、單元 5 起 → 9×9；自由練習頁可隨時切換。這個映射不是 mastery threshold，也不修改 scheduler。
 ## External Adoption Policy
 
 外部 OSS 的採用順序預設為：
