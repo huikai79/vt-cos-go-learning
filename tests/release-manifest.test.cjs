@@ -60,7 +60,7 @@ test("Pages 採無 Jekyll 的 repository root 靜態發布", () => {
     defaultProjectUrl: "https://huikai79.github.io/vt-cos-go-learning/",
     accountCustomDomainInherited: true,
     jekyllDisabled: true,
-    entrypoints: ["index.html", "r1-review.html"]
+    entrypoints: ["index.html", "live-game.html", "r1-review.html"]
   });
   assert.equal(fs.statSync(path.join(root, ".nojekyll")).isFile(), true);
 });
