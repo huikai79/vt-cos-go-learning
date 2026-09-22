@@ -100,7 +100,9 @@ v1 只允許兩類可由規則引擎客觀核對的局部機會：
 
 ## Learner evidence progress contract
 
-`learner-progress.js` 的 `learner-evidence-progress-v1` 只做可重算的描述性 Evidence → Update 摘要：把既有課程／排程 T0–T2 診斷與上述 bounded live T3 **並列**，輸出「資料不足」「仍需更多證據」「已觀察延後 T2、live 待機會」「已觀察 live、T2 待驗」「已觀察延後 T2 與 live」等狀態。
+`learner-progress.js` 的 `learner-evidence-progress-v2` 只做可重算的描述性 Evidence → Update 摘要：把既有課程／排程 T0–T2 診斷與上述 bounded live T3 **並列**，輸出「資料不足」「仍需更多證據」「已觀察延後 T2、live 待機會」「已觀察 live、T2 待驗」「已觀察延後 T2 與 live」等狀態。
+
+v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個收集階段：尚未掃描、已掃描但尚無 eligible、eligible 尚未有 first response、單一棋局已有首答、或已跨不同 game session 收到首答。這些階段不設定「足夠樣本」門檻，也不代表能力高低。
 
 - 不輸出未校準 mastery 百分比、段位、棋力或學習成效。
 - `schedulerAuthority=false`：此狀態目前不直接改 scheduler；若未來要影響選題，需另證明 decision value 並升版 policy。
