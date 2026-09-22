@@ -16,7 +16,7 @@
 
 2026-09-22 本機電腦對手更新：四種棋盤皆可選雙人同機或和電腦下，使用者可執黑或白。第一版對手是 bounded heuristic bot，只從規則引擎確認合法的候選手中排序，優先立即提子並避免明顯自填；它不是 KataGo、不是棋力模型，也不把勝負、落子選擇或完成局數寫入 KC／scheduler／formal evaluation。其目的只是在單人離線情境補足可反覆操作的 Experience；若真人觀察顯示 bot 行為誤導學習，應降低權重或改以 KataGo bounded integration，而不是把 heuristic 包裝成教學權威。
 
-2026-09-22 人機實戰事件回流更新：`live-practice-events-v1` 繼續保存全部自由／人機操作，維持 unscored practice observation；另新增 `live-eligibility-v1`／`live-scoring-v1`，只把 9×9 人機局中**在學習者落子前已整盤掃描並唯一符合 contract** 的一手提子、以及 computer 上一手新造成打吃後的唯一直接延長救棋，升為 bounded live T3。assessment、first response、retry、未答分母與 contract version 分開保存；多候選、5×5／7×7、actor 不明與全局取捨均不評分。`learner-evidence-progress-v1` 再把既有 T0–T2 與 bounded live T3 並列為描述性 evidence state，不輸出 mastery 百分比，也不直接改 scheduler。
+2026-09-22 人機實戰事件回流更新：`live-practice-events-v1` 繼續保存全部自由／人機操作，維持 unscored practice observation；另新增 `live-eligibility-v1`／`live-scoring-v1`，只把 9×9 人機局中**在學習者落子前已整盤掃描並唯一符合 contract** 的一手提子、以及 computer 上一手新造成打吃後的唯一直接延長救棋，升為 bounded live T3。assessment、first response、retry、未答分母與 contract version 分開保存；多候選、5×5／7×7、actor 不明與全局取捨均不評分。`learner-evidence-progress-v2` 再把既有 T0–T2 與 bounded live T3 並列為描述性 evidence state，並只描述 live 資料是否已掃描、出現 eligible、取得 first response 與跨局 session 的 collection readiness；不輸出 mastery 百分比，不判定樣本量充分，也不直接改 scheduler。
 
 ## 1. 北極星
 
