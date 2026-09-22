@@ -13,12 +13,20 @@
   const CONTRACTS = Object.freeze({
     "capture-last-liberty-v1": Object.freeze({
       skillId: "capture-last-liberty-v1",
+      skillVersion: 1,
       label: "自然局面的唯一一手提子",
+      eligibility: "9×9 人機局、輪到學習者；整盤恰有一個本 contract 支援的局部機會，且對方指定棋串恰一氣，唯一氣上的合法落子立即且只提掉該串。",
+      scoring: "首個使用者操作若為合法落子且座標等於預先凍結的唯一 successPoint，taskSuccess=true；Pass、認輸、其他合法手或非法點擊均不達成此局部任務。",
+      exclusions: ["同回合有多個支援機會", "多串同時提取", "劫／倒撲／征子等非本單手 contract", "全局是否值得提子"],
       interpretation: "只判定預先指定的唯一打吃棋串是否在本回合被立即提掉；不表示這手是全局最佳手，也不推定未提子就是全局錯著。"
     }),
     "rescue-last-liberty-foundation-v1": Object.freeze({
       skillId: "rescue-last-liberty-foundation-v1",
+      skillVersion: 1,
       label: "電腦剛打吃後的唯一直接延長救棋",
+      eligibility: "9×9 人機局、輪到學習者；上一著 actor 必須是 computer；該著把既存己方棋串從至少兩氣降為一氣；整盤恰有一個支援機會；唯一氣上的直接延長合法、不靠提子，且落子後原串至少兩氣。",
+      scoring: "首個使用者操作若為合法落子且座標等於預先凍結的唯一 successPoint，taskSuccess=true；其他操作不達成此局部任務。",
+      exclusions: ["SGF 匯入或 actor 不明的上一著", "靠提子救棋", "棄子／轉身的全局補償", "同回合多個支援機會"],
       interpretation: "只判定電腦上一手新造成的唯一被打吃棋串，是否以唯一直接延長手脫離一氣；不評估棄子是否有全局補償。"
     })
   });
@@ -46,8 +54,8 @@
   }
   function lastMove(game) { return game && Array.isArray(game.moves) && game.moves.length ? game.moves[game.moves.length - 1] : null; }
 
-  function rescueCandidates(game, humanColor, computerColor) {
-    if (!Live || typeof Live.play !== "function") return [];
+  function rescueCandidates(game, humanColor, computerColor, lastMoveActor) {
+    if (!Live || typeof Live.play !== "function" || lastMoveActor !== "computer") return [];
     const last = lastMove(game);
     if (!last || last.type !== "play" || last.color !== computerColor || !Array.isArray(last.boardBefore)) return [];
     const candidates = [];
@@ -118,6 +126,7 @@
       status: "not_eligible",
       reason: "unsupported_context",
       skillId: null,
+      skillVersion: null,
       targetStones: [],
       successPoint: null,
       targetGroupSize: null,
@@ -125,7 +134,7 @@
     };
     if (!game || game.status !== "playing" || game.boardSize !== 9 || context.opponentMode !== "computer" || ![BLACK, WHITE].includes(humanColor) || game.toPlay !== humanColor) return base;
 
-    const rescue = rescueCandidates(game, humanColor, computerColor);
+    const rescue = rescueCandidates(game, humanColor, computerColor, context.lastMoveActor || null);
     const capture = captureCandidates(game, humanColor);
     const all = [...rescue, ...capture];
     if (all.length === 0) return { ...base, reason: "no_supported_unique_local_contract" };
@@ -134,6 +143,7 @@
     return {
       ...base,
       ...candidate,
+      skillVersion: CONTRACTS[candidate.skillId].skillVersion,
       status: "eligible",
       reason: "unique_rule_scored_local_contract",
       qualifiedOpportunity: true,
@@ -227,12 +237,19 @@
     };
   }
 
+  function isCurrentContractEvent(event) {
+    return event && event.eligibilityContractVersion === ELIGIBILITY_CONTRACT_VERSION
+      && event.scoringContractVersion === SCORING_CONTRACT_VERSION
+      && Number(event.evidenceTaxonomyVersion) === 2;
+  }
+
   function summarize(storeOrEvents) {
     const events = Array.isArray(storeOrEvents) ? storeOrEvents : storeOrEvents && Array.isArray(storeOrEvents.events) ? storeOrEvents.events : [];
-    const assessments = events.filter((event) => event.type === "assessment");
+    const currentEvents = events.filter(isCurrentContractEvent);
+    const assessments = currentEvents.filter((event) => event.type === "assessment");
     const eligible = assessments.filter((event) => event.status === "eligible" && event.qualifiedOpportunity === true);
-    const firstResponses = events.filter((event) => event.type === "first_response");
-    const retries = events.filter((event) => event.type === "retry_response");
+    const firstResponses = currentEvents.filter((event) => event.type === "first_response");
+    const retries = currentEvents.filter((event) => event.type === "retry_response");
     const responseByAssessment = new Map(firstResponses.map((event) => [event.assessmentId, event]));
     const skills = Object.keys(CONTRACTS).map((skillId) => {
       const skillAssessments = eligible.filter((event) => event.skillId === skillId);
@@ -265,6 +282,7 @@
       scoringContractVersion: SCORING_CONTRACT_VERSION,
       progressPolicyVersion: PROGRESS_POLICY_VERSION,
       assessedHumanTurns: assessments.length,
+      excludedContractVersionEvents: events.length - currentEvents.length,
       eligibleOpportunities: eligible.length,
       unscoredHumanTurns: assessments.length - eligible.length,
       unscoredReasons: reasonCounts,
@@ -276,7 +294,7 @@
 
   const api = {
     STORAGE_KEY, SCHEMA_VERSION, ELIGIBILITY_CONTRACT_VERSION, SCORING_CONTRACT_VERSION, PROGRESS_POLICY_VERSION, CONTRACTS,
-    boardFingerprint, assessTurn, evaluateResponse, assessmentEvent, responseEvent, read, append, summarize
+    boardFingerprint, assessTurn, evaluateResponse, assessmentEvent, responseEvent, read, append, isCurrentContractEvent, summarize
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.GoLiveEvidence = api;
