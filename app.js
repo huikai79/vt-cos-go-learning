@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v31";
+  const uiVersion = "learner-flow-v32";
   const contentCatalogVersion = 3;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -270,10 +270,12 @@
       target.textContent = "尚無足夠的可比較技能證據。";
       return;
     }
-    target.textContent = visible.map((skill) => {
+    const readiness = summary.collectionReadiness;
+    const skillText = visible.map((skill) => {
       const name = (skills.find((item) => item.id === skill.skillId) || { name: skill.skillId }).name;
       return `${name}：${skill.label}；${skill.nextEvidenceNeed}`;
     }).join("；");
+    target.textContent = `${readiness ? "資料收集：" + readiness.label + "。" : ""}${skillText}`;
   }
 
   function showStorageWarning() {
@@ -1322,6 +1324,10 @@
       const integrated = computeIntegratedProgress(diagnostics, liveEvidence.summary || { skills: [] });
       if (integrated) {
         lines.push("", "## 整合學習證據狀態", "", `- Policy：${integrated.progressPolicyVersion}`, `- 邊界：${integrated.interpretationBoundary}`, "");
+        if (integrated.collectionReadiness) {
+          const readiness = integrated.collectionReadiness;
+          lines.push(`- Live 資料收集：${readiness.label}；已掃描 ${readiness.assessedHumanTurns} 回合；eligible ${readiness.eligibleOpportunities}；首答 ${readiness.firstResponses}；未答 ${readiness.unansweredOpportunities}；跨局 session ${readiness.distinctSessionsWithFirstResponse}。`, `- 收集狀態邊界：${readiness.interpretationBoundary}`);
+        }
         for (const skill of integrated.skills) {
           const name = (skills.find((item) => item.id === skill.skillId) || { name: skill.skillId }).name;
           lines.push(`- ${name}：${skill.label}；課程可比較機會 ${skill.practiceQualifiedOpportunities}；延後 T2 完成週期 ${skill.completedDelayedT2Cycles}；live eligible ${skill.liveEligibleOpportunities}；live 首答完成 ${skill.liveSatisfiedFirstResponses}/${skill.liveFirstResponses}；下一個證據需求：${skill.nextEvidenceNeed}`);
