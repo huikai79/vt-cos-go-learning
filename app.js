@@ -10,6 +10,7 @@
   const Metrics = window.GoLearningMetrics;
   const EvidenceTaxonomy = window.GoEvidenceTaxonomy;
   const PracticeEvents = window.GoPracticeEvents;
+  const LiveEvidence = window.GoLiveEvidence;
   const storageKey = "go-learning-prototype-v7";
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
@@ -207,6 +208,40 @@
       return;
     }
     target.textContent = `人機練習 ${summary.computerSessions} 局；你的可觀察決策 ${summary.humanDecisions} 次。這些只作 practice observation，不更新技能或排程。`;
+  }
+
+  function readLiveEvidence() {
+    if (!LiveEvidence || typeof LiveEvidence.read !== "function") return { ok: false, error: "live_evidence_module_unavailable", store: null, summary: null };
+    const result = LiveEvidence.read(localStorage);
+    return { ...result, summary: result.ok ? LiveEvidence.summarize(result.store) : null };
+  }
+
+  function liveEvidenceStateLabel(state) {
+    return state === "recent_consistent" ? "最近 3 次合格機會皆完成"
+      : state === "needs_review" ? "最近一次合格機會未完成"
+      : state === "mixed" ? "近期結果混合"
+      : state === "accumulating" ? "正在累積實戰機會"
+      : "尚無合格實戰機會";
+  }
+
+  function renderLiveEvidenceSummary() {
+    const target = $("live-evidence-summary");
+    if (!target) return;
+    const result = readLiveEvidence();
+    if (!result.ok) {
+      target.textContent = `實戰證據無法讀取（${result.error}）；不會以零紀錄或推測值取代。`;
+      return;
+    }
+    const summary = result.summary;
+    if (!summary || !summary.assessedHumanTurns) {
+      target.textContent = "尚無 9×9 人機回合被 live eligibility contract 掃描。";
+      return;
+    }
+    const skillText = summary.skills
+      .filter((skill) => skill.eligibleOpportunities > 0)
+      .map((skill) => `${skill.label}：${skill.satisfiedFirstResponses}/${skill.firstResponses} 首答完成；${liveEvidenceStateLabel(skill.evidenceState)}`)
+      .join("；");
+    target.textContent = `已掃描 ${summary.assessedHumanTurns} 個人類回合；合格 live 機會 ${summary.eligibleOpportunities}，其餘 ${summary.unscoredHumanTurns} 回合不評分。${skillText ? " " + skillText + "。" : " 目前沒有符合安全 scoring contract 的局面。"}`;
   }
 
   function showStorageWarning() {
@@ -1041,6 +1076,8 @@
     $("resume-button").textContent = state.externalMode ? "返回目前課程" : state.hasStarted ? "前往目前題目" : state.index === 0 ? "開始第 1 題" : "開始這一題";
     const diagnostics = Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses });
     $("diagnostic-summary").textContent = diagnosticSummaryText(diagnostics);
+    renderLivePracticeSummary();
+    renderLiveEvidenceSummary();
   }
 
   function diagnosticSummaryText(diagnostics) {
@@ -1207,6 +1244,7 @@
 
   function exportNotes() {
     const livePractice = readLivePractice();
+    const liveEvidence = readLiveEvidence();
     const lines = ["# 個人圍棋練習紀錄", "", `匯出時間：${new Date().toLocaleString("zh-TW")}`, `介面版本：${uiVersion}`, "", `已完成：${state.completed.size} / ${problems.length}`, `待複習：${state.missed.size} 題`, "", "## 題目紀錄", ""];
     for (const problem of problems) lines.push(`- ${problem.title}：${state.completed.has(problem.id) ? "已完成" : "未完成"}；作答 ${state.attempts[problem.id] || 0} 次${state.missed.has(problem.id) ? "；待複習" : ""}`);
     const skillEvents = state.events.filter((event) => event.skillId);
@@ -1237,6 +1275,15 @@
       lines.push("", "## 人機實戰練習", "", `- 練習局數：${livePractice.summary.computerSessions}`, `- 你的可觀察決策：${livePractice.summary.humanDecisions} 次`, "- 證據邊界：practice observation only；未經 scoring contract，不更新 KC、scheduler、T2/T3 或 mastery。");
     } else if (!livePractice.ok) {
       lines.push("", "## 人機實戰練習", "", `- 事件流讀取失敗：${livePractice.error}；未以推測資料補值。`);
+    }
+    if (liveEvidence.ok && liveEvidence.summary && liveEvidence.summary.assessedHumanTurns) {
+      const summary = liveEvidence.summary;
+      lines.push("", "## 9×9 人機實戰證據", "", `- 已掃描人類回合：${summary.assessedHumanTurns}`, `- 合格 live T3 局部機會：${summary.eligibleOpportunities}`, `- 不評分回合：${summary.unscoredHumanTurns}`, `- Contract：${summary.eligibilityContractVersion} / ${summary.scoringContractVersion} / ${summary.progressPolicyVersion}`, `- 邊界：${summary.interpretationBoundary}`, "");
+      for (const skill of summary.skills) {
+        lines.push(`- ${skill.label}：eligible ${skill.eligibleOpportunities}；首答 ${skill.firstResponses}；完成 ${skill.satisfiedFirstResponses}；未完成 ${skill.notSatisfiedFirstResponses}；未作答 ${skill.unansweredOpportunities}；狀態「${liveEvidenceStateLabel(skill.evidenceState)}」。`);
+      }
+    } else if (!liveEvidence.ok) {
+      lines.push("", "## 9×9 人機實戰證據", "", `- live evidence 讀取失敗：${liveEvidence.error}；未以推測資料補值。`);
     }
         const trialSummary = Trial.summarize(state.trial, state.applicationResults, state.applicationEvents);
     lines.push("", "## 個人縱向試行", "", `- 目前判斷：${trialSummaryText(trialSummary)}`, `- 固定應用探測：${trialSummary.application.correct} / ${trialSummary.application.total}；呈現 ${trialSummary.application.presented} 次；未答／中斷 ${trialSummary.application.unansweredOrInterrupted} 次；不適用局面誤用 ${trialSummary.application.inappropriateUseErrors} 次；提示後或重複結果排除 ${trialSummary.application.excludedHintedOrRepeated} 次`, `- 判讀限制：${Trial.protocol.interpretation}`);
@@ -1280,6 +1327,7 @@
       redacted: true
     });
     const livePractice = readLivePractice();
+    const liveEvidence = readLiveEvidence();
     const payload = {
       schemaVersion: 3,
       eventPolicyVersion,
@@ -1305,7 +1353,19 @@
       events: state.events.filter((event) => trialProblemIds.has(event.problemId)),
       schedulerPolicy: state.schedulerPolicy,
       scheduler: state.scheduler,
-      learningDiagnostics: Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses })
+      learningDiagnostics: Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses }),
+      livePracticeEvents: livePractice.ok ? livePractice.store.events : null,
+      livePracticeEventDescriptor: PracticeEvents ? PracticeEvents.DESCRIPTOR : null,
+      livePracticeReadError: livePractice.ok ? null : livePractice.error,
+      liveEvidenceEvents: liveEvidence.ok ? liveEvidence.store.events : null,
+      liveEvidenceContracts: LiveEvidence ? {
+        eligibility: LiveEvidence.ELIGIBILITY_CONTRACT_VERSION,
+        scoring: LiveEvidence.SCORING_CONTRACT_VERSION,
+        progress: LiveEvidence.PROGRESS_POLICY_VERSION,
+        definitions: LiveEvidence.CONTRACTS
+      } : null,
+      liveEvidenceSummary: liveEvidence.ok ? liveEvidence.summary : null,
+      liveEvidenceReadError: liveEvidence.ok ? null : liveEvidence.error
     };
     downloadFile(JSON.stringify(payload, null, 2), "application/json;charset=utf-8", "個人圍棋原始事件.json");
   }
