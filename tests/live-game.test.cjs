@@ -250,3 +250,15 @@ test("損壞的 practice event store 保持失敗，不回退成空白成功", (
   assert.equal(result.error, "practice_event_store_malformed");
   assert.equal(result.store, null);
 });
+
+
+test("課程端只讀 practice stream 摘要與備份，不餵入 Metrics 或 scheduler", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
+  const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  assert.match(indexHtml, /practice-events\.js/);
+  assert.match(indexHtml, /id="live-practice-summary"/);
+  assert.match(appJs, /PracticeEvents\.read\(localStorage\)/);
+  assert.match(appJs, /livePracticeEvents:/);
+  assert.match(appJs, /learningDiagnostics: Metrics\.summarize\(\{ events: state\.events/);
+  assert.match(appJs, /practice observation only/);
+});
