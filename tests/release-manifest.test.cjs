@@ -15,8 +15,8 @@ test("公開發布決策與題庫用途為機器可讀契約", () => {
   assert.deepEqual(manifest.brand, {
     parent: "VT-COS",
     parentExpanded: "Vibe Thinking – Cognitive Operating System",
-    product: "一手一懂",
-    publicName: "VT-COS｜一手一懂"
+    product: "悟之一手",
+    publicName: "VT-COS｜悟之一手"
   });
   assert.deepEqual(manifest.publicationDecision, {
     questionBankVisibility: "public",
@@ -45,7 +45,7 @@ test("公開 repository 附帶標準 MIT 授權", () => {
 
 test("兩個公開入口與 README 使用同一品牌名稱", () => {
   for (const file of ["index.html", "r1-review.html", "README.md"]) {
-    assert.match(fs.readFileSync(path.join(root, file), "utf8"), /VT-COS｜一手一懂/, file);
+    assert.match(fs.readFileSync(path.join(root, file), "utf8"), /VT-COS｜悟之一手/, file);
   }
 });
 
