@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  const Go = window.GoCore, Live = window.GoLiveGame, Sgf = window.GoSgf, Bot = window.GoPracticeBot, PracticeEvents = window.GoPracticeEvents;
+  const Go = window.GoCore, Live = window.GoLiveGame, Sgf = window.GoSgf, Bot = window.GoPracticeBot, PracticeEvents = window.GoPracticeEvents, LiveEvidence = window.GoLiveEvidence;
   const { BLACK, WHITE, EMPTY } = Go;
   const requestedSizeParam = new URLSearchParams(window.location.search).get("size");
   const retiredThreeByThreeRequested = Number(requestedSizeParam) === 3;
@@ -21,7 +21,7 @@
     9: { title: "9×9 完整實戰練習", heading: "完整 9×9 實戰棋盤", description: "兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。", purpose: "完整小棋盤對局" }
   };
   const $ = (id) => document.getElementById(id);
-  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "local", humanColor = BLACK, botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "";
+  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "local", humanColor = BLACK, botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "", liveEvidenceFailure = "", activeAssessment = null, activeAssessmentResponseCount = 0;
 
   function newPracticeSessionId() { return `live-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`; }
   function centerCursor(size) { const middle = Math.floor(size / 2); return [middle, middle]; }
@@ -41,6 +41,62 @@
       if (value && ["local", "computer"].includes(value.opponentMode)) opponentMode = value.opponentMode;
       if (value && [BLACK, WHITE].includes(Number(value.humanColor))) humanColor = Number(value.humanColor);
     } catch (_) {}
+  }
+
+  function currentAssessmentId(assessment) {
+    return `${practiceSessionId}:${assessment.moveCount}:${assessment.boardFingerprint}`;
+  }
+  function appendLiveEvidence(event) {
+    if (!LiveEvidence || typeof LiveEvidence.append !== "function") {
+      liveEvidenceFailure = "live_evidence_module_unavailable";
+      return false;
+    }
+    const result = LiveEvidence.append(localStorage, event);
+    if (!result.ok) {
+      liveEvidenceFailure = result.error || "live_evidence_unknown_error";
+      return false;
+    }
+    return true;
+  }
+  function ensureLiveAssessment() {
+    if (!isComputerMode() || !game || game.status !== "playing" || game.toPlay !== humanColor) {
+      activeAssessment = null;
+      activeAssessmentResponseCount = 0;
+      return null;
+    }
+    if (!LiveEvidence || typeof LiveEvidence.assessTurn !== "function") {
+      liveEvidenceFailure = "live_evidence_module_unavailable";
+      return null;
+    }
+    const candidate = LiveEvidence.assessTurn(game, { opponentMode, humanColor, computerColor: computerColor() });
+    const assessmentId = currentAssessmentId(candidate);
+    if (activeAssessment && activeAssessment.assessmentId === assessmentId) return activeAssessment;
+    activeAssessment = { ...candidate, assessmentId, sessionId: practiceSessionId };
+    activeAssessmentResponseCount = 0;
+    const event = LiveEvidence.assessmentEvent({
+      ...activeAssessment,
+      eventId: `assessment:${assessmentId}`,
+      occurredAt: new Date().toISOString()
+    });
+    appendLiveEvidence(event);
+    return activeAssessment;
+  }
+  function recordLiveResponse(response) {
+    const assessment = ensureLiveAssessment();
+    if (!assessment || assessment.status !== "eligible" || assessment.qualifiedOpportunity !== true) return null;
+    const firstResponse = activeAssessmentResponseCount === 0;
+    activeAssessmentResponseCount += 1;
+    const responseEvent = LiveEvidence.responseEvent(assessment, response, {
+      firstResponse,
+      eventId: `${firstResponse ? "first" : "retry"}:${assessment.assessmentId}:${activeAssessmentResponseCount}`,
+      occurredAt: new Date().toISOString()
+    });
+    appendLiveEvidence(responseEvent);
+    return responseEvent;
+  }
+  function closeAssessmentAfterTurn() {
+    activeAssessment = null;
+    activeAssessmentResponseCount = 0;
   }
 
   function event(type, details = {}) {
@@ -227,18 +283,21 @@
           const result = Live.play(game, action.point[0], action.point[1]);
           if (!result.ok) throw new Error("電腦候選手未通過規則引擎：" + (result.error || "unknown"));
           game = result.game;
+          closeAssessmentAfterTurn();
           event("computer_move", { actor: "computer", color, point: action.point.slice(), captured: result.captured.length, botVersion: action.botVersion || "unknown", selectionReason: action.reason || "unknown" });
           showFeedback(`電腦${colorLabel(color)}棋下在 ${coordName(action.point[0], action.point[1])}。`, "success");
         } else if (action.type === "pass") {
           const result = Live.pass(game);
           if (!result.ok) throw new Error(result.error || "電腦 Pass 失敗");
           game = result.game;
+          closeAssessmentAfterTurn();
           event("computer_pass", { actor: "computer", color, botVersion: action.botVersion || "unknown", selectionReason: action.reason || "unknown" });
           showFeedback(result.game.status === "scoring" ? "電腦 Pass；雙方已連續 Pass，請確認終局。" : `電腦${colorLabel(color)}棋 Pass。`, "success");
         } else {
           throw new Error("電腦沒有產生可執行動作。");
         }
         save();
+        ensureLiveAssessment();
       } catch (error) {
         showFeedback(`電腦回合失敗：${error.message}`, "error");
       } finally {
@@ -255,18 +314,23 @@
     auditEvents = [];
     cursor = centerCursor(requestedSize);
     practiceSessionId = newPracticeSessionId();
+    closeAssessmentAfterTurn();
     event("new_game", { actor: "system", reason, opponentMode, humanColor: isComputerMode() ? humanColor : null, botVersion: isComputerMode() && Bot ? Bot.BOT_VERSION : null });
     saveOpponentSettings();
     save();
     render();
     showFeedback(`已開始新的 ${requestedSize}×${requestedSize} ${isComputerMode() ? "人機練習" : "棋局"}。`, "success");
+    ensureLiveAssessment();
     scheduleComputerTurn();
   }
 
   function applyResult(result, auditType, details = {}) {
     if (!result.ok) { showFeedback(result.error || "操作失敗。", "error"); return false; }
     game = result.game; event(auditType, details); const saved = save(); render();
-    if (practiceEventFailure) {
+    if (liveEvidenceFailure) {
+    showFeedback(`棋局可以繼續，但 live evidence 儲存失敗（${liveEvidenceFailure}）；本次不會假裝已更新實戰進度。`, "error");
+    liveEvidenceFailure = "";
+  } else if (practiceEventFailure) {
       showFeedback(`${details.successMessage || "操作完成。"} 但練習事件未保存（${practiceEventFailure}）；本次不會假裝已回流學習紀錄。`, "error");
       practiceEventFailure = "";
     } else if (saved) showFeedback(details.successMessage || "已保存。", details.tone || "success");
@@ -276,9 +340,19 @@
     cursor = [x, y];
     if (game.status === "playing") {
       if (!isHumanTurn() || botPending) { showFeedback("現在是電腦回合。", "error"); return; }
-      if (game.board[y][x] !== EMPTY) { showFeedback(`${coordName(x, y)} 已有棋子。`, "error"); return; }
+      ensureLiveAssessment();
+      if (game.board[y][x] !== EMPTY) {
+        recordLiveResponse({ action: "play", point: [x, y], legal: false, reason: "occupied_point" });
+        showFeedback(`${coordName(x, y)} 已有棋子。`, "error");
+        return;
+      }
       const color = game.toPlay, result = Live.play(game, x, y);
-      if (applyResult(result, "move", { actor: isComputerMode() ? "human" : "local_player", color, point: [x, y], captured: result.captured.length, successMessage: `${colorLabel(color)}棋下在 ${coordName(x, y)}。` })) { if (refocus) setTimeout(focusCursor, 0); scheduleComputerTurn(); }
+      recordLiveResponse({ action: "play", point: [x, y], legal: result.ok === true, reason: result.ok ? null : result.error || "illegal_move" });
+      if (applyResult(result, "move", { actor: isComputerMode() ? "human" : "local_player", color, point: [x, y], captured: result.ok ? result.captured.length : 0, successMessage: `${colorLabel(color)}棋下在 ${coordName(x, y)}。` })) {
+        closeAssessmentAfterTurn();
+        if (refocus) setTimeout(focusCursor, 0);
+        scheduleComputerTurn();
+      }
       return;
     }
     if (game.status === "scoring") {
@@ -324,8 +398,10 @@
   });
   $("pass-button").addEventListener("click", () => {
     if (!isHumanTurn() || botPending) return;
+    ensureLiveAssessment();
     const color = game.toPlay, result = Live.pass(game);
-    if (applyResult(result, "pass", { actor: isComputerMode() ? "human" : "local_player", color, successMessage: result.ok && result.game.status === "scoring" ? "雙方連續 Pass，請確認死子與終局分數。" : `${colorLabel(color)}棋 Pass。` })) scheduleComputerTurn();
+    recordLiveResponse({ action: "pass", point: null, legal: result.ok === true, reason: result.ok ? null : result.error || "pass_failed" });
+    if (applyResult(result, "pass", { actor: isComputerMode() ? "human" : "local_player", color, successMessage: result.ok && result.game.status === "scoring" ? "雙方連續 Pass，請確認死子與終局分數。" : `${colorLabel(color)}棋 Pass。` })) { closeAssessmentAfterTurn(); scheduleComputerTurn(); }
   });
   $("undo-button").addEventListener("click", () => {
     if (botPending) return;
@@ -337,13 +413,16 @@
       const second = Live.undo(game);
       if (second.ok) { game = second.game; undone += 1; }
     }
+    closeAssessmentAfterTurn();
     event("undo", { actor: isComputerMode() ? "human" : "local_player", movesUndone: undone, opponentMode });
-    save(); render(); showFeedback(isComputerMode() ? "已回到你上一個決策前。" : "已悔一手；棋局依剩餘手順重新重建。", "success");
+    save(); render(); ensureLiveAssessment(); showFeedback(isComputerMode() ? "已回到你上一個決策前。" : "已悔一手；棋局依剩餘手順重新重建。", "success");
   });
   $("resign-button").addEventListener("click", () => {
     if (!confirm(`${colorLabel(game.toPlay)}棋確定認輸？`)) return;
-    const loser = game.toPlay;
-    applyResult(Live.resign(game), "resign", { actor: isComputerMode() ? "human" : "local_player", loser, successMessage: `${colorLabel(loser)}棋認輸，棋局結束。` });
+    ensureLiveAssessment();
+    const loser = game.toPlay, result = Live.resign(game);
+    recordLiveResponse({ action: "resign", point: null, legal: result.ok === true, reason: result.ok ? null : result.error || "resign_failed" });
+    if (applyResult(result, "resign", { actor: isComputerMode() ? "human" : "local_player", loser, successMessage: `${colorLabel(loser)}棋認輸，棋局結束。` })) closeAssessmentAfterTurn();
   });
   $("resume-play-button").addEventListener("click", () => {
     const result = Live.resumeFromScoring(game);
@@ -387,9 +466,9 @@
       try {
         const imported = Live.fromSgf(String(reader.result || ""));
         if (imported.boardSize !== requestedSize) throw new Error(`這是 ${imported.boardSize}×${imported.boardSize} 棋譜；請先切換到相同尺寸的練習棋盤再匯入。`);
-        game = imported; auditEvents = [];
+        game = imported; auditEvents = []; closeAssessmentAfterTurn();
         event("sgf_import", { sourceName: file.name, importedStatus: game.status }); cursor = centerCursor(game.boardSize);
-        save(); render(); showFeedback(`已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, "success"); scheduleComputerTurn();
+        save(); render(); ensureLiveAssessment(); showFeedback(`已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, "success"); scheduleComputerTurn();
       } catch (error) { showFeedback(error.message, "error"); }
       e.target.value = "";
     };
@@ -397,7 +476,7 @@
     reader.readAsText(file, "UTF-8");
   });
 
-  loadOpponentSettings(); load(); save(); render(); scheduleComputerTurn();
+  loadOpponentSettings(); load(); save(); render(); ensureLiveAssessment(); scheduleComputerTurn();
   if (practiceEventFailure) {
     showFeedback(`棋局可以繼續，但練習事件流目前失敗（${practiceEventFailure}）；本次不會假裝已回流學習紀錄。`, "error");
     practiceEventFailure = "";
