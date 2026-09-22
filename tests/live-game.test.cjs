@@ -129,3 +129,48 @@ test("認輸留下明確結果碼，SGF 帶 RE 但不假裝是計分結果", () 
   assert.equal(game.result.resultCode, "B+R");
   assert.match(Live.toSgf(game), /RE\[B\+R\]/);
 });
+
+
+test("3、5、7、9 路都使用實際棋盤邊界，預設貼目依尺寸分開", () => {
+  for (const size of [3, 5, 7, 9]) {
+    const board = Go.boardFromStones([[0, 0, Go.BLACK]], size);
+    assert.equal(board.length, size);
+    assert.equal(Go.groupAt(board, 0, 0).liberties.length, 2, `${size} 路角上單子應只有兩口氣`);
+    const game = Live.createGame({ boardSize: size });
+    assert.equal(game.boardSize, size);
+    assert.equal(game.board.length, size);
+    assert.equal(game.komi, size === 9 ? 7.5 : 0);
+  }
+});
+
+test("3 路邊線提子依 3 路真實邊界判定，不借用 9 路外部空間", () => {
+  const initial = Go.boardFromStones([[1, 0, Go.WHITE], [0, 0, Go.BLACK], [2, 0, Go.BLACK]], 3);
+  let game = Live.createGame({ boardSize: 3, initialBoard: initial, toPlay: Go.BLACK });
+  game = playOk(game, 1, 1);
+  assert.equal(game.captures.black, 1);
+  assert.equal(game.board[0][1], Go.EMPTY);
+});
+
+test("3、5、7、9 路 SGF 都保留 SZ、手順、Pass 與棋盤尺寸", () => {
+  for (const size of [3, 5, 7, 9]) {
+    let game = Live.createGame({ boardSize: size });
+    game = playOk(game, 0, 0);
+    game = Live.pass(game).game;
+    game = playOk(game, size - 1, size - 1);
+    const sgf = Live.toSgf(game);
+    assert.match(sgf, new RegExp(`SZ\\[${size}\\]`));
+    const imported = Live.fromSgf(sgf);
+    assert.equal(imported.boardSize, size);
+    assert.equal(imported.moves.length, 3);
+    assert.equal(imported.moves[1].type, "pass");
+    assert.equal(imported.board[0][0], Go.BLACK);
+    assert.equal(imported.board[size - 1][size - 1], Go.BLACK);
+  }
+});
+
+test("舊 9 路預設建立方式維持相容", () => {
+  const game = Live.createGame();
+  assert.equal(game.boardSize, 9);
+  assert.equal(game.komi, 7.5);
+  assert.equal(game.board.length, 9);
+});
