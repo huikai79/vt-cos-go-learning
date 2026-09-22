@@ -8,6 +8,7 @@
   const RULES_VERSION = "cn-area-simple-ko-v1";
   const DEFAULT_SIZE = 9;
   const SUPPORTED_SIZES = [3, 5, 7, 9];
+  const ACTIVE_PRACTICE_SIZES = [5, 7, 9];
   const DEFAULT_KOMI = 7.5;
 
   function cloneBoard(board) { return board.map((row) => row.slice()); }
@@ -375,7 +376,7 @@
   }
 
   const api = {
-    SCHEMA_VERSION, RULES_VERSION, DEFAULT_SIZE, SUPPORTED_SIZES, DEFAULT_KOMI,
+    SCHEMA_VERSION, RULES_VERSION, DEFAULT_SIZE, SUPPORTED_SIZES, ACTIVE_PRACTICE_SIZES, DEFAULT_KOMI,
     normalizeBoardSize, defaultKomiForSize,
     createGame, play, pass, resign, undo, toggleDeadGroup, scoringBoard, areaScore, currentScore, finalizeScore, resumeFromScoring,
     toSgf, fromSgf, hydrate, resultText, colorName
