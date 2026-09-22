@@ -269,3 +269,9 @@ test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑
   assert.match(css, /\.live-board \.point-focus\{fill:none;stroke:transparent;pointer-events:none\}/);
   assert.match(css, /\.live-point:focus \.point-focus\{fill:none;stroke:#174a31;stroke-width:4\}/);
 });
+
+
+test("棋盤頁用版本參數載入 live CSS，避免瀏覽器沿用舊渲染樣式", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  assert.match(html, /live-game\.css\?v=live-game-ui-v4/);
+});
