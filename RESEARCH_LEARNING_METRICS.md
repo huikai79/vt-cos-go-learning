@@ -53,6 +53,21 @@
 
 T0/T1/T2/T3 分開呈現；T2 流程檢核初步通過不能代替獨立驗收或 T3，也不宣稱永久掌握。沒有自然 T3 機會可安排無技能標題的混合局面練習，但仍應標為模擬，不能冒充實戰。
 
+### 9×9 live T3 計數契約 v1
+
+2026-09-22 起，`live-eligibility-v1`／`live-scoring-v1` 只為少數能在結果前定義、且由 rules engine 客觀核對的自然實戰局部決策提供分子分母。這是專案內的計數契約，不是外部研究證明的圍棋 mastery 尺度。
+
+1. **先決定 eligibility，再看結果**：每個 9×9 人機局的學習者回合先掃描整盤並保存 assessment。若整盤沒有支援機會、同時有多個支援機會、上一著 actor 不可證明、或局面屬 5×5／7×7，該回合仍保存為 assessed/unscored，不得在看到著手後補選。
+2. **v1 只支援兩種局部技能**：整盤唯一的一手提子；以及 computer 上一手新造成打吃後的唯一直接延長救棋。其他局部技巧、棄子、方向、定石、官子、勝負與 bot 偏好手維持 UNKNOWN／unscored。
+3. **分母不因未答或不利結果消失**：一旦 assessment 標 `qualifiedOpportunity=true`，即進 eligible denominator。離開、重新整理或未作答仍計 eligible opportunity，只是 `firstResponses=0`／`unansweredOpportunities>0`。
+4. **首答不可被修正覆寫**：第一個使用者操作單獨存 `first_response`；非法點擊也是首答。後續操作存 `retry_response`，可標 eventual correction，但 `qualifiedOpportunity=false`。重載後由既有 event store 恢復 response count。
+5. **局部 scoring 不等於全局好壞**：task success 只表示符合該局部 contract；未達成不等於全局錯著，也不因棋局勝負回頭改分。
+6. **機會與獨立樣本分開**：每個 eligible 決策點都進機會分母；但描述「近期跨局一致」時只以不同 game `sessionId` 為單位，同一盤連續多手不能當三個獨立棋局樣本。
+7. **版本不靜默重算**：每筆 event 保存 eligibility、scoring 與 evidence-taxonomy version；當前 summary 只讀語義相容版本，不相容舊事件另列 excluded count。
+8. **進度只作 evidence state**：`learner-evidence-progress-v1` 把既有 T0–T2 與 bounded live T3 並列成「資料不足／待更多證據／已有延後 T2／已有 live 應用」等狀態，不輸出 mastery 百分比、不直接寫 scheduler，也不取得 formal evaluation authority。
+
+這套 contract 的工程驗證只能證明計數與生命週期符合規格；是否能預測之後的新局面、是否值得影響選題、以及是否對真人學習有效，仍需獨立 retention／transfer 與跨批次真人資料。
+
 ## 邏輯檢修附注與個人驗證
 
 - **確認偏誤**：納入交錯練習效果不一致的結果，不只挑正面研究。
