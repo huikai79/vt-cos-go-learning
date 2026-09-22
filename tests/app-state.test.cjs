@@ -311,7 +311,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v30");
+  assert.equal(exported.uiVersion, "learner-flow-v31");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -477,7 +477,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v30");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v31");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -562,4 +562,18 @@ test("損壞 live evidence store 顯示 ERROR，備份不偽造零進度", async
   assert.equal(exported.liveEvidenceEvents, null);
   assert.equal(exported.liveEvidenceSummary, null);
   assert.equal(exported.liveEvidenceReadError, "live_evidence_store_malformed");
+});
+
+
+test("主課程 save envelope 不得複製 live streams，raw export 仍可帶出", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
+  const saveStart = appJs.indexOf("function save()");
+  const saveEnd = appJs.indexOf("function readLivePractice()", saveStart);
+  assert.ok(saveStart >= 0 && saveEnd > saveStart);
+  const saveBlock = appJs.slice(saveStart, saveEnd);
+  assert.doesNotMatch(saveBlock, /livePractice/);
+  assert.doesNotMatch(saveBlock, /liveEvidence/);
+  assert.match(appJs, /livePracticeEvents:/);
+  assert.match(appJs, /liveEvidenceEvents:/);
+  assert.match(appJs, /liveEvidenceSummary:/);
 });
