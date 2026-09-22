@@ -13,6 +13,7 @@ const GoTrial = require("../trial.js");
 const GoLearningMetrics = require("../learning-metrics.js");
 const GoEvidenceTaxonomy = require("../evidence-taxonomy.js");
 const GoPracticeEvents = require("../practice-events.js");
+const GoLiveEvidence = require("../live-evidence.js");
 const STORAGE_KEY = "go-learning-prototype-v7";
 
 class Element {
@@ -40,7 +41,7 @@ function pointTarget(dataset, selector) {
 }
 
 function createApp(saved = {}, options = {}) {
-  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "live-practice-summary"];
+  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "live-practice-summary", "live-evidence-summary"];
   const elements = Object.fromEntries(ids.map((id) => [id, new Element()]));
   const storage = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   for (const [key, value] of Object.entries(options.rawStorage || {})) storage.set(key, value);
@@ -56,7 +57,7 @@ function createApp(saved = {}, options = {}) {
       return element;
     }
   };
-  const window = { GoCore, GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy, GoPracticeEvents };
+  const window = { GoCore, GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy, GoPracticeEvents, GoLiveEvidence };
   const url = {
     createObjectURL(blob) { const href = `blob:test-${++blobId}`; blobs.set(href, blob); return href; },
     revokeObjectURL() {}
@@ -248,7 +249,7 @@ test("離開未作答的試行題會保留呈現與結束，原始匯出包含�
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.eventPolicyVersion, "trial-events-v4");
-  assert.equal(exported.schemaVersion, 2);
+  assert.equal(exported.schemaVersion, 3);
   assert.equal(exported.schedulerPolicy, "fixed-spacing-v1");
   assert.equal(exported.phase2Catalog.length, 148);
   assert.equal(exported.holdoutAnswersRedacted, true);
@@ -520,4 +521,41 @@ test("損壞的人機事件流顯示讀取失敗，完整備份不以空陣列�
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.livePracticeEvents, null);
   assert.equal(exported.livePracticeReadError, "practice_event_store_malformed");
+});
+
+
+test("live eligibility/scoring contract 的資料只進 live evidence，不污染 SCD 或 scheduler", async () => {
+  const board = GoCore.boardFromStones([[4,4,GoCore.WHITE],[3,4,GoCore.BLACK],[4,3,GoCore.BLACK],[5,4,GoCore.BLACK]], 9);
+  const game = require("../live-game.js").createGame({ boardSize: 9, initialBoard: board, toPlay: GoCore.BLACK });
+  const assessment = { ...GoLiveEvidence.assessTurn(game, { opponentMode:"computer", humanColor:GoCore.BLACK, computerColor:GoCore.WHITE }), assessmentId:"a1", sessionId:"s1" };
+  const store = {
+    schemaVersion: 1,
+    events: [
+      GoLiveEvidence.assessmentEvent({ ...assessment, eventId:"assessment:a1", occurredAt:"2026-09-22T12:00:00.000Z" }),
+      GoLiveEvidence.responseEvent(assessment, { action:"play", point:[4,5], legal:true }, { firstResponse:true, eventId:"first:a1:1", occurredAt:"2026-09-22T12:00:01.000Z" })
+    ]
+  };
+  const { elements, storage, downloads } = createApp({}, { rawStorage: { [GoLiveEvidence.STORAGE_KEY]: JSON.stringify(store) } });
+  assert.match(elements["live-evidence-summary"].textContent, /已掃描 1 個人類回合/);
+  assert.match(elements["live-evidence-summary"].textContent, /合格 live 機會 1/);
+  const saved = JSON.parse(storage.get(STORAGE_KEY));
+  assert.deepEqual(saved.events, []);
+  assert.equal(saved.scheduler.responses.length, 0);
+  elements["export-events-button"].listeners.click();
+  const exported = JSON.parse(await downloads[0].blob.text());
+  assert.equal(exported.liveEvidenceEvents.length, 2);
+  assert.equal(exported.liveEvidenceContracts.eligibility, "live-eligibility-v1");
+  assert.equal(exported.liveEvidenceContracts.scoring, "live-scoring-v1");
+  assert.equal(exported.liveEvidenceSummary.eligibleOpportunities, 1);
+  assert.equal(exported.learningDiagnostics.skills.length, 0);
+});
+
+test("損壞 live evidence store 顯示 ERROR，備份不偽造零進度", async () => {
+  const { elements, downloads } = createApp({}, { rawStorage: { [GoLiveEvidence.STORAGE_KEY]: "{broken" } });
+  assert.match(elements["live-evidence-summary"].textContent, /無法讀取/);
+  elements["export-events-button"].listeners.click();
+  const exported = JSON.parse(await downloads[0].blob.text());
+  assert.equal(exported.liveEvidenceEvents, null);
+  assert.equal(exported.liveEvidenceSummary, null);
+  assert.equal(exported.liveEvidenceReadError, "live_evidence_store_malformed");
 });
