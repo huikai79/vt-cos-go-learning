@@ -13,7 +13,7 @@
   })();
   const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
   const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
-  const UI_VERSION = "live-game-ui-v5";
+  const UI_VERSION = "live-game-ui-v6";
   const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
   const boardProfiles = {
     5: { title: "5×5 基礎練習棋盤", heading: "氣、提子、連斷與規則練習", description: "作為第一個可自由操作的練習棋盤，適合練氣、提子、連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "氣、提子、連斷、禁著、眼形" },
@@ -58,6 +58,12 @@
     }
     return true;
   }
+  function existingResponseCount(assessmentId) {
+    if (!LiveEvidence || typeof LiveEvidence.read !== "function") return 0;
+    const current = LiveEvidence.read(localStorage);
+    if (!current.ok || !current.store || !Array.isArray(current.store.events)) return 0;
+    return current.store.events.filter((item) => item.assessmentId === assessmentId && (item.type === "first_response" || item.type === "retry_response")).length;
+  }
   function ensureLiveAssessment() {
     if (!isComputerMode() || !game || game.status !== "playing" || game.toPlay !== humanColor) {
       activeAssessment = null;
@@ -72,7 +78,7 @@
     const assessmentId = currentAssessmentId(candidate);
     if (activeAssessment && activeAssessment.assessmentId === assessmentId) return activeAssessment;
     activeAssessment = { ...candidate, assessmentId, sessionId: practiceSessionId };
-    activeAssessmentResponseCount = 0;
+    activeAssessmentResponseCount = existingResponseCount(assessmentId);
     const event = LiveEvidence.assessmentEvent({
       ...activeAssessment,
       eventId: `assessment:${assessmentId}`,
