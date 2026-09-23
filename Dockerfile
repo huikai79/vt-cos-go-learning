@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim AS katago-build
-ARG KATAGO_VERSION=1.18.2
+ARG KATAGO_VERSION=1.17.1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates cmake g++ git make libeigen3-dev zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
