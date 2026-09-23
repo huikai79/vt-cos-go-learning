@@ -8,7 +8,7 @@
   <meta name="description" content="VT-COS 悟之一手的 5×5、7×7 與 9×9 本機棋盤練習。">
   <title>VT-COS｜棋盤練習</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="live-game.css?v=live-game-ui-v7">
+  <link rel="stylesheet" href="live-game.css?v=live-game-ui-v8">
   <script defer src="go.js"></script>
   <script defer src="sgf.js"></script>
   <script defer src="live-game.js"></script>
@@ -16,7 +16,7 @@
   <script defer src="move-provider.js?v=move-provider-v1"></script>
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
-  <script defer src="live-game-page.js?v=live-game-ui-v7"></script>
+  <script defer src="live-game-page.js?v=live-game-ui-v8"></script>
 </head>
 <body class="live-page">
   <a class="skip-link" href="#live-main">跳到練習棋盤</a>
@@ -52,17 +52,17 @@
         <summary>進階：更換電腦引擎</summary>
         <div class="advanced-opponent-body">
           <p class="advanced-intro">這裡是進階設定，不影響一般初學練習。無法連線時會停止電腦回合，不會偷偷改用另一個引擎。</p>
-          <label><span>電腦引擎</span><select id="advanced-provider-mode"><option value="computer">內建練習電腦</option><option value="katago">本機 KataGo</option><option value="remote">自訂 Remote API</option></select></label>
+          <label><span>電腦引擎</span><select id="advanced-provider-mode"><option value="computer">內建練習電腦</option><option value="katago">本機 KataGo（需本機 bridge）</option><option value="remote">遠端對弈 API（需另有服務）</option></select></label>
           <div class="provider-help" id="katago-help" hidden>
             <strong>KataGo 是什麼？</strong>
-            <p>它是獨立的圍棋 AI 引擎，不是使用本頁的必要條件。若要使用，需先在 Windows 安裝 KataGo、模型與設定檔，再啟動悟之一手的本機連接器。</p>
+            <p>它是獨立的圍棋 AI 引擎，不是使用本頁的必要條件。GitHub Pages 不能執行 KataGo；此模式只連你目前裝置上已啟動的悟之一手 localhost bridge。其他網站使用者若未自行安裝並啟動 bridge，就不能使用這個「本機 KataGo」模式。</p>
             <a href="https://github.com/lightvector/KataGo/releases" target="_blank" rel="noopener noreferrer">前往 KataGo 官方下載頁 ↗</a>
           </div>
           <div class="provider-help" id="remote-help" hidden>
-            <strong>Remote API 給進階使用者／自架服務</strong>
-            <p>本頁只保存 API endpoint，<strong>不提供、要求或保存 API key</strong>。需要密鑰的模型服務應由你控制的 server／Cloudflare Worker 保存 secret，再由這裡呼叫該 gateway。</p>
+            <strong>遠端對弈 API（跨裝置／網站訪客）</strong>
+            <p>GitHub Pages 只提供靜態前端；若要讓所有訪客共用 KataGo，需要另行部署 HTTPS KataGo API，再把端點填在這裡。目前專案<strong>沒有提供共用的託管 KataGo 服務</strong>。本頁只保存 endpoint，不提供、要求或保存 API key；需要密鑰時應由你控制的 server／Cloudflare Worker 保存 secret。</p>
           </div>
-          <label id="provider-endpoint-field" hidden><span>連線位址</span><input id="provider-endpoint" type="url" value="http://127.0.0.1:8765/v1/move" spellcheck="false" autocomplete="off"></label>
+          <label id="provider-endpoint-field" hidden><span>API 連線位址</span><input id="provider-endpoint" type="url" value="http://127.0.0.1:8765/v1/move" spellcheck="false" autocomplete="off"></label>
           <div class="provider-test-row" id="provider-test-row" hidden>
             <button class="subtle-button" id="test-provider-button" type="button">測試連線</button>
             <span id="provider-status" role="status" aria-live="polite">尚未測試</span>
