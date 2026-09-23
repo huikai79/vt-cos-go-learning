@@ -1,15 +1,15 @@
 # 完成矩陣：悟之一手
 
-更新日期：2026-09-22  
+更新日期：2026-09-24  
 用途：將產品承諾、現有實作、自動驗證與證據邊界分開記錄。此表的「工程通過」只表示指定程式行為可運作，不表示內容正確、初學者可理解或學習有效。
 
 ## Current Status
 
-- `as_of`: 2026-09-23
+- `as_of`: 2026-09-24
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v32`；棋盤練習頁 `live-game-ui-v8`
+- `ui_version`: `learner-flow-v33`；棋盤練習頁 `live-game-ui-v8`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -220,4 +220,5 @@
 - **反證：** `tests/ui.test.cjs` 新增真實案例：先把第 8 單元 lesson 設為已看過，再從 `u7-06` 正答進入第 8 單元；仍必須顯示「進入第 8 單元短講」、開啟「現在先學：先照顧弱棋」、保存 `lessonIntroPending=true` 並把焦點移到短講標題。
 - **歷史語義／migration：** 不改 storage schema，也不清除既有 `seenLessonIntros`；舊資料可直接使用。此修改只改正式跨單元 navigation 的 UI 狀態，不改 first response、scoring、KC、scheduler、formal evaluation 或 learner evidence。
 - **Rollback：** 移除 `forceLessonIntro` 與 `entersNewUnit` 分支即可恢復舊行為；不需資料 migration。
+- **UI version：** 因正式跨單元 navigation 語義已改，learner-facing `uiVersion` 升為 `learner-flow-v33`；舊事件保留原本的 `learner-flow-v32`，不回寫歷史事件。`index.html` 同步使用 v33 query string，避免 Pages／瀏覽器沿用舊 `app.js`。
 - **Validation：** commit `7eec751` 的 verify run #177：node-contracts、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 全部 PASS。
