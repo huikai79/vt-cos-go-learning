@@ -16,14 +16,29 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition) {
 
   const teachingCriteria = definition.criteria.formalTeachingUse;
   const usability = evidence.usability || {};
+  const participants = Array.isArray(usability.participants) ? usability.participants : [];
+  const participantCodes = participants.map((participant) => participant && participant.participantCode).filter(nonEmpty);
+  const uniqueParticipantCodes = new Set(participantCodes);
+  const perParticipantEvidencePassed = participants.length >= teachingCriteria.minimumNoviceParticipants
+    && uniqueParticipantCodes.size === participants.length
+    && participants.every((participant) =>
+      participant
+      && participant.targetNovice === true
+      && teachingCriteria.requiredCriticalTasks.every((task) => participant.tasks && participant.tasks[task] === true)
+      && Array.isArray(participant.blockingIssues)
+      && participant.blockingIssues.length === 0
+      && nonEmpty(participant.evidenceReference)
+    );
   const usabilityPassed = validTimestamp(usability.completedAt)
     && Number.isInteger(usability.participantCount)
+    && usability.participantCount === participants.length
     && usability.participantCount >= teachingCriteria.minimumNoviceParticipants
     && usability.participantsAreTargetNovices === true
     && teachingCriteria.requiredCriticalTasks.every((task) => usability.criticalTasks && usability.criticalTasks[task] === true)
     && usability.openBlockingIssues === teachingCriteria.maximumOpenBlockingIssues
-    && nonEmpty(usability.evidenceReference);
-  if (!usabilityPassed) errors.push("初學者關鍵任務觀察未達最低正式教學閘門");
+    && nonEmpty(usability.evidenceReference)
+    && perParticipantEvidencePassed;
+  if (!usabilityPassed) errors.push("初學者關鍵任務觀察未達最低正式教學閘門（需逐位參與者完成全部關鍵任務並保留證據引用）");
 
   const accessibility = evidence.accessibility || {};
   const accessibilityPassed = validTimestamp(accessibility.completedAt)

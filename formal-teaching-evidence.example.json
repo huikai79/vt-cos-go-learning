@@ -14,7 +14,49 @@
       "export_learning_data": false
     },
     "openBlockingIssues": null,
-    "evidenceReference": null
+    "evidenceReference": null,
+    "participants": [
+      {
+        "participantCode": "novice-01",
+        "targetNovice": false,
+        "tasks": {
+          "start_course": false,
+          "complete_board_answer": false,
+          "recover_after_wrong_answer": false,
+          "reload_and_resume": false,
+          "export_learning_data": false
+        },
+        "blockingIssues": [],
+        "evidenceReference": null
+      },
+      {
+        "participantCode": "novice-02",
+        "targetNovice": false,
+        "tasks": {
+          "start_course": false,
+          "complete_board_answer": false,
+          "recover_after_wrong_answer": false,
+          "reload_and_resume": false,
+          "export_learning_data": false
+        },
+        "blockingIssues": [],
+        "evidenceReference": null
+      },
+      {
+        "participantCode": "novice-03",
+        "targetNovice": false,
+        "tasks": {
+          "start_course": false,
+          "complete_board_answer": false,
+          "recover_after_wrong_answer": false,
+          "reload_and_resume": false,
+          "export_learning_data": false
+        },
+        "blockingIssues": [],
+        "evidenceReference": null
+      }
+    ],
+    "observationProtocol": "Observe each participant separately. Mark a task true only after that participant completes it without the observer taking over. Keep failures/abandonment in the record."
   },
   "accessibility": {
     "completedAt": null,
