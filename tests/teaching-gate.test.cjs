@@ -31,7 +31,21 @@ function validHumanEvidence() {
     schemaVersion: 1,
     protocolId: "go-formal-teaching-evidence-v1",
     r1ContentFingerprint: gateDefinition.r1ContentFingerprint,
-    usability: { completedAt: "2026-09-21T00:00:00.000Z", participantCount: 3, participantsAreTargetNovices: true, criticalTasks, openBlockingIssues: 0, evidenceReference: "local-usability-report" },
+    usability: {
+      completedAt: "2026-09-21T00:00:00.000Z",
+      participantCount: 3,
+      participantsAreTargetNovices: true,
+      criticalTasks,
+      openBlockingIssues: 0,
+      evidenceReference: "local-usability-report",
+      participants: ["novice-01", "novice-02", "novice-03"].map((participantCode) => ({
+        participantCode,
+        targetNovice: true,
+        tasks: { ...criticalTasks },
+        blockingIssues: [],
+        evidenceReference: `local-usability-report#${participantCode}`
+      }))
+    },
     accessibility: { completedAt: "2026-09-21T00:00:00.000Z", checks, openBlockingIssues: 0, evidenceReference: "local-accessibility-report" },
     formalEvaluation: { privateUnexposedHoldoutEstablished: false, r1bComparabilityEstablished: false, evidenceReference: null }
   };
@@ -63,5 +77,27 @@ test("篡改或不完整 R1 回條不能通過 gate", () => {
   receipt.reviewer.answerBlindBeforeReview = false;
   const result = GateVerifier.evaluateGate({ receipt, humanEvidence: validHumanEvidence() });
   assert.equal(result.r1Verification.receiptValid, false);
+  assert.equal(result.formalTeachingUse.status, "BLOCKED");
+});
+
+test("彙總布林值不能掩蓋某位初學者未完成關鍵任務", () => {
+  const evidence = validHumanEvidence();
+  evidence.usability.participants[1].tasks.reload_and_resume = false;
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
+  assert.equal(result.formalTeachingUse.status, "BLOCKED");
+  assert.match(result.humanEvidenceErrors.join(" "), /逐位參與者/);
+});
+
+test("participantCount 與逐位紀錄數量不一致時 fail closed", () => {
+  const evidence = validHumanEvidence();
+  evidence.usability.participants.pop();
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
+  assert.equal(result.formalTeachingUse.status, "BLOCKED");
+});
+
+test("重複 participant code 不得冒充三位獨立初學者", () => {
+  const evidence = validHumanEvidence();
+  evidence.usability.participants[2].participantCode = "novice-02";
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
   assert.equal(result.formalTeachingUse.status, "BLOCKED");
 });
