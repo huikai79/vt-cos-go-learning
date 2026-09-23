@@ -217,7 +217,7 @@ test("棋盤頁提供雙人同機與和電腦下模式，並載入 bounded bot",
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
   const page = fs.readFileSync(path.join(__dirname, "..", "live-game-page.js"), "utf8");
   assert.match(html, /practice-bot\.js/);
-  assert.match(html, /和電腦下/);
+  assert.match(html, /練習電腦/);
   assert.match(html, /id="human-color"/);
   assert.match(page, /evaluationRole: "practice"/);
   assert.match(page, /formalEligible: false/);
@@ -275,7 +275,7 @@ test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑
 
 test("棋盤頁用版本參數載入 live CSS，避免瀏覽器沿用舊渲染樣式", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
-  assert.match(html, /live-game\.css\?v=live-game-ui-v6/);
+  assert.match(html, /live-game\.css\?v=live-game-ui-v7/);
 });
 
 
@@ -304,7 +304,7 @@ test("棋盤頁在回合開始先建立 live assessment，首答與 retry 分離
   const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   assert.match(html, /live-evidence\.js\?v=live-evidence-v1/);
-  assert.match(html, /live-game-page\.js\?v=live-game-ui-v6/);
+  assert.match(html, /live-game-page\.js\?v=live-game-ui-v7/);
   assert.match(page, /ensureLiveAssessment\(\)/);
   assert.match(page, /recordLiveResponse\(/);
   assert.match(page, /existingResponseCount\(assessmentId\)/);
@@ -315,4 +315,37 @@ test("棋盤頁在回合開始先建立 live assessment，首答與 retry 分離
   assert.match(appJs, /liveEvidenceEvents:/);
   assert.match(appJs, /learnerProgressSummary:/);
   assert.match(appJs, /learningDiagnostics: Metrics\.summarize\(\{ events: state\.events/);
+});
+
+test("初學者對手 UI 隱藏 provider 術語並以練習電腦為預設", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  const page = fs.readFileSync(path.join(__dirname, "..", "live-game-page.js"), "utf8");
+  assert.match(html, /<option value="computer">練習電腦<\/option>/);
+  assert.match(html, /<option value="local">雙人同機<\/option>/);
+  const beginnerSelect = html.match(/<select id="opponent-mode">([\s\S]*?)<\/select>/);
+  assert.ok(beginnerSelect);
+  assert.equal(/KataGo|Remote API|endpoint|provider/i.test(beginnerSelect[1]), false);
+  assert.match(html, /<details class="advanced-opponent"/);
+  assert.match(html, /進階：更換電腦引擎/);
+  assert.match(page, /opponentMode = "computer"/);
+});
+
+test("KataGo 與 Remote API 只在進階設定出現，且 API key 不進 learner UI", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  assert.match(html, /id="advanced-provider-mode"/);
+  assert.match(html, /本機 KataGo/);
+  assert.match(html, /自訂 Remote API/);
+  assert.match(html, /KataGo 官方下載頁/);
+  assert.match(html, /不提供、要求或保存 API key/);
+  assert.equal(/type="password"/.test(html), false);
+  assert.equal(/id="api-key"|name="api-key"/i.test(html), false);
+  assert.match(html, /id="test-provider-button"/);
+});
+
+test("provider 連線測試仍走 MoveProvider 且失敗不宣稱成功", () => {
+  const page = fs.readFileSync(path.join(__dirname, "..", "live-game-page.js"), "utf8");
+  assert.match(page, /test-provider-button/);
+  assert.match(page, /MoveProvider\.requestAction/);
+  assert.match(page, /連線失敗/);
+  assert.match(page, /providerEndpoint/);
 });

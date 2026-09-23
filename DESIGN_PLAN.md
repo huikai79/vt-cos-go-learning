@@ -446,3 +446,12 @@ KaTrain／KataGo 已有分析與重試能力，但自動根因分類、題目生
 - 1、3、7、14 天等間隔只能作為可調啟發式；實際排程要依延後答題結果修正。
 - 本產品不把「次日答對」直接解釋成睡眠效果，也不宣稱圍棋訓練能提升一般智力。
 - 不採左右腦課表、PFC 題量、固定復盤窗口或多巴胺最佳勝率處方。職業棋手 AI 研究與腦影像結果不直接驗證成人初學者的本產品流程；AI 推薦相似度也不是完整棋力定義。
+
+## 2026-09-23 Change note｜初學者對弈入口與進階 provider 分層
+
+- **目標行為：** learner-facing 主流程只要求選「練習電腦」或「雙人同機」及執黑／白；KataGo、Remote API、endpoint 與連線測試收進預設收合的進階設定。新使用者預設「練習電腦」，不要求理解引擎名稱、API 或安裝流程。
+- **不可破壞 invariant：** provider 仍只有候選權；所有 play 再經規則引擎；KataGo／Remote failure 保持 ERROR，不 fallback；不在 learner UI 收集或保存 API key；既有 opponent 設定可繼續讀取。
+- **主要 failure case：** progressive disclosure 只藏文字卻破壞既有 KataGo／Remote 使用者設定、provider endpoint、電腦回合或 evidence actor semantics；因此保留原 opponentMode 值並新增 UI contract／negative tests。
+- **驗收：** 初學者 selector 不出現 KataGo／Remote/provider 術語；進階區可選引擎、看 KataGo 官方下載入口、設定 endpoint 與測試連線；API key input 不存在；既有 live-game、provider、Windows UI、repository boundary、Sabaki oracle 全部需 PASS。
+- **證據邊界：** 這是 information architecture／usability risk reduction 的工程修改；是否真的讓初學者更容易理解仍需三位目標初學者短任務觀察，不能由 UI test 升格。
+- **Rollback：** 恢復 v6 mode panel 與預設 local；不需棋局、practice event、KC、scheduler 或 formal evaluation migration。

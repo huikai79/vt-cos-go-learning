@@ -154,3 +154,12 @@ Reference -> Oracle -> Dependency -> Fork
 ## 目前限制
 
 這是 15 單元的教材與資料原型。驗收畫面洩漏、首答被重試覆寫、固定應用分母缺漏，以及 storage／trial 版本責任已由測試驗證。Evidence Boundary 修正後，`personal-pilot-v3` 明確使用舊 R1 自我審查中已曝光的八題，`formalEligible=false`；v1／v2 保留為 legacy，一般匯出仍遮蔽公開保留組答案。R1a 已從學習者介面隔離，只供不同於學習者的外部審查者。擁有者已接受原始碼公開，因此 48 題均標記 `exposureStatus="public_source"`、`formalHoldoutEligible=false`，`formalHoldoutPoolStatus="retired_due_to_publication"`；`holdout` 只剩排程相容語意。正式評量必須建立從未公開的新題庫與角色分離流程。R1b 難度可比性未知。SCD 與再犯間隔的計算、介面和匯出已完成工程驗證，變形庫也已有非 holdout T2 流程題，但尚無真人延後資料。內容效度、完整死活課綱、固定應用與 SGF 可落子著手重建的任務效度、方案比較及實戰遷移仍未完成。完整狀態以 [完成矩陣](COMPLETION_MATRIX.md) 為準，正式成效判斷不得開始。
+
+## 2026-09-23 Change note｜初學者對弈入口與進階 provider 分層
+
+- **目標行為：** learner-facing 主流程只要求選「練習電腦」或「雙人同機」及執黑／白；KataGo、Remote API、endpoint 與連線測試收進預設收合的進階設定。新使用者預設「練習電腦」，不要求理解引擎名稱、API 或安裝流程。
+- **不可破壞 invariant：** provider 仍只有候選權；所有 play 再經規則引擎；KataGo／Remote failure 保持 ERROR，不 fallback；不在 learner UI 收集或保存 API key；既有 opponent 設定可繼續讀取。
+- **主要 failure case：** progressive disclosure 只藏文字卻破壞既有 KataGo／Remote 使用者設定、provider endpoint、電腦回合或 evidence actor semantics；因此保留原 opponentMode 值並新增 UI contract／negative tests。
+- **驗收：** 初學者 selector 不出現 KataGo／Remote/provider 術語；進階區可選引擎、看 KataGo 官方下載入口、設定 endpoint 與測試連線；API key input 不存在；既有 live-game、provider、Windows UI、repository boundary、Sabaki oracle 全部需 PASS。
+- **證據邊界：** 這是 information architecture／usability risk reduction 的工程修改；是否真的讓初學者更容易理解仍需三位目標初學者短任務觀察，不能由 UI test 升格。
+- **Rollback：** 恢復 v6 mode panel 與預設 local；不需棋局、practice event、KC、scheduler 或 formal evaluation migration。

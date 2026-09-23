@@ -13,7 +13,7 @@
   })();
   const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
   const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
-  const UI_VERSION = "live-game-ui-v6";
+  const UI_VERSION = "live-game-ui-v7";
   const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
   const boardProfiles = {
     5: { title: "5×5 基礎練習棋盤", heading: "氣、提子、連斷與規則練習", description: "作為第一個可自由操作的練習棋盤，適合練氣、提子、連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "氣、提子、連斷、禁著、眼形" },
@@ -21,7 +21,7 @@
     9: { title: "9×9 完整實戰練習", heading: "完整 9×9 實戰棋盤", description: "兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。", purpose: "完整小棋盤對局" }
   };
   const $ = (id) => document.getElementById(id);
-  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "local", humanColor = BLACK, providerEndpoint = "http://127.0.0.1:8765/v1/move", botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "", liveEvidenceFailure = "", activeAssessment = null, activeAssessmentResponseCount = 0;
+  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "computer", humanColor = BLACK, providerEndpoint = "http://127.0.0.1:8765/v1/move", botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "", liveEvidenceFailure = "", activeAssessment = null, activeAssessmentResponseCount = 0;
 
   function newPracticeSessionId() { return `live-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`; }
   function centerCursor(size) { const middle = Math.floor(size / 2); return [middle, middle]; }
@@ -36,7 +36,7 @@
   function loadOpponentSettings() {
     try {
       const raw = localStorage.getItem(`go-live-opponent-v1-size-${requestedSize}`);
-      if (!raw) return;
+      if (!raw) { opponentMode = "computer"; return; }
       const value = JSON.parse(raw);
       if (value && ["local", "computer", "katago", "remote"].includes(value.opponentMode)) opponentMode = value.opponentMode;
       if (value && typeof value.providerEndpoint === "string" && value.providerEndpoint) providerEndpoint = value.providerEndpoint;
@@ -257,12 +257,17 @@
     $("practice-purpose").textContent = profile.purpose;
     $("rules-summary").textContent = size === 9 ? `中國式面積 · 貼 ${game.komi} · 簡單劫` : `微型練習盤 · ${game.komi ? `貼 ${game.komi}` : "無貼目"} · 簡單劫`;
     $("import-label").textContent = `匯入 ${size} 路 SGF`;
-    $("opponent-mode").value = opponentMode;
+    $("opponent-mode").value = opponentMode === "local" ? "local" : "computer";
+    $("advanced-provider-mode").value = isComputerMode() ? opponentMode : "computer";
     $("human-color").value = String(humanColor);
     $("human-color-field").hidden = !isComputerMode();
     $("provider-endpoint-field").hidden = !["katago", "remote"].includes(opponentMode);
+    $("provider-test-row").hidden = !["katago", "remote"].includes(opponentMode);
+    $("katago-help").hidden = opponentMode !== "katago";
+    $("remote-help").hidden = opponentMode !== "remote";
     $("provider-endpoint").value = providerEndpoint;
-    $("opponent-summary").textContent = isComputerMode() ? `你執${colorLabel(humanColor)} · ${opponentMode === "katago" ? "KataGo" : opponentMode === "remote" ? "Remote API" : "本機電腦"}執${colorLabel(computerColor())}` : "雙人同機";
+    $("opponent-summary").textContent = isComputerMode() ? "練習電腦" : "雙人同機";
+    $("opponent-detail").textContent = opponentMode === "katago" ? `進階 · KataGo · 你執${colorLabel(humanColor)}` : opponentMode === "remote" ? `進階 · 自訂 API · 你執${colorLabel(humanColor)}` : isComputerMode() ? `內建對手 · 你執${colorLabel(humanColor)}` : "兩人輪流操作這台裝置";
     $("footer-boundary").textContent = size === 9
       ? "9×9 提供目前已支援的完整小棋盤對局流程；使用 simple ko，不宣稱涵蓋各棋規的 superko、終局爭議或裁判規則。"
       : `${size}×${size} 定位為規則與局部技能的微型練習盤；雖可走完整 Pass／計分流程，但不把其勝負當正式棋力、T3 或完整對局能力證據。`;
@@ -464,10 +469,38 @@ ${previewText}
     startNewGame("user_started");
   });
   $("opponent-mode").addEventListener("change", (event) => {
-    const nextMode = ["computer", "katago", "remote"].includes(event.target.value) ? event.target.value : "local";
-    if (game.moves.length && !confirm("切換對手模式需要開始同尺寸新局。若要保留這盤，請先匯出 SGF。確定切換？")) { event.target.value = opponentMode; return; }
+    const nextMode = event.target.value === "local" ? "local" : "computer";
+    if (nextMode === opponentMode || (nextMode === "computer" && isComputerMode())) {
+      if (nextMode === "computer" && opponentMode !== "computer") opponentMode = "computer";
+      saveOpponentSettings(); render(); scheduleComputerTurn(); return;
+    }
     opponentMode = nextMode;
-    startNewGame("opponent_mode_changed");
+    if (opponentMode === "computer") $("advanced-provider-mode").value = "computer";
+    saveOpponentSettings();
+    event("opponent_mode_change", { actor: "system", opponentMode });
+    save(); render(); scheduleComputerTurn();
+  });
+  $("advanced-provider-mode").addEventListener("change", (event) => {
+    opponentMode = ["computer", "katago", "remote"].includes(event.target.value) ? event.target.value : "computer";
+    $("opponent-mode").value = "computer";
+    saveOpponentSettings();
+    event("opponent_provider_change", { actor: "system", opponentMode });
+    save(); render(); scheduleComputerTurn();
+  });
+  $("test-provider-button").addEventListener("click", async () => {
+    const status = $("provider-status");
+    providerEndpoint = String($("provider-endpoint").value || "").trim();
+    saveOpponentSettings();
+    status.textContent = "測試中…";
+    try {
+      if (!MoveProvider || typeof MoveProvider.requestAction !== "function") throw new Error("move_provider_module_unavailable");
+      const action = await MoveProvider.requestAction(game, { kind: opponentMode, endpoint: providerEndpoint, timeoutMs: 8000 });
+      status.textContent = `連線成功 · 回傳 ${action.type}`;
+      status.className = "success";
+    } catch (error) {
+      status.textContent = `連線失敗 · ${error.message || "unknown"}`;
+      status.className = "error";
+    }
   });
   $("provider-endpoint").addEventListener("change", (event) => {
     providerEndpoint = String(event.target.value || "").trim(); saveOpponentSettings(); save();
