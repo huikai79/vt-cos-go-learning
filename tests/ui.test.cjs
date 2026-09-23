@@ -476,6 +476,91 @@ async function main() {
     assert.equal(seenAfterDismiss.reopened, true);
     assert.equal(seenAfterDismiss.repeatedOpen, false);
     assert.ok(seenAfterDismiss.seen.includes(4));
+
+    const unitBoundaryCases = [
+      { index: 9, fromId: "u1-10", fromTitle: "救出被打吃的黑棋", fromLesson: 2, toUnit: 2, toLesson: "辨認棋串", toQuestion: "左右相鄰" },
+      { index: 19, fromId: "u2-10", fromTitle: "近邊的斷點", fromLesson: 5, toUnit: 3, toLesson: "不能下與不能立刻提回", toQuestion: "沒有氣的一手" },
+      { index: 25, fromId: "u3-06", fromTitle: "本程式的劫規則", fromLesson: 6, toUnit: 4, toLesson: "兩眼與急所", toQuestion: "橫向直三做活" },
+      { index: 39, fromId: "u4-06", fromTitle: "先手的重要性", fromLesson: 7, toUnit: 5, toLesson: "把一局下完", toQuestion: "9 路盤的用途" },
+      { index: 45, fromId: "u5-06", fromTitle: "小局複盤", fromLesson: 8, toUnit: 6, toLesson: "從角落展開", toQuestion: "角落的效率" },
+      { index: 51, fromId: "u6-06", fromTitle: "佈局後的自問", fromLesson: 9, toUnit: 7, toLesson: "實地與厚勢", toQuestion: "實地" },
+      { index: 57, fromId: "u7-06", fromTitle: "全局比較", fromLesson: 10, toUnit: 8, toLesson: "先照顧弱棋", toQuestion: "弱棋的線索" },
+      { index: 63, fromId: "u8-06", fromTitle: "攻守檢查", fromLesson: 11, toUnit: 9, toLesson: "讀到活或死", toQuestion: "死活不是猜圖" },
+      { index: 69, fromId: "u9-06", fromTitle: "死活練習的選題", fromLesson: 12, toUnit: 10, toLesson: "收官與數目", toQuestion: "官子的焦點" },
+      { index: 75, fromId: "u10-06", fromTitle: "數目校正", fromLesson: 13, toUnit: 11, toLesson: "選擇全局更大的方向", toQuestion: "全局先找弱棋" },
+      { index: 81, fromId: "u11-06", fromTitle: "方向不是背譜", fromLesson: 14, toUnit: 12, toLesson: "戰鬥中的取捨", toQuestion: "辨認可能的棄子" },
+      { index: 87, fromId: "u12-06", fromTitle: "戰鬥複盤", fromLesson: 15, toUnit: 13, toLesson: "劫材與全局價值", toQuestion: "劫材是否真實" },
+      { index: 93, fromId: "u13-06", fromTitle: "劫的複盤", fromLesson: 16, toUnit: 14, toLesson: "定石看方向", toQuestion: "定石的意思" },
+      { index: 99, fromId: "u14-06", fromTitle: "學定石的方法", fromLesson: 17, toUnit: 15, toLesson: "從一局找到下一個課題", toQuestion: "複盤先找哪裡" }
+    ];
+    assert.equal(unitBoundaryCases.length, 14, "15 個單元必須有 14 個跨單元銜接");
+    for (const boundary of unitBoundaryCases) {
+      await evaluate(socket, `(() => {
+        localStorage.setItem('go-learning-prototype-v7', JSON.stringify({
+          schemaVersion: 7,
+          contentCatalogVersion: 3,
+          index: ${boundary.index},
+          navUnitIndex: ${boundary.toUnit - 2},
+          hasStarted: true,
+          lessonIntroPending: false,
+          seenLessonIntros: [${boundary.fromLesson}]
+        }));
+      })()`);
+      await command(socket, "Page.reload");
+      let boundaryReady = false;
+      for (let retry = 0; retry < 30; retry += 1) {
+        boundaryReady = await evaluate(socket, `document.querySelector('#question-title')?.textContent === ${JSON.stringify(boundary.fromTitle)}`);
+        if (boundaryReady) break;
+        await delay(100);
+      }
+      assert.equal(boundaryReady, true, `${boundary.fromId} 未載入到預期的單元末題`);
+      const transition = await evaluate(socket, `(() => {
+        const boundary = ${JSON.stringify(boundary)};
+        const problem = window.GoContent.problems[boundary.index];
+        if (!problem || problem.id !== boundary.fromId) throw new Error('unit boundary source mismatch');
+        if (problem.type === 'move') {
+          const x = problem.answer[0];
+          const y = problem.answer[1];
+          const point = document.querySelector('#board [data-x="' + x + '"][data-y="' + y + '"]');
+          if (!point) throw new Error('unit boundary move answer point missing');
+          point.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        } else if (problem.type === 'choice') {
+          const option = document.querySelector('[data-answer="' + problem.answer + '"]');
+          if (!option) throw new Error('unit boundary choice answer missing');
+          option.click();
+        } else {
+          throw new Error('unsupported unit boundary problem type: ' + problem.type);
+        }
+        const feedback = document.querySelector('#feedback').textContent;
+        const nextDisabled = document.querySelector('#next-button').disabled;
+        const boundaryButton = document.querySelector('#next-button').textContent.replace(/\\s+/g, ' ').trim();
+        document.querySelector('#next-button').click();
+        const saved = JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
+        return {
+          feedback,
+          nextDisabled,
+          boundaryButton,
+          nextLesson: document.querySelector('#lesson-title').textContent,
+          nextQuestion: document.querySelector('#question-title').textContent,
+          introTitle: document.querySelector('#lesson-intro-title').textContent,
+          introOpen: document.querySelector('#lesson-intro-dialog').open,
+          pending: saved.lessonIntroPending,
+          focused: document.activeElement.id,
+          selectedUnit: document.querySelector('#unit-select').value
+        };
+      })()`);
+      assert.match(transition.feedback, /答對了/, `${boundary.fromId} 單元末題未正確完成`);
+      assert.equal(transition.nextDisabled, false, `${boundary.fromId} 完成後下一步仍被停用`);
+      assert.equal(transition.boundaryButton, `進入第 ${boundary.toUnit} 單元短講 →`);
+      assert.equal(transition.nextLesson, boundary.toLesson);
+      assert.equal(transition.nextQuestion, boundary.toQuestion);
+      assert.equal(transition.introTitle, `現在先學：${boundary.toLesson}`);
+      assert.equal(transition.introOpen, true, `第 ${boundary.toUnit} 單元未自動開啟未看過的短講`);
+      assert.equal(transition.pending, true, `第 ${boundary.toUnit} 單元短講 pending 未保存`);
+      assert.equal(transition.focused, "lesson-intro-title");
+      assert.equal(transition.selectedUnit, String(boundary.toUnit - 1));
+    }
+
     await evaluate(socket, "localStorage.clear()");
     await command(socket, "Page.reload");
     for (let retry = 0; retry < 30; retry += 1) {
