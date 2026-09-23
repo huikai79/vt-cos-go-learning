@@ -107,3 +107,37 @@ jobs:
         run: |
           pwsh -NoProfile -File tests/repository-boundary.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+
+  katago-container-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact event ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git"
+          git fetch --depth=1 origin "$GITHUB_REF"
+          git checkout --detach FETCH_HEAD
+      - name: Build portable KataGo CPU image
+        shell: bash
+        run: docker build --progress=plain -t vtcos-katago-smoke .
+      - name: Run real 9x9 provider smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --rm --name vtcos-katago-smoke -p 127.0.0.1:10000:10000             -e VTCOS_KATAGO_ALLOWED_ORIGINS=https://huikai.com.kg             -e VTCOS_KATAGO_TIMEOUT_MS=60000             vtcos-katago-smoke
+          trap 'docker logs vtcos-katago-smoke || true; docker stop vtcos-katago-smoke >/dev/null 2>&1 || true' EXIT
+          for i in $(seq 1 30); do
+            if curl --fail --silent --show-error -H 'Origin: https://huikai.com.kg' http://127.0.0.1:10000/health | grep -q '"status":"ready"'; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent --show-error -H 'Origin: https://huikai.com.kg' http://127.0.0.1:10000/health | grep -q '"status":"ready"'
+          curl --fail --silent --show-error --max-time 90             -H 'Origin: https://huikai.com.kg' -H 'Content-Type: application/json'             --data '{"contractVersion":"move-provider-v1","boardSize":9,"komi":7.5,"rulesVersion":"cn-area-simple-ko-v1","toPlay":1,"consecutivePasses":0,"initialBoard":[[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]],"moves":[]}'             http://127.0.0.1:10000/v1/move | tee /tmp/katago-response.json
+          node -e 'const fs=require("fs");const x=JSON.parse(fs.readFileSync("/tmp/katago-response.json","utf8"));if(!["play","pass","resign"].includes(x.type))process.exit(1);if(x.type==="play"&&(!Array.isArray(x.point)||x.point.length!==2||x.point.some(n=>!Number.isInteger(n)||n<0||n>8)))process.exit(1);'
+          denied=$(curl --silent --output /dev/null --write-out '%{http_code}' -H 'Origin: https://evil.example' http://127.0.0.1:10000/health)
+          test "$denied" = "403"
