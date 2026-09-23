@@ -332,9 +332,10 @@ test("初學者對手 UI 隱藏 provider 術語並以練習電腦為預設", () 
 
 test("KataGo 與 Remote API 只在進階設定出現，且 API key 不進 learner UI", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  const page = fs.readFileSync(path.join(__dirname, "..", "live-game-page.js"), "utf8");
   assert.match(html, /id="advanced-provider-mode"/);
   assert.match(html, /本機 KataGo/);
-  assert.match(html, /自訂 Remote API/);
+  assert.match(html, /遠端對弈 API/);
   assert.match(html, /KataGo 官方下載頁/);
   assert.match(html, /GitHub Pages 不能執行 KataGo/);
   assert.match(html, /其他網站使用者若未自行安裝並啟動 bridge/);
