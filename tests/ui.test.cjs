@@ -477,6 +477,63 @@ async function main() {
     assert.equal(seenAfterDismiss.repeatedOpen, false);
     assert.ok(seenAfterDismiss.seen.includes(4));
 
+    // Regression: previewing a future unit must not suppress the formal unit-transition intro.
+    await evaluate(socket, `(() => {
+      localStorage.setItem('go-learning-prototype-v7', JSON.stringify({
+        schemaVersion: 7,
+        contentCatalogVersion: 3,
+        index: 57,
+        navUnitIndex: 6,
+        hasStarted: true,
+        lessonIntroPending: false,
+        seenLessonIntros: [10, 11]
+      }));
+    })()`);
+    await command(socket, "Page.reload");
+    let revisitedUnitBoundaryReady = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      revisitedUnitBoundaryReady = await evaluate(socket, "document.querySelector('#question-title')?.textContent === '全局比較'");
+      if (revisitedUnitBoundaryReady) break;
+      await delay(100);
+    }
+    assert.equal(revisitedUnitBoundaryReady, true, "第 7 單元末題未載入");
+    const revisitedUnitTransition = await evaluate(socket, `(() => {
+      const problem = window.GoContent.problems[57];
+      if (!problem || problem.id !== 'u7-06') throw new Error('u7-06 boundary mismatch');
+      if (problem.type === 'choice') {
+        const option = document.querySelector('[data-answer="' + problem.answer + '"]');
+        if (!option) throw new Error('u7-06 answer missing');
+        option.click();
+      } else if (problem.type === 'move') {
+        const point = document.querySelector('#board [data-x="' + problem.answer[0] + '"][data-y="' + problem.answer[1] + '"]');
+        if (!point) throw new Error('u7-06 move answer missing');
+        point.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+      } else {
+        throw new Error('unsupported u7-06 type: ' + problem.type);
+      }
+      const boundaryButton = document.querySelector('#next-button').textContent.replace(/\\s+/g, ' ').trim();
+      document.querySelector('#next-button').click();
+      const saved = JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
+      return {
+        boundaryButton,
+        lesson: document.querySelector('#lesson-title').textContent,
+        question: document.querySelector('#question-title').textContent,
+        introOpen: document.querySelector('#lesson-intro-dialog').open,
+        introTitle: document.querySelector('#lesson-intro-title').textContent,
+        pending: saved.lessonIntroPending,
+        seen: saved.seenLessonIntros,
+        focused: document.activeElement.id
+      };
+    })()`);
+    assert.equal(revisitedUnitTransition.boundaryButton, "進入第 8 單元短講 →");
+    assert.equal(revisitedUnitTransition.lesson, "先照顧弱棋");
+    assert.equal(revisitedUnitTransition.question, "弱棋的線索");
+    assert.equal(revisitedUnitTransition.introOpen, true, "已預覽過第 8 單元時，正式從第 7 單元進入仍必須開啟短講");
+    assert.equal(revisitedUnitTransition.introTitle, "現在先學：先照顧弱棋");
+    assert.equal(revisitedUnitTransition.pending, true);
+    assert.ok(revisitedUnitTransition.seen.includes(11), "測試前提：第 8 單元短講必須已看過");
+    assert.equal(revisitedUnitTransition.focused, "lesson-intro-title");
+
     const unitBoundaryCases = [
       { index: 9, fromId: "u1-10", fromTitle: "救出被打吃的黑棋", fromLesson: 2, toUnit: 2, toLesson: "辨認棋串", toQuestion: "左右相鄰" },
       { index: 19, fromId: "u2-10", fromTitle: "近邊的斷點", fromLesson: 5, toUnit: 3, toLesson: "不能下與不能立刻提回", toQuestion: "沒有氣的一手" },
