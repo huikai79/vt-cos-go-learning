@@ -163,3 +163,11 @@ Reference -> Oracle -> Dependency -> Fork
 - **驗收：** 初學者 selector 不出現 KataGo／Remote/provider 術語；進階區可選引擎、看 KataGo 官方下載入口、設定 endpoint 與測試連線；API key input 不存在；既有 live-game、provider、Windows UI、repository boundary、Sabaki oracle 全部需 PASS。
 - **證據邊界：** 這是 information architecture／usability risk reduction 的工程修改；是否真的讓初學者更容易理解仍需三位目標初學者短任務觀察，不能由 UI test 升格。
 - **Rollback：** 恢復 v6 mode panel 與預設 local；不需棋局、practice event、KC、scheduler 或 formal evaluation migration。
+
+
+## 2026-09-23 Change note｜公開 Pages 的 provider 可達性
+
+- GitHub Pages 只負責靜態前端，不能在託管端執行 `katago.exe` 或 `katago-bridge.cjs`。
+- `katago` provider 明確定義為 per-device localhost integration；網站訪客只有在自己的裝置已安裝 KataGo 並啟動 bridge 時才能使用。
+- `remote` provider 是未來／自架的 HTTPS service seam，可承接雲端 KataGo；目前 repository 沒有託管 KataGo endpoint，不把 contract 存在升格為 service availability。
+- 內建 heuristic provider 維持公開 Pages 的零安裝預設。若未來部署共用 KataGo API，需另處理 authentication、rate limit、resource isolation、timeout、CORS、TLS、成本與 failure observability，並保持 rules/scoring authority boundary。
