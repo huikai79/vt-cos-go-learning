@@ -186,8 +186,10 @@ Reference -> Oracle -> Dependency -> Fork
 ## 2026-09-23 Change note｜Portable KataGo CPU container contract
 
 - **目標：** 在不綁定 Render、Oracle 或 Cloudflare 的前提下，建立可搬移的 hosted KataGo CPU image，讓下一個驗證直接量真實 runtime latency／memory，而不是再增加 provider mock。
-- **實作：** multi-stage `Dockerfile` 從官方 KataGo v1.18.2 source 建置 Eigen CPU backend，runtime 只帶 Node bridge、GTP config 與 bounded small transformer model；`docker/start-katago.sh` 將 host 綁到 container network、使用平台 `PORT`，且沒有 `VTCOS_KATAGO_ALLOWED_ORIGINS` 就拒絕啟動。
+- **實作：** multi-stage `Dockerfile` 從官方 KataGo v1.17.1 source 建置 Eigen CPU backend，runtime 只帶 Node bridge、GTP config 與 bounded small transformer model；`docker/start-katago.sh` 將 host 綁到 container network、使用平台 `PORT`，且沒有 `VTCOS_KATAGO_ALLOWED_ORIGINS` 就拒絕啟動。
 - **反證：** `tests/katago-container.test.cjs` 固定檢查 CPU backend、版本 pin、小模型、origin fail-closed、沒有 baked credential 或 hosting-specific production endpoint。
 - **不變 invariant：** provider 仍只有候選權；rules engine 再驗證 play；provider failure 不 fallback；不改 learner events、KC、scheduler、scoring、storage 或 formal evaluation。
 - **證據邊界：** 本 change 只建立 image contract。尚未在 Docker／Render／Oracle 上 build 或執行，因此 container build、KataGo Linux inference、public HTTPS availability、cold/warm latency 與 Pages→service smoke 均維持 NOT_MEASURED。
 - **Rollback：** 移除 Docker artifacts 與對應 contract test 即可；不需資料 migration。
+
+- **Johari 後續修正：** 第一版 PR 只用靜態 contract 檢查 Dockerfile，未真正 build image，且把最新 CUDA-focused v1.18.2 誤當成 CPU/Eigen 最佳 pin。查核官方 release 後改用仍明列 Eigen／Eigen AVX2 CPU build 的 v1.17.1，並新增 Linux GitHub Actions 真實 `docker build` + `/health` + 9×9 `/v1/move` inference + denied-origin 403 smoke。只有該 job PASS 才能把 container build／Linux inference 從 NOT_MEASURED 升為工程 PASS；public HTTPS 與真實 hosting latency 仍不在此 job 證明範圍。
