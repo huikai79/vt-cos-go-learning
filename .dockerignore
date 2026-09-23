@@ -1,0 +1,10 @@
+.git
+.github
+ui-audit-screenshots
+*.sgf
+*.json~
+個人圍棋原始事件.json
+個人圍棋練習紀錄.md
+R1_獨立審題草稿.json
+R1_獨立審題回條.json
+formal-teaching-evidence.json
