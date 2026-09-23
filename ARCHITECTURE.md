@@ -171,3 +171,13 @@ Reference -> Oracle -> Dependency -> Fork
 - `katago` provider 明確定義為 per-device localhost integration；網站訪客只有在自己的裝置已安裝 KataGo 並啟動 bridge 時才能使用。
 - `remote` provider 是未來／自架的 HTTPS service seam，可承接雲端 KataGo；目前 repository 沒有託管 KataGo endpoint，不把 contract 存在升格為 service availability。
 - 內建 heuristic provider 維持公開 Pages 的零安裝預設。若未來部署共用 KataGo API，需另處理 authentication、rate limit、resource isolation、timeout、CORS、TLS、成本與 failure observability，並保持 rules/scoring authority boundary。
+
+
+## 2026-09-23 Change note｜Hosted KataGo transport boundary
+
+- **目標：** 讓既有 localhost bridge 能在明確 opt-in 下作為 hosted KataGo service 的 transport seam，而不把 localhost 預設意外暴露到網路。
+- **改動：** `katago-bridge.cjs` 預設仍只綁 `127.0.0.1`；只有 `VTCOS_KATAGO_ALLOW_REMOTE=1` 才可使用遠端 listen host，且必須同時設定 `VTCOS_KATAGO_ALLOWED_ORIGINS`。新增 `GET /health`、browser origin allowlist 與 bounded concurrent request gate；未允許 origin／未設定 allowlist 均 fail closed。
+- **反證：** 新增 `tests/katago-hosted.test.cjs`，要求 remote mode 無 allowlist 必須拒絕啟動，非允許 browser origin 必須 403，允許 origin 才可取得 health response。
+- **不變 invariant：** provider 仍不取得 rules/scoring authority；KataGo failure 不 fallback；沒有改 learner event、KC、scheduler、formal evaluation 或 storage semantics。
+- **部署狀態：** 本 change 只建立可部署的安全 transport boundary，**沒有實際部署公共 KataGo runtime**；公開 HTTPS endpoint、runtime 成本／容量與真實 Pages→service→KataGo smoke 仍為 NOT_IMPLEMENTED／NOT_MEASURED。
+- **Rollback：** 回復 bridge 與移除 hosted contract test 即可；不需資料 migration。
