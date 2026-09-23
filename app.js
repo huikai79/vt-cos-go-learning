@@ -470,13 +470,13 @@
     save();
   }
 
-  function startProblem(index, endReason = "navigation", updateNavUnit = true, showLessonIntro = false) {
+  function startProblem(index, endReason = "navigation", updateNavUnit = true, showLessonIntro = false, forceLessonIntro = false) {
     endPresentation(endReason);
     endApplicationPresentation(endReason);
     state.scheduledProblem = null;
     state.externalMode = null;
     state.index = index;
-    state.lessonIntroPending = Boolean(showLessonIntro && !state.seenLessonIntros.has(problems[index].lesson));
+    state.lessonIntroPending = Boolean(showLessonIntro && (forceLessonIntro || !state.seenLessonIntros.has(problems[index].lesson)));
     if (updateNavUnit) state.navUnitIndex = lessons[problems[index].lesson].unit;
     state.solved = false;
     state.wrongThisTurn = 0;
@@ -1255,8 +1255,11 @@
     }
     if (state.index < problems.length - 1) {
       const previousLesson = current().lesson;
-      const entersNewLesson = problems[state.index + 1].lesson !== previousLesson;
-      startProblem(state.index + 1, "navigation", true, entersNewLesson);
+      const previousUnit = lessons[previousLesson].unit;
+      const nextLessonIndex = problems[state.index + 1].lesson;
+      const entersNewLesson = nextLessonIndex !== previousLesson;
+      const entersNewUnit = entersNewLesson && lessons[nextLessonIndex].unit !== previousUnit;
+      startProblem(state.index + 1, "navigation", true, entersNewLesson, entersNewUnit);
       if (current().lesson !== previousLesson) revealLessonStart();
       else revealQuestionStart();
     }
