@@ -13,7 +13,7 @@
   })();
   const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
   const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
-  const UI_VERSION = "live-game-ui-v7";
+  const UI_VERSION = "live-game-ui-v8";
   const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
   const boardProfiles = {
     5: { title: "5×5 基礎練習棋盤", heading: "氣、提子、連斷與規則練習", description: "作為第一個可自由操作的練習棋盤，適合練氣、提子、連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "氣、提子、連斷、禁著、眼形" },
@@ -266,6 +266,7 @@
     $("katago-help").hidden = opponentMode !== "katago";
     $("remote-help").hidden = opponentMode !== "remote";
     $("provider-endpoint").value = providerEndpoint;
+    $("provider-endpoint").placeholder = opponentMode === "katago" ? "http://127.0.0.1:8765/v1/move" : "https://your-katago-service.example/v1/move";
     $("opponent-summary").textContent = isComputerMode() ? "練習電腦" : "雙人同機";
     $("opponent-detail").textContent = opponentMode === "katago" ? `進階 · KataGo · 你執${colorLabel(humanColor)}` : opponentMode === "remote" ? `進階 · 自訂 API · 你執${colorLabel(humanColor)}` : isComputerMode() ? `內建對手 · 你執${colorLabel(humanColor)}` : "兩人輪流操作這台裝置";
     $("footer-boundary").textContent = size === 9
@@ -498,7 +499,8 @@ ${previewText}
       status.textContent = `連線成功 · 回傳 ${action.type}`;
       status.className = "success";
     } catch (error) {
-      status.textContent = `連線失敗 · ${error.message || "unknown"}`;
+      const hint = opponentMode === "katago" ? "；本機 KataGo 需要先啟動 localhost bridge" : "；遠端模式需要可由此網頁存取的 HTTPS API";
+      status.textContent = `連線失敗 · ${error.message || "unknown"}${hint}`;
       status.className = "error";
     }
   });
