@@ -28,7 +28,7 @@
 | 承諾 | 現況與實作 | 已有驗證 | 證據等級 | 狀態 |
 |---|---|---|---|---|
 | 離線個人課程 | 15 單元、19 課、106 題；直接開啟 `index.html` | 課程與 Chrome 流程測試 | 工程 | 條件通過 |
-| 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；每課只在首次進入時自動開啟，之後可手動重看；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
+| 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
@@ -38,7 +38,7 @@
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
 | 首頁下一步清楚 | 可繼續課程、錯題與工具入口；只有確實有題目到期時顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試 | 工程 | 條件通過；是否容易理解仍待真人觀察 |
-| 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；未看過的課自動開啟短講視窗，已看過的課直接進題並保留重看入口 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界 | 工程 | 條件通過；14/14 跨單元 browser regression 已通過，真人是否感覺自然仍待最後觀察 |
+| 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v4 答案盲審流程條件通過；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
 | R1b 平行題可比性 | 基線與追蹤在已知結構特徵上配對 | 結構比對 | 真人難度資料 | 未建立；不得由 R1a 自動升格 |
@@ -212,3 +212,12 @@
 - **反證：** 任一邊界若題序改錯、按鈕退回「下一題」、下一單元短講未開啟、pending 未保存或焦點未進短講標題，Windows file-URL UI suite 必須 FAIL。
 - **不變範圍：** 沒有修改課程內容、作答／首答語義、KC、scheduler、storage schema、scoring 或 formal evaluation；本輪只提高既有 UI 行為的回歸覆蓋。
 - **Validation：** commit `e5d119c` 的 GitHub Actions verify run #175 全部 PASS：node-contracts、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；14/14 跨單元案例因此有實際 browser 執行證據。
+
+## 2026-09-24 Change note｜正式跨單元必重新開啟短講
+
+- **問題：** `seenLessonIntros` 同時被用來表示「曾預覽過短講」與「正式完成前一單元後已走過銜接」。因此使用者若先前曾瀏覽第 8 單元，之後完成第 7 單元時，`lessonIntroPending` 會被壓成 `false`，跳過正式的單元銜接短講。
+- **修正：** `startProblem` 新增只供正式跨單元導覽使用的 `forceLessonIntro`；`nextProblem` 以 lesson 的 unit 是否改變判斷 `entersNewUnit`。同單元跨課仍尊重 `seenLessonIntros`，跨單元則即使已預覽也重新開啟下一單元短講。
+- **反證：** `tests/ui.test.cjs` 新增真實案例：先把第 8 單元 lesson 設為已看過，再從 `u7-06` 正答進入第 8 單元；仍必須顯示「進入第 8 單元短講」、開啟「現在先學：先照顧弱棋」、保存 `lessonIntroPending=true` 並把焦點移到短講標題。
+- **歷史語義／migration：** 不改 storage schema，也不清除既有 `seenLessonIntros`；舊資料可直接使用。此修改只改正式跨單元 navigation 的 UI 狀態，不改 first response、scoring、KC、scheduler、formal evaluation 或 learner evidence。
+- **Rollback：** 移除 `forceLessonIntro` 與 `entersNewUnit` 分支即可恢復舊行為；不需資料 migration。
+- **Validation：** commit `7eec751` 的 verify run #177：node-contracts、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 全部 PASS。
