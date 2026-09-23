@@ -29,7 +29,7 @@ GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=t
 
 ## 信任與資料流
 
-公開 repository 只提供教材、題庫、前端程式、測試、文件及審核截圖。學習進度、棋局續局、raw practice events 與 bounded live evidence 都留在瀏覽器 `localStorage`，使用分開的 key；匯出由使用者下載到本機；沒有帳號、後端、遙測或外部 runtime 請求。`practice-events.js` 的 raw audit event 永遠維持 practice-only；`live-evidence.js` 另依版本化 eligibility/scoring contract 保存少數 9×9 局部 live T3，且 `formalEligible=false`，不進正式評量分母。
+公開 repository 只提供教材、題庫、前端程式、測試、文件及審核截圖。學習進度、棋局續局、raw practice events 與 bounded live evidence 都留在瀏覽器 `localStorage`，使用分開的 key；匯出由使用者下載到本機；沒有帳號、內建後端或遙測。一般內建練習電腦不發網路請求；只有使用者主動選擇本機 KataGo／Remote API provider 時才會發出 provider request。GitHub Pages 本身不能執行 `katago.exe` 或 Node bridge：本機 KataGo 需要每台使用裝置自行啟動 localhost bridge；若要讓網站訪客共用 KataGo，必須另部署 HTTPS KataGo API。現行公開部署尚未提供共用託管 KataGo endpoint。`practice-events.js` 的 raw audit event 永遠維持 practice-only；`live-evidence.js` 另依版本化 eligibility/scoring contract 保存少數 9×9 局部 live T3，且 `formalEligible=false`，不進正式評量分母。
 
 ```text
 公開題庫模組 ─┐
@@ -51,3 +51,12 @@ GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=t
 6. Pages 啟用後，必須在正式 HTTPS URL 重跑完整瀏覽器流程。
 
 本專案採 [MIT License](LICENSE)，第三方可依其條款重用程式碼與文件；品牌名稱與呈現方式仍以 `BRAND.md` 為準。
+
+
+## 2026-09-23 Change note｜Pages 與 KataGo provider 邊界
+
+- **問題：** provider contract 已支援 localhost KataGo 與 Remote API，但 GitHub Pages 是靜態託管；把「本機 KataGo」呈現在公開網站上，不能推導成所有訪客都能直接使用 KataGo。
+- **修正：** learner UI 明示 GitHub Pages 不能執行 KataGo、本機模式需要每台裝置自行啟動 bridge；Remote 模式明示目前沒有共用託管 KataGo 服務，並以 HTTPS hosted endpoint 作輸入提示。
+- **不變 invariant：** 內建 heuristic 仍是零安裝預設；provider 只提候選，play 仍經 rules engine；任何 provider failure 保持 ERROR、不 fallback；不在前端保存 API key。
+- **部署邊界：** 本次沒有建立雲端 KataGo service，因此不能宣稱「所有 Pages 訪客已有 KataGo」。要達成該能力，仍需另部署、驗證及維運 HTTPS KataGo API。
+- **Rollback：** 回復 UI copy／placeholder 即可；不涉及 storage、event、KC、scheduler、scoring 或 formal evaluation migration。
