@@ -33,6 +33,7 @@
     ]
   },
   "publicFiles": [
+    ".dockerignore",
     ".gitattributes",
     ".github/workflows/verify.yml",
     ".gitignore",
@@ -45,6 +46,8 @@
     "content.js",
     "CURRICULUM.md",
     "DESIGN_PLAN.md",
+    "docker/start-katago.sh",
+    "Dockerfile",
     "evidence-taxonomy.js",
     "EXECUTION_PIPELINE.md",
     "favicon.svg",
@@ -94,9 +97,10 @@
     "tests/evidence-taxonomy.test.cjs",
     "tests/fixtures/katrain-gpt-smoke-input.txt",
     "tests/go.test.cjs",
-    "tests/learner-progress.test.cjs",
     "tests/katago-bridge-smoke.ps1",
+    "tests/katago-container.test.cjs",
     "tests/katago-hosted.test.cjs",
+    "tests/learner-progress.test.cjs",
     "tests/learning-metrics.test.cjs",
     "tests/lesson-content.test.cjs",
     "tests/live-evidence.test.cjs",
