@@ -8,7 +8,7 @@ const dockerfile = fs.readFileSync(path.join(root, "Dockerfile"), "utf8");
 const start = fs.readFileSync(path.join(root, "docker", "start-katago.sh"), "utf8");
 
 test("portable image pins KataGo source and uses CPU Eigen backend", () => {
-  assert.match(dockerfile, /ARG KATAGO_VERSION=1\.18\.2/);
+  assert.match(dockerfile, /ARG KATAGO_VERSION=1\.17\.1/);
   assert.match(dockerfile, /--branch "v\$\{KATAGO_VERSION\}"/);
   assert.match(dockerfile, /-DUSE_BACKEND=EIGEN/);
   assert.doesNotMatch(dockerfile, /USE_BACKEND=(CUDA|OPENCL|TENSORRT)/);
