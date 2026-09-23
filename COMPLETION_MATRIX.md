@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v32`；棋盤練習頁 `live-game-ui-v7`
+- `ui_version`: `learner-flow-v32`；棋盤練習頁 `live-game-ui-v8`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -185,3 +185,12 @@
 - **隱私：** 只使用匿名 code 與證據引用，不在 repo 保存姓名、聯絡資料或其他個資。
 - **證據邊界：** 此修改只提高真人證據的可稽核性，不產生任何真人證據；目前 usability／accessibility 狀態仍是 NOT_TESTED／BLOCKED。
 - **Migration／rollback：** 尚無正式真人證據檔，因此沒有歷史真人資料需要升格；舊格式檔會 fail closed，需依原始觀察補成逐位紀錄，不能猜測補值。若 rollback，恢復舊 verifier，但會重新暴露彙總證據缺口。
+
+
+## 2026-09-23 Change note｜Pages provider 可達性修正
+
+- **工程事實：** GitHub Pages 為靜態前端，不能代替 localhost bridge 或執行 KataGo。公開頁面的內建 heuristic 仍可零安裝使用。
+- **本機 KataGo：** provider contract／bridge 已實作；本輪已取得使用者裝置上的 `KataGo v1.17.1 + OpenCL + b10c384` 9×9 GTP `genmove B = E5` 操作證據，但 repository 的 `tests/katago-bridge-smoke.ps1` 尚未取得可保存的 PASS receipt，因此「bridge HTTP 全鏈路 smoke」仍維持 NOT_MEASURED，不以聊天截圖升格。
+- **共用雲端 KataGo：** `remote` seam 已存在，但目前沒有部署共用 HTTPS KataGo endpoint，狀態為 NOT_IMPLEMENTED／NOT_MEASURED；不能宣稱所有 Pages 訪客可直接使用 KataGo。
+- **UI 修正：** `live-game-ui-v8` 明示本機模式需每台裝置自行啟動 bridge，Remote 模式需另有 HTTPS service，並在失敗訊息中保留相應診斷；不 fallback 成 heuristic。
+- **證據邊界：** 此修改只修正部署／能力呈現與 provider failure semantics，不改棋力、內容效度、formal evaluation 或學習成效狀態。
