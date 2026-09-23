@@ -96,6 +96,7 @@
     "tests/go.test.cjs",
     "tests/learner-progress.test.cjs",
     "tests/katago-bridge-smoke.ps1",
+    "tests/katago-hosted.test.cjs",
     "tests/learning-metrics.test.cjs",
     "tests/lesson-content.test.cjs",
     "tests/live-evidence.test.cjs",

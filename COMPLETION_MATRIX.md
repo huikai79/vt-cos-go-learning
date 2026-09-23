@@ -5,7 +5,7 @@
 
 ## Current Status
 
-- `as_of`: 2026-09-22
+- `as_of`: 2026-09-23
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
@@ -194,3 +194,13 @@
 - **共用雲端 KataGo：** `remote` seam 已存在，但目前沒有部署共用 HTTPS KataGo endpoint，狀態為 NOT_IMPLEMENTED／NOT_MEASURED；不能宣稱所有 Pages 訪客可直接使用 KataGo。
 - **UI 修正：** `live-game-ui-v8` 明示本機模式需每台裝置自行啟動 bridge，Remote 模式需另有 HTTPS service，並在失敗訊息中保留相應診斷；不 fallback 成 heuristic。
 - **證據邊界：** 此修改只修正部署／能力呈現與 provider failure semantics，不改棋力、內容效度、formal evaluation 或學習成效狀態。
+
+
+## 2026-09-23 Change note｜Hosted KataGo transport boundary
+
+- **目標：** 讓既有 localhost bridge 能在明確 opt-in 下作為 hosted KataGo service 的 transport seam，而不把 localhost 預設意外暴露到網路。
+- **改動：** `katago-bridge.cjs` 預設仍只綁 `127.0.0.1`；只有 `VTCOS_KATAGO_ALLOW_REMOTE=1` 才可使用遠端 listen host，且必須同時設定 `VTCOS_KATAGO_ALLOWED_ORIGINS`。新增 `GET /health`、browser origin allowlist 與 bounded concurrent request gate；未允許 origin／未設定 allowlist 均 fail closed。
+- **反證：** 新增 `tests/katago-hosted.test.cjs`，要求 remote mode 無 allowlist 必須拒絕啟動，非允許 browser origin 必須 403，允許 origin 才可取得 health response。
+- **不變 invariant：** provider 仍不取得 rules/scoring authority；KataGo failure 不 fallback；沒有改 learner event、KC、scheduler、formal evaluation 或 storage semantics。
+- **部署狀態：** 本 change 只建立可部署的安全 transport boundary，**沒有實際部署公共 KataGo runtime**；公開 HTTPS endpoint、runtime 成本／容量與真實 Pages→service→KataGo smoke 仍為 NOT_IMPLEMENTED／NOT_MEASURED。
+- **Rollback：** 回復 bridge 與移除 hosted contract test 即可；不需資料 migration。

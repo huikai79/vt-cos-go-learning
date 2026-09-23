@@ -4,7 +4,11 @@
 const http = require("node:http");
 const { spawn } = require("node:child_process");
 
-const HOST = "127.0.0.1";
+const REMOTE_MODE = process.env.VTCOS_KATAGO_ALLOW_REMOTE === "1";
+const HOST = REMOTE_MODE ? (process.env.VTCOS_KATAGO_HOST || "0.0.0.0") : "127.0.0.1";
+const ALLOWED_ORIGINS = new Set(String(process.env.VTCOS_KATAGO_ALLOWED_ORIGINS || "").split(",").map((value) => value.trim()).filter(Boolean));
+const MAX_CONCURRENT = Math.max(1, Number(process.env.VTCOS_KATAGO_MAX_CONCURRENT || 1));
+let activeRequests = 0;
 const PORT = Number(process.env.VTCOS_KATAGO_PORT || 8765);
 const KATAGO = process.env.VTCOS_KATAGO_EXE;
 const CONFIG = process.env.VTCOS_KATAGO_CONFIG;
@@ -13,12 +17,21 @@ const MAX_BODY = 1024 * 1024;
 const ENGINE_TIMEOUT_MS = Number(process.env.VTCOS_KATAGO_TIMEOUT_MS || 20000);
 const PROVIDER_VERSION = "katago-gtp-bridge-v1";
 
-function fail(res, status, code) {
-  res.writeHead(status, { "Content-Type": "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*" });
+function corsOrigin(req) {
+  if (!REMOTE_MODE) return "*";
+  const origin = String(req.headers.origin || "");
+  return ALLOWED_ORIGINS.has(origin) ? origin : null;
+}
+function responseHeaders(req) {
+  const origin = corsOrigin(req);
+  return origin ? { "Content-Type": "application/json; charset=utf-8", "Access-Control-Allow-Origin": origin, "Vary": "Origin" } : { "Content-Type": "application/json; charset=utf-8" };
+}
+function fail(req, res, status, code) {
+  res.writeHead(status, responseHeaders(req));
   res.end(JSON.stringify({ error: code, providerVersion: PROVIDER_VERSION }));
 }
-function ok(res, body) {
-  res.writeHead(200, { "Content-Type": "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*" });
+function ok(req, res, body) {
+  res.writeHead(200, responseHeaders(req));
   res.end(JSON.stringify(body));
 }
 function colorName(color) { return color === 1 ? "B" : color === 2 ? "W" : null; }
@@ -87,24 +100,34 @@ function runKatago(body) {
 }
 
 const server = http.createServer((req, res) => {
+  const origin = corsOrigin(req);
+  if (REMOTE_MODE && req.headers.origin && !origin) return fail(req, res, 403, "origin_not_allowed");
+  if (req.method === "GET" && req.url === "/health") return ok(req, res, { status: KATAGO && CONFIG && MODEL ? "ready" : "not_configured", providerVersion: PROVIDER_VERSION });
   if (req.method === "OPTIONS") {
-    res.writeHead(204, { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Allow-Methods": "POST, OPTIONS" });
+    if (!origin) return fail(req, res, 403, "origin_not_allowed");
+    res.writeHead(204, { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Vary": "Origin" });
     return res.end();
   }
-  if (req.method !== "POST" || req.url !== "/v1/move") return fail(res, 404, "not_found");
+  if (req.method !== "POST" || req.url !== "/v1/move") return fail(req, res, 404, "not_found");
+  if (activeRequests >= MAX_CONCURRENT) return fail(req, res, 429, "busy");
   let raw = "";
   req.on("data", (chunk) => { raw += chunk; if (raw.length > MAX_BODY) req.destroy(); });
   req.on("end", async () => {
     let body;
-    try { body = validateRequest(JSON.parse(raw)); } catch (error) { return fail(res, 400, error.message); }
+    try { body = validateRequest(JSON.parse(raw)); } catch (error) { return fail(req, res, 400, error.message); }
+    activeRequests += 1;
     try {
       const action = await runKatago(body);
-      ok(res, { ...action, providerVersion: PROVIDER_VERSION, model: MODEL ? MODEL.split(/[\\/]/).pop() : null });
-    } catch (error) { fail(res, 502, error.message || "katago_failure"); }
+      ok(req, res, { ...action, providerVersion: PROVIDER_VERSION, model: MODEL ? MODEL.split(/[\\/]/).pop() : null });
+    } catch (error) { fail(req, res, 502, error.message || "katago_failure"); }
+    finally { activeRequests -= 1; }
   });
 });
 
-server.listen(PORT, HOST, () => {
+if (REMOTE_MODE && ALLOWED_ORIGINS.size === 0) {
+  process.stderr.write("VTCOS_KATAGO_ALLOW_REMOTE=1 requires VTCOS_KATAGO_ALLOWED_ORIGINS.\n");
+  process.exitCode = 2;
+} else server.listen(PORT, HOST, () => {
   process.stdout.write(`VT-COS KataGo bridge listening on http://${HOST}:${PORT}/v1/move\n`);
   if (!KATAGO || !CONFIG || !MODEL) process.stdout.write("Set VTCOS_KATAGO_EXE, VTCOS_KATAGO_CONFIG and VTCOS_KATAGO_MODEL before requesting a move.\n");
 });
