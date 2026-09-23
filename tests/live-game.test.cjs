@@ -275,7 +275,7 @@ test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑
 
 test("棋盤頁用版本參數載入 live CSS，避免瀏覽器沿用舊渲染樣式", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
-  assert.match(html, /live-game\.css\?v=live-game-ui-v7/);
+  assert.match(html, /live-game\.css\?v=live-game-ui-v8/);
 });
 
 
@@ -304,7 +304,7 @@ test("棋盤頁在回合開始先建立 live assessment，首答與 retry 分離
   const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   assert.match(html, /live-evidence\.js\?v=live-evidence-v1/);
-  assert.match(html, /live-game-page\.js\?v=live-game-ui-v7/);
+  assert.match(html, /live-game-page\.js\?v=live-game-ui-v8/);
   assert.match(page, /ensureLiveAssessment\(\)/);
   assert.match(page, /recordLiveResponse\(/);
   assert.match(page, /existingResponseCount\(assessmentId\)/);
@@ -336,6 +336,10 @@ test("KataGo 與 Remote API 只在進階設定出現，且 API key 不進 learne
   assert.match(html, /本機 KataGo/);
   assert.match(html, /自訂 Remote API/);
   assert.match(html, /KataGo 官方下載頁/);
+  assert.match(html, /GitHub Pages 不能執行 KataGo/);
+  assert.match(html, /其他網站使用者若未自行安裝並啟動 bridge/);
+  assert.match(html, /沒有提供共用的託管 KataGo 服務/);
+  assert.match(html, /https:\/\/your-katago-service\.example\/v1\/move/);
   assert.match(html, /不提供、要求或保存 API key/);
   assert.equal(/type="password"/.test(html), false);
   assert.equal(/id="api-key"|name="api-key"/i.test(html), false);
