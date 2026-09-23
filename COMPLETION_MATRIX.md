@@ -38,7 +38,7 @@
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
 | 首頁下一步清楚 | 可繼續課程、錯題與工具入口；只有確實有題目到期時顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試 | 工程 | 條件通過；是否容易理解仍待真人觀察 |
-| 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；未看過的課自動開啟短講視窗，已看過的課直接進題並保留重看入口 | 狀態與 UI 測試 | 工程 | 條件通過；真人是否感覺自然仍待最後觀察 |
+| 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；未看過的課自動開啟短講視窗，已看過的課直接進題並保留重看入口 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界 | 工程 | 條件通過；14/14 跨單元 browser regression 已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v4 答案盲審流程條件通過；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
 | R1b 平行題可比性 | 基線與追蹤在已知結構特徵上配對 | 結構比對 | 真人難度資料 | 未建立；不得由 R1a 自動升格 |
@@ -204,3 +204,11 @@
 - **不變 invariant：** provider 仍不取得 rules/scoring authority；KataGo failure 不 fallback；沒有改 learner event、KC、scheduler、formal evaluation 或 storage semantics。
 - **部署狀態：** 本 change 只建立可部署的安全 transport boundary，**沒有實際部署公共 KataGo runtime**；公開 HTTPS endpoint、runtime 成本／容量與真實 Pages→service→KataGo smoke 仍為 NOT_IMPLEMENTED／NOT_MEASURED。
 - **Rollback：** 回復 bridge 與移除 hosted contract test 即可；不需資料 migration。
+
+
+## 2026-09-23 Change note｜全部跨單元短講邊界回歸
+
+- **改動：** `tests/ui.test.cjs` 新增 table-driven browser regression，逐一走過 15 單元之間全部 14 個邊界；每個案例從該單元最後一題正答開始，驗證「進入第 N 單元短講」按鈕、下一單元第一題、短講標題、Modal 自動開啟、focus、`lessonIntroPending` 與單元 selector。
+- **反證：** 任一邊界若題序改錯、按鈕退回「下一題」、下一單元短講未開啟、pending 未保存或焦點未進短講標題，Windows file-URL UI suite 必須 FAIL。
+- **不變範圍：** 沒有修改課程內容、作答／首答語義、KC、scheduler、storage schema、scoring 或 formal evaluation；本輪只提高既有 UI 行為的回歸覆蓋。
+- **Validation：** commit `e5d119c` 的 GitHub Actions verify run #175 全部 PASS：node-contracts、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；14/14 跨單元案例因此有實際 browser 執行證據。
