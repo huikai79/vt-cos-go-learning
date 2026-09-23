@@ -181,3 +181,13 @@ Reference -> Oracle -> Dependency -> Fork
 - **不變 invariant：** provider 仍不取得 rules/scoring authority；KataGo failure 不 fallback；沒有改 learner event、KC、scheduler、formal evaluation 或 storage semantics。
 - **部署狀態：** 本 change 只建立可部署的安全 transport boundary，**沒有實際部署公共 KataGo runtime**；公開 HTTPS endpoint、runtime 成本／容量與真實 Pages→service→KataGo smoke 仍為 NOT_IMPLEMENTED／NOT_MEASURED。
 - **Rollback：** 回復 bridge 與移除 hosted contract test 即可；不需資料 migration。
+
+
+## 2026-09-23 Change note｜Portable KataGo CPU container contract
+
+- **目標：** 在不綁定 Render、Oracle 或 Cloudflare 的前提下，建立可搬移的 hosted KataGo CPU image，讓下一個驗證直接量真實 runtime latency／memory，而不是再增加 provider mock。
+- **實作：** multi-stage `Dockerfile` 從官方 KataGo v1.18.2 source 建置 Eigen CPU backend，runtime 只帶 Node bridge、GTP config 與 bounded small transformer model；`docker/start-katago.sh` 將 host 綁到 container network、使用平台 `PORT`，且沒有 `VTCOS_KATAGO_ALLOWED_ORIGINS` 就拒絕啟動。
+- **反證：** `tests/katago-container.test.cjs` 固定檢查 CPU backend、版本 pin、小模型、origin fail-closed、沒有 baked credential 或 hosting-specific production endpoint。
+- **不變 invariant：** provider 仍只有候選權；rules engine 再驗證 play；provider failure 不 fallback；不改 learner events、KC、scheduler、scoring、storage 或 formal evaluation。
+- **證據邊界：** 本 change 只建立 image contract。尚未在 Docker／Render／Oracle 上 build 或執行，因此 container build、KataGo Linux inference、public HTTPS availability、cold/warm latency 與 Pages→service smoke 均維持 NOT_MEASURED。
+- **Rollback：** 移除 Docker artifacts 與對應 contract test 即可；不需資料 migration。
