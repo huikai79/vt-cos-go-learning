@@ -14,6 +14,13 @@ test("9 路 SGF 可重播並取出原局著手為局部複習題", () => {
   assert.equal(exercise.linkedSkillId, "capture-last-liberty-v1");
   assert.equal(exercise.source.sourceName, "測試棋譜");
   assert.equal(exercise.source.sourceId, sourceFingerprint(sampleSgf));
+  assert.equal(exercise.evaluationRole, "practice");
+  assert.equal(exercise.evaluationContext, "sgf_recall");
+  assert.equal(exercise.formalEligible, false);
+  assert.equal(exercise.claimScope, "historical_move_reconstruction");
+  assert.equal(exercise.scoringClaim, "matches_original_sgf_move_not_best_move");
+  assert.equal(exercise.transferLevel, null);
+  assert.deepEqual(exercise.answer, exercise.source.originalMove);
 });
 
 test("不同棋譜的相同手數與座標會產生不同局部復盤識別碼", () => {
@@ -62,6 +69,18 @@ test("SGF 的停一手保留原局著手編號，後續落子仍可選取", () =
 test("SGF 重播拒絕簡單劫的立即回提", () => {
   const immediateKoRecapture = "(;GM[1]SZ[9]AW[dd][cc][ec][db]AB[cd][ed][de];B[dc];W[dd])";
   assert.throws(() => parseSgf(immediateKoRecapture), /簡單劫/);
+});
+
+test("SGF 單點復盤只比較原著一致性，不把它標成最佳手或 T3", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const appSource = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
+  const htmlSource = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  assert.match(appSource, /與原著一致。/);
+  assert.match(appSource, /與棋譜原著不同。/);
+  assert.match(appSource, /不更新 T2／T3、KC 或排程/);
+  assert.match(htmlSource, /棋譜單點復盤/);
+  assert.match(htmlSource, /這不是整盤連續猜手/);
 });
 
 test("SGF 對檔案大小、節點數與巢狀深度設限", () => {
