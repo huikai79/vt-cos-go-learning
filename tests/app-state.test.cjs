@@ -311,7 +311,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v34");
+  assert.equal(exported.uiVersion, "learner-flow-v35");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -477,7 +477,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v34");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v35");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -586,4 +586,17 @@ test("核心學習文字維持至少 16px，metadata 不被誤升格", () => {
   assert.match(css, /\.lesson-intro-first-use\{[^}]*font-size:1rem;[^}]*line-height:1\.7/);
   assert.match(css, /\.teaching-demo,\.teaching-check\{[^}]*font-size:1rem!important;[^}]*line-height:1\.65!important/);
   assert.match(css, /\.learning-proof\{[^}]*font-size:\.875rem/);
+});
+
+
+test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行策略", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
+  assert.match(html, /<html lang="zh-Hant-TW">/);
+  assert.match(html, /styles\.css\?v=learner-flow-v35/);
+  assert.match(css, /--font-zh:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif/);
+  assert.doesNotMatch(css, /word-break\s*:\s*break-all/i);
+  assert.match(css, /:where\(a,button,input,select,textarea,summary,\[role="button"\]\):focus-visible/);
+  assert.match(css, /\.content-wrap\{padding:22px 20px 30px\}/);
+  assert.match(css, /\.question-prompt,\.move-guide,\.feedback,\.takeaway p\{[^}]*max-width:42em/);
 });

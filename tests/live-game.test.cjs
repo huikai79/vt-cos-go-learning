@@ -275,7 +275,7 @@ test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑
 
 test("棋盤頁用版本參數載入 live CSS，避免瀏覽器沿用舊渲染樣式", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
-  assert.match(html, /live-game\.css\?v=live-game-ui-v9/);
+  assert.match(html, /live-game\.css\?v=live-game-ui-v10/);
 });
 
 
@@ -304,7 +304,7 @@ test("棋盤頁在回合開始先建立 live assessment，首答與 retry 分離
   const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   assert.match(html, /live-evidence\.js\?v=live-evidence-v1/);
-  assert.match(html, /live-game-page\.js\?v=live-game-ui-v9/);
+  assert.match(html, /live-game-page\.js\?v=live-game-ui-v10/);
   assert.match(page, /ensureLiveAssessment\(\)/);
   assert.match(page, /recordLiveResponse\(/);
   assert.match(page, /existingResponseCount\(assessmentId\)/);
@@ -363,4 +363,16 @@ test("棋盤練習的操作提示與即時回饋維持 16px 級核心可讀性",
   assert.match(css, /\.live-panel p\{[^}]*font-size:1rem;[^}]*line-height:1\.65/);
   assert.match(css, /\.live-mode-panel select\{[^}]*min-height:44px/);
   assert.match(css, /\.advanced-opponent-body input\{[^}]*min-height:44px/);
+});
+
+
+test("棋盤頁套用 CJK 語系、20px 手機邊距與可辨識連結", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "..", "live-game.css"), "utf8");
+  assert.match(html, /<html lang="zh-Hant-TW">/);
+  assert.match(html, /styles\.css\?v=learner-flow-v35/);
+  assert.match(css, /\.live-main\{width:min\(100% - 40px,1180px\);padding-top:22px\}/);
+  assert.match(css, /\.live-top-actions a,\.live-top-actions button\{min-height:44px/);
+  assert.match(css, /\.provider-help a\{[^}]*text-decoration:underline/);
+  assert.doesNotMatch(css, /word-break\s*:\s*break-all/i);
 });
