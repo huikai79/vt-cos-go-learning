@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v34`；棋盤練習頁 `live-game-ui-v9`
+- `ui_version`: `learner-flow-v35`；棋盤練習頁 `live-game-ui-v10`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -230,3 +230,12 @@
 - **歷史語義：** UI version 升級，既有事件保留原版本；不改 item、KC、scoring、scheduler、Evidence Taxonomy、first-response／retry 或 formal-evaluation 語義。
 - **Rollback：** 回復 `styles.css`／`live-game.css` 的字級與控制高度，並將資產 query string／UI version 回到 v33／v8；資料 schema 無需 migration。
 - **Validation：** 新增靜態反回歸契約，要求核心學習文字維持 16px 級、live 主要輸入控制維持 44px，且 metadata 不被誤升格。完整 browser／Windows regression 以分支 CI 為準。這項工程調整不能單獨證明真人更容易讀、操作更順或學習成效提升；三位初學者與真人無障礙觀察仍維持待驗。
+
+
+## 2026-09-24 Change note｜CJK 互動介面基線
+
+- **改動：** `learner-flow-v35`／`live-game-ui-v10` 將 learner-facing 頁面語系標記明確化為 `zh-Hant-TW`，繁中字型 fallback 加入 PingFang TC；共用鍵盤 focus 以 `:focus-visible` 明示。手機主要內容左右留白調為 20px，常用課程／工具／live 控制維持至少 44px，核心教學文字以約 42em 上限控制行長；外部說明連結使用底線，不全站使用 `word-break: break-all`。
+- **來源轉譯：** 參考 CJK 長文設計規範的語言字型、mobile padding、touch target、focus、links 與安全換行原則；沒有把文章 680px 單欄、TOC、Hero、Newsletter 或 Dark Mode 直接搬入互動作答介面。
+- **歷史語義：** 只改 UI presentation 與 UI version；既有事件保留原版號。不改 item、KC、scoring、scheduler、Evidence Taxonomy、storage schema、first-response／retry 或 formal-evaluation 語義。
+- **Rollback：** 回復 `styles.css`、`live-game.css` 與 HTML 語系／asset query strings，並將 UI version 回到 v34／v9；無資料 migration。
+- **Validation：** 靜態反回歸新增：`zh-Hant-TW`、CJK font fallback、20px mobile padding、44px controls、visible focus、link underline，以及禁止全站 `word-break: break-all`。完整 Windows/browser regression 以分支 CI 為準。這些工程契約不能單獨證明真人可讀性、可用性或學習成效。
