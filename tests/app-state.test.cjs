@@ -311,7 +311,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v33");
+  assert.equal(exported.uiVersion, "learner-flow-v34");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -477,7 +477,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v33");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v34");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -576,4 +576,14 @@ test("主課程 save envelope 不得複製 live streams，raw export 仍可帶�
   assert.match(appJs, /livePracticeEvents:/);
   assert.match(appJs, /liveEvidenceEvents:/);
   assert.match(appJs, /liveEvidenceSummary:/);
+});
+
+
+test("核心學習文字維持至少 16px，metadata 不被誤升格", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
+  assert.match(css, /\.learning-guidance p\{[^}]*font-size:1rem;[^}]*line-height:1\.65/);
+  assert.match(css, /\.answer-policy\{[^}]*font-size:1rem;[^}]*line-height:1\.65/);
+  assert.match(css, /\.lesson-intro-first-use\{[^}]*font-size:1rem;[^}]*line-height:1\.7/);
+  assert.match(css, /\.teaching-demo,\.teaching-check\{[^}]*font-size:1rem!important;[^}]*line-height:1\.65!important/);
+  assert.match(css, /\.learning-proof\{[^}]*font-size:\.875rem/);
 });

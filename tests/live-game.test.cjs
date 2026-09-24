@@ -275,7 +275,7 @@ test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑
 
 test("棋盤頁用版本參數載入 live CSS，避免瀏覽器沿用舊渲染樣式", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
-  assert.match(html, /live-game\.css\?v=live-game-ui-v8/);
+  assert.match(html, /live-game\.css\?v=live-game-ui-v9/);
 });
 
 
@@ -304,7 +304,7 @@ test("棋盤頁在回合開始先建立 live assessment，首答與 retry 分離
   const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   assert.match(html, /live-evidence\.js\?v=live-evidence-v1/);
-  assert.match(html, /live-game-page\.js\?v=live-game-ui-v8/);
+  assert.match(html, /live-game-page\.js\?v=live-game-ui-v9/);
   assert.match(page, /ensureLiveAssessment\(\)/);
   assert.match(page, /recordLiveResponse\(/);
   assert.match(page, /existingResponseCount\(assessmentId\)/);
@@ -353,4 +353,14 @@ test("provider 連線測試仍走 MoveProvider 且失敗不宣稱成功", () => 
   assert.match(page, /MoveProvider\.requestAction/);
   assert.match(page, /連線失敗/);
   assert.match(page, /providerEndpoint/);
+});
+
+
+test("棋盤練習的操作提示與即時回饋維持 16px 級核心可讀性", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "live-game.css"), "utf8");
+  assert.match(css, /\.live-board-help\{[^}]*font-size:1rem;[^}]*line-height:1\.6/);
+  assert.match(css, /\.live-feedback\{[^}]*font-size:1rem;[^}]*line-height:1\.6/);
+  assert.match(css, /\.live-panel p\{[^}]*font-size:1rem;[^}]*line-height:1\.65/);
+  assert.match(css, /\.live-mode-panel select\{[^}]*min-height:44px/);
+  assert.match(css, /\.advanced-opponent-body input\{[^}]*min-height:44px/);
 });

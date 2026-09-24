@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v33`；棋盤練習頁 `live-game-ui-v8`
+- `ui_version`: `learner-flow-v34`；棋盤練習頁 `live-game-ui-v9`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -222,3 +222,11 @@
 - **Rollback：** 移除 `forceLessonIntro` 與 `entersNewUnit` 分支即可恢復舊行為；不需資料 migration。
 - **UI version：** 因正式跨單元 navigation 語義已改，learner-facing `uiVersion` 升為 `learner-flow-v33`；舊事件保留原本的 `learner-flow-v32`，不回寫歷史事件。`index.html` 同步使用 v33 query string，避免 Pages／瀏覽器沿用舊 `app.js`。
 - **Validation：** commit `7eec751` 的 verify run #177：node-contracts、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 全部 PASS。
+
+## 2026-09-24 Change note｜核心學習文字閱讀階層
+
+- **改動：** `learner-flow-v34` 將課程頁中會直接影響作答／下一步判斷的學習指引、回答政策、短講導語、示範與檢查點提升到 16px 級並放寬行距；`live-game-ui-v9` 將棋盤操作提示、即時回饋與主要說明提升到 16px 級，並將主要 select／input 控制維持至少 44px 高。metadata、版本／狀態等非核心資訊仍保留較小字級，沒有把整站一律放大。
+- **為何現在改：** 重新掃描現行 learner-facing CSS 後，發現少數必讀操作文字仍落在約 13–15px；本次只修正閱讀階層，不改雙欄棋盤／題目結構、手機單欄重排或漸進揭露。
+- **歷史語義：** UI version 升級，既有事件保留原版本；不改 item、KC、scoring、scheduler、Evidence Taxonomy、first-response／retry 或 formal-evaluation 語義。
+- **Rollback：** 回復 `styles.css`／`live-game.css` 的字級與控制高度，並將資產 query string／UI version 回到 v33／v8；資料 schema 無需 migration。
+- **Validation：** 新增靜態反回歸契約，要求核心學習文字維持 16px 級、live 主要輸入控制維持 44px，且 metadata 不被誤升格。完整 browser／Windows regression 以分支 CI 為準。這項工程調整不能單獨證明真人更容易讀、操作更順或學習成效提升；三位初學者與真人無障礙觀察仍維持待驗。
