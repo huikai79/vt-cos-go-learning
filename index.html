@@ -94,9 +94,9 @@
                 <div class="tool-item"><button id="application-button" type="button">局面小測驗</button><p>用較少提示的局面檢查是否能自行發現學過的技巧；結果與實戰分開。</p></div>\n                <div class="tool-item"><a class="tool-action-link" href="live-game.html?size=9">棋盤自由練習</a><p>可隨時切換 5×5、7×7、9×9；5×5 用於基礎規則與局部練習，7×7 用於過渡攻防，9×9 用於完整小棋盤對局。全部只作練習，不自動升格成正式評量。</p></div>
               </section>
               <section class="tool-group" aria-labelledby="sgf-tools-title">
-                <h2 id="sgf-tools-title">棋譜練習</h2>
-                <div class="tool-item"><button id="sample-sgf-button" type="button">開啟示範棋譜</button><p>從內建 9 路棋譜重看局部落子。</p></div>
-                <div class="tool-item"><label class="tool-upload" for="sgf-file-input">匯入自己的 SGF</label><p>讀取這台電腦上的 9 路 SGF，建立局部複習題。</p></div>
+                <h2 id="sgf-tools-title">棋譜單點復盤</h2>
+                <div class="tool-item"><button id="sample-sgf-button" type="button">開啟示範棋譜</button><p>選一手 9 路棋譜，在看見原著前先憑記憶重建；這不是整盤連續猜手。</p></div>
+                <div class="tool-item"><label class="tool-upload" for="sgf-file-input">匯入自己的 SGF</label><p>讀取這台電腦上的單一主線 9 路 SGF，建立一手原著的記憶重建與反思。</p></div>
                 <input id="sgf-file-input" type="file" accept=".sgf,application/x-go-sgf,text/plain" hidden>
               </section>
               <details class="tool-disclosure" id="advanced-tools">
@@ -259,13 +259,13 @@
     </div>
   </dialog>
   <dialog class="evaluation-dialog" id="sgf-picker-dialog" aria-labelledby="sgf-picker-title">
-    <h2 id="sgf-picker-title">選擇要回看的著手</h2>
-    <p>選一手後，先在該手之前的局面重建原著。原著不等於唯一最佳手，完成後再補自己的候選手與理由。</p>
+    <h2 id="sgf-picker-title">選擇要單點重建的原著</h2>
+    <p>選一手後，系統只顯示該手之前的局面。請憑記憶下出棋譜原著；一致或不同只描述歷史著手重建，原著不等於唯一最佳手。</p>
     <label class="dialog-field" for="sgf-picker-move">原局著手</label>
     <select id="sgf-picker-move"></select>
     <div class="dialog-actions">
       <button class="subtle-button" id="sgf-picker-cancel-button" type="button">取消</button>
-      <button class="primary-button" id="sgf-picker-confirm-button" type="button">建立局部複習 <span aria-hidden="true">→</span></button>
+      <button class="primary-button" id="sgf-picker-confirm-button" type="button">建立單點復盤 <span aria-hidden="true">→</span></button>
     </div>
   </dialog>
   <noscript><p class="noscript-note">這個練習需要啟用 JavaScript 才能顯示題目與保存進度。</p></noscript>
