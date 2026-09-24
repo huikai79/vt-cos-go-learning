@@ -373,7 +373,7 @@ test("候選自適應將先錯後對保存為一次機會，下一題優先同�
   assert.match(elements["learning-why"].textContent, /未見變形/);
 });
 
-test("固定應用探測與本機 SGF 局部題不會進入間隔排程，且可匯出反思提示", async () => {
+test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且可匯出反思提示", async () => {
   const { elements, storage, downloads } = createApp();
   elements["application-button"].listeners.click();
   assert.match(elements["question-number"].textContent, /固定應用探測/);
@@ -387,7 +387,7 @@ test("固定應用探測與本機 SGF 局部題不會進入間隔排程，且可
   assert.equal(elements["sgf-picker-dialog"].open, true);
   assert.equal(elements["sgf-picker-move"].value, "1");
   elements["sgf-picker-confirm-button"].listeners.click();
-  assert.match(elements["question-number"].textContent, /棋譜局部/);
+  assert.match(elements["question-number"].textContent, /棋譜單點復盤/);
   assert.equal(elements["sgf-reflection"].hidden, false);
   elements["sgf-candidate-input"].value = "第 5 行第 5 列";
   elements["sgf-reason-input"].value = "先看中央的氣，還不確定是否能直接提子。";
