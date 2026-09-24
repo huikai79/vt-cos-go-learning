@@ -296,7 +296,7 @@
     if (current().lesson !== undefined) return lessons[current().lesson];
     if (state.externalMode === "application") return { unit: 0, title: "固定應用探測", subtitle: "減少技能線索的固定局面", badge: "局部應用檢核", text: "先找能由局部規則直接判定的手；這類固定局面只檢查局部技能的自行發現，與完整全局判斷及自然實戰分開。", demo: "先在沒有技能名稱提示下，說出你觀察到的棋形，再決定是否落子。", takeaway: "局部沒有明確強制手時，保留判斷並回到全局。" };
     if (state.externalMode === "evaluation") return { unit: 0, title: "個人流程試行", subtitle: "已曝光題的無提示首答批次", badge: "pilot · 不作正式驗收", text: "每題只記第一次作答；整批完成前不顯示正誤。這些題目已在舊 R1 自我審查中看過，只用來檢查操作流程、資料完整性、七天返回與負擔。", demo: "先完成自己的第一個答案；本批不提供逐題講解。", takeaway: "兩批結果只作個人描述，不代表未見保留、遷移或學習成效。" };
-    if (state.externalMode === "local_sgf") return { unit: 0, title: "棋譜局部複習", subtitle: "原局著手重建", badge: "人工確認", text: "先回想原局的候選手，再重建原著。外部引擎只能提供線索，教學結論仍需人工確認。", demo: "先說出你當時最想下的一手與理由，再看原局怎麼走。", takeaway: "記下漏看的棋形，日後用新題再檢查。" };
+    if (state.externalMode === "local_sgf") return { unit: 0, title: "棋譜單點復盤", subtitle: "單手原著重建", badge: "記憶重建", text: "選一手棋，先回想候選手，再重建棋譜中實際出現的原著。與原著一致只代表記憶重建一致，不代表唯一最佳手。", demo: "先說出你當時最想下的一手與理由，再下出你記得的原著。", takeaway: "原著是歷史事實；可接受答案仍需人工或外部分析確認。" };
     return { unit: 0, title: "基礎題庫｜間隔練習", subtitle: "固定間隔或候選自適應", badge: "間隔練習", text: "依目前選題政策完成一題；保留驗收題不會自動混入。", demo: "先在沒有答案提示下完成這題，之後再比較具體理由。", takeaway: "先自己找答案；回饋後再安排下一次間隔。" };
   }
   function currentUnit() { return units[currentLesson().unit]; }
@@ -836,13 +836,15 @@
     } else if (state.externalMode === "application" || state.externalMode === "local_sgf") {
       activeStep = 4;
       if (state.externalMode === "local_sgf") {
-        now = "在棋譜局面先回想自己的候選手，再重建原著。";
-        why = "這題來自你選擇的棋譜局部，目的在回想原局，而不是評定整盤棋力。";
+        now = "在棋譜局面先回想自己的候選手，再重建一手原著。";
+        why = "這是單點記憶重建；與原著一致只代表重建了棋譜事實，不代表該手唯一最佳或棋力較高。";
       } else {
         now = "在沒有技能名稱提示的局面，自行判斷是否該使用學過的技巧。";
         why = "這是固定局面小測驗，用來檢查能否辨識技巧；結果會與課內題分開保存。";
       }
-      next = "把局面結果與課內題分開保存；局部答對不等於完整棋力。";
+      next = state.externalMode === "local_sgf"
+        ? "把與原著一致／不同和人工確認分開保存；這筆復盤不更新 T2／T3、KC 或排程。"
+        : "把局面結果與課內題分開保存；局部答對不等於完整棋力。";
     } else if (state.solved || state.answersThisTurn > 0 || state.hintShown) {
       activeStep = 2;
       if (state.solved) {
@@ -1011,7 +1013,11 @@
     if (problem.type === "move") {
       $("answer-area").innerHTML = `<span class="move-guide">點選棋盤，或用方向鍵逐點移動，再按 Enter／Space 落子。<br>答錯可再試；需要時可先看提示。</span>`;
       $("board-instruction").textContent = "點選落子；鍵盤可用方向鍵移動，Enter／Space 落子";
-      $("answer-policy").textContent = state.externalMode === "evaluation" ? "點選後會立即記錄首答，完成整批前不顯示正誤。" : "請在棋盤上選一點；答錯可以再試。";
+      $("answer-policy").textContent = state.externalMode === "evaluation"
+        ? "點選後會立即記錄首答，完成整批前不顯示正誤。"
+        : state.externalMode === "local_sgf"
+          ? "請下出你記得的原著；與原著不同可以再試，這不代表該手一定不好。"
+          : "請在棋盤上選一點；答錯可以再試。";
       $("board-card").setAttribute("aria-label", "可落子的題目棋盤");
       return;
     }
@@ -1041,7 +1047,7 @@
     const lesson = currentLesson();
     document.querySelector(".practice-grid").classList.toggle("text-practice", problem.type === "choice" && problem.stones.length === 0);
     $("lesson-kicker").textContent = problem.lesson === undefined ? "外部題庫 · 本機資料" : `第 ${currentLesson().unit + 1} 單元 · 課程 ${String(problem.lesson + 1).padStart(2, "0")} / ${String(lessons.length).padStart(2, "0")}`;
-    $("question-number").textContent = state.externalMode === "scheduled" ? `間隔練習 · ${state.schedulerPolicy === "fixed-spacing-v1" ? "固定方案" : "候選自適應"}` : state.externalMode === "application" ? "固定應用探測 · 局部局面" : state.externalMode === "evaluation" ? `個人 pilot · ${state.evaluationBatch && state.evaluationBatch.role === "baseline" ? "基線" : "追蹤"}批次` : state.externalMode === "local_sgf" ? "棋譜局部 · 人工複習" : `題目 ${String(state.index + 1).padStart(2, "0")} / ${problems.length}`;
+    $("question-number").textContent = state.externalMode === "scheduled" ? `間隔練習 · ${state.schedulerPolicy === "fixed-spacing-v1" ? "固定方案" : "候選自適應"}` : state.externalMode === "application" ? "固定應用探測 · 局部局面" : state.externalMode === "evaluation" ? `個人 pilot · ${state.evaluationBatch && state.evaluationBatch.role === "baseline" ? "基線" : "追蹤"}批次` : state.externalMode === "local_sgf" ? "棋譜單點復盤 · 原著重建" : `題目 ${String(state.index + 1).padStart(2, "0")} / ${problems.length}`;
     $("lesson-title").textContent = lesson.title;
     $("lesson-subtitle").textContent = lesson.subtitle;
     $("lesson-badge").textContent = lesson.badge || "概念練習";
@@ -1063,7 +1069,7 @@
     $("lesson-intro-button").textContent = state.externalMode ? "查看本題說明" : "查看本課短講";
     renderDemoBoards(lesson);
     const skill = currentSkill();
-    $("question-tag").textContent = state.externalMode === "application" ? "固定應用探測" : state.externalMode === "evaluation" ? "無提示個人試行" : state.externalMode === "local_sgf" ? "棋譜局部複習" : skill ? `練習技能 · ${skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
+    $("question-tag").textContent = state.externalMode === "application" ? "固定應用探測" : state.externalMode === "evaluation" ? "無提示個人試行" : state.externalMode === "local_sgf" ? "棋譜單點復盤" : skill ? `練習技能 · ${skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
     $("question-title").textContent = problem.title;
     $("question-prompt").textContent = problem.prompt;
     $("takeaway-text").textContent = lesson.takeaway;
@@ -1188,7 +1194,9 @@
       }
       if (!state.externalMode && state.reviewMode && state.wrongThisTurn === 0) state.missed.delete(problem.id);
       feedback.className = "feedback success";
-      feedback.innerHTML = `答對了。<span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
+      feedback.innerHTML = state.externalMode === "local_sgf"
+        ? `與原著一致。<span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`
+        : `答對了。<span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
       $("next-button").disabled = false;
       renderBoard();
       for (const button of $("answer-area").querySelectorAll("button")) button.disabled = true;
@@ -1196,7 +1204,9 @@
       state.wrongThisTurn += 1;
       if (!state.externalMode) state.missed.add(problem.id);
       feedback.className = "feedback error";
-      feedback.textContent = `${reason} 再試一次，或看看提示。`;
+      feedback.textContent = state.externalMode === "local_sgf"
+        ? "與棋譜原著不同。可以再試；這只比較歷史著手，不代表你選的手一定不好。"
+        : `${reason} 再試一次，或看看提示。`;
     }
     save();
     renderSgfReflection();
@@ -1239,7 +1249,7 @@
       $("feedback").className = storageWriteFailed ? "feedback error" : "feedback success";
       $("feedback").textContent = storageWriteFailed
         ? "本次結果仍在目前頁面，但無法寫入瀏覽器儲存空間；離開前請先匯出可用資料。"
-        : completedMode === "local_sgf" ? "局部複習已保存；原判斷會一併寫入匯出紀錄。" : "固定應用探測已完成；它與自然實戰分開記錄。";
+        : completedMode === "local_sgf" ? "單點復盤已保存；原判斷與原著重建會一併寫入匯出紀錄。" : "固定應用探測已完成；它與自然實戰分開記錄。";
       revealQuestionStart();
       return;
     }
