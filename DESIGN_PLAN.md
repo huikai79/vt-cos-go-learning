@@ -455,3 +455,16 @@ KaTrain／KataGo 已有分析與重試能力，但自動根因分類、題目生
 - **驗收：** 初學者 selector 不出現 KataGo／Remote/provider 術語；進階區可選引擎、看 KataGo 官方下載入口、設定 endpoint 與測試連線；API key input 不存在；既有 live-game、provider、Windows UI、repository boundary、Sabaki oracle 全部需 PASS。
 - **證據邊界：** 這是 information architecture／usability risk reduction 的工程修改；是否真的讓初學者更容易理解仍需三位目標初學者短任務觀察，不能由 UI test 升格。
 - **Rollback：** 恢復 v6 mode panel 與預設 local；不需棋局、practice event、KC、scheduler 或 formal evaluation migration。
+
+## 2026-09-24 Change note｜單點原著重建與連續復盤候選
+
+現有 SGF 流程重新命名為「單點原著重建＋反思」：
+`匯入單一主線 9 路 SGF → 選任意可落子手數 → 顯示該手之前盤面 → 先保存候選／理由／預期應手 → 下出記憶中的原著 → 比較是否與歷史原著一致 → 人工或 external analysis 另行確認可接受答案`。
+
+設計邊界：
+- 原著是歷史事實，不是唯一最佳手。
+- 與原著不同不能自動標成壞手。
+- 此活動是 retrieval／reflection practice，不更新 KC、scheduler、T2/T3 或正式評量。
+- 原著重建表現若日後要作診斷，只能回答「是否記得／重建該歷史著手」，不能直接代表理解、讀棋或遷移。
+
+**連續猜手／整段重建**暫列 experimental backlog。只有現有單點流程在真人使用中出現可重複 bottleneck，且 Reference 工具不足時，才做最小 sequential prototype。驗收先看工程完整性與操作負擔；只有在額外資料能改善 prediction、selection 或 intervention 時才保留。即使連續重建率提高，也必須另看獨立新局面 retention／transfer，避免把「記得原棋譜」偷換成「會在新局面用」。
