@@ -239,3 +239,14 @@
 - **歷史語義：** 只改 UI presentation 與 UI version；既有事件保留原版號。不改 item、KC、scoring、scheduler、Evidence Taxonomy、storage schema、first-response／retry 或 formal-evaluation 語義。
 - **Rollback：** 回復 `styles.css`、`live-game.css` 與 HTML 語系／asset query strings，並將 UI version 回到 v34／v9；無資料 migration。
 - **Validation：** 靜態反回歸新增：`zh-Hant-TW`、CJK font fallback、20px mobile padding、44px controls、visible focus、link underline，以及禁止全站 `word-break: break-all`。完整 Windows/browser regression 以分支 CI 為準。這些工程契約不能單獨證明真人可讀性、可用性或學習成效。
+
+## 2026-09-24 Change note｜SGF 單點復盤語義收斂
+
+- **修正前提：** 既有 SGF 功能不只是一般棋譜檢視；它已能在任意可落子手數前重建盤面，要求使用者憑記憶下出原著，並保存候選手、理由、預期應手與人工確認。
+- **改動：** learner UI 統一稱為「棋譜單點復盤／單手原著重建」。`sgf.js` 將此活動固定為 `evaluationRole=practice`、`evaluationContext=sgf_recall`、`formalEligible=false`、`claimScope=historical_move_reconstruction`、`scoringClaim=matches_original_sgf_move_not_best_move`；原 `T3_candidate` 已移除。
+- **反證／語義門檻：** 與原著一致只表示重建了棋譜中的歷史著手；與原著不同也不能推定該手較差。只有人工或 bounded external analysis 另行確認後，才可記錄「可接受答案」。
+- **UI：** SGF 模式不再顯示一般「答對／答錯」，改為「與原著一致／與棋譜原著不同」，並明示這不是整盤連續猜手。
+- **證據邊界：** 單點復盤不更新 T2／T3、KC、scheduler 或 formal evaluation，不作棋力或最佳手證據。
+- **連續復盤：** 整盤／連續猜手目前維持 `BACKLOG / EXPERIMENTAL / NOT_CURRENT_BOTTLENECK`。先以 Sabaki Guess mode 作 Reference；只有真人使用顯示「反覆選手數」成為可觀察 bottleneck，才考慮把既有單點流程最小連續化。
+- **Rollback：** 可回復本輪四個 learner/runtime 檔案；不涉及 storage migration，歷史復盤紀錄保持可讀。
+- **Validation：** `tests/sgf.test.cjs` 已新增 claim-boundary 與 learner wording 反回歸；完整 repo CI 狀態需由實際 workflow 執行確認，未執行前不宣稱 PASS。
