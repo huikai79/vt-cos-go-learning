@@ -130,11 +130,13 @@
     const sourceId = sourceFingerprint(text);
     return {
       id: `local-sgf-${sourceId}-${move.nodeIndex}-${move.point.join("-")}`, purpose: "local_sgf_review", taskMode: "實戰局部", boardSize: 9,
+      evaluationRole: "practice", evaluationContext: "sgf_recall", formalEligible: false,
+      claimScope: "historical_move_reconstruction", scoringClaim: "matches_original_sgf_move_not_best_move",
       type: "move", playerColor: move.color, stones: stonesFromBoard(move.before), answer: move.point, goal: { type: "exact", answer: move.point }, focus: [],
       title: `棋譜局部複習｜第 ${move.number} 手`, prompt: `原局第 ${move.number} 手輪到${move.color === BLACK ? "黑" : "白"}棋。先重讀局面，再下出原局的著手。`,
       hint: "這是原局著手重建，不代表原著是唯一最佳手。需要時回到棋譜或外部分析工具核對。",
       explanation: `原局第 ${move.number} 手落在此處；規則辨識連結：${linkedSkill}。請在匯出後寫下當時漏看的棋形或候選手。`,
-      feedbackPolicy: "manual_review", skillCue: false, linkedSkillId, linkedSkill, transferLevel: "T3_candidate",
+      feedbackPolicy: "manual_review", skillCue: false, linkedSkillId, linkedSkill, transferLevel: null,
       source: {
         type: "sgf", sourceId, sourceName, moveNumber: move.number, nodeIndex: move.nodeIndex,
         originalMove: move.point, playerColor: move.color, boardSize: 9,
