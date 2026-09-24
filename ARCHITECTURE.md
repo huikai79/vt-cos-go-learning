@@ -181,3 +181,13 @@ Reference -> Oracle -> Dependency -> Fork
 - **不變 invariant：** provider 仍不取得 rules/scoring authority；KataGo failure 不 fallback；沒有改 learner event、KC、scheduler、formal evaluation 或 storage semantics。
 - **部署狀態：** 本 change 只建立可部署的安全 transport boundary，**沒有實際部署公共 KataGo runtime**；公開 HTTPS endpoint、runtime 成本／容量與真實 Pages→service→KataGo smoke 仍為 NOT_IMPLEMENTED／NOT_MEASURED。
 - **Rollback：** 回復 bridge 與移除 hosted contract test 即可；不需資料 migration。
+
+## 2026-09-24 Change note｜SGF recall authority boundary
+
+SGF 局部功能的 authority 現在分成三層：
+
+1. **SGF parser／rules engine：** 只負責重建棋譜中實際發生的歷史盤面與原著，及合法性檢查。
+2. **single-move recall scoring：** 只判定使用者著手是否與 SGF 原著一致，claim 為 `historical_move_reconstruction`；不判最佳手，不產生 T2/T3 或 mastery。
+3. **人工／external analysis：** 才能另行確認原著或其他候選是否可接受；KataGo／KaTrain 輸出仍是 bounded search estimate。
+
+因此「原著一致」與「棋理正確／最佳」是兩個不同資料欄位與主張層級。連續棋譜重建若日後實作，必須沿用相同 authority boundary 與 first-response／retry 分離，不得把連續命中率升格為棋力。
