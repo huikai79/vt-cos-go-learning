@@ -321,11 +321,11 @@ async function main() {
     assert.equal(phase4.application.focused, "question-title");
     assert.deepEqual(phase4.picker, {open: true, choices: 1});
     assert.equal(await evaluate(socket, "document.querySelector('.learning-steps li.active')?.id"), "learning-step-4");
-    assert.match(phase4.local.number, /棋譜局部/);
+    assert.match(phase4.local.number, /棋譜單點復盤/);
     assert.equal(phase4.local.player, "● 黑棋");
     assert.match(phase4.local.status, /作答前保存/);
     assert.match(phase4.review, /已確認原著可接受/);
-    assert.match(phase4.feedback, /答對了/);
+    assert.match(phase4.feedback, /與原著一致/);
     const localSgfExport = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__localSgfBlob = blob; return 'blob:local-sgf'; }; URL.revokeObjectURL = () => {}; HTMLAnchorElement.prototype.click = function () { window.__localSgfName = this.download; }; document.querySelector('#sgf-export-button').click(); return {name: window.__localSgfName, text: await window.__localSgfBlob.text()}; })()`);
     assert.match(localSgfExport.name, /^局部復盤_sgf-[0-9a-f]{8}_第1手\.sgf$/);
     assert.match(localSgfExport.text, /^\(;GM\[1\]FF\[4\]CA\[UTF-8\]SZ\[9\]AB/);
