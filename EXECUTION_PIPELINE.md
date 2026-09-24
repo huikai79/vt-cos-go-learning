@@ -101,3 +101,15 @@
 - **隱私：** 只使用匿名 code 與證據引用，不在 repo 保存姓名、聯絡資料或其他個資。
 - **證據邊界：** 此修改只提高真人證據的可稽核性，不產生任何真人證據；目前 usability／accessibility 狀態仍是 NOT_TESTED／BLOCKED。
 - **Migration／rollback：** 尚無正式真人證據檔，因此沒有歷史真人資料需要升格；舊格式檔會 fail closed，需依原始觀察補成逐位紀錄，不能猜測補值。若 rollback，恢復舊 verifier，但會重新暴露彙總證據缺口。
+
+## 2026-09-24 Decision note｜SGF 連續復盤不升級為目前工作線
+
+現行 SGF 已提供「任意手數 → 顯示原著前局面 → 單手原著重建 → 反思／人工確認」的 bounded practice。此能力現在正式定義為 **single-move historical recall**，不是最佳手評分，也不是 T3。
+
+連續猜手／整段棋譜重建只有在以下條件同時成立時才進入實作：
+1. 真人任務中反覆出現「每次需重新選手數」造成復盤中斷；
+2. Sabaki Guess mode 等 Reference 無法滿足實際工作流，或網站內整合能取得額外、可用的 Response／Evidence；
+3. 最小 prototype 可沿用現有 SGF parser、原著資料與 first-response 語義，不建立第二套 source of truth；
+4. 初期只作 `practice_only`，不直接更新 KC、scheduler、T2/T3 或 formal evaluation。
+
+在上述 bottleneck 未出現前，優先順序仍依本檔既有 gate：真人短任務、R1a 外部內容審查與正式教學證據先於新增復盤功能。
