@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v35";
+  const uiVersion = "learner-flow-v36";
   const contentCatalogVersion = 3;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -1051,13 +1051,17 @@
     $("lesson-title").textContent = lesson.title;
     $("lesson-subtitle").textContent = lesson.subtitle;
     $("lesson-badge").textContent = lesson.badge || "概念練習";
+    const courseUnit = Number.isInteger(lesson.unit) ? lesson.unit : 0;
     if ($("stage-board-practice-link")) {
-      const courseUnit = Number.isInteger(lesson.unit) ? lesson.unit : 0;
       const recommendedBoardSize = courseUnit <= 2 ? 5 : courseUnit === 3 ? 7 : 9;
       const practiceNames = { 5: "氣、提子、連斷與規則", 7: "死活與局部攻防", 9: "完整小棋盤對局" };
       $("stage-board-practice-link").href = `live-game.html?size=${recommendedBoardSize}`;
       $("stage-board-practice-link").textContent = `本階段棋盤練習 · ${recommendedBoardSize}×${recommendedBoardSize}`;
       $("stage-board-practice-link").setAttribute("aria-label", `開啟 ${recommendedBoardSize}×${recommendedBoardSize} 棋盤練習：${practiceNames[recommendedBoardSize]}`);
+    }
+    if ($("classic-shapes-link")) {
+      $("classic-shapes-link").hidden = Boolean(state.externalMode || courseUnit !== 3);
+      $("classic-shapes-link").setAttribute("aria-label", "開啟經典眼形探索：先自己找急所，再揭曉名稱與變形");
     }
     $("teaching-text").textContent = lesson.text;
     $("teaching-demo").textContent = (lesson.demo || "先依題目找出本課要觀察的棋形，再作答。").replace(/^示範：\s*/, "");
@@ -1069,7 +1073,7 @@
     $("lesson-intro-button").textContent = state.externalMode ? "查看本題說明" : "查看本課短講";
     renderDemoBoards(lesson);
     const skill = currentSkill();
-    $("question-tag").textContent = state.externalMode === "application" ? "固定應用探測" : state.externalMode === "evaluation" ? "無提示個人試行" : state.externalMode === "local_sgf" ? "棋譜單點復盤" : skill ? `練習技能 · ${skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
+    $("question-tag").textContent = state.externalMode === "application" ? "固定應用探測" : state.externalMode === "evaluation" ? "無提示個人試行" : state.externalMode === "local_sgf" ? "棋譜單點復盤" : skill ? `練習技能 · ${skill.learnerLabel || skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
     $("question-title").textContent = problem.title;
     $("question-prompt").textContent = problem.prompt;
     $("takeaway-text").textContent = lesson.takeaway;

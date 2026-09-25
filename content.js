@@ -122,11 +122,11 @@
       unit: 3,
       title: "兩眼與急所",
       subtitle: "第 8 課 · 14 題",
-      text: "一串棋有兩個彼此分開、對手不能安全填掉的真眼，通常便能活。直三眼形有三個相連空點，中央是雙方共同急所：守方先下可分成兩眼，攻方先下可阻止兩眼。",
-      demo: "示範：先找直三的三個相連空點，不急著落子；再比較黑棋佔中央前後，兩端是否成為彼此分開的真眼。",
-      demoBoard: { stones: [[0, 0, B], [1, 0, B], [2, 0, B], [3, 0, B], [4, 0, B], [0, 1, B], [4, 1, B], [0, 2, B], [1, 2, B], [2, 2, B], [3, 2, B], [4, 2, B], [0, 3, W], [1, 3, W], [2, 3, W], [3, 3, W], [4, 3, W]], highlights: [[1, 1], [2, 1], [3, 1]], label: "受白棋包圍的黑棋直三眼形" },
+      text: "一串棋有兩個彼此分開、對手不能安全填掉的真眼，通常便能活。基礎死活先看眼空結構：先自己找能分隔或破壞兩眼的急所，再在作答後認識常見名型。這一課先用三個相連空點的簡單眼形練習。",
+      demo: "示範：先找三個相連空點，不急著背棋形名稱；再比較黑棋佔中央前後，兩端是否成為彼此分開的真眼。",
+      demoBoard: { stones: [[0, 0, B], [1, 0, B], [2, 0, B], [3, 0, B], [4, 0, B], [0, 1, B], [4, 1, B], [0, 2, B], [1, 2, B], [2, 2, B], [3, 2, B], [4, 2, B], [0, 3, W], [1, 3, W], [2, 3, W], [3, 3, W], [4, 3, W]], highlights: [[1, 1], [2, 1], [3, 1]], label: "受白棋包圍的三點眼空" },
       demoSteps: [
-        { stones: [[0, 0, B], [1, 0, B], [2, 0, B], [3, 0, B], [4, 0, B], [0, 1, B], [4, 1, B], [0, 2, B], [1, 2, B], [2, 2, B], [3, 2, B], [4, 2, B], [0, 3, W], [1, 3, W], [2, 3, W], [3, 3, W], [4, 3, W]], highlights: [[1, 1], [2, 1], [3, 1]], label: "受包圍的直三三個空點", caption: "白棋已從外側包圍黑棋。先辨認三個連成一直線的內部空點；它們目前仍是同一區，還不是兩個眼。" },
+        { stones: [[0, 0, B], [1, 0, B], [2, 0, B], [3, 0, B], [4, 0, B], [0, 1, B], [4, 1, B], [0, 2, B], [1, 2, B], [2, 2, B], [3, 2, B], [4, 2, B], [0, 3, W], [1, 3, W], [2, 3, W], [3, 3, W], [4, 3, W]], highlights: [[1, 1], [2, 1], [3, 1]], label: "受包圍的三個相連空點", caption: "白棋已從外側包圍黑棋。先辨認三個連成一直線的內部空點；它們目前仍是同一區，還不是兩個眼。" },
         { stones: [[0, 0, B], [1, 0, B], [2, 0, B], [3, 0, B], [4, 0, B], [0, 1, B], [2, 1, B], [4, 1, B], [0, 2, B], [1, 2, B], [2, 2, B], [3, 2, B], [4, 2, B], [0, 3, W], [1, 3, W], [2, 3, W], [3, 3, W], [4, 3, W]], emphasis: [[2, 1]], highlights: [[1, 1], [3, 1]], label: "黑棋先佔中央急所", caption: "黑棋下在中央後，左右兩端被分開；每個空點都由同一串黑棋包住，形成兩個真眼。" },
         { stones: [[0, 0, W], [1, 0, W], [2, 0, W], [3, 0, W], [4, 0, W], [0, 1, W], [2, 1, B], [4, 1, W], [0, 2, W], [1, 2, W], [2, 2, W], [3, 2, W], [4, 2, W], [0, 3, B], [1, 3, B], [2, 3, B], [3, 3, B], [4, 3, B]], emphasis: [[2, 1]], highlights: [[1, 1], [3, 1]], label: "黑棋先佔白棋中央急所", caption: "白棋也已被外側包圍。黑棋先佔中央後，白若填一端，黑可再佔另一端提掉白棋；這才是本題的短讀依據。" }
       ],
@@ -410,10 +410,10 @@
       ["劫材的意思", "黑棋在別處下了一手，逼白棋必須回應，目的是之後再爭回原本的劫。這一手叫什麼？", ["劫材", "禁著", "收官"], 0, "它是用來爭取再回到劫點的威脅。", "逼對手回應、用來爭劫的威脅叫劫材。"],
       ["本程式的劫規則", "本教材的互動引擎目前檢查哪一種劫限制？", ["禁止立刻回到上一個棋形的簡單劫", "所有歷史棋形都禁止重複的超級劫", "完全不檢查劫"], 0, "課程先使用最常見、最容易理解的版本。", "目前引擎實作簡單劫：不能立刻回到上一個棋形。"]
     ]),
-    { id: "u4-m01", lesson: 7, title: "橫向直三做活", prompt: "輪到黑棋：找出急所，把三個相連空點分成兩個真眼。", stones: straightThreeStones(3, 3, "horizontal", B), focus: [[2, 3], [3, 3], [4, 3]], type: "move", answer: [3, 3], goal: { type: "exact", answer: [3, 3], pattern: "straight-three-vital-point" }, hint: "比較下在中央和下在兩端：哪一手能立刻把空點分成兩區？", explanation: "黑下直三中央後，左右兩端各自成為被黑棋包住的真眼。", skillId: "make-two-eyes-straight-three-v1" },
-    { id: "u4-m02", lesson: 7, title: "直向直三做活", prompt: "輪到黑棋：換個方向，仍要找出能做出兩眼的急所。", stones: straightThreeStones(5, 4, "vertical", B), focus: [[5, 3], [5, 4], [5, 5]], type: "move", answer: [5, 4], goal: { type: "exact", answer: [5, 4], pattern: "straight-three-vital-point" }, hint: "棋形旋轉後，急所仍在三個相連空點的中央。", explanation: "黑下中央後，上下兩端分開成為兩個真眼；方向改變，原理不變。", skillId: "make-two-eyes-straight-three-v1" },
-    { id: "u4-m03", lesson: 7, title: "橫向直三破眼", prompt: "輪到黑棋：白棋想在直三做兩眼，先佔哪個急所？", stones: straightThreeStones(4, 3, "horizontal", W), focus: [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3]], type: "move", answer: [4, 3], goal: { type: "exact", answer: [4, 3], pattern: "straight-three-vital-point" }, hint: "假設白棋先下中央，會不會把兩端分成兩眼？", explanation: "黑先佔中央，白棋便不能用同一個急所把兩端分成兩個真眼；下一步仍要閱讀白棋的最強反擊。", skillId: "kill-straight-three-v1" },
-    { id: "u4-m04", lesson: 7, title: "直向直三破眼", prompt: "輪到黑棋：棋形轉直後，找出阻止白棋做兩眼的急所。", stones: straightThreeStones(3, 5, "vertical", W), focus: [[3, 3], [3, 4], [3, 5], [3, 6], [3, 7]], type: "move", answer: [3, 5], goal: { type: "exact", answer: [3, 5], pattern: "straight-three-vital-point" }, hint: "急所不因旋轉改變：找三個相連空點的中央。", explanation: "黑下中央破壞白棋分成兩眼的機會；這題只驗第一手急所，不把第一手答對寫成已讀完所有殺法。", skillId: "kill-straight-three-v1" },
+    { id: "u4-m01", lesson: 7, title: "先找第一個急所", prompt: "輪到黑棋：先不要猜棋形名稱，找出能把三個相連空點分成兩個真眼的急所。", stones: straightThreeStones(3, 3, "horizontal", B), focus: [[2, 3], [3, 3], [4, 3]], type: "move", answer: [3, 3], goal: { type: "exact", answer: [3, 3], pattern: "straight-three-vital-point" }, hint: "比較下在中央和下在兩端：哪一手能立刻把空點分成兩區？", explanation: "黑下中央後，左右兩端各自成為被黑棋包住的真眼。這種三個空點連成一直線的眼形常叫「直三」；先記原理，再記名稱。", skillId: "make-two-eyes-straight-three-v1" },
+    { id: "u4-m02", lesson: 7, title: "換個方向再找", prompt: "輪到黑棋：棋形換個方向，仍要找出能做出兩眼的急所。", stones: straightThreeStones(5, 4, "vertical", B), focus: [[5, 3], [5, 4], [5, 5]], type: "move", answer: [5, 4], goal: { type: "exact", answer: [5, 4], pattern: "straight-three-vital-point" }, hint: "棋形旋轉後，急所仍在三個相連空點的中央。", explanation: "黑下中央後，上下兩端分開成為兩個真眼；方向改變，原理不變。", skillId: "make-two-eyes-straight-three-v1" },
+    { id: "u4-m03", lesson: 7, title: "換成攻方找急所", prompt: "輪到黑棋：白棋想把三個相連空點分成兩眼，先佔哪個急所？", stones: straightThreeStones(4, 3, "horizontal", W), focus: [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3]], type: "move", answer: [4, 3], goal: { type: "exact", answer: [4, 3], pattern: "straight-three-vital-point" }, hint: "假設白棋先下中央，會不會把兩端分成兩眼？", explanation: "黑先佔中央，白棋便不能用同一個急所把兩端分成兩個真眼；下一步仍要閱讀白棋的最強反擊。", skillId: "kill-straight-three-v1" },
+    { id: "u4-m04", lesson: 7, title: "攻方再換方向", prompt: "輪到黑棋：棋形換個方向後，找出阻止白棋做兩眼的急所。", stones: straightThreeStones(3, 5, "vertical", W), focus: [[3, 3], [3, 4], [3, 5], [3, 6], [3, 7]], type: "move", answer: [3, 5], goal: { type: "exact", answer: [3, 5], pattern: "straight-three-vital-point" }, hint: "急所不因旋轉改變：找三個相連空點的中央。", explanation: "黑下中央破壞白棋分成兩眼的機會；這題只驗第一手急所，不把第一手答對寫成已讀完所有殺法。", skillId: "kill-straight-three-v1" },
     (() => { const shape = secondEyeSetup(3, 5, "horizontal", B); return { id: "u4-m05", lesson: 7, title: "補好橫向第二眼", prompt: "輪到黑棋：左邊已有一眼，補住缺口做出右邊第二眼。", stones: shape.stones, focus: shape.cavities, type: "move", answer: shape.gap, goal: { type: "exact", answer: shape.gap, pattern: "second-eye-boundary-gap" }, hint: "看右邊空點的四個相鄰位置，哪裡還不是黑棋？", explanation: "黑棋補上邊界缺口後，左右兩個空點都被同一串黑棋包住，形成兩個真眼。", skillId: "complete-second-eye-v1" }; })(),
     (() => { const shape = secondEyeSetup(5, 3, "vertical", B); return { id: "u4-m06", lesson: 7, title: "補好直向第二眼", prompt: "輪到黑棋：棋形轉直後，補住第二眼的邊界缺口。", stones: shape.stones, focus: shape.cavities, type: "move", answer: shape.gap, goal: { type: "exact", answer: shape.gap, pattern: "second-eye-boundary-gap" }, hint: "先確認已有的一眼，再檢查另一個空點少哪一面包圍。", explanation: "補上缺口後，兩個空點分開且都由黑棋包住；旋轉不改變兩眼條件。", skillId: "complete-second-eye-v1" }; })(),
     (() => { const shape = secondEyeSetup(3, 3, "horizontal", W); return { id: "u4-m07", lesson: 7, title: "搶先破壞橫向第二眼", prompt: "輪到黑棋：白棋只差一手做出第二眼，先佔住哪個缺口？", stones: shape.stones, focus: shape.cavities, type: "move", answer: shape.gap, goal: { type: "exact", answer: shape.gap, pattern: "second-eye-boundary-gap" }, hint: "不要填已完成的眼；找另一個空點尚未封閉的邊界。", explanation: "黑棋從外側佔住缺口，右邊空點與黑棋相鄰，不能成為白棋的第二個真眼。", skillId: "block-second-eye-v1" }; })(),
@@ -644,6 +644,7 @@
     {
       id: "make-two-eyes-straight-three-v1",
       name: "直三一手做出兩眼",
+      learnerLabel: "眼形急所",
       version: 1,
       taskMode: "辨識與短讀",
       application: "題目指定己方圍成的直三眼形，輪到己方先走。",
@@ -661,6 +662,7 @@
     {
       id: "kill-straight-three-v1",
       name: "直三一手佔據破眼急所",
+      learnerLabel: "眼形急所",
       version: 1,
       taskMode: "辨識與短讀",
       application: "題目指定對方圍成的直三眼形，輪到攻方先走。",
@@ -753,12 +755,13 @@
     "u4-m08": "second-eye-block-vertical-v1"
   };
 
+  const revisedClassicShapeProblemIds = new Set(["u4-m01", "u4-m02", "u4-m03", "u4-m04"]);
   for (const problem of problems) {
     problem.skillId = skillByProblemId.get(problem.id) || null;
     problem.taskMode = problem.skillId ? skills.find((skill) => skill.id === problem.skillId).taskMode : "一般練習";
     problem.pool = problem.skillId ? "練習" : "既有教材";
     if (problem.skillId) {
-      problem.contentVersion = 1;
+      problem.contentVersion = revisedClassicShapeProblemIds.has(problem.id) ? 2 : 1;
       problem.taskFeatureVersion = 1;
       problem.taskFeatures = trialTaskFeatures[problem.id];
       problem.motherFamilyId = trialMotherFamilyIds[problem.id];

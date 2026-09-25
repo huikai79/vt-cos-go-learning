@@ -1,15 +1,15 @@
 # 完成矩陣：悟之一手
 
-更新日期：2026-09-24  
+更新日期：2026-09-26  
 用途：將產品承諾、現有實作、自動驗證與證據邊界分開記錄。此表的「工程通過」只表示指定程式行為可運作，不表示內容正確、初學者可理解或學習有效。
 
 ## Current Status
 
-- `as_of`: 2026-09-24
+- `as_of`: 2026-09-26
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v35`；棋盤練習頁 `live-game-ui-v10`
+- `ui_version`: `learner-flow-v36`；棋盤練習頁 `live-game-ui-v10`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -30,6 +30,7 @@
 | 離線個人課程 | 15 單元、19 課、106 題；直接開啟 `index.html` | 課程與 Chrome 流程測試 | 工程 | 條件通過 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
+| 經典眼形探索 v1 | 第 4 單元新增 practice-only 選修入口；重用既有直三／第二眼題，流程為先找急所、作答後揭名、換方向、攻守交換、相似反例；不寫 KC／scheduler／T2-T3／formal evaluation | `classic-shapes.test.cjs`＋既有內容／UI 回歸；完整 browser CI 以分支 workflow 為準 | 工程／教學 UX | 條件通過僅限工程契約；直三文案 contentVersion 2，棋理適切性、真人理解與學習效益仍待 R1a／真人觀察 |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -250,3 +251,11 @@
 - **連續復盤：** 整盤／連續猜手目前維持 `BACKLOG / EXPERIMENTAL / NOT_CURRENT_BOTTLENECK`。先以 Sabaki Guess mode 作 Reference；只有真人使用顯示「反覆選手數」成為可觀察 bottleneck，才考慮把既有單點流程最小連續化。
 - **Rollback：** 可回復本輪四個 learner/runtime 檔案；不涉及 storage migration，歷史復盤紀錄保持可讀。
 - **Validation：** `tests/sgf.test.cjs` 已新增 claim-boundary 與 learner wording 反回歸；完整 repo CI 狀態需由實際 workflow 執行確認，未執行前不宣稱 PASS。
+
+
+## 2026-09-26 Change note｜經典眼形探索 v1
+
+- **改動：** `learner-flow-v36` 在第 4 單元加入 `classic-shapes.html`；主課四題直三 learner-facing 文案改為先不揭名，作答回饋才說明「直三」。探索頁重用 `content.js` 的既有題目，不建立第二套答案。
+- **版本：** `u4-m01`～`u4-m04` 的 contentVersion 由 1 升為 2；歷史事件保留原 contentVersion。storage schema、content catalog、KC／scoring contract 不變。
+- **證據邊界：** 探索頁為 practice-only，不產生 formal evidence；正式教學仍受 `TEACHING_GATE.md` 阻擋，學習成效仍 NOT_MEASURED。
+- **Rollback：** 移除第 4 單元入口與三個 classic-shapes 資產，回復四題文案及 UI version；既有 storage 不需 migration。
