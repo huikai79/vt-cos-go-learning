@@ -113,3 +113,8 @@
 4. 初期只作 `practice_only`，不直接更新 KC、scheduler、T2/T3 或 formal evaluation。
 
 在上述 bottleneck 未出現前，優先順序仍依本檔既有 gate：真人短任務、R1a 外部內容審查與正式教學證據先於新增復盤功能。
+
+
+## 2026-09-26 Decision note｜經典名型只作 P1/P2 教學 UX scaffold
+
+第 4 單元新增的「經典眼形探索」只處理可觀察的教學 UX 缺口：避免題名前置洩漏名型、提供旋轉／攻守交換及相似反例。它不改 R0、R1a、R1b、formal holdout、scheduler 或 live evidence；目前第 2 步「三次短任務觀察」與 R1a 外部內容審查的優先級不變。若真人觀察沒有顯示這個入口改善理解或反而增加負擔，應簡化或移除，不以功能存在作進展代理。
