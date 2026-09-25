@@ -259,3 +259,4 @@
 - **版本：** `u4-m01`～`u4-m04` 的 contentVersion 由 1 升為 2；歷史事件保留原 contentVersion。storage schema、content catalog、KC／scoring contract 不變。
 - **證據邊界：** 探索頁為 practice-only，不產生 formal evidence；正式教學仍受 `TEACHING_GATE.md` 阻擋，學習成效仍 NOT_MEASURED。
 - **Rollback：** 移除第 4 單元入口與三個 classic-shapes 資產，回復四題文案及 UI version；既有 storage 不需 migration。
+- **Validation：** PR #14 的 verify run #197 全數通過：node-contracts、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均 PASS；PR 已於 2026-09-26 squash merge 至 `main`（merge commit `1f89f79f8969d7d81cd682b4e2ef44c447df841d`）。這些仍只屬工程驗證。
