@@ -1,0 +1,28 @@
+.classic-shapes-page{background:#f5f7f2;color:#243d2d;min-height:100vh}
+.classic-shell{max-width:1180px;margin:0 auto;padding:34px 24px 54px}
+.classic-header{max-width:760px;margin-bottom:24px}
+.classic-header h1{font-size:2.25rem;margin:12px 0 10px}
+.classic-header p{font-size:1rem;line-height:1.75;color:#5f7465}
+.classic-progress{margin:18px 0 22px}
+.classic-progress ol{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;list-style:none;padding:0;margin:0}
+.classic-progress li{padding:10px 12px;border:1px solid #dfe7dd;border-radius:10px;background:#fff;color:#758776;font-size:.875rem}
+.classic-progress li.active{border-color:#709579;background:#edf4ec;color:#244c35;font-weight:700}
+.classic-progress li.done{background:#e3efe3;color:#42664a}
+.classic-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(420px,1.2fr);gap:18px;align-items:stretch}
+.classic-question{min-height:560px}
+.classic-rule{margin:22px 0;padding:14px 16px;border-left:4px solid #87a98c;background:#f4f8f2;font-size:.95rem;line-height:1.7}
+.classic-rule strong{display:block;margin-bottom:3px}
+.classic-reveal{margin:16px 0;padding:16px;border:1px solid #dce8d9;border-radius:10px;background:#fbfdf9}
+.classic-reveal span{display:block;font-size:.75rem;color:#758776;font-weight:700}
+.classic-reveal strong{display:block;font-size:1.55rem;margin:3px 0 7px}
+.classic-reveal p{margin:0;color:#607362;line-height:1.7}
+.classic-actions{display:flex;justify-content:space-between;gap:14px;margin-top:auto}
+.classic-note{margin-top:22px;padding:20px 22px;border:1px solid #e1e8df;border-radius:12px;background:#fff}
+.classic-note h2{font-size:1.15rem;margin:0 0 8px}.classic-note p{margin:0;line-height:1.75;color:#617363}
+.classic-board svg{width:100%;height:100%;display:block;touch-action:manipulation}
+.classic-board .classic-hit{fill:transparent;cursor:pointer}
+.classic-board .classic-hit:hover,.classic-board .classic-hit.cursor{fill:#fff6b955}
+.classic-board .classic-hit:focus{outline:none}
+.classic-board .classic-cursor-ring{fill:none;stroke:#315f40;stroke-width:3}
+@media(max-width:900px){.classic-grid{grid-template-columns:1fr}.classic-question{min-height:auto}.classic-progress ol{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.classic-shell{padding:22px 14px 40px}.classic-header h1{font-size:1.8rem}.classic-progress ol{grid-template-columns:1fr}.classic-board{max-width:100%}}
