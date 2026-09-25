@@ -755,12 +755,13 @@
     "u4-m08": "second-eye-block-vertical-v1"
   };
 
+  const revisedClassicShapeProblemIds = new Set(["u4-m01", "u4-m02", "u4-m03", "u4-m04"]);
   for (const problem of problems) {
     problem.skillId = skillByProblemId.get(problem.id) || null;
     problem.taskMode = problem.skillId ? skills.find((skill) => skill.id === problem.skillId).taskMode : "一般練習";
     problem.pool = problem.skillId ? "練習" : "既有教材";
     if (problem.skillId) {
-      problem.contentVersion = 1;
+      problem.contentVersion = revisedClassicShapeProblemIds.has(problem.id) ? 2 : 1;
       problem.taskFeatureVersion = 1;
       problem.taskFeatures = trialTaskFeatures[problem.id];
       problem.motherFamilyId = trialMotherFamilyIds[problem.id];
