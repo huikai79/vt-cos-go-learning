@@ -92,7 +92,7 @@ test("試行技能有版本、邊界與對應的指定棋形練習題", () => {
   for (const problem of problems.filter((problem) => problem.skillId)) {
     assert.ok(["辨識", "辨識與短讀"].includes(problem.taskMode), problem.id);
     assert.equal(problem.pool, "練習", problem.id);
-    assert.equal(problem.contentVersion, 1, problem.id);
+    assert.equal(problem.contentVersion, ["u4-m01", "u4-m02", "u4-m03", "u4-m04"].includes(problem.id) ? 2 : 1, problem.id);
     assert.equal(problem.taskFeatureVersion, 1, problem.id);
     assert.ok(problem.taskFeatures && problem.motherFamilyId, problem.id);
   }
