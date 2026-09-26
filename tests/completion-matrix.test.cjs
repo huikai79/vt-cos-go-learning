@@ -9,8 +9,8 @@ const matrix = fs.readFileSync(path.join(__dirname, "..", "COMPLETION_MATRIX.md"
 const pipeline = fs.readFileSync(path.join(__dirname, "..", "EXECUTION_PIPELINE.md"), "utf8");
 const teachingGate = fs.readFileSync(path.join(__dirname, "..", "TEACHING_GATE.md"), "utf8");
 
-test("完成矩陣 current truth 已同步 learner-flow-v45 工具面板修正", () => {
-  assert.match(matrix, /`ui_version`: `learner-flow-v45`/);
+test("完成矩陣 current truth 已同步 learner-flow-v46 工具面板修正", () => {
+  assert.match(matrix, /`ui_version`: `learner-flow-v46`/);
   assert.match(matrix, /工具面板語意與品牌邊界複核（v45）/);
   assert.match(matrix, /複習今日到期（N）/);
   assert.match(matrix, /棋譜單點復盤/);
