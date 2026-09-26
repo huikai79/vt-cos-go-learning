@@ -26,7 +26,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /只有已存在 scoring contract 的直三練習可互動/);
+  assert.match(html, /直三使用既有 scoring contract；刀把五另有 bounded「共同急所」contract/);
   assert.match(html, /名稱仍在作答後才揭示/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
@@ -133,7 +133,7 @@ test("刀把五 contract 對錯誤 geometry、錯誤急所與非急所首答 fai
   const wrongVital = { ...seed, id: "wrong-vital", vitalPoint: [2,2] };
   assert.equal(PracticeContract.validateItem(wrongVital, Go).ok, false);
 
-  const wrongMove = seed.eyeSpace.find((point) => !PracticeContract.samePoint(point, seed.vitalPoint));
+  const wrongMove = seed.eyeSpace.find((point) => point[0] !== seed.vitalPoint[0] || point[1] !== seed.vitalPoint[1]);
   const result = PracticeContract.score(seed, wrongMove, Go);
   assert.equal(result.ok, true);
   assert.equal(result.correct, false);
