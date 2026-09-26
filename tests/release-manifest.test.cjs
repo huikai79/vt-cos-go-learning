@@ -104,3 +104,10 @@ test("學習入口載入完整題庫，R1 入口只載入去答案審查資料",
   assert.doesNotMatch(reviewHtml, /phase2-(foundation-bank|life-death-bank|content)\.js/);
   assert.ok(reviewHtml.indexOf('src="r1-review-bank.js"') < reviewHtml.indexOf('src="r1-review.js"'));
 });
+
+
+test("世界名型圖鑑資料列入公開發佈清單", () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
+  assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
+  assert.ok(manifest.hosting.entrypoints.includes("classic-shapes.html"));
+});
