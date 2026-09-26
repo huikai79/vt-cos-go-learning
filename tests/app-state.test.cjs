@@ -42,7 +42,7 @@ function pointTarget(dataset, selector) {
 }
 
 function createApp(saved = {}, options = {}) {
-  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "lesson-terms", "lesson-term-count", "lesson-term-list", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary"];
+  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "lesson-terms", "lesson-term-count", "lesson-term-list", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "scheduled-practice-description", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary"];
   const elements = Object.fromEntries(ids.map((id) => [id, new Element()]));
   const storage = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   for (const [key, value] of Object.entries(options.rawStorage || {})) storage.set(key, value);
@@ -319,12 +319,14 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v44");
+  assert.equal(exported.uiVersion, "learner-flow-v45");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
   const fresh = createApp();
   assert.equal(fresh.elements["due-review-button"].hidden, true);
+  assert.equal(fresh.elements["scheduled-practice-button"].textContent, "開始間隔練習");
+  assert.match(fresh.elements["scheduled-practice-description"].textContent, /沒有到期題/);
 
   const due = createApp({ [STORAGE_KEY]: {
     schemaVersion: 7,
@@ -332,6 +334,8 @@ test("首頁只在確實有題目到期時顯示直接複習入口", () => {
   } });
   assert.equal(due.elements["due-review-button"].hidden, false);
   assert.equal(due.elements["due-review-count"].textContent, 1);
+  assert.equal(due.elements["scheduled-practice-button"].textContent, "複習今日到期（1）");
+  assert.match(due.elements["scheduled-practice-description"].textContent, /今天有 1 題到期/);
   due.elements["due-review-button"].listeners.click();
   assert.match(due.elements["question-number"].textContent, /間隔練習/);
 });
@@ -386,7 +390,7 @@ test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且
   elements["application-button"].listeners.click();
   assert.match(elements["question-number"].textContent, /固定應用探測/);
   assert.equal(elements["question-tag"].textContent, "固定應用探測");
-  assert.match(elements["learning-why"].textContent, /固定局面小測驗/);
+  assert.match(elements["learning-why"].textContent, /固定局面應用練習/);
   elements.board.listeners.click({ target: pointTarget({ x: "4", y: "5" }, "[data-x]") });
   let saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.equal(saved.scheduler.responses.length, 0);
@@ -485,7 +489,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v44");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v45");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -619,7 +623,11 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-flow-v44/);
+  assert.match(html, /styles\.css\?v=learner-flow-v45/);
+  assert.match(html, /悟之一手 <span class="eyebrow-dot">●<\/span> 個人學習空間/);
+  assert.doesNotMatch(html, /PERSONAL GO STUDIO|VT-COS · 個人圍棋練習/);
+  assert.doesNotMatch(html, /\\n\s*<div class="tool-item"/);
+  assert.match(html, /id="application-button" type="button">局面應用練習<\/button>/);
   assert.match(css, /--font-zh:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif/);
   assert.doesNotMatch(css, /word-break\s*:\s*break-all/i);
   assert.match(css, /:where\(a,button,input,select,textarea,summary,\[role="button"\]\):focus-visible/);
