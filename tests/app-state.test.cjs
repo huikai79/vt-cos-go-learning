@@ -625,7 +625,9 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   assert.match(html, /<html lang="zh-Hant-TW">/);
   assert.match(html, /styles\.css\?v=learner-flow-v45/);
   assert.match(html, /悟之一手 <span class="eyebrow-dot">●<\/span> 個人學習空間/);
-  assert.doesNotMatch(html, /PERSONAL GO STUDIO|VT-COS · 個人圍棋練習/);
+  assert.doesNotMatch(html, /PERSONAL GO STUDIO · OFFLINE/);
+  assert.match(html, /VT-COS · 個人圍棋練習/);
+  assert.match(html, /VT-COS · 從 0 開始，也能繼續進階/);
   assert.doesNotMatch(html, /\\n\s*<div class="tool-item"/);
   assert.match(html, /id="application-button" type="button">局面應用練習<\/button>/);
   assert.match(css, /--font-zh:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif/);
