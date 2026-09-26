@@ -28,7 +28,7 @@
 | 承諾 | 現況與實作 | 已有驗證 | 證據等級 | 狀態 |
 |---|---|---|---|---|
 | 離線個人課程 | 15 單元、19 課、106 題；直接開啟 `index.html` | 課程與 Chrome 流程測試 | 工程 | 條件通過 |
-| Core 後續進階訓練 v4 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience，棋盤 Response 擴為 4 題：倒撲、枷、對殺、征子。四題皆由 rules-backed sequence contract 重播；枷另驗第二逃路，征子逐手驗「tracked group 兩口→打吃後一口→唯一延長」直到提八子，並用引征干擾子作 negative oracle。完整棋局／複盤仍為 planned track | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限 bounded practice sequence 契約；不更新 KC／scheduler／T2-T3／formal evaluation。征子只證明這個無引征局部 forced line，不能升格成一般征子判定；內容效度與真人價值仍待外部審查／觀察 |
+| Core 後續進階訓練 v5 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
 | 經典眼形探索 v1 | 第 4 單元新增 practice-only 選修入口；重用既有直三／第二眼題，流程為先找急所、作答後揭名、換方向、攻守交換、相似反例；不寫 KC／scheduler／T2-T3／formal evaluation | `classic-shapes.test.cjs`＋既有內容／UI 回歸；完整 browser CI 以分支 workflow 為準 | 工程／教學 UX | 條件通過僅限工程契約；直三文案 contentVersion 2，棋理適切性、真人理解與學習效益仍待 R1a／真人觀察 |
@@ -130,7 +130,16 @@
 - **征子停止線：** 暫不加入 learner-facing 征子 sequence。原因不是缺教材名稱，而是目前尚未建立能驗證「每一步最強逃路／打吃選擇與引征干擾」的 forced-line oracle；不用一條看似梯形的固定手順冒充完整征子判定。
 - **Evidence boundary：** 三題仍全部為 `advanced_practice_only`、`formalEligible=false`、`qualifiedOpportunity=false`。rules oracle 只證明規則與已定 sequence contract 一致，不證明手筋構念效度、難度可比或學習成效。
 
-## 2026-09-26 Change note｜進階多手讀棋 v4：bounded 征子 forced line\n\n- **為何現在加入：** v3 把征子留在停止線，因為單靠合法手／提子不足以證明「對手被迫沿唯一路線逃」。v4 先擴 `advanced-sequence-contract.js`，讓每個 decision 可宣告並驗證 `expectedTrackedLibertiesBeforeLearner` 與 `opponentMoveMustBeUniqueLiberty`；只有能逐手重算「兩口氣→打吃後一口→對手唯一延長」的局面才可進 learner-facing sequence。\n- **bounded sequence：** 新增 7×7 征子局部。白方被追串起始兩口氣；黑連續六次把它壓成一口氣，每次白的固定應手都必須等於 tracked group 當下唯一 liberty；最後白在邊線只剩一口，黑第七手提掉八顆。所有中間氣數與最終提子數由 rules engine 重播。\n- **引征 negative oracle：** 測試另在征子路線上加入一顆白色接應／干擾子；原 canonical forced line 必須失效。這只證明「有干擾時不能沿原手順硬追」，不表示已窮舉所有引征形狀或能一般化判斷全盤征子。\n- **UI：** 多手棋盤題由 3 題增為 4 題；sequence selector、下一題、重設、鍵盤與 mobile reflow 共用同一 runtime。每次切題／重設都產生新的 presentation；舊首答與 retry append-only 保留。\n- **停止線仍在：** 不把這個 bounded ladder sequence 升為 KC 或正式征子能力；若要建立 transferable ladder skill，下一步需至少有多個不同方向／距離／引征位置的平行變形，且需外部棋理審查與真人難度資料。\n- **證據邊界：** rules-backed forced-line oracle 是工程／局部棋理一致性檢查；它不能證明教材最佳、學習者已會征子、或學習成效。\n\n## 目前執行順序
+## 2026-09-26 Change note｜進階多手讀棋 v4：bounded 征子 forced line\n\n- **為何現在加入：** v3 把征子留在停止線，因為單靠合法手／提子不足以證明「對手被迫沿唯一路線逃」。v4 先擴 `advanced-sequence-contract.js`，讓每個 decision 可宣告並驗證 `expectedTrackedLibertiesBeforeLearner` 與 `opponentMoveMustBeUniqueLiberty`；只有能逐手重算「兩口氣→打吃後一口→對手唯一延長」的局面才可進 learner-facing sequence。\n- **bounded sequence：** 新增 7×7 征子局部。白方被追串起始兩口氣；黑連續六次把它壓成一口氣，每次白的固定應手都必須等於 tracked group 當下唯一 liberty；最後白在邊線只剩一口，黑第七手提掉八顆。所有中間氣數與最終提子數由 rules engine 重播。\n- **引征 negative oracle：** 測試另在征子路線上加入一顆白色接應／干擾子；原 canonical forced line 必須失效。這只證明「有干擾時不能沿原手順硬追」，不表示已窮舉所有引征形狀或能一般化判斷全盤征子。\n- **UI：** 多手棋盤題由 3 題增為 4 題；sequence selector、下一題、重設、鍵盤與 mobile reflow 共用同一 runtime。每次切題／重設都產生新的 presentation；舊首答與 retry append-only 保留。\n- **停止線仍在：** 不把這個 bounded ladder sequence 升為 KC 或正式征子能力；若要建立 transferable ladder skill，下一步需至少有多個不同方向／距離／引征位置的平行變形，且需外部棋理審查與真人難度資料。\n- **證據邊界：** rules-backed forced-line oracle 是工程／局部棋理一致性檢查；它不能證明教材最佳、學習者已會征子、或學習成效。\n\n## 2026-09-27 Change note｜進階 sequence family v5：非單純旋轉的第二變形
+
+- **learning-loop bottleneck：** v4 每種手筋只有一個 learner-facing seed。即使單題 rules oracle 完整，學習者仍可能記座標、棋色、固定提子數或固定征子終點；這不足以觀察同一能力在新局部條件下是否保留。
+- **family schema：** 每個棋盤 Experience 新增 `familyId`、`variantId`、`variationAxes`；contract 缺欄位、重複 family/variant 或重複 experience id 都 fail closed。這些欄位只描述內容家族，不建立 KC 或 mastery。
+- **四個第二變形：** 倒撲由回提兩子改為三子且局部棋串改形；枷改變支援與兩個出口的幾何，canonical 逃路與 alternate branch 都需可提；對殺交換黑白角色，learner 由黑改白但仍按氣與先後手提三子；征子由 7×7 七段改為 8×8 十段，路線更長、終點不同，最後提十一子。
+- **不是旋轉題庫：** 第二變形至少改一個會改變作答條件的 axis，而不是只做平移／旋轉／鏡射。旋轉仍可作低成本 UI 或規則回歸，但不計入本輪 family evidence。
+- **Evidence boundary：** 目前只是 2 variants/family 的 practice seed。不能由此聲稱平行題等難、transfer 已建立或 KC 已被驗證；要進下一級至少需要真人 first-response 資料與 family 內差異檢查。
+- **歷史語義：** v4 四題 ID 與 version 不變；新增四個新 ID。舊事件不回寫 family metadata，也不把過去曝光重新標成 unseen。
+
+## 目前執行順序
 
 1. Completion Truth P0–P3：已完成工程驗證。
 2. Evidence Boundary P0：個人 pilot v3、22 題直接曝光、48 題公開來源曝光、formal holdout pool 退役及一般匯出遮蔽已完成。
