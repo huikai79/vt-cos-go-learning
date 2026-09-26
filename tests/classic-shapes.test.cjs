@@ -30,7 +30,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /直三使用既有 scoring contract；刀把五有 bounded「共同急所」與三手 A\/B short-read contract/);
+  assert.match(html, /刀把五有三層 bounded practice：共同急所、A\/B 三手 short-read、以及「零外氣＋守方局部手抜き」的 sealed reduction/);
   assert.match(html, /名稱仍在作答後才揭示/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
@@ -46,7 +46,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v4");
+  assert.equal(Catalog.version, "world-classic-shapes-v5");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -69,7 +69,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
   const longL = Catalog.entries.find((entry) => entry.id === "long-l-group-v1");
   assert.equal(knife.zhNameStatus, S.ESTABLISHED_ALIAS);
   assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), true);
-  assert.equal(knife.practiceStatus, "playable_bounded_vital_point_and_short_read_contract");
+  assert.equal(knife.practiceStatus, "playable_bounded_vital_point_short_read_and_sealed_reduction_contract");
   assert.equal(grape.zhNameStatus, S.NEEDS_REVIEW);
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
   assert.equal(carpenter.zhNameStatus, S.ESTABLISHED_ALIAS);
@@ -245,4 +245,14 @@ test("有外氣時 sealed reduction 不得錯報 forced capture 或 square-four 
   assert.equal(open.sealedBefore, false);
   assert.equal(open.forcedCapture, false);
   assert.equal(open.squareFourReached, false);
+});
+
+
+test("sealed reduction UI 明示零外氣前提與 square-four terminal", () => {
+  assert.match(html, /刀把五：手抜き後如何縮成方四/);
+  assert.match(html, /守方整串無外氣/);
+  assert.match(html, /若有外氣，本 contract 直接判定不適用/);
+  assert.match(html, /提四子 → 方四/);
+  assert.match(js, /GoClassicShapeReductionContract/);
+  assert.match(js, /其他應手與有外氣局面仍是 UNKNOWN/);
 });
