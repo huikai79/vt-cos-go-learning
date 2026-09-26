@@ -90,6 +90,9 @@ test("進階 event store 保留首答與 retry，不以最後答對覆寫首答"
   assert.equal(summary.retries, 1);
   assert.equal(summary.completedExperiences, 1);
   assert.equal(summary.formalEligible, false);
+  assert.equal(summary.families[0].familyId, "snapback");
+  assert.equal(summary.families[0].variants[0].firstMoveCount, 1);
+  assert.equal(summary.families[0].variants[0].firstCorrectCount, 0);
 });
 
 test("進階 event store 遇到損壞資料 fail closed，不猜測修復", () => {
@@ -270,7 +273,7 @@ test("sequence contract 對捕獲數或內建手順漂移 fail closed", () => {
 });
 
 
-test("多手 sequence event store 逐 decision 保留首答與 retry", () => {
+test("多手 sequence event store v2 逐 decision 保留首答、retry 與 family metadata", () => {
   const storage = memoryStorage();
   const common = {
     sessionId: "seq-s1",
@@ -278,6 +281,9 @@ test("多手 sequence event store 逐 decision 保留首答與 retry", () => {
     experienceId: "adv-seq-snapback-01",
     experienceVersion: 1,
     trackId: "reading-tesuji",
+    familyId: "snapback",
+    variantId: "seed",
+    variationAxes: ["baseline"],
     occurredAt: "2026-09-26T12:00:00.000Z"
   };
   assert.equal(SequenceEvents.append(storage, { ...common, eventId: "s1", type: "presented" }).ok, true);
@@ -296,6 +302,90 @@ test("多手 sequence event store 逐 decision 保留首答與 retry", () => {
   assert.equal(summary.formalEligible, false);
 });
 
+test("family transition 只輸出描述狀態，不產生 mastery 或 transfer claim", () => {
+  const storage = memoryStorage();
+  const base = {
+    sessionId: "family-s1",
+    experienceVersion: 1,
+    trackId: "reading-tesuji",
+    familyId: "snapback",
+    variationAxes: ["baseline"],
+    occurredAt: "2026-09-27T00:00:00.000Z"
+  };
+  assert.equal(SequenceEvents.append(storage, { ...base, eventId: "f1", presentationId: "seed-p", experienceId: "adv-seq-snapback-01", variantId: "seed", type: "move_first", decisionId: "sacrifice", stepIndex: 0, point: [0,2], correct: true, legal: true, capturedCount: 0 }).ok, true);
+  assert.equal(SequenceEvents.append(storage, { ...base, eventId: "f2", presentationId: "variant-p", experienceId: "adv-seq-snapback-02", variantId: "capture-three", variationAxes: ["capture-count", "local-shape"], type: "move_first", decisionId: "sacrifice", stepIndex: 0, point: [1,1], correct: false, legal: true, capturedCount: 0 }).ok, true);
+  const transition = SequenceEvents.classifyFamilyTransition(SequenceEvents.read(storage).store, "snapback");
+  assert.deepEqual(transition, {
+    status: "DESCRIPTIVE_ONLY",
+    familyId: "snapback",
+    seed: "seed_first_all_correct",
+    variant: "variant_first_all_wrong",
+    mastery: null,
+    transferClaim: false
+  });
+});
+
+test("family transition 缺 seed 或 variant 首答時保持 INSUFFICIENT_DATA", () => {
+  const storage = memoryStorage();
+  const common = {
+    sessionId: "family-s2",
+    presentationId: "seed-only",
+    experienceId: "adv-seq-net-01",
+    experienceVersion: 1,
+    trackId: "reading-tesuji",
+    familyId: "net",
+    variantId: "seed",
+    variationAxes: ["baseline"],
+    occurredAt: "2026-09-27T00:00:00.000Z",
+    eventId: "only",
+    type: "move_first",
+    decisionId: "net",
+    stepIndex: 0,
+    point: [1,3],
+    correct: true,
+    legal: true,
+    capturedCount: 0
+  };
+  assert.equal(SequenceEvents.append(storage, common).ok, true);
+  assert.equal(SequenceEvents.classifyFamilyTransition(SequenceEvents.read(storage).store, "net").status, "INSUFFICIENT_DATA");
+});
+
+test("v1 advanced sequence store 保留為 legacy，不被 v2 metadata 偷偷重寫", () => {
+  const storage = memoryStorage();
+  const legacyEvent = {
+    schemaVersion: 1,
+    eventStreamVersion: "advanced-sequence-events-v1",
+    eventId: "legacy-1",
+    sessionId: "legacy-s",
+    presentationId: "legacy-p",
+    experienceId: "adv-seq-snapback-01",
+    experienceVersion: 1,
+    trackId: "reading-tesuji",
+    type: "move_first",
+    occurredAt: "2026-09-26T00:00:00.000Z",
+    decisionId: "sacrifice",
+    stepIndex: 0,
+    point: [0,2],
+    correct: true,
+    legal: true,
+    capturedCount: 0,
+    hintShown: false,
+    firstResponse: true,
+    formalEligible: false,
+    qualifiedOpportunity: false,
+    evidenceUse: "advanced_practice_only",
+    evaluationContext: "advanced_sequence_practice",
+    scoringContractVersion: "advanced-sequence-v1",
+    transferLevel: null,
+    skillId: null
+  };
+  storage.setItem(SequenceEvents.LEGACY_STORAGE_KEY, JSON.stringify({ schemaVersion: 1, eventStreamVersion: "advanced-sequence-events-v1", events: [legacyEvent] }));
+  const legacy = SequenceEvents.readLegacy(storage);
+  assert.equal(legacy.ok, true);
+  assert.equal(legacy.store.events[0].familyId, undefined);
+  assert.equal(SequenceEvents.summarizeFamilies(legacy.store).length, 0);
+});
+
 test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Response", () => {
   const storage = memoryStorage();
   storage.setItem(SequenceEvents.STORAGE_KEY, "{broken");
@@ -304,7 +394,8 @@ test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Respon
   assert.equal(result.error, "advanced_sequence_store_malformed");
   assert.match(html, /棋盤 Response/);
   assert.match(html, /多手讀棋實走/);
-  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v3/);
+  assert.match(html, /advanced-sequence-events\.js\?v=advanced-sequence-v2/);
+  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v4/);
   assert.match(html, /advanced-sequence-contract\.js\?v=advanced-sequence-v1/);
   assert.match(html, /go\.js/);
 });
