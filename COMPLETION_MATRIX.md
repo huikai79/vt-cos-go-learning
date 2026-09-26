@@ -433,3 +433,4 @@
 - **來源：** YeeFan / How To Play Go 明確描述「守方 A → 攻方 B；守方 B → 攻方 A」；Malaysia Weiqi Association 另支持 Bulky Five 先手與 key point 的基本死活語義。這些來源支持本 bounded 主分支，不宣稱覆蓋所有抵抗。
 - **反證：** 非 A/B 守方回應、錯誤 complement、鏡像後沿用 seed 舊座標都必須 fail；未列分支保持 `UNKNOWN`，不 fallback 成固定答案。
 - **證據邊界：** 只支持三手主分支 reading practice；不支持完整做活／殺棋答案樹、所有外氣／角部條件、mastery、transfer、T2/T3 或 formal evaluation。
+- **Validation：** PR #19 verify run #411 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `15cc9e482a594fa7452cf53f2fe481fd5a8d7bc5`）。這只支持 bounded A/B 三手主分支工程／內容契約，不升格完整死活效度或學習成效。
