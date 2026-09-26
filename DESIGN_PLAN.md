@@ -1,3 +1,5 @@
+2026-09-26 進階棋盤 Response v1：在 `advanced.html` 的 choice scaffold 之外，只新增一個 bounded multi-step sequence，讓學習者實際走「我一手 → 對手應手 → 我再一手」。第一個案例選倒撲，因為合法性、提子結果與固定應手可由現有 rules engine 獨立驗證；wrong-but-legal move 不推進棋盤，retry 與 first response 分開保存。sequence 使用獨立 `advanced-sequence-events-v1`／`advanced-sequence-v1`，仍固定 practice-only，不寫 KC、scheduler、T2/T3。這是先驗證 interaction contract 的小步實作，不以一個 sequence 代表已建立完整手筋課綱；若後續要擴征子、枷、對殺，必須先為每個 sequence 建立可重算答案樹或規則 oracle，不能靠教學文案直接評分。
+
 2026-09-26 Core 後續進階訓練決策：15 單元保留為 Core Curriculum，不再以「第 16 單元」線性擴充。新增獨立 `advanced.html`，v1 只建立三條 practice-only 訓練線：讀棋／手筋、中盤攻防、官子／全局判斷；完整棋局／複盤先標 planned。這個頁面保存 first response、hint 與 retry，但使用獨立 append-only `advanced-practice-events-v1`，固定 `formalEligible=false`、`qualifiedOpportunity=false`，不寫 KC／scheduler／T2-T3。目的是先補「Core 之後仍需深化」的 Experience gap，而不是在沒有 R1a／真人資料時提早建立更多自適應演算法。若某一進階任務未來要成為量測能力，必須另定 item/KC/scoring/evidence version、可接受答案與 negative test，不能把本頁 choice completion 直接升格。
 
 # 悟之一手：產品與教學設計計畫
