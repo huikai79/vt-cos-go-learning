@@ -13,6 +13,8 @@ const Reduction = require("../classic-shape-reduction.js");
 const ReductionContract = require("../classic-shape-reduction-contract.js");
 const CrossFive = require("../classic-cross-five-practice.js");
 const CrossFiveContract = require("../classic-cross-five-contract.js");
+const Contrast = require("../classic-contrast-practice.js");
+const ContrastContract = require("../classic-contrast-contract.js");
 
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "classic-shapes.html"), "utf8");
@@ -306,4 +308,79 @@ test("梅花五 UI 明示棋形中央而非棋盤中央，且不升格完整答�
   assert.match(html, /不宣稱完整五目中手答案樹/);
   assert.match(js, /GoCrossFiveContract/);
   assert.match(js, /不代表完整五目中手答案樹或 mastery/);
+});
+
+
+test("contrast practice 交錯兩個 family，且不複製答案欄位", () => {
+  assert.equal(Contrast.version, "classic-contrast-practice-v1");
+  assert.equal(Contrast.scoringContractVersion, ContrastContract.CONTRACT_VERSION);
+  assert.equal(Contrast.rounds.length, 6);
+  const deps = {
+    Go,
+    BulkyPractice: Practice,
+    BulkyContract: PracticeContract,
+    CrossPractice: CrossFive,
+    CrossContract: CrossFiveContract
+  };
+  const all = ContrastContract.validateAll(Contrast.rounds, deps);
+  assert.equal(all.ok, true, all.errors.join("; "));
+  assert.equal(all.familyCounts["bulky-five"], 3);
+  assert.equal(all.familyCounts["cross-five"], 3);
+  for (const round of Contrast.rounds) {
+    for (const field of ContrastContract.FORBIDDEN_FIELDS) {
+      assert.equal(Object.prototype.hasOwnProperty.call(round, field), false, round.id + " duplicates " + field);
+    }
+  }
+});
+
+test("contrast scoring 完全委託原 family contract", () => {
+  const deps = {
+    Go,
+    BulkyPractice: Practice,
+    BulkyContract: PracticeContract,
+    CrossPractice: CrossFive,
+    CrossContract: CrossFiveContract
+  };
+  for (const round of Contrast.rounds) {
+    const resolved = ContrastContract.resolveSource(round, deps);
+    assert.ok(resolved, round.id);
+    const source = resolved.item;
+    const direct = round.sourceType === "bulky-five"
+      ? PracticeContract.score(source, source.vitalPoint, Go)
+      : CrossFiveContract.score(source, source.vitalPoint, { Go, PracticeContract });
+    const delegated = ContrastContract.score(round, source.vitalPoint, deps);
+    assert.equal(direct.ok, true, round.id);
+    assert.equal(direct.correct, true, round.id);
+    assert.equal(delegated.ok, true, round.id);
+    assert.equal(delegated.correct, direct.correct, round.id);
+    assert.equal(delegated.sourceItemId, source.id, round.id);
+  }
+});
+
+test("contrast contract 對連續同 family、缺 source 與偷偷塞答案 fail closed", () => {
+  const deps = {
+    Go,
+    BulkyPractice: Practice,
+    BulkyContract: PracticeContract,
+    CrossPractice: CrossFive,
+    CrossContract: CrossFiveContract
+  };
+  const duplicatedFamily = Contrast.rounds.map((round) => ({ ...round }));
+  duplicatedFamily[1] = { ...duplicatedFamily[0], id: "contrast-bad-repeat", sourceItemId: "bulky-five-attack-mirror-v1" };
+  assert.equal(ContrastContract.validateAll(duplicatedFamily, deps).ok, false);
+
+  const missing = { ...Contrast.rounds[0], id: "contrast-missing", sourceItemId: "missing-item" };
+  assert.equal(ContrastContract.validateRound(missing, deps).ok, false);
+
+  const leaked = { ...Contrast.rounds[0], id: "contrast-leaked", vitalPoint: [3,3] };
+  assert.equal(ContrastContract.validateRound(leaked, deps).ok, false);
+});
+
+test("contrast UI 首答前隱藏 family，答後才揭示，且不宣稱 transfer", () => {
+  assert.match(html, /刀把五 vs 梅花五：混合辨形/);
+  assert.match(html, /作答前不顯示名稱/);
+  assert.match(html, /contrast layer 不保存答案/);
+  assert.match(html, /答對只代表這一題第一手正確，不代表 transfer 或 mastery/);
+  assert.match(js, /\$\("contrast-reveal"\)\.hidden=true/);
+  assert.match(js, /不代表已證明跨 family transfer/);
 });
