@@ -264,7 +264,10 @@
   }
 
   function classifyFamilyTransition(eventsOrStore, familyId) {
-    const families = summarizeFamilies(eventsOrStore);
+    const events = Array.isArray(eventsOrStore)
+      ? eventsOrStore
+      : record(eventsOrStore) && Array.isArray(eventsOrStore.events) ? eventsOrStore.events : [];
+    const families = summarizeFamilies(events);
     const family = families.find((entry) => entry.familyId === familyId);
     if (!family) return { status: "INSUFFICIENT_DATA", familyId, reason: "family_not_observed" };
     const seed = family.variants.find((variant) => variant.variantId === "seed");
