@@ -8,7 +8,7 @@
   <meta name="application-name" content="VT-COS｜悟之一手">
   <meta name="description" content="VT-COS 旗下的個人離線圍棋互動課程。">
   <title>VT-COS｜悟之一手｜個人圍棋練習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v38">
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v39">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -23,7 +23,7 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v38"></script>
+  <script defer src="app.js?v=learner-flow-v39"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
@@ -139,13 +139,13 @@
 
         <div class="practice-grid">
           <section class="question-card" aria-labelledby="question-prompt">
-            <span class="question-tag" id="question-tag">觀察題</span>
-            <span class="question-topic-label">本題重點</span>
-            <p class="question-topic" id="question-title"></p>
+            <div class="question-context">
+              <span class="question-tag" id="question-tag">觀察題</span>
+              <span class="question-context-separator" aria-hidden="true">·</span>
+              <span class="question-topic" id="question-title"></span>
+            </div>
             <span class="question-prompt-label">問題</span>
             <h3 class="question-prompt" id="question-prompt" tabindex="-1"></h3>
-            <span class="answer-policy-label">作答方式</span>
-            <p class="answer-policy" id="answer-policy"></p>
           </section>
 
           <section class="board-card" id="board-card" aria-label="題目棋盤">
@@ -156,6 +156,7 @@
 
           <section class="answer-card" aria-label="作答與回饋">
             <div id="answer-area" class="answer-area"></div>
+            <p class="answer-policy" id="answer-policy"></p>
             <section class="sgf-reflection" id="sgf-reflection" hidden aria-labelledby="sgf-reflection-title">
               <h4 id="sgf-reflection-title">先保存你的原判斷 <span>選填</span></h4>
               <p>先記下當時想下的手與理由，再重建原局著手。這只保存復盤資料，不會判定哪一手最好。</p>
@@ -191,7 +192,7 @@
               <button class="subtle-button" id="hint-button" type="button">給我一點提示</button>
               <button class="primary-button" id="next-button" type="button" disabled>下一題 <span aria-hidden="true">→</span></button>
             </div>
-            <div class="takeaway"><span>記住這句</span><p id="takeaway-text"></p></div>
+            <div class="takeaway" hidden><span>記住這句</span><p id="takeaway-text"></p></div>
           </section>
         </div>
         <p class="footer-note">VT-COS 教育實驗專案。教材參照棋協課程順序重新編寫；題目與棋形為本原型原創。進度只存於此瀏覽器。</p>
