@@ -443,3 +443,4 @@
 - **negative oracle：** 移除外圍封閉層、讓守方存在外氣時，`forcedCapture=false` 且 `squareFourReached=false`；不得把 sealed 分支套到一般刀把五局面。
 - **來源：** Board to Bits Go 描述 Bulky Five 內部逐步填入、迫使提四子並縮成 square four 的路徑；Malaysia Weiqi Association 教材另把完全包圍的 square four 列為 dead shape。來源只支持此條件分支，不代表完整答案樹。
 - **證據邊界：** 仍為 practice-only；不寫 KC／scheduler／T2-T3／mastery／formal evaluation。未列守方應手、有外氣、角部差異或其他 ruleset 條件維持 UNKNOWN。
+- **Validation：** PR #20 verify run #414 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `cfe147bc002b4b39e91fe7e42f8e2110ec813792`）。這只支持「零外氣＋局部手抜き」sealed reduction 工程／內容契約，不升格完整刀把五答案樹或學習成效。
