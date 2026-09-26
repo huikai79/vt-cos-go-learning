@@ -162,3 +162,8 @@
 ## 2026-09-27 Decision note｜刀把五 sealed reduction 只在零外氣成立
 
 在 A/B short-read 之上新增 `classic-bulky-five-sealed-reduction-v1`，但不泛化到所有刀把五。只有 defender group 的 liberties 恰为五個眼空、沒有外氣時，才允許「攻方填滿 2×2 core → 守方被迫在突出點提四子 → terminal square four」這條分支進 scoring。測試必須同時證明有外氣時 forced capture 不成立。任何未列抵抗、角部條件或 ruleset 差異仍維持 UNKNOWN。
+
+
+## 2026-09-27 Decision note｜第二個 geometry-backed family：梅花五 / Cross Five
+
+刀把五已有多層 branch 後，下一個可觀察 bottleneck 是名型館缺跨 family 變異，因此新增梅花五第一層 bounded practice，而不是繼續加深單一 family。`classic-cross-five-vital-point-v1` 只接受十字五點 geometry，且唯一 degree-4 中心才是急所；variant 必須改變至少角色、棋色或位置之一。非十字形、錯中心或沿用舊座標一律 fail。這是 Experience 層擴充，不建立 KC mastery 或 transfer claim；若真人資料顯示無法區分 knife-five 與 cross-five，再決定是否需要更明確的 contrastive practice。
