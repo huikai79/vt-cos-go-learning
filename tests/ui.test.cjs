@@ -330,7 +330,7 @@ async function main() {
     assert.equal(phase4.application.tag, "固定應用探測");
     assert.match(phase4.application.why, /固定局面小測驗/);
     assert.equal(phase4.application.toolsClosed, true);
-    assert.equal(phase4.application.focused, "question-title");
+    assert.equal(phase4.application.focused, "question-prompt");
     assert.deepEqual(phase4.picker, {open: true, choices: 1});
     assert.equal(await evaluate(socket, "document.querySelector('.learning-steps li.active')?.id"), "learning-step-4");
     assert.match(phase4.local.number, /棋譜單點復盤/);
