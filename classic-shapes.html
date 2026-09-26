@@ -7,17 +7,19 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v6">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v7">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v5"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v6"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
+  <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
+  <script defer src="classic-cross-five-practice.js?v=cross-five-practice-v1"></script>
   <script defer src="classic-shape-read-contract.js?v=classic-bulky-five-short-read-v1"></script>
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v6"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v7"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -30,7 +32,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五有三層 bounded practice：共同急所、A/B 三手 short-read、以及「零外氣＋守方局部手抜き」的 sealed reduction。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五有三層 bounded practice；梅花五／Cross Five 新增「十字形中央急所」bounded practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro"><span class="question-tag">已驗證可玩的練習</span><h2>先練直三，再看世界名型</h2><p>名稱仍在作答後才揭示；先用棋形結構找急所，再把名稱當記憶鉤子。</p></section>
@@ -77,6 +79,37 @@
       <p>如果題目一開始就寫「直三」，名稱本身可能變成提示。這個探索頁刻意把名稱放到第一手之後；回到正式課程時仍以題目版本、首答與提示狀態為準。</p>
     </section>
 
+
+    <section class="cross-practice" aria-labelledby="cross-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">第二個可玩 family · cross-family transfer</span>
+        <h2 id="cross-practice-title">梅花五：不要找棋盤中央，要找棋形中央</h2>
+        <p>五個眼空呈十字形時，唯一同時接觸上下左右四個眼空的中心就是共同急所。四題會交換攻守、棋色與整體位置。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="cross-tag">1 / 4 · 名稱不提示答案</span>
+          <h3 id="cross-title">找十字形共同急所</h3>
+          <p id="cross-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只判第一手是否落在十字五點 geometry 唯一的 degree-4 中心；不宣稱完整五目中手答案樹。</span></div>
+          <div id="cross-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="cross-reveal" class="classic-reveal" hidden>
+            <span>作答後揭名</span>
+            <strong id="cross-name">梅花五／Cross Five</strong>
+            <p>這次要學的是「棋形中央」，不是棋盤中央。位置與棋色改變後，唯一 degree-4 點仍是共同急所。</p>
+          </div>
+          <div class="classic-actions">
+            <button id="cross-hint" class="subtle-button" type="button">給我幾何提示</button>
+            <button id="cross-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="梅花五共同急所練習棋盤">
+          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> degree-4 center</span></div>
+          <div id="cross-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路梅花五練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="cross-cursor-status">方向鍵移動 · Enter 落子</span><span id="cross-side">● 黑棋</span></div>
+        </section>
+      </div>
+    </section>
 
     <section class="bulky-practice" aria-labelledby="bulky-practice-title">
       <div class="classic-atlas-head">
