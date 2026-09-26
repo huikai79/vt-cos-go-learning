@@ -475,3 +475,11 @@
 - **反證：** browser regression 必須實際開 `classic-shapes.html`，驗題幹與棋盤同時可見、點已有棋子立即顯示提示、錯答保留未揭名狀態、正答顯示成功 feedback 並揭示「直三」。
 - **證據邊界：** 這是 learner-facing engineering／usability regression fix，不改 scoring、KC、scheduler、formal evaluation 或學習成效狀態。
 - **Validation：** PR #23 verify run #425 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；新增 browser regression 已實際驗證題幹與棋盤同時可見、occupied click 有回饋、錯答不揭名、正答揭示「直三」。PR 已於 2026-09-27 squash merge 至 `main`（merge commit `66c48bc44dd41c1cdfa9280711d382f225d122d2`）。
+
+
+## 2026-09-27 Change note｜直三四段探索 scope clarification
+
+- **問題：** 世界名型館首段的「自己找急所／換個方向／換成攻方／相似但不同」視覺上像全域流程，但實際只由直三 `classic-stage-list` 驅動；刀把五、梅花五與混合辨形各有不同 variation contract。
+- **修正：** 首段改標「直三專用 · 4 段探索」，四個 tab 都加上「直三」前綴，並在區塊說明「其他名型依各自 geometry／scoring contract 安排，不固定套用這四步」。
+- **反證：** browser regression 讀取 `classic-stage-list`，必須得到四個帶「直三」前綴的 stage；靜態 contract 同時檢查 scope 文案與 aria label。
+- **證據邊界：** 只修 learner-facing scope 與資訊架構，不改任何名型 scoring、variation semantics、learner evidence 或學習成效狀態。

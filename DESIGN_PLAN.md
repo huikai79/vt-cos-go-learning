@@ -1,3 +1,5 @@
+2026-09-27 直三四段探索 scope clarification：四階段「找急所→換方向→換攻方→相似反例」是直三目前的專用 teaching sequence，不是所有名型的固定模板。UI 必須把 stage list 視覺與語意綁在直三區塊；其他 family 應依自身可驗證 variation axes 決定 practice 結構。這避免把某一 family 的 pedagogy 誤升格成全域 curriculum invariant。
+
 2026-09-27 直三首屏互動修復：共享 Core `styles.css` 後段對 `.question-card` 使用 named grid-area，但 `classic-shapes.html` 原本的 `.classic-grid` 沒有對應 grid-template-areas，造成題幹卡可被配置到隱式欄位；另有 SVG cursor ring 攔截 click 與初始游標壓在已有棋子的風險。修正原則是 classic page 明確隔離自己的 grid areas、所有交叉點點擊都產生可見 feedback、游標 overlay 不取得 pointer authority。browser test 直接重播 occupied→wrong→correct 三種作答，不以靜態字串取代互動驗證。
 
 2026-09-27 刀把五 × 梅花五 interleaved contrast v1：兩個 geometry-backed family 分區可玩後，下一個 bottleneck 是 section cue 可能替代 family discrimination。新增 6 題交錯 mixed practice，首答前隱藏名稱；round 只引用既有 source item，不複製 geometry／vitalPoint／answer，scoring 委託原 family contract。完成混合題只代表 exposure to contrastive Experience，不是 transfer measurement；若要測 transfer，需另用新的無提示、可比較、未直接練過的局面。

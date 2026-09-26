@@ -172,3 +172,8 @@
 ## 2026-09-27 Decision note｜先做 interleaved contrast，再增加第三個新 family
 
 刀把五與梅花五已各有獨立 geometry/scoring contract，但分區 UI 仍可能洩漏 family cue。下一步先新增 6 題 interleaved contrast practice：首答前 family hidden，round 僅引用既有 item，評分委託原 contract，禁止複製答案欄位。這一層只改善 Experience 的比較條件；不寫 learner model，不影響 scheduler，不作 T2/T3 或 formal evaluation。若真人仍混淆兩 family，再評估 contrastive feedback 或第三 family；若沒有觀察到 bottleneck，不以 family 數量作進展代理。
+
+
+## 2026-09-27 Decision note｜variation axes 不統一成固定四步
+
+直三現有四段探索只是該 family 的 teaching sequence；刀把五、梅花五與後續名型不得為了 UI 一致性被迫套用同樣四步。每個 family 的 variation axes 仍由 geometry、role、orientation、ruleset、branch contract 與已驗來源決定。UI 若使用進度列，必須標明其 family scope，避免學習者把局部流程誤解為世界名型館共通規則。
