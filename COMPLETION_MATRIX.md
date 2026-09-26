@@ -423,3 +423,4 @@
 - **Experience：** 四個 practice variant：守方 seed、攻方 seed、旋轉守方、鏡像攻方；皆 `practice-only`，不寫 KC／scheduler／T2-T3／mastery／formal evaluation。
 - **外部支持：** British Go Journal 與 Online Go Forum 的教學資料都把 Bulky Five 視為具有 vital point 的基本死活形；這只支持 bounded vital-point teaching contract，不替代本專案完整答案樹審題。
 - **停止線：** 若之後要把「找到急所」升成「完整做活／殺棋」，必須另建 variation tree、主要抵抗 branch 與外氣／角部條件 negative oracle。
+- **Validation：** PR #18 verify run #407 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `aadc6cc2d95d4c85f3f9b97926fe29336b125584`）。這只支持 bounded vital-point 工程／內容契約，不升格完整死活效度或學習成效。
