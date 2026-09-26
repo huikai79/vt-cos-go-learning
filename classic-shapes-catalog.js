@@ -151,12 +151,12 @@
       zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
       zhNameNote: "多份華語術語表將刀把五及若干別名對應 Bulky Five；但本專案尚未完成 geometry/scoring contract，因此仍只作圖鑑。",
       teachingLabel: "五點大眼名型候選",
-      practiceStatus: "playable_bounded_vital_point_contract",
+      practiceStatus: "playable_bounded_vital_point_and_short_read_contract",
       reviewStatus: REVIEW.PARTIAL,
       aliases: [
         { locale: "en", name: "Bulky Five", relationType: "terminology-table-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
-      note: "已建立 bounded「共同急所」practice：geometry contract 驗五點 P-pentomino 與唯一三鄰點，rules engine 驗落子合法。這只支持第一手急所練習，不代表完整死活答案樹或所有外氣條件。",
+      note: "已建立兩層 bounded practice：第一層找共同急所；第二層只讀「攻方急所 → 守方 A/B → 攻方補另一點」的三手主分支。兩層都不代表完整死活答案樹或所有外氣條件。",
       rulesetSensitive: false,
       sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital]
     },
@@ -360,7 +360,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v3",
+    version: "world-classic-shapes-v4",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
