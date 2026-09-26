@@ -13,6 +13,7 @@ const requestedBaseUrl = process.env.GO_UI_BASE_URL;
 const baseUrl = requestedBaseUrl ? new URL(requestedBaseUrl.endsWith("/") ? requestedBaseUrl : `${requestedBaseUrl}/`) : null;
 const page = baseUrl ? new URL("index.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../index.html")).href;
 const reviewPage = baseUrl ? new URL("r1-review.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../r1-review.html")).href;
+const advancedPage = baseUrl ? new URL("advanced.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../advanced.html")).href;
 
 function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
@@ -699,6 +700,53 @@ async function main() {
     assert.equal(returningHome.landingAction, "繼續核心課程 →");
     assert.match(returningHome.coreEntryStatus, /^上次停在：/);
     assert.equal(returningHome.advancedLink, "進入進階訓練 →");
+    await command(socket, "Page.navigate", { url: advancedPage });
+    let advancedReady = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      advancedReady = await evaluate(socket, "Boolean(window.GoAdvancedContent && window.GoAdvancedSequenceEvents && document.querySelector('#advanced-sequence-board [data-seq-x]'))");
+      if (advancedReady) break;
+      await delay(100);
+    }
+    assert.equal(advancedReady, true);
+    const advancedFlow = await evaluate(socket, `(() => {
+      const clickPoint = (x, y) => {
+        const point = document.querySelector('#advanced-sequence-board [data-seq-x="' + x + '"][data-seq-y="' + y + '"]');
+        if (!point) throw new Error('advanced sequence point missing: ' + x + ',' + y);
+        point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      };
+      clickPoint(4, 4);
+      const afterWrong = document.querySelector('#advanced-sequence-feedback').textContent;
+      clickPoint(0, 2);
+      const afterFirstCorrect = document.querySelector('#advanced-sequence-feedback').textContent;
+      const stepAfterOpponent = document.querySelector('#advanced-sequence-step').textContent;
+      clickPoint(0, 2);
+      const raw = JSON.parse(localStorage.getItem('go-advanced-sequence-events-v1'));
+      return {
+        afterWrong,
+        afterFirstCorrect,
+        stepAfterOpponent,
+        finalFeedback: document.querySelector('#advanced-sequence-feedback').textContent,
+        takeawayHidden: document.querySelector('#advanced-sequence-takeaway').hidden,
+        eventTypes: raw.events.map((event) => event.type),
+        learnerMoves: raw.events.filter((event) => event.type === 'move_first' || event.type === 'move_retry').map((event) => ({type:event.type, step:event.stepIndex, correct:event.correct, firstResponse:event.firstResponse}))
+      };
+    })()`);
+    assert.match(advancedFlow.afterWrong, /這手合法，但沒有走完本題變化/);
+    assert.match(advancedFlow.afterFirstCorrect, /白棋依題目中的最強局部應手/);
+    assert.equal(advancedFlow.stepAfterOpponent, "第 2 / 2 步");
+    assert.match(advancedFlow.finalFeedback, /兩段讀棋完成/);
+    assert.equal(advancedFlow.takeawayHidden, false);
+    assert.deepEqual(advancedFlow.eventTypes, ["presented", "decision_presented", "move_first", "move_retry", "opponent_move", "decision_presented", "move_first", "completed"]);
+    assert.deepEqual(advancedFlow.learnerMoves, [
+      {type:"move_first", step:0, correct:false, firstResponse:true},
+      {type:"move_retry", step:0, correct:true, firstResponse:false},
+      {type:"move_first", step:1, correct:true, firstResponse:true}
+    ]);
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
+    const advancedOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
+    assert.ok(advancedOverflow.scrollWidth <= advancedOverflow.width + 1, `advanced mobile horizontal overflow: ${JSON.stringify(advancedOverflow)}`);
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
