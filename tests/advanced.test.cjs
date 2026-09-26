@@ -7,7 +7,8 @@ const Events = require("../advanced-events.js");
 
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "advanced.html"), "utf8");
-const js = fs.readFileSync(path.join(root, "advanced.js"), "utf8");\nconst indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const js = fs.readFileSync(path.join(root, "advanced.js"), "utf8");
+const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
 
 function memoryStorage(initial = null) {
   const data = new Map();
