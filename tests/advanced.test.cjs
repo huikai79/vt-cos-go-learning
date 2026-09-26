@@ -5,6 +5,7 @@ const path = require("node:path");
 const content = require("../advanced-content.js");
 const Events = require("../advanced-events.js");
 const SequenceEvents = require("../advanced-sequence-events.js");
+const SequenceContract = require("../advanced-sequence-contract.js");
 const Go = require("../go.js");
 
 const root = path.join(__dirname, "..");
@@ -34,7 +35,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
 });
 
 test("進階 v1 先建立三條可用訓練線與一條後續路線", () => {
-  assert.equal(content.version, 2);
+  assert.equal(content.version, 3);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 3);
   assert.ok(content.tracks.some((track) => track.id === "full-board-review" && track.status === "planned"));
@@ -116,27 +117,64 @@ test("核心課程提供獨立進階訓練入口，不偽裝成第 16 單元", (
 });
 
 
-test("進階 v2 新增一個規則引擎可驗證的兩段讀棋 sequence", () => {
+test("進階 v3 的三個棋盤 sequence 全部通過 rules-backed contract", () => {
   assert.equal(content.sequenceScoringContractVersion, "advanced-sequence-v1");
-  assert.equal(content.sequenceExperiences.length, 1);
-  const item = content.sequenceExperiences[0];
-  assert.equal(item.id, "adv-seq-snapback-01");
-  assert.equal(item.decisions.length, 2);
-
-  const start = Go.boardFromStones(item.setupStones, item.boardSize);
-  const first = Go.playMove(start, item.decisions[0].acceptedMoves[0][0], item.decisions[0].acceptedMoves[0][1], item.playerColor);
-  assert.equal(first.legal, true);
-  assert.equal(first.captured.length, 0);
-
-  const opponentMove = item.decisions[0].opponentMove;
-  const response = Go.playMove(first.board, opponentMove[0], opponentMove[1], Go.WHITE, { previousBoard: start });
-  assert.equal(response.legal, true);
-  assert.deepEqual(response.captured, [[0, 2]]);
-
-  const second = Go.playMove(response.board, item.decisions[1].acceptedMoves[0][0], item.decisions[1].acceptedMoves[0][1], item.playerColor, { previousBoard: first.board });
-  assert.equal(second.legal, true);
-  assert.equal(second.captured.length, 2);
+  assert.equal(content.sequenceExperiences.length, 3);
+  assert.deepEqual(content.sequenceExperiences.map((item) => item.id), [
+    "adv-seq-snapback-01",
+    "adv-seq-net-01",
+    "adv-seq-semeai-01"
+  ]);
+  const validation = SequenceContract.validateAll(content.sequenceExperiences, Go);
+  assert.equal(validation.ok, true, validation.errors.join("\n"));
+  for (const item of content.sequenceExperiences) {
+    assert.equal(item.decisions.length, 2, item.id);
+    assert.ok(item.terms.length >= 2, item.id);
+  }
 });
+
+test("枷 sequence 不只驗示範逃路，也驗另一個主要分支", () => {
+  const item = content.sequenceExperiences.find((entry) => entry.id === "adv-seq-net-01");
+  assert.equal(item.verificationBranches.length, 1);
+  assert.deepEqual(item.verificationBranches[0].opponentMove, [2,3]);
+  assert.deepEqual(item.verificationBranches[0].learnerReply, [1,2]);
+  const validation = SequenceContract.validateExperience(item, Go);
+  assert.equal(validation.ok, true, validation.errors.join("\n"));
+});
+
+test("對殺 sequence 明確依賴行棋次序與三子提取，不用起始總氣數替代讀棋", () => {
+  const item = content.sequenceExperiences.find((entry) => entry.id === "adv-seq-semeai-01");
+  const validation = SequenceContract.validateExperience(item, Go);
+  assert.equal(validation.ok, true, validation.errors.join("\n"));
+  const start = Go.boardFromStones(item.setupStones, item.boardSize);
+  assert.equal(Go.groupAt(start, 2, 2).liberties.length, 2);
+  assert.equal(Go.groupAt(start, 3, 2).liberties.length, 2);
+  const first = Go.playMove(start, 3, 0, Go.BLACK);
+  assert.equal(first.legal, true);
+  const response = Go.playMove(first.board, 2, 1, Go.WHITE, { previousBoard: start });
+  assert.equal(response.legal, true);
+  assert.equal(Go.groupAt(response.board, 2, 2).liberties.length, 1);
+  assert.equal(Go.groupAt(response.board, 3, 2).liberties.length, 1);
+  const finish = Go.playMove(response.board, 2, 0, Go.BLACK, { previousBoard: first.board });
+  assert.equal(finish.legal, true);
+  assert.equal(finish.captured.length, 3);
+});
+
+test("sequence contract 對捕獲數或內建手順漂移 fail closed", () => {
+  const source = content.sequenceExperiences.find((entry) => entry.id === "adv-seq-snapback-01");
+  const brokenCapture = structuredClone(source);
+  brokenCapture.decisions[1].expectedLearnerCapturedCount = 99;
+  const captureResult = SequenceContract.validateExperience(brokenCapture, Go);
+  assert.equal(captureResult.ok, false);
+  assert.match(captureResult.errors.join(" "), /captured 2 but expected 99/);
+
+  const brokenMove = structuredClone(source);
+  brokenMove.decisions[0].acceptedMoves = [[1,3]];
+  const moveResult = SequenceContract.validateExperience(brokenMove, Go);
+  assert.equal(moveResult.ok, false);
+  assert.match(moveResult.errors.join(" "), /canonical learner move is illegal|captured|expected/);
+});
+
 
 test("多手 sequence event store 逐 decision 保留首答與 retry", () => {
   const storage = memoryStorage();
@@ -172,6 +210,7 @@ test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Respon
   assert.equal(result.error, "advanced_sequence_store_malformed");
   assert.match(html, /棋盤 Response/);
   assert.match(html, /多手讀棋實走/);
-  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v1/);
+  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v2/);
+  assert.match(html, /advanced-sequence-contract\.js\?v=advanced-sequence-v1/);
   assert.match(html, /go\.js/);
 });
