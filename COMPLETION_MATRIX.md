@@ -465,3 +465,12 @@
 - **反證：** 連續同 family、缺 source item、contrast round 偷塞答案欄位都 fail closed；contrast 正答結果必須與直接呼叫 source contract 完全一致。
 - **證據邊界：** 這是 practice-only 的 interleaving / contrast Experience，不是 transfer assessment。完成 6 題不能升格為跨 family transfer、mastery、T2/T3 或 formal evaluation。
 - **Validation：** PR #22 verify run #422 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `62d38c18bf688ac67fd6ac309150fe421e31b645`）。這只支持 interleaved contrast 的工程／Experience contract，不升格跨 family transfer 或學習成效。
+
+
+## 2026-09-27 Change note｜直三首屏題幹／點擊回饋 regression fix
+
+- **使用者可見問題：** 世界名型館直三首屏可能只看見右側棋盤，左側題幹卡被共享 `styles.css` 的 named `grid-area` 放進隱式欄位；畫面因此看似「沒有題目／答案」。
+- **第二個互動問題：** 初始游標固定在 `[4,4]`，可能壓在已有棋子；已有棋子未帶 click 座標，且 cursor ring 會攔截 pointer event，因此使用者點綠圈可能完全沒有 feedback。
+- **修正：** `classic-grid` 與名型 practice grid 明確宣告 `grid-template-areas:"question board"`；直三初始游標選可落子的非答案空點；已有棋子也帶座標 hit target；cursor ring 設 `pointer-events:none`；首屏明示「單題落子練習，不是自由對局」。
+- **反證：** browser regression 必須實際開 `classic-shapes.html`，驗題幹與棋盤同時可見、點已有棋子立即顯示提示、錯答保留未揭名狀態、正答顯示成功 feedback 並揭示「直三」。
+- **證據邊界：** 這是 learner-facing engineering／usability regression fix，不改 scoring、KC、scheduler、formal evaluation 或學習成效狀態。
