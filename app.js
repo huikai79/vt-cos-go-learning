@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v39";
+  const uiVersion = "learner-flow-v40";
   const contentCatalogVersion = 3;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -919,6 +919,7 @@
     const highlights = new Set((diagram.highlights || []).map(([x, y]) => `${x},${y}`));
     const emphasis = new Set((diagram.emphasis || []).map(([x, y]) => `${x},${y}`));
     const blocked = new Set((diagram.blocked || []).map(([x, y]) => `${x},${y}`));
+    const reference = new Set((diagram.reference || []).map(([x, y]) => `${x},${y}`));
     const lines = [];
     for (let index = 0; index < size; index += 1) {
       const position = offset + index * pitch;
@@ -940,8 +941,14 @@
       const cy = offset + y * pitch;
       return `<path class="demo-blocked" d="M ${cx - 8} ${cy - 8} L ${cx + 8} ${cy + 8} M ${cx + 8} ${cy - 8} L ${cx - 8} ${cy + 8}"/>`;
     });
-    const caption = diagram.caption || (highlights.size ? "金色圈出的空點是這一步要找的地方。" : "留意金色圈出的棋子或紅色叉記的落點。 ");
-    return `<svg viewBox="0 0 168 168" role="img" aria-label="${escapeHtml(diagram.label || "示範棋形")}"><rect width="168" height="168" rx="8" class="demo-board-background"/>${lines.join("")}${points.join("")}${stones.join("")}${rings.join("")}${crosses.join("")}</svg><figcaption>${escapeHtml(caption)}</figcaption>`;
+    const references = [...reference].map((point) => {
+      const [x, y] = point.split(",").map(Number);
+      const cx = offset + x * pitch;
+      const cy = offset + y * pitch;
+      return `<rect class="demo-reference" x="${cx - 11}" y="${cy - 11}" width="22" height="22" rx="3"/>`;
+    });
+    const caption = diagram.caption || (highlights.size ? "金色小圈標出這一步要觀察或比較的空點。" : "依圖例閱讀目前強調、禁著或比較位置。");
+    return `<svg viewBox="0 0 168 168" role="img" aria-label="${escapeHtml(diagram.label || "示範棋形")}"><rect width="168" height="168" rx="8" class="demo-board-background"/>${lines.join("")}${points.join("")}${stones.join("")}${rings.join("")}${crosses.join("")}${references.join("")}</svg><figcaption>${escapeHtml(caption)}</figcaption>`;
   }
 
   function renderTeachingDemoStep(lesson) {
@@ -1070,6 +1077,11 @@
     $("teaching-text").textContent = lesson.text;
     $("teaching-demo").textContent = (lesson.demo || "先依題目找出本課要觀察的棋形，再作答。").replace(/^示範：\s*/, "");
     $("teaching-check").textContent = lesson.takeaway;
+    const lessonTerms = Array.isArray(lesson.terms) ? lesson.terms : [];
+    $("lesson-term-count").textContent = lessonTerms.length ? `（${lessonTerms.length} 個）` : "";
+    $("lesson-term-list").innerHTML = lessonTerms.map(({ term, definition }) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(definition)}</dd></div>`).join("");
+    $("lesson-terms").hidden = lessonTerms.length === 0;
+    if (demoLessonTitle !== lesson.title) $("lesson-terms").open = false;
     $("lesson-intro-title").textContent = `現在先學：${lesson.title}`;
     $("lesson-intro-kicker").textContent = state.hasStarted ? "本課短講 · 每課只自動顯示一次" : "第一次使用 · 看完即可開始";
     $("lesson-intro-first-use").hidden = state.hasStarted;
