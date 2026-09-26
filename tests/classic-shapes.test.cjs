@@ -56,8 +56,10 @@ test("未完成幾何核對的中文俗稱不冒充跨語精確同義詞", () =>
     assert.equal(entry.reviewStatus, Catalog.REVIEW.NEEDS_REVIEW, id);
     assert.equal(entry.practiceStatus, "catalog_candidate_only", id);
   }
-  assert.doesNotMatch(catalogSource, /Bulky Five/);
-  assert.doesNotMatch(catalogSource, /Rabbity Six/);
+  const knife = Catalog.entries.find((entry) => entry.id === "knife-five-candidate-v1");
+  const grape = Catalog.entries.find((entry) => entry.id === "grape-six-candidate-v1");
+  assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), false);
+  assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
 });
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
