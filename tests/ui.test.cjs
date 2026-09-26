@@ -732,7 +732,7 @@ async function main() {
         learnerMoves: raw.events.filter((event) => event.type === 'move_first' || event.type === 'move_retry').map((event) => ({type:event.type, step:event.stepIndex, correct:event.correct, firstResponse:event.firstResponse}))
       };
     })()`);
-    assert.equal(advancedFlow.sequenceTabs, 3);
+    assert.equal(advancedFlow.sequenceTabs, 4);
     assert.match(advancedFlow.afterWrong, /這手合法，但不是本題 contract 的下一手/);
     assert.match(advancedFlow.afterFirstCorrect, /白棋依題目中的最強局部應手/);
     assert.equal(advancedFlow.stepAfterOpponent, "第 2 / 2 步");
