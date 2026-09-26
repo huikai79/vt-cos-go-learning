@@ -304,7 +304,7 @@ test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Respon
   assert.equal(result.error, "advanced_sequence_store_malformed");
   assert.match(html, /棋盤 Response/);
   assert.match(html, /多手讀棋實走/);
-  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v2/);
+  assert.match(html, /advanced-sequence\\.js\\?v=advanced-sequence-v3/);
   assert.match(html, /advanced-sequence-contract\.js\?v=advanced-sequence-v1/);
   assert.match(html, /go\.js/);
 });
