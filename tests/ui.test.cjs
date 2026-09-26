@@ -722,6 +722,7 @@ async function main() {
       clickPoint(0, 2);
       const raw = JSON.parse(localStorage.getItem('go-advanced-sequence-events-v1'));
       return {
+        sequenceTabs: document.querySelectorAll('#advanced-sequence-list [data-sequence-index]').length,
         afterWrong,
         afterFirstCorrect,
         stepAfterOpponent,
@@ -731,10 +732,11 @@ async function main() {
         learnerMoves: raw.events.filter((event) => event.type === 'move_first' || event.type === 'move_retry').map((event) => ({type:event.type, step:event.stepIndex, correct:event.correct, firstResponse:event.firstResponse}))
       };
     })()`);
-    assert.match(advancedFlow.afterWrong, /這手合法，但沒有走完本題變化/);
+    assert.equal(advancedFlow.sequenceTabs, 3);
+    assert.match(advancedFlow.afterWrong, /這手合法，但不是本題 contract 的下一手/);
     assert.match(advancedFlow.afterFirstCorrect, /白棋依題目中的最強局部應手/);
     assert.equal(advancedFlow.stepAfterOpponent, "第 2 / 2 步");
-    assert.match(advancedFlow.finalFeedback, /兩段讀棋完成/);
+    assert.match(advancedFlow.finalFeedback, /這條多手變化已走完/);
     assert.equal(advancedFlow.takeawayHidden, false);
     assert.deepEqual(advancedFlow.eventTypes, ["presented", "decision_presented", "move_first", "move_retry", "opponent_move", "decision_presented", "move_first", "completed"]);
     assert.deepEqual(advancedFlow.learnerMoves, [
