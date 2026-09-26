@@ -9,9 +9,9 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v39`；棋盤練習頁 `live-game-ui-v10`
+- `ui_version`: `learner-flow-v40`；棋盤練習頁 `live-game-ui-v10`
 - `storage_schema`: 7
-- `content_catalog_version`: 3
+- `content_catalog_version`: 4
 - `formal_evaluation_available`: false
 - `formal_holdout_pool_status`: `retired_due_to_publication`
 - `public_source_exposure`: 48 題公開保留組全部已公開，均不得再作 formal holdout
@@ -64,6 +64,15 @@
 - **不可破壞 invariant：** 不改題目答案、scoring、first response／retry、提示資格、scheduler、formal evaluation 遮蔽、KC、event schema 或 storage schema。
 - **反證／驗收：** UI contract 檢查首答前 takeaway 隱藏、作答後揭露、evaluation 不揭露；真正問題仍為 24px 高權重、程式 focus 無 outline 而 keyboard focus-visible 保留；320px 與 200% text reflow、Windows file-URL UI、Edge smoke 與 evidence lifecycle 回歸必須通過。
 - **證據邊界：** 這是依 formative observation 收斂注意力競爭的工程假說，不等於真人 usability 已通過。
+
+## 2026-09-26 Change note｜關鍵術語與示意圖自足性
+
+- **問題：** formative 使用與逐課稽核發現，前六課大致能由文字＋圖直接理解，但第 7 課「劫」只文字提到未完整畫出；第 8 課缺真假眼對照；第 13 課要求讀最強應手但圖未走完短變化；第 14 課講官子差額卻未做雙結果比較；第 16 課棄子只畫結果未比較救／棄成本；第 19 課曾以紅叉表示原著位置，和「禁著」語義衝突。中高級另有目、先手、外勢、候選手、原著手等術語需靠上下文猜；live-game 頁的 Pass、死子、中國式面積、貼目、簡單劫與 SGF 也缺白話入口。
+- **外部參考後的改動：** `learner-flow-v40`／content catalog 4 為 19 課各加可折疊「本課關鍵詞」；所有逐步圖新增固定 legend。金色小圈只代表觀察／候選空點，金色大圈強調目前棋子，紅叉只代表不能下，藍色虛線框只代表比較／前一步位置。第 7、8、13、14、16、19 課擴充為真正的前後對照或短序列；live-game 將 Pass 改寫為「停一手（Pass）」並補六個規則／檔案術語。
+- **版本與 migration：** 教學文字與示意圖改動使 `contentCatalogVersion` 由 3 升 4；題目 ID、答案、scoring、KC 與 problem contentVersion 不變。v3→v4 只更新教學內容版本，不移動既有題目索引；v1／v2 的舊索引 migration 維持原規則。
+- **不可破壞 invariant：** 不改 first response／retry、scheduler、formal evaluation 遮蔽、曝光、題目答案或 evidence taxonomy。關鍵詞與短講仍屬教學支架；formal evaluation 不以此作答案來源。
+- **驗收：** 新增 negative tests，要求紅叉不得再被複盤圖拿來表示原著位置、關鍵抽象課必須有足夠步驟，且 19 課都至少有一個可顯示的關鍵詞定義；live-game learner-facing 規則術語亦有靜態契約。
+- **證據邊界：** 外部網站只能證明其公開教學做法與術語安排，不證明本改法對本專案初學者一定更有效；棋理適切性仍待 R1a，真人理解仍待 usability。
 
 ## 目前執行順序
 
