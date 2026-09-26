@@ -35,7 +35,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
 });
 
 test("進階 choice scaffold 保留三條可用訓練線與一條後續路線", () => {
-  assert.equal(content.version, 3);
+  assert.equal(content.version, 4);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 3);
   assert.ok(content.tracks.some((track) => track.id === "full-board-review" && track.status === "planned"));
@@ -117,18 +117,19 @@ test("核心課程提供獨立進階訓練入口，不偽裝成第 16 單元", (
 });
 
 
-test("進階 v3 的三個棋盤 sequence 全部通過 rules-backed contract", () => {
+test("進階 v4 的四個棋盤 sequence 全部通過 rules-backed contract", () => {
   assert.equal(content.sequenceScoringContractVersion, "advanced-sequence-v1");
-  assert.equal(content.sequenceExperiences.length, 3);
+  assert.equal(content.sequenceExperiences.length, 4);
   assert.deepEqual(content.sequenceExperiences.map((item) => item.id), [
     "adv-seq-snapback-01",
     "adv-seq-net-01",
-    "adv-seq-semeai-01"
+    "adv-seq-semeai-01",
+    "adv-seq-ladder-01"
   ]);
   const validation = SequenceContract.validateAll(content.sequenceExperiences, Go);
   assert.equal(validation.ok, true, validation.errors.join("\n"));
   for (const item of content.sequenceExperiences) {
-    assert.equal(item.decisions.length, 2, item.id);
+    assert.ok(item.decisions.length >= 2, item.id);
     assert.ok(item.terms.length >= 2, item.id);
   }
 });
@@ -158,6 +159,25 @@ test("對殺 sequence 明確依賴行棋次序與三子提取，不用起始總�
   const finish = Go.playMove(response.board, 2, 0, Go.BLACK, { previousBoard: first.board });
   assert.equal(finish.legal, true);
   assert.equal(finish.captured.length, 3);
+});
+
+test("征子 sequence 每個固定應手都等於 tracked group 的唯一一口氣", () => {
+  const item = content.sequenceExperiences.find((entry) => entry.id === "adv-seq-ladder-01");
+  assert.equal(item.decisions.length, 7);
+  const validation = SequenceContract.validateExperience(item, Go);
+  assert.equal(validation.ok, true, validation.errors.join("\n"));
+  assert.equal(item.decisions.slice(0, -1).every((decision) => decision.opponentMoveMustBeUniqueLiberty === true), true);
+  assert.equal(item.decisions.at(-1).expectedLearnerCapturedCount, 8);
+});
+
+test("征子路線加入引征干擾子後，原 forced line 必須失效", () => {
+  const source = content.sequenceExperiences.find((entry) => entry.id === "adv-seq-ladder-01");
+  const withBreaker = structuredClone(source);
+  withBreaker.id = "adv-seq-ladder-breaker-negative";
+  withBreaker.setupStones.push([5,4,Go.WHITE]);
+  const result = SequenceContract.validateExperience(withBreaker, Go);
+  assert.equal(result.ok, false);
+  assert.match(result.errors.join(" "), /canonical learner move is illegal|tracked liberties|unique liberty/);
 });
 
 test("sequence contract 對捕獲數或內建手順漂移 fail closed", () => {
