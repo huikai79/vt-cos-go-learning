@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  const STORAGE_KEY = "go-advanced-sequence-events-v1";
+  const STORAGE_KEY = "go-advanced-sequence-events-v2";
   const SCHEMA_VERSION = 2;
   const EVENT_STREAM_VERSION = "advanced-sequence-events-v2";
   const LEGACY_STORAGE_KEY = "go-advanced-sequence-events-v1";
