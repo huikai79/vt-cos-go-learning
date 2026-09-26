@@ -1,3 +1,5 @@
+2026-09-27 刀把五 × 梅花五 interleaved contrast v1：兩個 geometry-backed family 分區可玩後，下一個 bottleneck 是 section cue 可能替代 family discrimination。新增 6 題交錯 mixed practice，首答前隱藏名稱；round 只引用既有 source item，不複製 geometry／vitalPoint／answer，scoring 委託原 family contract。完成混合題只代表 exposure to contrastive Experience，不是 transfer measurement；若要測 transfer，需另用新的無提示、可比較、未直接練過的局面。
+
 2026-09-27 梅花五 / Cross Five bounded practice v1：在刀把五已有三層深度後，下一個 bottleneck 改為名型館缺跨 family 變異。新增十字五點 family，只評第一手共同急所；geometry 必須與十字五點同構，且唯一 degree-4 中心才是 vital point。四個 variant 改變攻守、棋色與整體位置，專門防止把棋盤中心座標當答案。這只建立第二個可玩 family，不宣稱完整五目中手變化或 transfer 已成立。
 
 2026-09-27 刀把五 sealed reduction v1：新增第三層 bounded branch，只處理「守方零外氣＋局部連續手抜き」條件。contract 從五點眼空推導唯一 2×2 square core 與突出 capture point；攻方已佔 vital point 後，可任意次序補滿其餘三個 core 點，之後守方必須只剩 capture point 一口氣，並由 rules engine 證明提四子後 terminal eye-space 恰為 2×2 square four。另以有外氣 setup 作 negative oracle，要求 forced capture 與 square-four terminal 都失敗。這不是完整刀把五答案樹。
