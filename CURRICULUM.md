@@ -49,7 +49,7 @@
 | 官子與全局判斷 | 先手／後手／逆先手、形勢判斷 | 分開點數、行棋權、確定實地與未定風險 | 已能精確數目或形成可靠勝率判斷 |
 | 完整棋局與複盤 | planned | 未來承接 19 路實戰、SGF 轉折重建 | 現階段尚未實作成本站正式進階 Experience |
 
-choice-based Experience 仍保留 first response、hint、retry 與 completed event；v3 的棋盤 Response 目前有倒撲、枷、對殺三題，要求實際走完多手序列。每一步先由規則引擎驗合法與提子，再由 `advanced-sequence-v1` 重播 canonical line；枷另驗另一個主要逃路分支。征子暫不加入，直到能對強制追逐路線與主要逃路建立 forced-line oracle。所有進階 Experience 都固定為 `advanced_practice_only`，不進 KC、scheduler、T2／T3 或 formal evaluation。這個隔離是刻意的：先確認內容與互動有教學價值，再決定哪些任務值得建立版本化技能卡與 scoring contract。
+choice-based Experience 仍保留 first response、hint、retry 與 completed event；v4 的棋盤 Response 目前有倒撲、枷、對殺、征子四題，要求實際走完多手序列。每一步先由規則引擎驗合法與提子，再由 `advanced-sequence-v1`／`advanced-sequence-contract.js` 重播 canonical line；枷另驗另一個主要逃路分支。征子只收錄可逐手證明「打吃後 tracked group 恰剩一口、固定應手等於唯一 liberty」的 7×7 bounded line，並用路線上的白色引征干擾子做 negative oracle。所有進階 Experience 都固定為 `advanced_practice_only`，不進 KC、scheduler、T2／T3 或 formal evaluation。這個隔離是刻意的：先確認內容與互動有教學價值，再決定哪些任務值得建立版本化技能卡與 scoring contract。
 
 ## 棋盤尺寸作為練習支架
 
