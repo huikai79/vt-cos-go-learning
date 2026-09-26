@@ -28,7 +28,7 @@
 | 承諾 | 現況與實作 | 已有驗證 | 證據等級 | 狀態 |
 |---|---|---|---|---|
 | 離線個人課程 | 15 單元、19 課、106 題；直接開啟 `index.html` | 課程與 Chrome 流程測試 | 工程 | 條件通過 |
-| Core 後續進階訓練 v1 | 獨立 `advanced.html`；不是第 16 單元。先提供讀棋／手筋 4 題、中盤攻防 2 題、官子／全局判斷 2 題，共 8 個 practice-only Experience；另保留完整棋局／複盤為 planned track | `advanced.test.cjs`、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限進階 practice 契約；不更新 KC／scheduler／T2-T3／formal evaluation，棋理適切性與真人價值仍待外部審查／觀察 |
+| Core 後續進階訓練 v2 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience，新增 1 個規則引擎可驗證的兩段棋盤 Response（倒撲：學習者一手 → 固定對手應手 → 學習者再一手）；完整棋局／複盤仍為 planned track | `advanced.test.cjs`、Go rules oracle、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限 practice sequence 契約；不更新 KC／scheduler／T2-T3／formal evaluation，內容效度與真人價值仍待外部審查／觀察 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
 | 經典眼形探索 v1 | 第 4 單元新增 practice-only 選修入口；重用既有直三／第二眼題，流程為先找急所、作答後揭名、換方向、攻守交換、相似反例；不寫 KC／scheduler／T2-T3／formal evaluation | `classic-shapes.test.cjs`＋既有內容／UI 回歸；完整 browser CI 以分支 workflow 為準 | 工程／教學 UX | 條件通過僅限工程契約；直三文案 contentVersion 2，棋理適切性、真人理解與學習效益仍待 R1a／真人觀察 |
@@ -110,6 +110,15 @@
 - **內容邊界：** v1 多數項目是概念／候選比較的 choice scoring contract；逐步棋盤只作教學示意，不把單一座標或 AI estimate 升格為全局唯一最佳手。正式 KC、scoring contract、retention／transfer 只有在獨立內容核對與可接受答案充分後才另行建立。
 - **UI/version：** Core 首頁與工具增加獨立「進階訓練」入口，側欄改稱「15 單元核心課程」，最後一題改稱「完成核心課程」；learner-facing `uiVersion` 升為 `learner-flow-v43`。既有核心事件不回寫。
 - **停止條件：** 若 R1a／formative observation 發現棋理錯誤、圖解暗示唯一答案、首答語義被破壞或進階頁造成 Core 路徑混淆，先停擴內容並修正；不得用更多題目掩蓋。
+
+## 2026-09-26 Change note｜進階多手棋盤 Response v1
+
+- **bottleneck：** 進階 v1 仍以 choice response 為主，雖能教候選條件，卻沒有讓學習者真的走完「我一手 → 對手應手 → 我再一手」。這會把讀棋停留在敘述理解，而不是棋盤上的連續 Response。
+- **最小實作：** v2 只新增一個可由規則引擎完整驗證的兩段倒撲 sequence。起始局面、學習者兩次可接受落點與固定對手應手皆版本化在 `advanced-content.js`；每一步先由 `go.js` 驗證合法性、提子與簡單劫，再由 `advanced-sequence-v1` 判定是否符合本題 contract。錯誤合法手不改變盤面，留在同一步重試。
+- **Evidence：** 新增獨立 append-only `advanced-sequence-events-v1`，以 presentation／decision 為單位保存 `decision_presented`、`move_first`、`move_retry`、`opponent_move`、`completed`。每個 decision 的 first response 與 retry 分開，最後答對不能覆寫首答；固定 `formalEligible=false`、`qualifiedOpportunity=false`、`transferLevel=null`、`skillId=null`。
+- **Failure handling：** 規則引擎判非法時保存為實際 move response 並留在原局面；若內建對手應手與規則引擎衝突，UI 直接停題並顯示工程錯誤；event storage 損壞或寫入失敗 fail closed，不繼續假裝完成。
+- **反證／oracle：** `advanced.test.cjs` 直接以 `Go.playMove` 重建 sequence，驗證第一手合法且不提子、白應手提掉送子、第二手再提兩子；另驗證 first／retry event 不被覆寫與 malformed store fail closed。
+- **證據邊界：** 一個規則可驗證 sequence 只證明 interaction/scoring contract 可行，不證明「倒撲能力」已量測，也不代表進階讀棋已達中高級棋力。
 
 ## 目前執行順序
 
