@@ -162,8 +162,8 @@ async function main() {
     }
     const steppedDemo = await evaluate(socket, `(() => { const before = {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, previousDisabled: document.querySelector('#teaching-demo-previous').disabled}; document.querySelector('#teaching-demo-next').click(); return {before, after: {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, nextDisabled: document.querySelector('#teaching-demo-next').disabled}}; })()`);
     assert.deepEqual(steppedDemo, { before: {step: "第 1 / 2 步", caption: "先看角上的黑棋：棋盤外不是交叉點，所以不算氣。", previousDisabled: true}, after: {step: "第 2 / 2 步", caption: "只剩右邊和下邊兩個盤內空點，因此這顆棋有 2 口氣；斜角不算。", nextDisabled: true} });
-    const started = await evaluate(socket, `(() => { document.querySelector('#lesson-intro-start-button').click(); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros}; })()`);
-    assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-prompt", activeFlow: "learning-step-1", seen: [0] });
+    const started = await evaluate(socket, `(() => { document.querySelector('#lesson-intro-start-button').click(); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, takeawayHidden: document.querySelector('.takeaway').hidden}; })()`);
+    assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-prompt", activeFlow: "learning-step-1", seen: [0], takeawayHidden: true });
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
     assert.deepEqual(flowDialog, { inlineFlow: false, open: true, closed: true });
     let courseShape = await evaluate(socket, "({units: document.querySelector('#unit-select').options.length, shownUnits: document.querySelectorAll('.nav-unit').length, lessons: document.querySelectorAll('[data-lesson]').length, toolDescriptions: document.querySelectorAll('.tool-item p').length, r1LinkAbsent: document.querySelector('a[href=\"r1-review.html\"]') === null, contextBars: document.querySelectorAll('.lesson-context-bar').length, advancedClosed: !document.querySelector('#advanced-tools').open, advancedLabel: document.querySelector('#advanced-tools summary').textContent.trim(), rawBackupHint: document.querySelector('#export-events-button').nextElementSibling.textContent})");
@@ -186,13 +186,14 @@ async function main() {
     assert.equal(finalLessonDemo.after.step, "第 2 / 2 步");
     assert.match(finalLessonDemo.after.caption, /比較原著手|候選方向/);
     await evaluate(socket, "(() => { const select = document.querySelector('#unit-select'); select.value = '0'; select.dispatchEvent(new Event('change', {bubbles: true})); document.querySelector('[data-lesson=\"0\"]').click(); })()");
-    let response = await evaluate(socket, `document.querySelector('[data-answer="4"]').click(); (() => { const feedback = document.querySelector('#feedback'); return {feedback: feedback.textContent, feedbackClass: feedback.className, feedbackTitle: feedback.querySelector('.feedback-title')?.textContent, feedbackBadge: feedback.querySelector('.feedback-badge')?.textContent, explanation: feedback.querySelector('.answer-explanation')?.textContent, nextDisabled: document.querySelector('#next-button').disabled, progress: document.querySelector('#progress-count').textContent}; })()`);
+    let response = await evaluate(socket, `document.querySelector('[data-answer="4"]').click(); (() => { const feedback = document.querySelector('#feedback'); return {feedback: feedback.textContent, feedbackClass: feedback.className, feedbackTitle: feedback.querySelector('.feedback-title')?.textContent, feedbackBadge: feedback.querySelector('.feedback-badge')?.textContent, explanation: feedback.querySelector('.answer-explanation')?.textContent, takeawayHidden: document.querySelector('.takeaway').hidden, nextDisabled: document.querySelector('#next-button').disabled, progress: document.querySelector('#progress-count').textContent}; })()`);
     assert.match(response.feedback, /答對了/);
     assert.match(response.feedbackClass, /answer-result/);
     assert.match(response.feedbackClass, /success/);
     assert.equal(response.feedbackTitle, "答對了");
     assert.equal(response.feedbackBadge, "✓");
     assert.ok(response.explanation.length > 0);
+    assert.equal(response.takeawayHidden, false);
     assert.equal(response.nextDisabled, false);
     assert.equal(response.progress, "1 / 106");
     assert.equal(await evaluate(socket, "document.querySelector('.learning-steps li.active')?.id"), "learning-step-2");
@@ -238,7 +239,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v38"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v39"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -355,7 +356,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v38");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v39");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -372,9 +373,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v38");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v39");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v38");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v39");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
@@ -638,8 +639,8 @@ async function main() {
     }
     await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
-    const typography = await evaluate(socket, `({body: getComputedStyle(document.querySelector('.teaching-card p')).fontSize, topic: getComputedStyle(document.querySelector('.question-topic')).fontSize, prompt: getComputedStyle(document.querySelector('.question-prompt')).fontSize, policy: getComputedStyle(document.querySelector('.answer-policy')).fontSize, heading: getComputedStyle(document.querySelector('.title-row h2')).fontSize, topicLabel: document.querySelector('.question-topic-label').textContent, promptLabel: document.querySelector('.question-prompt-label').textContent, policyLabel: document.querySelector('.answer-policy-label').textContent, labelledBy: document.querySelector('.question-card').getAttribute('aria-labelledby')})`);
-    assert.deepEqual(typography, { body: "16px", topic: "16px", prompt: "24px", policy: "16px", heading: "32px", topicLabel: "本題重點", promptLabel: "問題", policyLabel: "作答方式", labelledBy: "question-prompt" });
+    const typography = await evaluate(socket, `({body: getComputedStyle(document.querySelector('.teaching-card p')).fontSize, topic: getComputedStyle(document.querySelector('.question-topic')).fontSize, prompt: getComputedStyle(document.querySelector('.question-prompt')).fontSize, policy: getComputedStyle(document.querySelector('.answer-policy')).fontSize, heading: getComputedStyle(document.querySelector('.title-row h2')).fontSize, promptLabel: document.querySelector('.question-prompt-label').textContent, contextText: document.querySelector('.question-context').textContent.replace(/\\s+/g,' ').trim(), labelledBy: document.querySelector('.question-card').getAttribute('aria-labelledby'), promptOutline: getComputedStyle(document.querySelector('.question-prompt')).outlineStyle})`);
+    assert.deepEqual(typography, { body: "16px", topic: "16px", prompt: "24px", policy: "16px", heading: "32px", promptLabel: "問題", contextText: "觀察題 · 中央的一顆棋", labelledBy: "question-prompt", promptOutline: "none" });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 320, height: 812, deviceScaleFactor: 1, mobile: true });
     const narrowOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
     assert.ok(narrowOverflow.scrollWidth <= narrowOverflow.width + 1, `320px horizontal overflow: ${JSON.stringify(narrowOverflow)}`);
