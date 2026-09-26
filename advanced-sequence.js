@@ -83,11 +83,27 @@
     return true;
   }
 
+  function familyOrdinal(item) {
+    const familyItems = experiences.filter((candidate) => candidate.familyId === item.familyId);
+    return familyItems.findIndex((candidate) => candidate.id === item.id) + 1;
+  }
+
+  function familyReady(item) {
+    if (item.variantId === "seed") return true;
+    const result = Events.read(localStorage);
+    if (!result.ok) return false;
+    return result.store.events.some((event) => event.familyId === item.familyId && event.variantId === "seed" && event.type === "completed");
+  }
+
   function renderSequenceList() {
-    $("advanced-sequence-list").innerHTML = experiences.map((item, index) =>
-      '<button type="button" class="advanced-sequence-tab' + (index === experienceIndex ? ' active' : '') + '" data-sequence-index="' + index + '">' +
-      '<strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.familyId) + ' · ' + item.decisions.length + ' 段實走 · 規則驗證</small></button>'
-    ).join("");
+    $("advanced-sequence-list").innerHTML = experiences.map((item, index) => {
+      const ordinal = familyOrdinal(item);
+      const ready = familyReady(item);
+      const label = "棋盤練習 " + (index + 1);
+      const detail = ordinal === 1 ? "先完成這個局面" : ready ? "新局面 · 不提供前題名稱" : "完成前一個相關局面後開放";
+      return '<button type="button" class="advanced-sequence-tab' + (index === experienceIndex ? ' active' : '') + '" data-sequence-index="' + index + '"' + (ready ? '' : ' disabled aria-disabled="true"') + '>' +
+        '<strong>' + label + '</strong><small>' + detail + ' · ' + item.decisions.length + ' 段實走</small></button>';
+    }).join("");
   }
 
   function renderSummary() {
@@ -151,8 +167,8 @@
   function renderDecision() {
     const item = current();
     const active = decision();
-    $("advanced-sequence-name").textContent = item.title;
-    $("advanced-sequence-target").textContent = item.target;
+    $("advanced-sequence-name").textContent = "棋盤練習 " + (experienceIndex + 1);
+    $("advanced-sequence-target").textContent = "先只看目前局面與題目條件；完整名稱、術語與重點會在走完後揭露。";
     $("advanced-sequence-prompt").textContent = active.prompt;
     $("advanced-sequence-step").textContent = "第 " + (decisionIndex + 1) + " / " + item.decisions.length + " 步";
     $("advanced-sequence-side").textContent = item.playerColor === Go.BLACK ? "● 黑棋" : "○ 白棋";
@@ -178,9 +194,10 @@
     $("advanced-sequence-feedback").className = "feedback";
     $("advanced-sequence-feedback").textContent = "";
     $("advanced-sequence-reset").disabled = false;
-    $("advanced-sequence-takeaway-text").textContent = item.takeaway;
-    $("advanced-sequence-term-count").textContent = "（" + item.terms.length + " 個）";
-    $("advanced-sequence-term-list").innerHTML = item.terms.map(([term, definition]) => '<div><dt>' + escapeHtml(term) + '</dt><dd>' + escapeHtml(definition) + '</dd></div>').join("");
+    $("advanced-sequence-takeaway-text").textContent = "";
+    $("advanced-sequence-term-count").textContent = "";
+    $("advanced-sequence-term-list").innerHTML = "";
+    $("advanced-sequence-terms").hidden = true;
     $("advanced-sequence-terms").open = false;
     renderDecision();
     if (!record("presented")) return;
@@ -248,6 +265,12 @@
     if (!record("completed")) return;
     $("advanced-sequence-feedback").className = "feedback answer-result success";
     $("advanced-sequence-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">這條多手變化已走完</strong><span class="answer-explanation">' + escapeHtml(active.success) + '</span>';
+    $("advanced-sequence-name").textContent = item.title;
+    $("advanced-sequence-target").textContent = item.target;
+    $("advanced-sequence-takeaway-text").textContent = item.takeaway;
+    $("advanced-sequence-term-count").textContent = "（" + item.terms.length + " 個）";
+    $("advanced-sequence-term-list").innerHTML = item.terms.map(([term, definition]) => '<div><dt>' + escapeHtml(term) + '</dt><dd>' + escapeHtml(definition) + '</dd></div>').join("");
+    $("advanced-sequence-terms").hidden = false;
     $("advanced-sequence-takeaway").hidden = false;
     $("advanced-sequence-hint").disabled = true;
     $("advanced-sequence-next").disabled = experiences.length < 2;
@@ -260,6 +283,7 @@
     if (!button || blocked) return;
     const index = Number(button.dataset.sequenceIndex);
     if (!Number.isInteger(index) || index < 0 || index >= experiences.length || index === experienceIndex) return;
+    if (!familyReady(experiences[index])) return;
     experienceIndex = index;
     beginPresentation();
   });
@@ -305,7 +329,14 @@
 
   $("advanced-sequence-next").addEventListener("click", () => {
     if (blocked || $("advanced-sequence-next").disabled) return;
-    experienceIndex = (experienceIndex + 1) % experiences.length;
+    const nextIndex = (experienceIndex + 1) % experiences.length;
+    if (!familyReady(experiences[nextIndex])) {
+      renderSequenceList();
+      $("advanced-sequence-feedback").className = "feedback";
+      $("advanced-sequence-feedback").textContent = "下一個相關局面尚未開放；先完成它的第一個局面，避免跳題造成 family 比較順序失真。";
+      return;
+    }
+    experienceIndex = nextIndex;
     beginPresentation();
   });
 
