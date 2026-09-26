@@ -311,7 +311,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v38");
+  assert.equal(exported.uiVersion, "learner-flow-v39");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -477,7 +477,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v38");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v39");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -579,17 +579,22 @@ test("主課程 save envelope 不得複製 live streams，raw export 仍可帶�
 });
 
 
-test("題目卡明確區分重點、問題與作答方式", () => {
+test("題目卡只保留必要 context，真正問題保持最高權重", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const app = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /class="question-card" aria-labelledby="question-prompt"/);
-  assert.match(html, /class="question-topic-label">本題重點</);
+  assert.match(html, /class="question-context"/);
   assert.match(html, /class="question-prompt-label">問題</);
-  assert.match(html, /class="answer-policy-label">作答方式</);
+  assert.doesNotMatch(html, /question-topic-label/);
+  assert.doesNotMatch(html, /answer-policy-label/);
+  assert.match(html, /class="takeaway" hidden/);
   assert.match(app, /revealElement\("question-prompt"\)/);
+  assert.match(app, /document\.querySelector\("\.takeaway"\)\.hidden = false/);
   assert.match(css, /\.question-card \.question-prompt\{[^}]*font-size:1\.5rem;[^}]*font-weight:800/);
-  assert.match(css, /\.question-topic\{[^}]*font-size:1rem;/);
+  assert.match(css, /\.question-card \.question-prompt:focus\{outline:none\}/);
+  assert.match(css, /\.question-card \.question-prompt:focus-visible\{[^}]*outline:3px/);
+  assert.match(css, /\.text-practice \.question-card,\.text-practice \.answer-card\{min-height:0\}/);
 });
 
 test("核心學習文字維持至少 16px，metadata 不被誤升格", () => {
@@ -606,7 +611,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-flow-v38/);
+  assert.match(html, /styles\.css\?v=learner-flow-v39/);
   assert.match(css, /--font-zh:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif/);
   assert.doesNotMatch(css, /word-break\s*:\s*break-all/i);
   assert.match(css, /:where\(a,button,input,select,textarea,summary,\[role="button"\]\):focus-visible/);
