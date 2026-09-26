@@ -8,7 +8,7 @@
   <meta name="application-name" content="VT-COS｜悟之一手">
   <meta name="description" content="VT-COS 旗下的個人離線圍棋互動課程。">
   <title>VT-COS｜悟之一手｜個人圍棋練習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v37">
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v38">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -23,7 +23,7 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v37"></script>
+  <script defer src="app.js?v=learner-flow-v38"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
@@ -138,10 +138,13 @@
         </section>
 
         <div class="practice-grid">
-          <section class="question-card" aria-labelledby="question-title">
+          <section class="question-card" aria-labelledby="question-prompt">
             <span class="question-tag" id="question-tag">觀察題</span>
-            <h3 id="question-title" tabindex="-1"></h3>
-            <p class="question-prompt" id="question-prompt"></p>
+            <span class="question-topic-label">本題重點</span>
+            <p class="question-topic" id="question-title"></p>
+            <span class="question-prompt-label">問題</span>
+            <h3 class="question-prompt" id="question-prompt" tabindex="-1"></h3>
+            <span class="answer-policy-label">作答方式</span>
             <p class="answer-policy" id="answer-policy"></p>
           </section>
 
