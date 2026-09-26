@@ -35,7 +35,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
 });
 
 test("進階 choice scaffold 保留三條可用訓練線與一條後續路線", () => {
-  assert.equal(content.version, 4);
+  assert.equal(content.version, 5);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 3);
   assert.ok(content.tracks.some((track) => track.id === "full-board-review" && track.status === "planned"));
@@ -117,22 +117,50 @@ test("核心課程提供獨立進階訓練入口，不偽裝成第 16 單元", (
 });
 
 
-test("進階 v4 的四個棋盤 sequence 全部通過 rules-backed contract", () => {
+test("進階 v5 的八個棋盤 sequence 全部通過 rules-backed contract", () => {
   assert.equal(content.sequenceScoringContractVersion, "advanced-sequence-v1");
-  assert.equal(content.sequenceExperiences.length, 4);
+  assert.equal(content.sequenceExperiences.length, 8);
   assert.deepEqual(content.sequenceExperiences.map((item) => item.id), [
     "adv-seq-snapback-01",
+    "adv-seq-snapback-02",
     "adv-seq-net-01",
+    "adv-seq-net-02",
     "adv-seq-semeai-01",
-    "adv-seq-ladder-01"
+    "adv-seq-semeai-02",
+    "adv-seq-ladder-01",
+    "adv-seq-ladder-02"
   ]);
   const validation = SequenceContract.validateAll(content.sequenceExperiences, Go);
   assert.equal(validation.ok, true, validation.errors.join("\n"));
+  const families = SequenceContract.summarizeFamilies(content.sequenceExperiences);
+  assert.deepEqual(families.map((family) => [family.familyId, family.variants]), [
+    ["snapback", 2],
+    ["net", 2],
+    ["semeai", 2],
+    ["ladder", 2]
+  ]);
   for (const item of content.sequenceExperiences) {
     assert.ok(item.decisions.length >= 2, item.id);
     assert.ok(item.terms.length >= 2, item.id);
+    assert.ok(item.familyId);
+    assert.ok(item.variantId);
+    assert.ok(item.variationAxes.length >= 1);
   }
 });
+
+test("四個第二變形都改變至少一個非單純旋轉的內容軸", () => {
+  const variants = Object.fromEntries(content.sequenceExperiences.map((item) => [item.id, item]));
+  assert.equal(variants["adv-seq-snapback-01"].decisions.at(-1).expectedLearnerCapturedCount, 2);
+  assert.equal(variants["adv-seq-snapback-02"].decisions.at(-1).expectedLearnerCapturedCount, 3);
+  assert.deepEqual(variants["adv-seq-net-02"].variationAxes, ["escape-geometry", "local-shape"]);
+  assert.equal(variants["adv-seq-semeai-01"].playerColor, Go.BLACK);
+  assert.equal(variants["adv-seq-semeai-02"].playerColor, Go.WHITE);
+  assert.equal(variants["adv-seq-ladder-01"].boardSize, 7);
+  assert.equal(variants["adv-seq-ladder-02"].boardSize, 8);
+  assert.equal(variants["adv-seq-ladder-01"].decisions.length, 7);
+  assert.equal(variants["adv-seq-ladder-02"].decisions.length, 10);
+});
+
 
 test("枷 sequence 不只驗示範逃路，也驗另一個主要分支", () => {
   const item = content.sequenceExperiences.find((entry) => entry.id === "adv-seq-net-01");
@@ -178,6 +206,52 @@ test("征子路線加入引征干擾子後，原 forced line 必須失效", () =
   const result = SequenceContract.validateExperience(withBreaker, Go);
   assert.equal(result.ok, false);
   assert.match(result.errors.join(" "), /canonical learner move is illegal|tracked liberties|unique liberty/);
+});
+
+test("第二倒撲變形實際提回三子，第二枷變形兩個出口都可被收住", () => {
+  const snapback = content.sequenceExperiences.find((item) => item.id === "adv-seq-snapback-02");
+  const net = content.sequenceExperiences.find((item) => item.id === "adv-seq-net-02");
+  assert.equal(SequenceContract.validateExperience(snapback, Go).ok, true);
+  assert.equal(SequenceContract.validateExperience(net, Go).ok, true);
+  assert.equal(net.verificationBranches.length, 1);
+  assert.deepEqual(net.verificationBranches[0].opponentMove, [3,2]);
+  assert.deepEqual(net.verificationBranches[0].learnerReply, [2,3]);
+});
+
+test("第二對殺變形交換 learner 棋色仍提三子", () => {
+  const item = content.sequenceExperiences.find((entry) => entry.id === "adv-seq-semeai-02");
+  assert.equal(item.playerColor, Go.WHITE);
+  const validation = SequenceContract.validateExperience(item, Go);
+  assert.equal(validation.ok, true, validation.errors.join("\n"));
+  const start = Go.boardFromStones(item.setupStones, item.boardSize);
+  const first = Go.playMove(start, 3, 0, Go.WHITE);
+  const response = Go.playMove(first.board, 2, 1, Go.BLACK, { previousBoard: start });
+  const finish = Go.playMove(response.board, 2, 0, Go.WHITE, { previousBoard: first.board });
+  assert.equal(finish.legal, true);
+  assert.equal(finish.captured.length, 3);
+});
+
+test("8x8 征子變形比 7x7 更長，仍逐手驗唯一 liberty 並提十一子", () => {
+  const item = content.sequenceExperiences.find((entry) => entry.id === "adv-seq-ladder-02");
+  const validation = SequenceContract.validateExperience(item, Go);
+  assert.equal(validation.ok, true, validation.errors.join("\n"));
+  assert.equal(item.decisions.slice(0, -1).every((decision) => decision.opponentMoveMustBeUniqueLiberty === true), true);
+  assert.equal(item.decisions.at(-1).expectedLearnerCapturedCount, 11);
+});
+
+test("family metadata 缺漏或 family/variant 重複時 fail closed", () => {
+  const source = structuredClone(content.sequenceExperiences[0]);
+  delete source.familyId;
+  const missing = SequenceContract.validateExperience(source, Go);
+  assert.equal(missing.ok, false);
+  assert.match(missing.errors.join(" "), /familyId missing/);
+
+  const duplicate = structuredClone(content.sequenceExperiences);
+  duplicate.push(structuredClone(duplicate[0]));
+  duplicate.at(-1).id = "adv-seq-duplicate-id-only";
+  const duplicateResult = SequenceContract.validateAll(duplicate, Go);
+  assert.equal(duplicateResult.ok, false);
+  assert.match(duplicateResult.errors.join(" "), /duplicate family variant/);
 });
 
 test("sequence contract 對捕獲數或內建手順漂移 fail closed", () => {
