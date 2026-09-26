@@ -34,7 +34,9 @@
     chineseTermsPdf: { label: "Chinese Go Terms glossary", url: "https://www.hebsacker-verlag.de/download/Chinese_Go_Terms.pdf", sourceTier: "community_secondary" },
     takumiKyu: { label: "Takumi Go：kyu exercises", url: "https://en.1200igo.com/kyulevel", sourceTier: "specialist_secondary" },
     badukworldSeven: { label: "BadukWorld：사활7형제", url: "https://www.badukworld.co.kr/biz/7bros.html", sourceTier: "community_secondary" },
-    badukworldDeath: { label: "BadukWorld：사활특강-사(死)", url: "https://www.badukworld.co.kr/biz/lesson2/special/death.html", sourceTier: "community_secondary" }
+    badukworldDeath: { label: "BadukWorld：사활특강-사(死)", url: "https://www.badukworld.co.kr/biz/lesson2/special/death.html", sourceTier: "community_secondary" },
+    bgaBulkyPractice: { label: "British Go Journal：Bulky Five / vital point examples", url: "https://britgo.org/files/bgj/bgj121.pdf", sourceTier: "association" },
+    ogsBulkyVital: { label: "Online Go Forum：Bulky Five vital point discussion", url: "https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356", sourceTier: "community_secondary" }
   });
 
   const entries = [
@@ -156,7 +158,7 @@
       ],
       note: "已建立 bounded「共同急所」practice：geometry contract 驗五點 P-pentomino 與唯一三鄰點，rules engine 驗落子合法。這只支持第一手急所練習，不代表完整死活答案樹或所有外氣條件。",
       rulesetSensitive: false,
-      sources: [sources.go4goChinese, sources.chineseTermsPdf]
+      sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital]
     },
     {
       id: "plum-five-candidate-v1",
