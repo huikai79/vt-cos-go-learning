@@ -137,3 +137,8 @@
 - **理由：** 邊觀察邊修改會讓不同觀察對應不同 UI／content version；若直接合併，無法知道正式證據支持哪個 candidate。
 - **不變項：** `TEACHING_GATE` 的三位初學者、五項 critical tasks、真人 accessibility spot check、R1a 與 blocking issue 要求完全不降低。
 - **失效規則：** 正式觀察後若因 blocking issue 修改會影響 critical task 的 learner-facing 行為，受影響觀察須在新 candidate 重做；開發期 formative observation 不補進正式分母。
+
+
+## 2026-09-27 Decision note｜世界死活名型館採 catalog-first，不以翻譯直接生題
+
+多語名型目前是 Experience／reference 工作線，不是新 KC 或 formal evaluation。新增名型須依序通過：`名稱來源 → 棋形幾何 identity → 先後手／外氣／規則敏感性 → scoring/variation contract → negative oracle → practice`。若只有術語來源而沒有幾何對照，標 `needs_review`；若像盤角曲四受 ruleset 影響，先建立 ruleset-aware contract；若像木匠方有多分支，先建立 branch/variation oracle。任何一步缺失都不得用 LLM 翻譯或固定座標序列補成看似可評分的題目。
