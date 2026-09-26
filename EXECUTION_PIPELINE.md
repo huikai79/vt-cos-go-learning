@@ -15,6 +15,10 @@
 | live practice evidence intake | raw `live-practice-events-v1` 與 scored `live-eligibility-v1`／`live-scoring-v1` 已分層；9×9 每個學習者回合先掃描 eligibility，v1 只支援唯一一手提子與 computer-provoked 唯一直接救棋；`learner-evidence-progress-v2` 另顯示資料收集 readiness | 優先實際累積 assessed turns、eligible／unanswered、first response 與不同 game session；用 readiness 確認資料管線真的有收到可用事件，再決定是否存在需要新增 scoring contract 的觀察瓶頸 | 把不支援的全局決策、5×5／7×7、SGF actor 不明、單局勝負或 bot 選手升格成 T3；直接用 live state 改 scheduler 或宣稱 mastery |
 | 日常使用介面 | P0、P1b、19 課逐步棋盤示範、第 5–14 單元的局部棋形點選及跨課短講自動銜接已完成；開發期間可持續以本人與零散使用者回饋作 formative observation | 邊使用邊記錄卡點、重複摩擦與修正結果；這些觀察可重排 P1／P2，但不阻擋後續工程 | 把開發中的零散觀察冒充正式 usability evidence；依單一主觀印象大改視覺風格或增加遊戲化功能 |
 
+## 新增 Experience 工作線｜Core 後續進階訓練
+
+進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。v1 僅為 practice-only Experience：讀棋／手筋、中盤攻防、官子／全局判斷。任何進階項目若要進 KC、scheduler、T2/T3 或 formal evaluation，必須先回到 evidence-integrity 與內容效度條件，建立獨立 scoring contract／version／negative test；不得因頁面已存在就升格證據。
+
 ## 優先順序與閘門
 
 ### 0｜隨時優先：資料或答案可能失真的問題
