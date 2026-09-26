@@ -1,3 +1,5 @@
+2026-09-26 Core 後續進階訓練決策：15 單元保留為 Core Curriculum，不再以「第 16 單元」線性擴充。新增獨立 `advanced.html`，v1 只建立三條 practice-only 訓練線：讀棋／手筋、中盤攻防、官子／全局判斷；完整棋局／複盤先標 planned。這個頁面保存 first response、hint 與 retry，但使用獨立 append-only `advanced-practice-events-v1`，固定 `formalEligible=false`、`qualifiedOpportunity=false`，不寫 KC／scheduler／T2-T3。目的是先補「Core 之後仍需深化」的 Experience gap，而不是在沒有 R1a／真人資料時提早建立更多自適應演算法。若某一進階任務未來要成為量測能力，必須另定 item/KC/scoring/evidence version、可接受答案與 negative test，不能把本頁 choice completion 直接升格。
+
 # 悟之一手：產品與教學設計計畫
 
 2026-09-26 經典名型教學修正：第 4 單元先以既有直三題試行「自主觀察 → 作答後揭名 → 換方向 → 攻守交換 → 相似反例」；名型名稱只作 retrieval cue，不作 KC 或 Evidence。獨立探索頁重用既有 item/scoring source of truth、固定 practice-only，不寫 scheduler、T2/T3 或 formal evaluation。直三 learner-facing 文案實質變更的四題升 contentVersion 2；歷史事件保留舊版本。其餘刀把五、梅花五、大豬嘴等名型須先完成內容核對／外部審題，再考慮加入，不因「經典」直接跨過 R1a。
