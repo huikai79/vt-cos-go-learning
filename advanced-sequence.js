@@ -275,6 +275,7 @@
     $("advanced-sequence-hint").disabled = true;
     $("advanced-sequence-next").disabled = experiences.length < 2;
     $("advanced-sequence-next").textContent = experienceIndex === experiences.length - 1 ? "回到第一個棋盤題 →" : "下一個棋盤題 →";
+    renderSequenceList();
     renderSummary();
   }
 
