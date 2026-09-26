@@ -792,8 +792,8 @@
     problem.skillId = skillByProblemId.get(problem.id) || null;
     problem.taskMode = problem.skillId ? skills.find((skill) => skill.id === problem.skillId).taskMode : "一般練習";
     problem.pool = problem.skillId ? "練習" : "既有教材";
+    problem.contentVersion = revisedProblemIds.has(problem.id) ? 2 : 1;
     if (problem.skillId) {
-      problem.contentVersion = revisedProblemIds.has(problem.id) ? 2 : 1;
       problem.taskFeatureVersion = 1;
       problem.taskFeatures = trialTaskFeatures[problem.id];
       problem.motherFamilyId = trialMotherFamilyIds[problem.id];
