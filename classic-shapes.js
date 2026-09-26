@@ -365,9 +365,9 @@
 
   function renderReduction() {
     const item=Reduction.items[reductionIndex];
+    reductionMoves=[];
     const state=reductionState(item);
     const candidates=reductionCandidates(item,state);
-    reductionMoves=[];
     reductionSolved=false;
     reductionHintShown=false;
     reductionCursor=candidates[0].slice();
