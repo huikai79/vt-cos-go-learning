@@ -17,7 +17,7 @@
 
 ## 新增 Experience 工作線｜Core 後續進階訓練
 
-進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。v5 將倒撲／枷／對殺／征子各做成兩個 multi-step practice variant；每題必須有唯一 `familyId/variantId` 與明示 `variationAxes`，第二題至少改一個非單純旋轉的作答條件。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。這些 family 只用於 practice 與後續診斷，不得在缺少真人 first-response／難度資料時升格為 KC、transfer 證據或平行題等難。任何進階項目若要進 scheduler、T2/T3 或 formal evaluation，仍須回到 evidence-integrity 與內容效度 gate。
+進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。v5 將倒撲／枷／對殺／征子各做成兩個 multi-step practice variant；每題必須有唯一 `familyId/variantId` 與明示 `variationAxes`，第二題至少改一個非單純旋轉的作答條件。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。這些 family 只用於 practice 與後續診斷。`advanced-sequence-events-v2` 會把當時的 family／variant／variation axes 與首答一起保存，v1 歷史事件不補寫新語義；family transition 只輸出 `DESCRIPTIVE_ONLY`／`INSUFFICIENT_DATA`，不產生 mastery 或 transfer claim。不得在缺少真人 first-response／難度資料時升格為 KC、transfer 證據或平行題等難。任何進階項目若要進 scheduler、T2/T3 或 formal evaluation，仍須回到 evidence-integrity 與內容效度 gate。
 
 ## 優先順序與閘門
 
