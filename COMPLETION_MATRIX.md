@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v37`；棋盤練習頁 `live-game-ui-v10`
+- `ui_version`: `learner-flow-v38`；棋盤練習頁 `live-game-ui-v10`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -47,6 +47,14 @@
 | 正式教學使用閘門 | R1a、三位初學者關鍵任務及真人無障礙 spot check 分開驗證 | `teaching-gate.test.cjs`、`teaching-gate-verify.cjs` | 外部內容與真人證據 | BLOCKED；缺 R1a 外部回條、初學者觀察及真人無障礙證據 |
 | 個人七天流程試行 | `personal-pilot-v3` 使用舊 R1 已曝光題，只檢查資料、返回與負擔；v1／v2 保留為 legacy | trial、狀態與 UI 測試 | 個人描述 | 工程通過；`formalEligible=false` |
 | 學習成效與排程增益 | 有試行資料管線與 Minimal Sufficient Policy 設計 | 試行流程測試 | 學習成效 | 未量測；個人單機正式驗收停用 |
+
+## 2026-09-26 Change note｜題目卡資訊層級
+
+- **問題：** 同一題卡原本依序顯示題型、題目標題、真正問題與作答說明，但「題目標題」字級最大，使用者實際回饋指出不易一眼判斷哪一句才需要回答。
+- **改動：** `learner-flow-v38` 將題卡角色明示為「本題重點 → 問題 → 作答方式」；真正問題改為最大字級與最高字重，換題／回到題目時鍵盤焦點移到真正問題。題目標題降為輔助性的本題重點。
+- **不可破壞 invariant：** 不改 item/scoring、答案、首答／retry、提示資格、scheduler、formal evaluation 遮蔽或事件欄位；只改 learner-facing information hierarchy。
+- **反證／驗收：** UI 測試要求題卡 `aria-labelledby` 指向真正問題、焦點落在真正問題，且桌面樣式保持「重點 16px／問題 24px／作答方式 16px」的層級；320px 重排與既有作答生命週期回歸仍需全套 CI 通過。
+- **證據邊界：** 這只證明介面契約改正；是否真的降低初學者困惑仍需真人觀察。
 
 ## 目前執行順序
 
