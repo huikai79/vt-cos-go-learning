@@ -66,6 +66,14 @@ svg .board-hit{fill:transparent;cursor:pointer}svg .board-hit:hover{fill:#ffffff
 .option-button{font-size:1rem;min-height:48px;min-width:60px;font-weight:600}
 .feedback.error{color:#8d4028}
 .feedback.success{color:#17633a}
+.feedback.answer-result{min-height:0;margin-top:14px;padding:14px 16px;border:1px solid;border-radius:10px;display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:10px;row-gap:3px;align-items:start;max-width:42em}
+.feedback.answer-result .feedback-badge{grid-row:1 / span 2;width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;line-height:1}
+.feedback.answer-result .feedback-title{font-size:1.125rem;line-height:1.4;font-weight:800}
+.feedback.answer-result .answer-explanation{grid-column:2;display:block;margin-top:0;color:#395640}
+.feedback.answer-result.success{background:#eef8f0;border-color:#8bc29a;color:#174d2d}
+.feedback.answer-result.success .feedback-badge{background:#1f6a3b;color:#fff}
+.feedback.answer-result.error{background:#fff4ec;border-color:#d79a75;color:#7f371f}
+.feedback.answer-result.error .feedback-badge{background:#a94f2d;color:#fff}
 .subtle-button,.primary-button{font-size:.875rem;min-height:44px}
 .subtle-button{color:#315c3e}
 .takeaway span{font-size:.875rem;color:#3d6547}
