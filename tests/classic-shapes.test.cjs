@@ -4,6 +4,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { problems } = require("../content.js");
 const Catalog = require("../classic-shapes-catalog.js");
+const Go = require("../go.js");
+const Practice = require("../classic-shape-practice.js");
+const PracticeContract = require("../classic-shape-practice-contract.js");
 
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "classic-shapes.html"), "utf8");
@@ -39,7 +42,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v2");
+  assert.equal(Catalog.version, "world-classic-shapes-v3");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -62,7 +65,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
   const longL = Catalog.entries.find((entry) => entry.id === "long-l-group-v1");
   assert.equal(knife.zhNameStatus, S.ESTABLISHED_ALIAS);
   assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), true);
-  assert.equal(knife.practiceStatus, "catalog_candidate_only");
+  assert.equal(knife.practiceStatus, "playable_bounded_vital_point_contract");
   assert.equal(grape.zhNameStatus, S.NEEDS_REVIEW);
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
   assert.equal(carpenter.zhNameStatus, S.ESTABLISHED_ALIAS);
@@ -81,8 +84,8 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 });
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
-  const playable = Catalog.entries.filter((entry) => entry.practiceStatus === "playable_existing_contract");
-  assert.deepEqual(playable.map((entry) => entry.id), ["straight-three-v1"]);
+  const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["knife-five-candidate-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -99,4 +102,48 @@ test("韓文術語有來源層級且不因次級來源升格為 verified", () =>
   assert.equal(koFlower.name, "매화6궁");
   assert.equal(koFlower.reviewStatus, Catalog.REVIEW.PARTIAL);
   assert.ok(bentFour.sources.some((source) => source.sourceTier === "community_secondary"));
+});
+
+
+test("刀把五四個 variant 通過 geometry + rules bounded contract", () => {
+  assert.equal(Practice.version, "classic-shape-practice-v1");
+  assert.equal(Practice.scoringContractVersion, PracticeContract.CONTRACT_VERSION);
+  assert.equal(Practice.items.length, 4);
+  const all = PracticeContract.validateAll(Practice.items, Go);
+  assert.equal(all.ok, true, all.errors.join("; "));
+  for (const item of Practice.items) {
+    const derived = PracticeContract.deriveVitalPoint(item.eyeSpace);
+    assert.deepEqual(derived, item.vitalPoint, item.id);
+    const scored = PracticeContract.score(item, item.vitalPoint, Go);
+    assert.equal(scored.ok, true, item.id);
+    assert.equal(scored.correct, true, item.id);
+    assert.equal(scored.status, "CORRECT", item.id);
+  }
+});
+
+test("刀把五 contract 對錯誤 geometry、錯誤急所與非急所首答 fail closed", () => {
+  const seed = Practice.items[0];
+  const wrongGeometry = {
+    ...seed,
+    id: "wrong-geometry",
+    eyeSpace: [[2,2],[3,2],[4,2],[2,3],[4,3]]
+  };
+  assert.equal(PracticeContract.validateItem(wrongGeometry, Go).ok, false);
+
+  const wrongVital = { ...seed, id: "wrong-vital", vitalPoint: [2,2] };
+  assert.equal(PracticeContract.validateItem(wrongVital, Go).ok, false);
+
+  const wrongMove = seed.eyeSpace.find((point) => !PracticeContract.samePoint(point, seed.vitalPoint));
+  const result = PracticeContract.score(seed, wrongMove, Go);
+  assert.equal(result.ok, true);
+  assert.equal(result.correct, false);
+  assert.equal(result.status, "INCORRECT");
+});
+
+test("刀把五 UI 明示 bounded vital-point 範圍，不把四題升格 mastery", () => {
+  assert.match(html, /刀把五：找共同急所/);
+  assert.match(html, /只判第一手是否落在 geometry contract 推導出的唯一共同急所/);
+  assert.match(html, /不宣稱完整死活答案樹/);
+  assert.match(js, /GoClassicShapePracticeContract/);
+  assert.match(js, /不代表 mastery 或完整死活已驗證/);
 });
