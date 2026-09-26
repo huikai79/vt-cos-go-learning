@@ -408,7 +408,7 @@
 
 - **問題：** v1 雖有 `reviewStatus` 與「繁中教學譯名」備註，但「沒有固定中文名」仍不是機器可讀狀態，容易把描述性翻譯日後誤當既定華語術語。
 - **修正：** `world-classic-shapes-v2` 新增 `zhNameStatus`、`preferredZhTW`、`zhAliases`、`teachingTranslation`、`literalTranslation`、`zhNameNote`。UI 明示「中文既有名／中文既有或常用別名／專案教學翻譯／中文描述不是專名／本輪未找到固定中文名／中文名稱待核實」。
-- **新增 reference family：** L Group、L+1 Group、Tripod Group、Long L Group。前三者在目前覆蓋來源中未確認固定中文專名，因此只保留英文原名＋繁中描述；Long L Group 有「帶鉤型／緊帶鉤」候選，但因可能受外氣與幾何條件細分，仍標 `needs_review`。
-- **中文名稱修正：** Carpenter's Square 不再以「木匠方」直接當 `zhTW` 主名；中文術語來源出現「斗方／金櫃角」候選，因此 preferred 中文名保持空值，「木匠方」只作 teaching translation。
+- **新增 reference family：** L Group、L+1 Group、Tripod Group、Long L Group。前三者在目前覆蓋來源中未確認固定中文專名，因此只保留英文原名＋繁中描述；Long L Group 由多個中文術語來源支持「帶鉤」，並依外氣條件區分「緊帶鉤／寬帶鉤」；中文命名可標 established alias，但條件別名仍不得脫離實際幾何使用。
+- **中文名稱修正：** Carpenter's Square 不再以「木匠方」當既定中文名；多個中文術語來源支持「斗方」，另有「金櫃角」，因此 preferred 中文名改為「斗方」，「木匠方」只保留為 teaching translation。
 - **韓文補充：** `귀곡사`、`매화6궁` 由韓文次級圍棋來源支持，標 `PARTIAL`，不與日本棋院官方來源同級。
 - **證據邊界：** 名稱／翻譯核對仍不是棋理或 scoring 效度；只有既有直三可玩，其餘仍需 geometry、ruleset／variation contract 與 negative oracle 才能成為 practice。
