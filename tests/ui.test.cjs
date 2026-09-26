@@ -714,6 +714,10 @@ async function main() {
         if (!point) throw new Error('advanced sequence point missing: ' + x + ',' + y);
         point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
       };
+      const beforeName = document.querySelector('#advanced-sequence-name').textContent;
+      const beforeTarget = document.querySelector('#advanced-sequence-target').textContent;
+      const variantDisabledBefore = document.querySelector('#advanced-sequence-list [data-sequence-index="1"]').disabled;
+      const termsHiddenBefore = document.querySelector('#advanced-sequence-terms').hidden;
       clickPoint(4, 4);
       const afterWrong = document.querySelector('#advanced-sequence-feedback').textContent;
       clickPoint(0, 2);
@@ -723,22 +727,36 @@ async function main() {
       const raw = JSON.parse(localStorage.getItem('go-advanced-sequence-events-v2'));
       return {
         sequenceTabs: document.querySelectorAll('#advanced-sequence-list [data-sequence-index]').length,
+        beforeName,
+        beforeTarget,
+        variantDisabledBefore,
+        termsHiddenBefore,
         afterWrong,
         afterFirstCorrect,
         stepAfterOpponent,
         finalFeedback: document.querySelector('#advanced-sequence-feedback').textContent,
         takeawayHidden: document.querySelector('#advanced-sequence-takeaway').hidden,
+        revealedName: document.querySelector('#advanced-sequence-name').textContent,
+        variantDisabledAfter: document.querySelector('#advanced-sequence-list [data-sequence-index="1"]').disabled,
+        termsHiddenAfter: document.querySelector('#advanced-sequence-terms').hidden,
         eventTypes: raw.events.map((event) => event.type),
         learnerMoves: raw.events.filter((event) => event.type === 'move_first' || event.type === 'move_retry').map((event) => ({type:event.type, step:event.stepIndex, correct:event.correct, firstResponse:event.firstResponse})),
         familyMeta: raw.events.filter((event) => event.type === 'move_first').map((event) => ({familyId:event.familyId, variantId:event.variantId, axes:event.variationAxes}))
       };
     })()`);
     assert.equal(advancedFlow.sequenceTabs, 8);
+    assert.equal(advancedFlow.beforeName, "棋盤練習 1");
+    assert.match(advancedFlow.beforeTarget, /完整名稱、術語與重點會在走完後揭露/);
+    assert.equal(advancedFlow.variantDisabledBefore, true);
+    assert.equal(advancedFlow.termsHiddenBefore, true);
     assert.match(advancedFlow.afterWrong, /這手合法，但不是本題 contract 的下一手/);
     assert.match(advancedFlow.afterFirstCorrect, /白棋依題目中的局部應手/);
     assert.equal(advancedFlow.stepAfterOpponent, "第 2 / 2 步");
     assert.match(advancedFlow.finalFeedback, /這條多手變化已走完/);
     assert.equal(advancedFlow.takeawayHidden, false);
+    assert.equal(advancedFlow.revealedName, "倒撲實走：送一子後重新數氣");
+    assert.equal(advancedFlow.variantDisabledAfter, false);
+    assert.equal(advancedFlow.termsHiddenAfter, false);
     assert.deepEqual(advancedFlow.eventTypes, ["presented", "decision_presented", "move_first", "move_retry", "opponent_move", "decision_presented", "move_first", "completed"]);
     assert.deepEqual(advancedFlow.learnerMoves, [
       {type:"move_first", step:0, correct:false, firstResponse:true},
