@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="styles.css?v=learner-flow-v44">
   <link rel="stylesheet" href="advanced.css?v=advanced-training-v3">
   <script defer src="go.js"></script>
-  <script defer src="advanced-content.js?v=advanced-training-v3"></script>
+  <script defer src="advanced-content.js?v=advanced-training-v4"></script>
   <script defer src="advanced-events.js?v=advanced-training-v1"></script>
   <script defer src="advanced-sequence-events.js?v=advanced-sequence-v1"></script>
   <script defer src="advanced-sequence-contract.js?v=advanced-sequence-v1"></script>
@@ -142,7 +142,7 @@
     <section class="advanced-roadmap" aria-labelledby="advanced-roadmap-title">
       <span class="advanced-kicker">Next Experience</span>
       <h2 id="advanced-roadmap-title">進階不是一直往下排單元</h2>
-      <p>本頁先建立讀棋／手筋、中盤攻防、官子／全局判斷三條 practice-only 線；多手棋盤 Response 目前只收錄能由規則引擎與 sequence contract 重播驗證的倒撲、枷與對殺。征子要等 forced-line／逃路分支 oracle 完整後再加入，不用看起來像征子的固定座標冒充。完整 19 路對局與棋譜回流仍是下一個獨立 Experience。</p>
+      <p>本頁先建立讀棋／手筋、中盤攻防、官子／全局判斷三條 practice-only 線；多手棋盤 Response 目前只收錄能由規則引擎與 sequence contract 重播驗證的倒撲、枷、對殺與征子。征子只收錄「每次打吃後對手都只有唯一延長」的 bounded forced line，並用引征干擾子做 negative oracle；不把這個局部 sequence 升格成所有征子都已判定。完整 19 路對局與棋譜回流仍是下一個獨立 Experience。</p>
     </section>
   </main>
 </body>
