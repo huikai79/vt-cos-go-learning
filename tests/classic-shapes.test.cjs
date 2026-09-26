@@ -7,6 +7,8 @@ const Catalog = require("../classic-shapes-catalog.js");
 const Go = require("../go.js");
 const Practice = require("../classic-shape-practice.js");
 const PracticeContract = require("../classic-shape-practice-contract.js");
+const ShortRead = require("../classic-shape-read.js");
+const ShortReadContract = require("../classic-shape-read-contract.js");
 
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "classic-shapes.html"), "utf8");
@@ -26,7 +28,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /直三使用既有 scoring contract；刀把五另有 bounded「共同急所」contract/);
+  assert.match(html, /直三使用既有 scoring contract；刀把五有 bounded「共同急所」與三手 A\/B short-read contract/);
   assert.match(html, /名稱仍在作答後才揭示/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
@@ -42,7 +44,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v3");
+  assert.equal(Catalog.version, "world-classic-shapes-v4");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -65,7 +67,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
   const longL = Catalog.entries.find((entry) => entry.id === "long-l-group-v1");
   assert.equal(knife.zhNameStatus, S.ESTABLISHED_ALIAS);
   assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), true);
-  assert.equal(knife.practiceStatus, "playable_bounded_vital_point_contract");
+  assert.equal(knife.practiceStatus, "playable_bounded_vital_point_and_short_read_contract");
   assert.equal(grape.zhNameStatus, S.NEEDS_REVIEW);
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
   assert.equal(carpenter.zhNameStatus, S.ESTABLISHED_ALIAS);
@@ -146,4 +148,48 @@ test("刀把五 UI 明示 bounded vital-point 範圍，不把四題升格 master
   assert.match(html, /不宣稱完整死活答案樹/);
   assert.match(js, /GoClassicShapePracticeContract/);
   assert.match(js, /不代表 mastery 或完整死活已驗證/);
+});
+
+
+test("刀把五 A/B short-read 三個 variant 由幾何推導 pair 並由 rules replay", () => {
+  assert.equal(ShortRead.version, "classic-shape-read-v1");
+  assert.equal(ShortRead.scoringContractVersion, ShortReadContract.CONTRACT_VERSION);
+  assert.equal(ShortRead.items.length, 3);
+  const all = ShortReadContract.validateAll(ShortRead.items, { Go, PracticeContract });
+  assert.equal(all.ok, true, all.errors.join("; "));
+  for (const item of ShortRead.items) {
+    const pair = ShortReadContract.deriveReplyPair(item.baseItem, PracticeContract);
+    assert.equal(pair.length, 2, item.id);
+    assert.ok(pair.some((point) => ShortReadContract.samePoint(point, item.defenderReply)), item.id);
+    assert.deepEqual(ShortReadContract.complement(pair, item.defenderReply), item.attackerFollowup, item.id);
+    const scored = ShortReadContract.scoreFollowup(item, item.attackerFollowup, { Go, PracticeContract });
+    assert.equal(scored.ok, true, item.id);
+    assert.equal(scored.correct, true, item.id);
+  }
+});
+
+test("刀把五 short-read 對非 A/B 回應、錯誤 complement 與舊座標 fail closed", () => {
+  const seed = ShortRead.items[0];
+  const pair = ShortReadContract.deriveReplyPair(seed.baseItem, PracticeContract);
+  const outside = seed.baseItem.eyeSpace.find((point) => !pair.some((candidate) => ShortReadContract.samePoint(candidate, point)) && !ShortReadContract.samePoint(point, seed.baseItem.vitalPoint));
+  const badDefender = { ...seed, id: "bad-defender", defenderReply: outside };
+  assert.equal(ShortReadContract.validateItem(badDefender, { Go, PracticeContract }).ok, false);
+
+  const badFollow = { ...seed, id: "bad-follow", attackerFollowup: seed.defenderReply };
+  assert.equal(ShortReadContract.validateItem(badFollow, { Go, PracticeContract }).ok, false);
+
+  const mirror = ShortRead.items.find((item) => item.variantId === "short-read-mirror");
+  assert.ok(mirror);
+  assert.notDeepEqual(mirror.attackerFollowup, seed.attackerFollowup);
+  const staleSeedMove = ShortReadContract.scoreFollowup(mirror, seed.attackerFollowup, { Go, PracticeContract });
+  assert.equal(staleSeedMove.ok, true);
+  assert.equal(staleSeedMove.correct, false);
+});
+
+test("刀把五 short-read UI 明示只覆蓋 A/B 主分支，未列分支保持 UNKNOWN", () => {
+  assert.match(html, /刀把五：A\/B 互補短讀/);
+  assert.match(html, /只判來源支持的 A\/B 互補主分支/);
+  assert.match(html, /未列分支保持 UNKNOWN/);
+  assert.match(js, /GoClassicShapeReadContract/);
+  assert.match(js, /未列分支仍是 UNKNOWN/);
 });

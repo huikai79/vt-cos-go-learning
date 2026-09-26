@@ -7,13 +7,15 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v4">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v5">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v3"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v4"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v4"></script>
+  <script defer src="classic-shape-read-contract.js?v=classic-bulky-five-short-read-v1"></script>
+  <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v5"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -26,7 +28,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五另有 bounded「共同急所」contract。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五有 bounded「共同急所」與三手 A/B short-read contract。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro"><span class="question-tag">已驗證可玩的練習</span><h2>先練直三，再看世界名型</h2><p>名稱仍在作答後才揭示；先用棋形結構找急所，再把名稱當記憶鉤子。</p></section>
@@ -97,6 +99,32 @@
           <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> vital point only</span></div>
           <div id="bulky-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="bulky-cursor-status">方向鍵移動 · Enter 落子</span><span id="bulky-side">● 黑棋</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="bulky-read" aria-labelledby="bulky-read-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">短讀 · 3 手 bounded branch</span>
+        <h2 id="bulky-read-title">刀把五：A/B 互補短讀</h2>
+        <p>棋盤已重播攻方先佔共同急所、守方再走 A 或 B。你只下第 3 手：找另一個互補點。這裡仍不是完整答案樹。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="read-tag">1 / 3 · 第 3 手</span>
+          <h3 id="read-title">補另一個 A/B 點</h3>
+          <p id="read-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只判來源支持的 A/B 互補主分支；未列分支保持 UNKNOWN，不用固定 fallback 猜答案。</span></div>
+          <div id="read-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div class="classic-actions">
+            <button id="read-hint" class="subtle-button" type="button">給我短讀提示</button>
+            <button id="read-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="刀把五 A/B 短讀棋盤">
+          <div class="card-top"><span>7 × 7 short read</span><span class="board-status"><i></i> 3-move branch</span></div>
+          <div id="read-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五短讀棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="read-cursor-status">方向鍵移動 · Enter 落子</span><span id="read-side">○ 白棋</span></div>
         </section>
       </div>
     </section>

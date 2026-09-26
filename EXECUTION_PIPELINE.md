@@ -152,3 +152,8 @@
 ## 2026-09-27 Decision note｜名型館第一個 geometry-backed practice：刀把五
 
 刀把五從 nomenclature gate 往 geometry/scoring gate 前進，但只建立 `classic-vital-point-v1`：五點眼空必須與 P-pentomino 同構，唯一 degree-3 眼空點才是 bounded vital point；rules engine 另驗 setup 與所有候選點合法。四個 variant 只測守／攻角色與方向改變後是否仍找到同一結構急所。這不是完整 life/death solver，也不允許把四題完成升格為 mastery、transfer、T2/T3 或 formal evaluation。完整做活／殺棋需下一層 variation/branch contract。
+
+
+## 2026-09-27 Decision note｜刀把五從急所辨識進到三手 A/B short-read
+
+在 `classic-vital-point-v1` 之上新增 `classic-bulky-five-short-read-v1`。只有來源明確支持的 A/B 互補主分支進 scoring：攻方先佔 vital point，守方若選 A/B 之一，攻方補另一點。A/B 由 geometry 推導而非 UI 座標；rules engine 必須重播三手合法。任何未列守方抵抗維持 UNKNOWN，不使用最近點、固定座標或 LLM 推測 fallback。若要再升格完整 life/death，下一步必須建立更完整 branch tree、終局／提子結果與外氣 negative oracle。

@@ -4,11 +4,15 @@
   const Catalog = window.GoClassicShapeCatalog;
   const Practice = window.GoClassicShapePractice;
   const PracticeContract = window.GoClassicShapePracticeContract;
+  const ShortRead = window.GoClassicShapeRead;
+  const ShortReadContract = window.GoClassicShapeReadContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !ShortRead || !ShortReadContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
+  const shortReadValidation = ShortReadContract.validateAll(ShortRead.items, { Go, PracticeContract });
+  if (!shortReadValidation.ok) throw new Error("Classic shape short-read contract invalid: " + shortReadValidation.errors.join("; "));
 
   const stageIds = ["u4-m01", "u4-m02", "u4-m03", "u4-m05"];
   const stageMeta = [
@@ -29,6 +33,10 @@
   let bulkySolved = false;
   let bulkyHintShown = false;
   let bulkyCursor = [3, 3];
+  let readIndex = 0;
+  let readSolved = false;
+  let readHintShown = false;
+  let readCursor = [2, 2];
 
   const $ = (id) => document.getElementById(id);
 
@@ -186,6 +194,111 @@
     }
   }
 
+  function buildReadBoard(item) {
+    const base = item.baseItem;
+    const baseValidation = PracticeContract.validateItem(base, Go);
+    let board = Go.boardFromStones(baseValidation.setupStones, base.boardSize);
+    let played = Go.playMove(board, base.vitalPoint[0], base.vitalPoint[1], base.playerColor);
+    if (!played.legal) throw new Error(item.id + " vital replay failed");
+    board = played.board;
+    played = Go.playMove(board, item.defenderReply[0], item.defenderReply[1], base.defenderColor);
+    if (!played.legal) throw new Error(item.id + " defender replay failed");
+    return played.board;
+  }
+
+  function readCandidates(item, board) {
+    return item.baseItem.eyeSpace.filter(([x,y]) => board[y][x] === Go.EMPTY);
+  }
+
+  function renderReadBoard() {
+    const item = ShortRead.items[readIndex];
+    const board = buildReadBoard(item);
+    const size = item.baseItem.boardSize;
+    const pad = 7;
+    const span = 86;
+    const step = span / (size - 1);
+    const candidates = new Set(readCandidates(item, board).map(([x,y]) => pointKey(x,y)));
+    const lines = [];
+    const nodes = [];
+    for (let i=0; i<size; i+=1) {
+      const p = pad + i * step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let y=0; y<size; y+=1) for (let x=0; x<size; x+=1) {
+      const px = pad + x * step;
+      const py = pad + y * step;
+      if (board[y][x] === Go.BLACK) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black"/>');
+      if (board[y][x] === Go.WHITE) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white"/>');
+      if (candidates.has(pointKey(x,y))) nodes.push('<circle data-read-x="' + x + '" data-read-y="' + y + '" cx="' + px + '" cy="' + py + '" r="6.2" class="classic-hit bulky-hit"/>');
+    }
+    const [cx0,cy0] = readCursor;
+    const cx = pad + cx0 * step;
+    const cy = pad + cy0 * step;
+    nodes.push('<circle cx="' + cx + '" cy="' + cy + '" r="6.4" class="classic-cursor-ring"/>');
+    $("read-board").innerHTML = '<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("read-cursor-status").textContent = "游標：第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderRead() {
+    const item = ShortRead.items[readIndex];
+    const board = buildReadBoard(item);
+    const candidates = readCandidates(item, board);
+    readSolved = false;
+    readHintShown = false;
+    readCursor = candidates[0].slice();
+    $("read-tag").textContent = (readIndex+1) + " / " + ShortRead.items.length + " · 第 3 手";
+    $("read-title").textContent = readIndex === 0 ? "補另一個 A/B 點" : "換一條 A/B 應手再讀";
+    $("read-prompt").textContent = item.prompt;
+    $("read-feedback").className = "feedback";
+    $("read-feedback").textContent = "";
+    $("read-hint").disabled = false;
+    $("read-next").disabled = true;
+    $("read-next").textContent = readIndex === ShortRead.items.length-1 ? "完成短讀" : "下一題 →";
+    $("read-side").textContent = item.baseItem.playerColor === Go.BLACK ? "● 黑棋" : "○ 白棋";
+    renderReadBoard();
+  }
+
+  function attemptRead(x,y) {
+    if (readSolved) return;
+    const item = ShortRead.items[readIndex];
+    const board = buildReadBoard(item);
+    if (!readCandidates(item, board).some(([cx,cy]) => cx === x && cy === y)) {
+      $("read-feedback").className = "feedback error";
+      $("read-feedback").textContent = "這一手不在目前仍空的眼空候選裡。";
+      return;
+    }
+    const result = ShortReadContract.scoreFollowup(item,[x,y],{ Go, PracticeContract });
+    if (!result.ok) {
+      $("read-feedback").className = "feedback error";
+      $("read-feedback").textContent = "短讀 contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if (result.correct) {
+      readSolved = true;
+      $("read-feedback").className = "feedback success";
+      $("read-feedback").textContent = item.success;
+      $("read-hint").disabled = true;
+      $("read-next").disabled = false;
+    } else {
+      $("read-feedback").className = "feedback error";
+      $("read-feedback").textContent = readHintShown
+        ? "還不是。守方已佔 A/B 其中一點；找另一個尚未被佔的互補點。"
+        : "這一手不符合 A/B 主分支。先比較守方剛走的位置與另一個對稱點。";
+    }
+  }
+
+  function moveReadCursor(dx,dy) {
+    const item = ShortRead.items[readIndex];
+    const board = buildReadBoard(item);
+    const candidates = readCandidates(item,board);
+    const next = [readCursor[0]+dx,readCursor[1]+dy];
+    if (candidates.some(([x,y]) => x === next[0] && y === next[1])) {
+      readCursor = next;
+      renderReadBoard();
+    }
+  }
+
   function renderBoard() {
     const problem = problems[stage];
     const size = 9;
@@ -337,6 +450,43 @@
     }
   });
 
+  $("read-board").addEventListener("click", (event) => {
+    const hit = event.target.closest("[data-read-x][data-read-y]");
+    if (!hit) return;
+    readCursor = [Number(hit.dataset.readX), Number(hit.dataset.readY)];
+    renderReadBoard();
+    attemptRead(readCursor[0],readCursor[1]);
+  });
+
+  $("read-board").addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") { event.preventDefault(); moveReadCursor(-1,0); }
+    else if (event.key === "ArrowRight") { event.preventDefault(); moveReadCursor(1,0); }
+    else if (event.key === "ArrowUp") { event.preventDefault(); moveReadCursor(0,-1); }
+    else if (event.key === "ArrowDown") { event.preventDefault(); moveReadCursor(0,1); }
+    else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      attemptRead(readCursor[0],readCursor[1]);
+    }
+  });
+
+  $("read-hint").addEventListener("click", () => {
+    readHintShown = true;
+    $("read-feedback").className = "feedback";
+    $("read-feedback").textContent = ShortRead.items[readIndex].hint;
+  });
+
+  $("read-next").addEventListener("click", () => {
+    if (!readSolved) return;
+    if (readIndex < ShortRead.items.length - 1) {
+      readIndex += 1;
+      renderRead();
+    } else {
+      $("read-feedback").className = "feedback success";
+      $("read-feedback").textContent = "A/B 三手短讀完成。這只表示完成來源支持的主分支練習；未列分支仍是 UNKNOWN。";
+      $("read-next").disabled = true;
+    }
+  });
+
   $("classic-next").addEventListener("click", () => {
     if (!solved) return;
     if (stage < problems.length - 1) {
@@ -352,5 +502,6 @@
   renderCatalogFilters();
   renderCatalog("all");
   renderBulky();
+  renderRead();
   render();
 })();

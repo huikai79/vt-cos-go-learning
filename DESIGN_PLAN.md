@@ -1,3 +1,5 @@
+2026-09-27 刀把五 A/B short-read v1：在 vital-point recognition 之上增加一個 3 手 bounded branch：攻方先佔共同急所，守方若走 geometry 推導出的 A/B 任一點，攻方需立即補另一點。A/B 不是手寫座標，而是 eye-space adjacency graph 中「與 vital point 相鄰且 degree=2」的兩個點；seed、反向應手與鏡像共三個 variant。rules engine 必須重播三手合法性。這個 branch 由外部教材支持，但未列抵抗保持 UNKNOWN；仍不宣稱完整刀把五答案樹、mastery 或 transfer。
+
 2026-09-27 刀把五 bounded practice v1：世界名型館第一個從 catalog 升成可玩 family 的新名型只評「共同急所」第一手。geometry contract 以五點 P-pentomino 同構＋唯一 degree-3 眼空節點推導急所，rules engine 再驗 setup 與五個候選落子合法；守／攻、旋轉、鏡像共四個 variant。這個 contract 只支持 vital-point recognition，不支持完整生死、所有外氣／角部條件、mastery、transfer 或 formal evaluation。若要升格完整死活 practice，先補 variation tree、主要抵抗與 negative oracle。
 
 2026-09-27 世界名型館中文命名 v2：名稱來源、中文命名地位與棋形可評分資格分三層保存。新增 zhNameStatus 六態：established、established_alias、teaching_translation、descriptive_translation、no_established_name_found、needs_review。沒有確認固定中文專名的 L Group／L+1 Group／Tripod Group 保留英文 source name，中文只作描述；Long L Group 由多個中文術語來源支持「帶鉤」，並依外氣分「緊帶鉤／寬帶鉤」；Carpenter's Square 由多個中文術語來源支持「斗方」，另保留「金櫃角」別名。「木匠方」降為教學翻譯。這些命名升格不改變 catalog-only 的棋理／scoring 狀態。名稱核對不得自動建立 scoring、KC 或 practice eligibility。

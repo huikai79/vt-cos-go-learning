@@ -36,7 +36,9 @@
     badukworldSeven: { label: "BadukWorld：사활7형제", url: "https://www.badukworld.co.kr/biz/7bros.html", sourceTier: "community_secondary" },
     badukworldDeath: { label: "BadukWorld：사활특강-사(死)", url: "https://www.badukworld.co.kr/biz/lesson2/special/death.html", sourceTier: "community_secondary" },
     bgaBulkyPractice: { label: "British Go Journal：Bulky Five / vital point examples", url: "https://britgo.org/files/bgj/bgj121.pdf", sourceTier: "association" },
-    ogsBulkyVital: { label: "Online Go Forum：Bulky Five vital point discussion", url: "https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356", sourceTier: "community_secondary" }
+    ogsBulkyVital: { label: "Online Go Forum：Bulky Five vital point discussion", url: "https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356", sourceTier: "community_secondary" },
+    yeefanBulkyAB: { label: "YeeFan：Multiple-Space Eyes, Bulky Five A/B sequence", url: "https://yeefan.sg/weiqi/howtoplaygo/howtoplaygo06.htm", sourceTier: "instructional_secondary" },
+    malaysiaWeiqiBulky: { label: "Malaysia Weiqi Association：Multiple Eye Space", url: "https://www.weiqi.org.my/wp-content/uploads/2013/05/moduleav21.pdf", sourceTier: "association" }
   });
 
   const entries = [
@@ -151,14 +153,14 @@
       zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
       zhNameNote: "多份華語術語表將刀把五及若干別名對應 Bulky Five；但本專案尚未完成 geometry/scoring contract，因此仍只作圖鑑。",
       teachingLabel: "五點大眼名型候選",
-      practiceStatus: "playable_bounded_vital_point_contract",
+      practiceStatus: "playable_bounded_vital_point_and_short_read_contract",
       reviewStatus: REVIEW.PARTIAL,
       aliases: [
         { locale: "en", name: "Bulky Five", relationType: "terminology-table-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
-      note: "已建立 bounded「共同急所」practice：geometry contract 驗五點 P-pentomino 與唯一三鄰點，rules engine 驗落子合法。這只支持第一手急所練習，不代表完整死活答案樹或所有外氣條件。",
+      note: "已建立兩層 bounded practice：第一層找共同急所；第二層只讀「攻方急所 → 守方 A/B → 攻方補另一點」的三手主分支。兩層都不代表完整死活答案樹或所有外氣條件。",
       rulesetSensitive: false,
-      sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital]
+      sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital, sources.yeefanBulkyAB, sources.malaysiaWeiqiBulky]
     },
     {
       id: "plum-five-candidate-v1",
@@ -360,7 +362,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v3",
+    version: "world-classic-shapes-v4",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
