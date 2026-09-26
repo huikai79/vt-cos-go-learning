@@ -264,7 +264,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v44"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v45"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -354,7 +354,7 @@ async function main() {
     const phase4 = await evaluate(socket, `document.querySelector('#tools-menu').open = true; document.querySelector('#application-button').click(); const application = {number: document.querySelector('#question-number').textContent, tag: document.querySelector('#question-tag').textContent, why: document.querySelector('#learning-why').textContent, toolsClosed: !document.querySelector('#tools-menu').open, focused: document.activeElement.id}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sample-sgf-button').click(); const picker = {open: document.querySelector('#sgf-picker-dialog').open, choices: document.querySelector('#sgf-picker-move').options.length}; document.querySelector('#sgf-picker-confirm-button').click(); const candidate = document.querySelector('#sgf-candidate-input'); const reason = document.querySelector('#sgf-reason-input'); const expectedResponse = document.querySelector('#sgf-opponent-response-input'); candidate.value = '第 5 行第 5 列'; reason.value = '先確認中央氣數'; expectedResponse.value = '預期白棋會先補氣'; document.querySelector('#sgf-reflection-save-button').click(); const local = {number: document.querySelector('#question-number').textContent, player: document.querySelector('#player-color').textContent, status: document.querySelector('#sgf-reflection-status').textContent}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sgf-review-status-input').value = 'original_confirmed'; document.querySelector('#sgf-acceptable-answer-input').value = '人工複盤確認原著可接受'; document.querySelector('#sgf-review-save-button').click(); const review = document.querySelector('#sgf-review-status').textContent; ({application, picker, local, review, feedback: document.querySelector('#feedback').textContent})`);
     assert.match(phase4.application.number, /固定應用探測/);
     assert.equal(phase4.application.tag, "固定應用探測");
-    assert.match(phase4.application.why, /固定局面小測驗/);
+    assert.match(phase4.application.why, /固定局面應用練習/);
     assert.equal(phase4.application.toolsClosed, true);
     assert.equal(phase4.application.focused, "question-prompt");
     assert.deepEqual(phase4.picker, {open: true, choices: 1});
@@ -381,7 +381,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v44");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v45");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -398,9 +398,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v44");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v45");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v44");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v45");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
@@ -672,7 +672,7 @@ async function main() {
     const narrowOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
     assert.ok(narrowOverflow.scrollWidth <= narrowOverflow.width + 1, `320px horizontal overflow: ${JSON.stringify(narrowOverflow)}`);
     const mobileBrand = await evaluate(socket, `(() => { const label = document.querySelector('.brand small'); return {text: label.textContent, display: getComputedStyle(label).display}; })()`);
-    assert.match(mobileBrand.text, /VT-COS/);
+    assert.match(mobileBrand.text, /本機進度/);
     assert.notEqual(mobileBrand.display, "none");
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
     const enlargedText = await evaluate(socket, `(() => { document.documentElement.style.fontSize = '32px'; const result = {width: innerWidth, scrollWidth: document.documentElement.scrollWidth}; document.documentElement.style.fontSize = ''; return result; })()`);
