@@ -31,18 +31,39 @@
     return "待棋形核對";
   }
 
+  function zhNameStatusLabel(status) {
+    const S = Catalog.ZH_NAME_STATUS;
+    if (status === S.ESTABLISHED) return "中文既有名";
+    if (status === S.ESTABLISHED_ALIAS) return "中文既有／常用別名";
+    if (status === S.TEACHING_TRANSLATION) return "專案教學翻譯";
+    if (status === S.DESCRIPTIVE_TRANSLATION) return "中文描述，不是專名";
+    if (status === S.NO_ESTABLISHED_NAME_FOUND) return "本輪未找到固定中文名";
+    return "中文名稱待核實";
+  }
+
+  function displayZh(entry) {
+    if (entry.preferredZhTW) return entry.preferredZhTW;
+    if (entry.teachingTranslation) return entry.teachingTranslation;
+    return entry.teachingLabel;
+  }
+
   function renderCatalog(filter) {
     const entries = Catalog.entries.filter((entry) => !filter || filter === "all" || entry.category === filter);
     $("classic-atlas-grid").innerHTML = entries.map((entry) => {
       const aliases = entry.aliases.length
         ? entry.aliases.map((alias) => '<li><strong>' + escapeHtml(alias.locale) + '</strong><span>' + escapeHtml(alias.name) + '</span><small>' + escapeHtml(alias.relationType) + ' · ' + reviewLabel(alias.reviewStatus) + '</small></li>').join("")
         : '<li class="alias-empty">其他語言名稱尚未完成可靠的一對一核對。</li>';
+      const zhAliases = entry.zhAliases.length
+        ? '<div class="catalog-zh-aliases"><span>中文別名候選</span>' + entry.zhAliases.map((alias) => '<small>' + escapeHtml(alias.name) + ' · ' + reviewLabel(alias.reviewStatus) + '</small>').join("") + '</div>'
+        : "";
       const sources = entry.sources.length
         ? '<div class="catalog-sources"><span>來源</span>' + entry.sources.map((source) => '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label) + '</a>').join("") + '</div>'
         : '<div class="catalog-sources pending"><span>來源</span><em>待補可靠來源與幾何核對</em></div>';
       return '<article class="classic-catalog-card" data-review="' + escapeHtml(entry.reviewStatus) + '">' +
         '<div class="catalog-card-top"><span>' + escapeHtml(Catalog.categories[entry.category]) + '</span><strong>' + reviewLabel(entry.reviewStatus) + '</strong></div>' +
-        '<h3>' + escapeHtml(entry.zhTW) + '</h3>' +
+        '<h3>' + escapeHtml(displayZh(entry)) + '</h3>' +
+        '<div class="catalog-zh-status"><strong>' + zhNameStatusLabel(entry.zhNameStatus) + '</strong><span>' + escapeHtml(entry.zhNameNote) + '</span></div>' +
+        zhAliases +
         '<p class="catalog-teaching-label">' + escapeHtml(entry.teachingLabel) + '</p>' +
         '<ul class="catalog-aliases">' + aliases + '</ul>' +
         '<p class="catalog-note">' + escapeHtml(entry.note) + '</p>' +
