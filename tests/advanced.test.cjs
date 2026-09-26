@@ -90,9 +90,6 @@ test("進階 event store 保留首答與 retry，不以最後答對覆寫首答"
   assert.equal(summary.retries, 1);
   assert.equal(summary.completedExperiences, 1);
   assert.equal(summary.formalEligible, false);
-  assert.equal(summary.families[0].familyId, "snapback");
-  assert.equal(summary.families[0].variants[0].firstMoveCount, 1);
-  assert.equal(summary.families[0].variants[0].firstCorrectCount, 0);
 });
 
 test("進階 event store 遇到損壞資料 fail closed，不猜測修復", () => {
@@ -300,6 +297,9 @@ test("多手 sequence event store v2 逐 decision 保留首答、retry 與 famil
   assert.equal(summary.firstCorrect, 0);
   assert.equal(summary.retries, 1);
   assert.equal(summary.formalEligible, false);
+  assert.equal(summary.families[0].familyId, "snapback");
+  assert.equal(summary.families[0].variants[0].firstMoveCount, 1);
+  assert.equal(summary.families[0].variants[0].firstCorrectCount, 0);
 });
 
 test("family transition 只輸出描述狀態，不產生 mastery 或 transfer claim", () => {
