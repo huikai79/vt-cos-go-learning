@@ -46,3 +46,10 @@
 .catalog-zh-status{display:grid;gap:4px;margin:8px 0 10px;padding:10px 12px;border-radius:9px;background:#f4f7f1}
 .catalog-zh-status strong{font-size:.78rem;color:#315f40}.catalog-zh-status span{font-size:.86rem;line-height:1.55;color:#607362}
 .catalog-zh-aliases{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 10px}.catalog-zh-aliases>span{font-size:.76rem;font-weight:700}.catalog-zh-aliases small{padding:4px 7px;border-radius:999px;background:#eef2ec;color:#667568}
+
+.bulky-practice{margin-top:34px;padding-top:6px}
+.bulky-practice-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(420px,1.2fr);gap:18px;align-items:stretch;margin-top:16px}
+.bulky-practice .question-card{display:flex;flex-direction:column}
+.bulky-practice .classic-actions{margin-top:auto}
+.bulky-hit{fill:#ffffff18}
+@media(max-width:900px){.bulky-practice-grid{grid-template-columns:1fr}}
