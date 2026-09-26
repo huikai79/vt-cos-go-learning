@@ -554,7 +554,7 @@ async function main() {
       { index: 9, fromId: "u1-10", fromTitle: "救出被打吃的黑棋", fromLesson: 2, toUnit: 2, toLesson: "辨認棋串", toQuestion: "左右相鄰" },
       { index: 19, fromId: "u2-10", fromTitle: "近邊的斷點", fromLesson: 5, toUnit: 3, toLesson: "不能下與不能立刻提回", toQuestion: "沒有氣的一手" },
       { index: 25, fromId: "u3-06", fromTitle: "本程式的劫規則", fromLesson: 6, toUnit: 4, toLesson: "兩眼與急所", toQuestion: "先找第一個急所" },
-      { index: 39, fromId: "u4-06", fromTitle: "先手的重要性", fromLesson: 7, toUnit: 5, toLesson: "把一局下完", toQuestion: "9 路盤的用途" },
+      { index: 39, fromId: "u4-06", fromTitle: "誰先走很重要", fromLesson: 7, toUnit: 5, toLesson: "把一局下完", toQuestion: "9 路盤的用途" },
       { index: 45, fromId: "u5-06", fromTitle: "小局複盤", fromLesson: 8, toUnit: 6, toLesson: "從角落展開", toQuestion: "角落的效率" },
       { index: 51, fromId: "u6-06", fromTitle: "佈局後的自問", fromLesson: 9, toUnit: 7, toLesson: "實地與厚勢", toQuestion: "實地" },
       { index: 57, fromId: "u7-06", fromTitle: "全局比較", fromLesson: 10, toUnit: 8, toLesson: "先照顧弱棋", toQuestion: "弱棋的線索" },
