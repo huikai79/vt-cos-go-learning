@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v45`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v46`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v5 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v1 | `classic-shapes.html` 由單一直三探索擴為「已驗證直三練習＋多語圖鑑」。`classic-shapes-catalog.js` 以棋形／family 為主體，跨語名稱分 `exact-established-name`、`category-equivalent`、`project-established-name` 與 `needs_review`；盤角曲四標記 ruleset-sensitive；刀把五、梅花五、葡萄六、大／小豬嘴、金雞獨立目前只作 catalog candidate，不建立可評分答案 | `classic-shapes.test.cjs`、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語 provenance | 條件通過僅限資料模型與呈現；目前只有直三可玩。跨語術語核對不等於棋理／答案效度，candidate 名型需逐一完成幾何、來源與 scoring／variation contract 後才能變成練習 |
+| 世界死活名型館 v2 | `classic-shapes.html` 由單一直三探索擴為「已驗證直三練習＋多語圖鑑」。`classic-shapes-catalog.js` 以棋形／family 為主體，跨語名稱分 `exact-established-name`、`category-equivalent`、`project-established-name` 與 `needs_review`；中文名稱另分 `established`、`established_alias`、`teaching_translation`、`descriptive_translation`、`no_established_name_found`、`needs_review`；盤角曲四標記 ruleset-sensitive；刀把五、梅花五、葡萄六、大／小豬嘴、金雞獨立目前只作 catalog candidate，不建立可評分答案 | `classic-shapes.test.cjs`、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語 provenance | 條件通過僅限資料模型與呈現；目前只有直三可玩。跨語術語核對不等於棋理／答案效度，candidate 名型需逐一完成幾何、來源與 scoring／variation contract 後才能變成練習 |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -402,3 +402,13 @@
 - **Johari 未知區：** 中／日／韓／英是否存在穩定一對一名型、各地教材分類差異、真人是否因多語資訊增加負擔仍待外部內容審查與 formative observation。
 - **實作：** 新增 `classic-shapes-catalog.js` 與圖鑑 UI。已核實項目含「五目中手」「花六」「隅の曲り四目 / Bent Four in the Corner」「一合マス / Carpenter's Square」。其餘指定中文名型先標 `needs_review`。
 - **不變項：** 只有既有直三練習使用既有 scoring source of truth；圖鑑不寫 learner evidence、KC、scheduler、T2/T3 或 formal evaluation。盤角曲四在 ruleset-aware contract 前不得成為單一固定答案題。
+
+
+## 2026-09-27 Change note｜中文名稱身分 v2
+
+- **問題：** v1 雖有 `reviewStatus` 與「繁中教學譯名」備註，但「沒有固定中文名」仍不是機器可讀狀態，容易把描述性翻譯日後誤當既定華語術語。
+- **修正：** `world-classic-shapes-v2` 新增 `zhNameStatus`、`preferredZhTW`、`zhAliases`、`teachingTranslation`、`literalTranslation`、`zhNameNote`。UI 明示「中文既有名／中文既有或常用別名／專案教學翻譯／中文描述不是專名／本輪未找到固定中文名／中文名稱待核實」。
+- **新增 reference family：** L Group、L+1 Group、Tripod Group、Long L Group。前三者在目前覆蓋來源中未確認固定中文專名，因此只保留英文原名＋繁中描述；Long L Group 有「帶鉤型／緊帶鉤」候選，但因可能受外氣與幾何條件細分，仍標 `needs_review`。
+- **中文名稱修正：** Carpenter's Square 不再以「木匠方」直接當 `zhTW` 主名；中文術語來源出現「斗方／金櫃角」候選，因此 preferred 中文名保持空值，「木匠方」只作 teaching translation。
+- **韓文補充：** `귀곡사`、`매화6궁` 由韓文次級圍棋來源支持，標 `PARTIAL`，不與日本棋院官方來源同級。
+- **證據邊界：** 名稱／翻譯核對仍不是棋理或 scoring 效度；只有既有直三可玩，其餘仍需 geometry、ruleset／variation contract 與 negative oracle 才能成為 practice。
