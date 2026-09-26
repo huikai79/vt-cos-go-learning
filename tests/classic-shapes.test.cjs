@@ -403,3 +403,15 @@ test("直三棋盤已有棋子與游標圈不再造成無反應點擊", () => {
   assert.match(js, /這裡已有棋子。先找眼空或邊界中的可落子點。/);
   assert.match(css, /classic-cursor-ring\{[^}]*pointer-events:none/);
 });
+
+
+test("四段探索明確只屬於直三，不冒充所有名型共用流程", () => {
+  assert.match(html, /直三專用 · 4 段探索/);
+  assert.match(html, /下面四格只屬於直三/);
+  assert.match(html, /其他名型依各自 geometry／scoring contract 安排，不固定套用這四步/);
+  assert.match(html, /1 直三 · 找急所/);
+  assert.match(html, /2 直三 · 換方向/);
+  assert.match(html, /3 直三 · 換攻方/);
+  assert.match(html, /4 直三 · 相似反例/);
+  assert.match(html, /aria-label="直三專用探索進度"/);
+});
