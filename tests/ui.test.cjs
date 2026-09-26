@@ -672,7 +672,7 @@ async function main() {
     const narrowOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
     assert.ok(narrowOverflow.scrollWidth <= narrowOverflow.width + 1, `320px horizontal overflow: ${JSON.stringify(narrowOverflow)}`);
     const mobileBrand = await evaluate(socket, `(() => { const label = document.querySelector('.brand small'); return {text: label.textContent, display: getComputedStyle(label).display}; })()`);
-    assert.match(mobileBrand.text, /本機進度/);
+    assert.match(mobileBrand.text, /VT-COS/);
     assert.notEqual(mobileBrand.display, "none");
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
     const enlargedText = await evaluate(socket, `(() => { document.documentElement.style.fontSize = '32px'; const result = {width: innerWidth, scrollWidth: document.documentElement.scrollWidth}; document.documentElement.style.fontSize = ''; return result; })()`);
