@@ -247,7 +247,9 @@
     version: 1,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
-    experiences,\n    sequenceScoringContractVersion: "advanced-sequence-v1",\n    sequenceExperiences
+    experiences,
+    sequenceScoringContractVersion: "advanced-sequence-v1",
+    sequenceExperiences
   };
 
   if (typeof module !== "undefined" && module.exports) module.exports = api;
