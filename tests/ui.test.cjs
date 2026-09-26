@@ -291,10 +291,10 @@ async function main() {
     })()`);
     assert.equal(lifeAndDeath.before.lesson, "兩眼與急所");
     assert.equal(lifeAndDeath.before.title, "先找第一個急所");
-    assert.equal(lifeAndDeath.before.step, "第 1 / 3 步");
+    assert.equal(lifeAndDeath.before.step, "第 1 / 5 步");
     assert.match(lifeAndDeath.before.caption, /三個連成一直線/);
     assert.equal(lifeAndDeath.before.boardPoints, 81);
-    assert.equal(lifeAndDeath.after.step, "第 3 / 3 步");
+    assert.equal(lifeAndDeath.after.step, "第 3 / 5 步");
     assert.match(lifeAndDeath.after.caption, /白若填一端，黑可再佔另一端提掉白棋/);
     response = await evaluate(socket, `document.querySelector('#unit-select').value = '14'; document.querySelector('#unit-select').dispatchEvent(new Event('change', {bubbles:true})); document.querySelector('[data-lesson="18"]').click(); const before = {boardHidden: getComputedStyle(document.querySelector('.board-card')).display === 'none', singleColumn: document.querySelector('.practice-grid').classList.contains('text-practice')}; document.querySelector('[data-answer="0"]').click(); ({...before, feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent, title: document.querySelector('#lesson-title').textContent})`);
     assert.match(response.feedback, /答對了/);
