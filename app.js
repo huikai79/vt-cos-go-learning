@@ -17,7 +17,7 @@
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
   const uiVersion = "learner-flow-v40";
-  const contentCatalogVersion = 3;
+  const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
   let storageRecoveryNotice = "";
@@ -107,7 +107,9 @@
     const priorCatalogVersion = value.contentCatalogVersion || 1;
     const migratedIndex = priorCatalogVersion === 1
       ? (oldIndex >= 26 ? oldIndex + 8 : oldIndex)
-      : (oldIndex >= 30 ? oldIndex + 4 : oldIndex);
+      : priorCatalogVersion === 2
+        ? (oldIndex >= 30 ? oldIndex + 4 : oldIndex)
+        : oldIndex;
     return { ...value, index: migratedIndex, contentCatalogVersion, migratedCourseIndexFromCatalogVersion: value.contentCatalogVersion || 1 };
   }
 
