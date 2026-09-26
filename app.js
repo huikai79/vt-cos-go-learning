@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v42";
+  const uiVersion = "learner-flow-v43";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -1138,7 +1138,7 @@
     const nextUnit = nextLesson ? nextLesson.unit : null;
     const crossesLesson = nextCourseProblem && nextCourseProblem.lesson !== current().lesson;
     const nextLabel = !state.reviewMode && state.index === problems.length - 1
-      ? "完成課程"
+      ? "完成核心課程"
       : !state.reviewMode && crossesLesson && nextUnit !== currentLesson().unit
         ? `進入第 ${nextUnit + 1} 單元短講`
         : !state.reviewMode && crossesLesson
@@ -1335,7 +1335,7 @@
     else {
       startProblem(0);
       $("feedback").className = "feedback success";
-      $("feedback").textContent = state.missed.size ? `目前 ${units.length} 個單元完成！有 ${state.missed.size} 題可複習。` : `目前 ${units.length} 個單元完成！${problems.length} 題都答過了。`;
+      $("feedback").textContent = state.missed.size ? `核心 ${units.length} 個單元完成！有 ${state.missed.size} 題可複習；若要繼續深化，可從「工具與資料 → 進階訓練」進入。` : `核心 ${units.length} 個單元完成！${problems.length} 題都答過了；若要繼續深化，可從「工具與資料 → 進階訓練」進入。`;
       revealQuestionStart();
     }
   }
