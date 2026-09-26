@@ -412,3 +412,4 @@
 - **中文名稱修正：** Carpenter's Square 不再以「木匠方」當既定中文名；多個中文術語來源支持「斗方」，另有「金櫃角」，因此 preferred 中文名改為「斗方」，「木匠方」只保留為 teaching translation。
 - **韓文補充：** `귀곡사`、`매화6궁` 由韓文次級圍棋來源支持，標 `PARTIAL`，不與日本棋院官方來源同級。
 - **證據邊界：** 名稱／翻譯核對仍不是棋理或 scoring 效度；只有既有直三可玩，其餘仍需 geometry、ruleset／variation contract 與 negative oracle 才能成為 practice。
+- **Validation：** PR #17 最新 verify run #403 全數 PASS：Node contracts、teaching gate verifier、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `01b202768ee7962a022d7859d8a224e23324cba3`）。這只支持工程／資料契約，不升格內容效度或學習成效。
