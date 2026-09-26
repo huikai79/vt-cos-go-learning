@@ -34,7 +34,9 @@
     chineseTermsPdf: { label: "Chinese Go Terms glossary", url: "https://www.hebsacker-verlag.de/download/Chinese_Go_Terms.pdf", sourceTier: "community_secondary" },
     takumiKyu: { label: "Takumi Go：kyu exercises", url: "https://en.1200igo.com/kyulevel", sourceTier: "specialist_secondary" },
     badukworldSeven: { label: "BadukWorld：사활7형제", url: "https://www.badukworld.co.kr/biz/7bros.html", sourceTier: "community_secondary" },
-    badukworldDeath: { label: "BadukWorld：사활특강-사(死)", url: "https://www.badukworld.co.kr/biz/lesson2/special/death.html", sourceTier: "community_secondary" }
+    badukworldDeath: { label: "BadukWorld：사활특강-사(死)", url: "https://www.badukworld.co.kr/biz/lesson2/special/death.html", sourceTier: "community_secondary" },
+    bgaBulkyPractice: { label: "British Go Journal：Bulky Five / vital point examples", url: "https://britgo.org/files/bgj/bgj121.pdf", sourceTier: "association" },
+    ogsBulkyVital: { label: "Online Go Forum：Bulky Five vital point discussion", url: "https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356", sourceTier: "community_secondary" }
   });
 
   const entries = [
@@ -149,14 +151,14 @@
       zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
       zhNameNote: "多份華語術語表將刀把五及若干別名對應 Bulky Five；但本專案尚未完成 geometry/scoring contract，因此仍只作圖鑑。",
       teachingLabel: "五點大眼名型候選",
-      practiceStatus: "catalog_candidate_only",
+      practiceStatus: "playable_bounded_vital_point_contract",
       reviewStatus: REVIEW.PARTIAL,
       aliases: [
         { locale: "en", name: "Bulky Five", relationType: "terminology-table-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
-      note: "名稱對照已比上一版更有支持，但名稱表不等於答案樹。需先完成標準幾何、先後手、外氣與 negative oracle 才能加入可評分 practice。",
+      note: "已建立 bounded「共同急所」practice：geometry contract 驗五點 P-pentomino 與唯一三鄰點，rules engine 驗落子合法。這只支持第一手急所練習，不代表完整死活答案樹或所有外氣條件。",
       rulesetSensitive: false,
-      sources: [sources.go4goChinese, sources.chineseTermsPdf]
+      sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital]
     },
     {
       id: "plum-five-candidate-v1",
@@ -348,7 +350,7 @@
     if (!Object.values(ZH_NAME_STATUS).includes(entry.zhNameStatus)) return false;
     if (!Array.isArray(entry.aliases) || !Array.isArray(entry.sources) || !Array.isArray(entry.zhAliases)) return false;
     if (!entry.zhAliases.every(validateZhAlias)) return false;
-    if (entry.practiceStatus !== "playable_existing_contract" && entry.practiceStatus.indexOf("catalog_") !== 0) return false;
+    if (entry.practiceStatus.indexOf("playable_") !== 0 && entry.practiceStatus.indexOf("catalog_") !== 0) return false;
     if (entry.zhNameStatus === ZH_NAME_STATUS.NO_ESTABLISHED_NAME_FOUND && entry.preferredZhTW !== null) return false;
     if (entry.zhNameStatus === ZH_NAME_STATUS.NO_ESTABLISHED_NAME_FOUND && !entry.teachingTranslation) return false;
     if (entry.zhNameStatus === ZH_NAME_STATUS.TEACHING_TRANSLATION && !entry.teachingTranslation) return false;
@@ -358,7 +360,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v2",
+    version: "world-classic-shapes-v3",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
