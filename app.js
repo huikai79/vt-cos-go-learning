@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v44";
+  const uiVersion = "learner-flow-v45";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -879,7 +879,7 @@
         const reason = selection && selection.selectionReason;
         activeStep = reason === "new_practice_item" ? 1 : 3;
         now = reason === "new_practice_item" ? "這是一題新練習；不看答案，先自己數氣、找候選手或落子。" : "隔一段時間重新提取，不直接回放原答案。";
-        why = reasons[selection && selection.selectionReason] || "這是你主動開啟的複習；它不會改變新課進度。";
+        why = reasons[selection && selection.selectionReason] || "這是你主動開啟的間隔練習；它不會改變新課進度。";
       }
       next = "保存首答與實際間隔；結果不足時維持待驗證。";
     } else if (state.externalMode === "application" || state.externalMode === "local_sgf") {
@@ -889,7 +889,7 @@
         why = "這是單點記憶重建；與原著一致只代表重建了棋譜事實，不代表該手唯一最佳或棋力較高。";
       } else {
         now = "在沒有技能名稱提示的局面，自行判斷是否該使用學過的技巧。";
-        why = "這是固定局面小測驗，用來檢查能否辨識技巧；結果會與課內題分開保存。";
+        why = "這是固定局面應用練習，用來檢查能否辨識技巧；結果會與課內題分開保存。";
       }
       next = state.externalMode === "local_sgf"
         ? "把與原著一致／不同和人工確認分開保存；這筆復盤不更新 T2／T3、KC 或排程。"
@@ -1183,6 +1183,10 @@
     $("due-review-count").textContent = dueCount;
     $("due-review-button").hidden = dueCount === 0;
     $("due-review-button").setAttribute("aria-label", `今日有 ${dueCount} 題到期複習`);
+    $("scheduled-practice-button").textContent = dueCount ? `複習今日到期（${dueCount}）` : "開始間隔練習";
+    $("scheduled-practice-description").textContent = dueCount
+      ? `今天有 ${dueCount} 題到期；先做這些複習，不會改變核心課程進度。`
+      : "今天沒有到期題；可先做尚未練過的練習題，之後再依間隔回來複習。";
     $("resume-button").textContent = state.externalMode ? "返回目前課程" : state.hasStarted ? "前往目前題目" : state.index === 0 ? "開始第 1 題" : "開始這一題";
     const diagnostics = Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses });
     $("diagnostic-summary").textContent = diagnosticSummaryText(diagnostics);
