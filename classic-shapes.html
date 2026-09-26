@@ -7,7 +7,7 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v7">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v8">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v6"></script>
@@ -15,11 +15,13 @@
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
   <script defer src="classic-cross-five-practice.js?v=cross-five-practice-v1"></script>
+  <script defer src="classic-contrast-contract.js?v=classic-contrast-vital-point-v1"></script>
+  <script defer src="classic-contrast-practice.js?v=classic-contrast-practice-v1"></script>
   <script defer src="classic-shape-read-contract.js?v=classic-bulky-five-short-read-v1"></script>
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v7"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v8"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -32,7 +34,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五有三層 bounded practice；梅花五／Cross Five 新增「十字形中央急所」bounded practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五與梅花五各有 bounded practice，另新增不揭名的 interleaved contrast practice，交錯測兩個 family 的第一手急所。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro"><span class="question-tag">已驗證可玩的練習</span><h2>先練直三，再看世界名型</h2><p>名稱仍在作答後才揭示；先用棋形結構找急所，再把名稱當記憶鉤子。</p></section>
@@ -191,6 +193,37 @@
           <div class="card-top"><span>7 × 7 sealed branch</span><span class="board-status"><i></i> no outside liberties</span></div>
           <div id="reduction-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五縮眼練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="reduction-cursor-status">方向鍵移動 · Enter 落子</span><span>○ 白棋縮眼</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="contrast-practice" aria-labelledby="contrast-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">Interleaved contrast · 名稱先隱藏</span>
+        <h2 id="contrast-practice-title">刀把五 vs 梅花五：混合辨形</h2>
+        <p>六題會交錯呈現兩個五點 family。作答前不顯示名稱；先找急所，答完才揭示是哪一型與幾何依據。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="contrast-tag">1 / 6 · family hidden</span>
+          <h3 id="contrast-title">先看幾何，再找第一手</h3>
+          <p id="contrast-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>contrast layer 不保存答案；實際評分委託原本刀把五或梅花五 contract。答對只代表這一題第一手正確，不代表 transfer 或 mastery。</span></div>
+          <div id="contrast-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="contrast-reveal" class="classic-reveal" hidden>
+            <span>首答後揭示</span>
+            <strong id="contrast-name"></strong>
+            <p id="contrast-note"></p>
+          </div>
+          <div class="classic-actions">
+            <button id="contrast-hint" class="subtle-button" type="button">給我結構提示</button>
+            <button id="contrast-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="名型混合辨形練習棋盤">
+          <div class="card-top"><span>7 × 7 interleaved practice</span><span class="board-status"><i></i> family hidden</span></div>
+          <div id="contrast-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路名型混合辨形棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="contrast-cursor-status">方向鍵移動 · Enter 落子</span><span id="contrast-side">● / ○ 依題目</span></div>
         </section>
       </div>
     </section>

@@ -93,3 +93,8 @@ choice-based Experience 仍保留 first response、hint、retry 與 completed ev
 - 死活、佈局、劫材、定石與全局方向不能由單一座標普遍判定。本版題目把題幹限定為明確原則，再以選項、提示與解釋驗證理解。
 - 這是有權威教材順序支持的個人化課綱，不是經真人對照研究驗證的定級系統。實際答題紀錄應用於後續修正題序、題量與說明。
 - 原題可用於重建與補練；同一技能的獨立驗收需未見棋形或情境，原題重播不能作為已修正同類錯誤的充分證據。
+
+
+### 世界名型館：混合辨形
+
+刀把五與梅花五已有各自 bounded 第一手 contract 後，另提供 6 題 interleaved contrast practice。題目不先揭示 family，學習者先依眼空 adjacency 找急所，作答後才揭示名稱與 degree-3／degree-4 結構差異。這是 practice，不是正式 transfer probe；不得用完成率推定 mastery。
