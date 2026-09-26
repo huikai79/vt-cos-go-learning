@@ -7,10 +7,12 @@
   <meta name="description" content="悟之一手的進階訓練：從核心課程轉入多路線、可回跳的讀棋與全局訓練。">
   <title>進階訓練｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v44">
-  <link rel="stylesheet" href="advanced.css?v=advanced-training-v1">
-  <script defer src="advanced-content.js?v=advanced-training-v1"></script>
+  <link rel="stylesheet" href="advanced.css?v=advanced-training-v2">
+  <script defer src="go.js"></script>
+  <script defer src="advanced-content.js?v=advanced-training-v2"></script>
   <script defer src="advanced-events.js?v=advanced-training-v1"></script>
-  <script defer src="advanced.js?v=advanced-training-v1"></script>
+  <script defer src="advanced-sequence-events.js?v=advanced-sequence-v1"></script>
+  <script defer src="advanced.js?v=advanced-training-v2"></script>
 </head>
 <body class="advanced-page">
   <a class="skip-link" href="#advanced-main">跳到進階訓練</a>
@@ -91,6 +93,46 @@
           <dl id="advanced-term-list"></dl>
         </details>
       </aside>
+    </section>
+
+    <section class="advanced-sequence-section" aria-labelledby="advanced-sequence-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">棋盤 Response</span>
+          <h2 id="advanced-sequence-title">多手讀棋實走</h2>
+        </div>
+        <p id="advanced-sequence-summary">這一區不靠選項；每一步都重新用規則引擎驗證。</p>
+      </div>
+      <div class="advanced-sequence-card">
+        <div class="advanced-sequence-copy">
+          <span class="question-tag">reading sequence · practice only</span>
+          <h3 id="advanced-sequence-name"></h3>
+          <p class="advanced-target"><span>Target</span><strong id="advanced-sequence-target"></strong></p>
+          <p class="advanced-prompt" id="advanced-sequence-prompt"></p>
+          <p class="answer-policy">點棋盤落子。合法但不符合本題 contract 的手會留在同一步重試；首答與 retry 分開保存。</p>
+          <div id="advanced-sequence-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div class="advanced-actions">
+            <button class="subtle-button" id="advanced-sequence-hint" type="button">給我觀察提示</button>
+            <button class="subtle-button" id="advanced-sequence-reset" type="button">重新開始這題</button>
+          </div>
+          <div id="advanced-sequence-takeaway" class="takeaway" hidden>
+            <span>這題帶走</span>
+            <p id="advanced-sequence-takeaway-text"></p>
+          </div>
+          <details class="lesson-terms" id="advanced-sequence-terms">
+            <summary>本題關鍵詞 <span id="advanced-sequence-term-count"></span></summary>
+            <dl id="advanced-sequence-term-list"></dl>
+          </details>
+        </div>
+        <div class="advanced-sequence-board-wrap">
+          <div class="advanced-sequence-board-head">
+            <span id="advanced-sequence-step">第 1 / 2 步</span>
+            <span id="advanced-sequence-side">● 黑棋</span>
+          </div>
+          <div id="advanced-sequence-board" class="advanced-sequence-board" tabindex="0" role="application" aria-label="進階讀棋棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <p id="advanced-sequence-cursor">方向鍵移動 · Enter 落子</p>
+        </div>
+      </div>
     </section>
 
     <section class="advanced-roadmap" aria-labelledby="advanced-roadmap-title">
