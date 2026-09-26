@@ -32,7 +32,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /刀把五有三層 bounded practice：共同急所、A\/B 三手 short-read、以及「零外氣＋守方局部手抜き」的 sealed reduction/);
+  assert.match(html, /刀把五有三層 bounded practice；梅花五／Cross Five 新增「十字形中央急所」bounded practice/);
   assert.match(html, /名稱仍在作答後才揭示/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
