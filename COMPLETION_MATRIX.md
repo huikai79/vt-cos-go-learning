@@ -454,3 +454,4 @@
 - **來源：** 中文教材直接說梅花五／花五的做活、殺棋共同要點都是中央；英語 Cross Five 教材同樣把 vital point 放在中心。來源支持第一手急所，不自動支持完整後續變化。
 - **反證：** 非十字五點 geometry、錯誤 vital point、平移後沿用 seed 舊座標都必須失敗。
 - **證據邊界：** 只支持 bounded vital-point practice；不寫 KC／scheduler／T2-T3／mastery／formal evaluation，也不宣稱真人已產生跨 family transfer。
+- **Validation：** PR #21 verify run #418 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `ccc4191ee1eae8bb3be308a19fe3037cd8bc4907`）。這只支持梅花五／Cross Five 第一手中央急所的工程／內容契約，不升格完整五目中手答案樹或學習成效。
