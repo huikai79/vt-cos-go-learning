@@ -339,3 +339,11 @@
 - **開發期間：** formative observation 可持續，目的是找 bottleneck、修 UX、補反證測試；不要求三次完成、不阻擋工程迭代，也不計入正式 usability 分母。
 - **正式教學前：** learner-facing candidate 凍結後，才執行至少三位唯一 target novice 的五項 critical tasks 與真人 accessibility spot check。
 - **狀態不變：** 正式 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`；這次只調整證據收集時序，不降低 gate。
+
+
+## 2026-09-26 Change note｜社群分享圖 v2 候選
+
+- **問題：** WhatsApp／Facebook 分享預覽原先缺乏可辨識的品牌大圖；舊 `og-wu-zhi-yi-shou.jpg` 僅保留為既有公開資產，不再作目前分享入口。
+- **改動：** 新增 `og-wu-zhi-yi-shou-v2.jpg`（1200×630，JPEG），首頁 `og:image` 與 `twitter:image` 改指向 v2；`release-manifest.json` 同步納入兩個已追蹤 OG 圖檔，維持 repository boundary 的 exact-match 契約。
+- **驗證邊界：** 檔案尺寸、metadata 與 CI 只證明發布契約；WhatsApp／Facebook 是否實際抓到新版、中文字在手機縮圖是否清楚、平台裁切是否正常，仍需平台實際預覽驗收後才能把 v2 升為正式分享資產。
+- **Rollback：** 將 `og:image`／`twitter:image` 指回舊圖即可；不影響課程、題目、事件、scoring、scheduler 或任何學習證據語義。
