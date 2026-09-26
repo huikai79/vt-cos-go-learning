@@ -80,7 +80,8 @@ test("SGF 單點復盤只比較原著一致性，不把它標成最佳手或 T3"
   assert.match(appSource, /feedback-title">與原著不同</);
   assert.match(appSource, /不更新 T2／T3、KC 或排程/);
   assert.match(htmlSource, /棋譜單點復盤/);
-  assert.match(htmlSource, /這不是整盤連續猜手/);
+  assert.match(htmlSource, /不是整盤連續猜手/);
+  assert.match(htmlSource, /不是最佳手評分/);
 });
 
 test("SGF 對檔案大小、節點數與巢狀深度設限", () => {
