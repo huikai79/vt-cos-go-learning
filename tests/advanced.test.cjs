@@ -4,6 +4,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const content = require("../advanced-content.js");
 const Events = require("../advanced-events.js");
+const SequenceEvents = require("../advanced-sequence-events.js");
+const Go = require("../go.js");
 
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "advanced.html"), "utf8");
@@ -32,7 +34,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
 });
 
 test("進階 v1 先建立三條可用訓練線與一條後續路線", () => {
-  assert.equal(content.version, 1);
+  assert.equal(content.version, 2);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 3);
   assert.ok(content.tracks.some((track) => track.id === "full-board-review" && track.status === "planned"));
@@ -111,4 +113,64 @@ test("核心課程提供獨立進階訓練入口，不偽裝成第 16 單元", (
   assert.match(indexHtml, /href="advanced\.html">進階訓練</);
   assert.match(indexHtml, /15 單元核心課程/);
   assert.match(html, /這不是第 16 單元/);
+});
+
+
+test("進階 v2 新增一個規則引擎可驗證的兩段讀棋 sequence", () => {
+  assert.equal(content.sequenceScoringContractVersion, "advanced-sequence-v1");
+  assert.equal(content.sequenceExperiences.length, 1);
+  const item = content.sequenceExperiences[0];
+  assert.equal(item.id, "adv-seq-snapback-01");
+  assert.equal(item.decisions.length, 2);
+
+  const start = Go.boardFromStones(item.setupStones, item.boardSize);
+  const first = Go.playMove(start, item.decisions[0].acceptedMoves[0][0], item.decisions[0].acceptedMoves[0][1], item.playerColor);
+  assert.equal(first.legal, true);
+  assert.equal(first.captured.length, 0);
+
+  const opponentMove = item.decisions[0].opponentMove;
+  const response = Go.playMove(first.board, opponentMove[0], opponentMove[1], Go.WHITE, { previousBoard: start });
+  assert.equal(response.legal, true);
+  assert.deepEqual(response.captured, [[0, 2]]);
+
+  const second = Go.playMove(response.board, item.decisions[1].acceptedMoves[0][0], item.decisions[1].acceptedMoves[0][1], item.playerColor, { previousBoard: first.board });
+  assert.equal(second.legal, true);
+  assert.equal(second.captured.length, 2);
+});
+
+test("多手 sequence event store 逐 decision 保留首答與 retry", () => {
+  const storage = memoryStorage();
+  const common = {
+    sessionId: "seq-s1",
+    presentationId: "seq-p1",
+    experienceId: "adv-seq-snapback-01",
+    experienceVersion: 1,
+    trackId: "reading-tesuji",
+    occurredAt: "2026-09-26T12:00:00.000Z"
+  };
+  assert.equal(SequenceEvents.append(storage, { ...common, eventId: "s1", type: "presented" }).ok, true);
+  assert.equal(SequenceEvents.append(storage, { ...common, eventId: "s2", type: "decision_presented", decisionId: "sacrifice", stepIndex: 0 }).ok, true);
+  assert.equal(SequenceEvents.append(storage, { ...common, eventId: "s3", type: "move_first", decisionId: "sacrifice", stepIndex: 0, point: [2,2], correct: false, legal: true, capturedCount: 0 }).ok, true);
+  assert.equal(SequenceEvents.append(storage, { ...common, eventId: "s4", type: "move_retry", decisionId: "sacrifice", stepIndex: 0, point: [0,2], correct: true, legal: true, capturedCount: 0 }).ok, true);
+  const stored = SequenceEvents.read(storage).store.events.filter((event) => event.type.startsWith("move_"));
+  assert.deepEqual(stored.map((event) => [event.type, event.decisionId, event.correct, event.firstResponse]), [
+    ["move_first", "sacrifice", false, true],
+    ["move_retry", "sacrifice", true, false]
+  ]);
+  const summary = SequenceEvents.summarize(SequenceEvents.read(storage).store);
+  assert.equal(summary.firstMoves, 1);
+  assert.equal(summary.firstCorrect, 0);
+  assert.equal(summary.retries, 1);
+  assert.equal(summary.formalEligible, false);
+});
+
+test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Response", () => {
+  const storage = memoryStorage("{broken");
+  const result = SequenceEvents.read(storage);
+  assert.equal(result.ok, false);
+  assert.equal(result.error, "advanced_sequence_store_malformed");
+  assert.match(html, /棋盤 Response/);
+  assert.match(html, /多手讀棋實走/);
+  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v1/);
+  assert.match(html, /go\.js/);
 });
