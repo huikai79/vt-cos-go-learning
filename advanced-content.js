@@ -211,6 +211,9 @@
     {
       id: "adv-seq-snapback-01",
       version: 1,
+      familyId: "snapback",
+      variantId: "seed",
+      variationAxes: ["baseline"],
       trackId: "reading-tesuji",
       title: "倒撲實走：送一子後重新數氣",
       target: "不用選項，實際走完「我一手 → 對手應手 → 我再一手」的兩段讀棋。",
@@ -245,8 +248,51 @@
       ]
     },
     {
+      id: "adv-seq-snapback-02",
+      version: 1,
+      familyId: "snapback",
+      variantId: "capture-three",
+      variationAxes: ["capture-count", "local-shape"],
+      trackId: "reading-tesuji",
+      title: "倒撲變形：這次提回三子",
+      target: "局部形狀改變後仍從提子結果重建局面，而不是記上一題的棋子數。",
+      boardSize: 5,
+      playerColor: B,
+      setupStones: [[1,2,W],[1,3,B],[1,4,W],[0,1,W],[0,4,W],[2,4,B]],
+      decisions: [
+        {
+          id: "sacrifice",
+          prompt: "黑先。哪一手可以先送進去，讓白提完後暴露更大的回提？",
+          acceptedMoves: [[0,2]],
+          expectedLearnerCapturedCount: 0,
+          hint: "仍然看左邊邊線，但不要套用上一題的白棋顆數；先讀提子後的盤面。",
+          success: "黑棋先送進去，這顆棋本身會被提。",
+          opponentMove: [0,3],
+          expectedOpponentCapturedCount: 1,
+          opponentText: "白棋提掉送子後，左下白棋連成新的低氣棋串；現在重新數氣。"
+        },
+        {
+          id: "recapture",
+          prompt: "黑下一手在哪裡可以回提？這次實際會提掉幾顆白棋？",
+          acceptedMoves: [[0,2]],
+          expectedLearnerCapturedCount: 3,
+          hint: "回到送子點前，先確認左下三顆白棋是否已連成同一個無氣棋串。",
+          success: "黑回到送子點，規則引擎實際提掉三顆白棋。"
+        }
+      ],
+      expectedFinalEmpty: [[0,3],[0,4],[1,4]],
+      takeaway: "倒撲的核心不是固定『提回兩子』；提子後要重新辨認棋串與最後一氣。",
+      terms: [
+        ["倒撲", "先送一子，讓對方提子改變氣形，再回到關鍵點提回更多棋。"],
+        ["棋串", "彼此正交相連、共同分享氣的一組同色棋。"]
+      ]
+    },
+    {
       id: "adv-seq-net-01",
       version: 1,
+      familyId: "net",
+      variantId: "seed",
+      variationAxes: ["baseline"],
       trackId: "reading-tesuji",
       title: "枷實走：不打吃也能封住兩個出口",
       target: "先下不直接打吃的封鎖手，再讀對手兩個逃路都會被提。",
@@ -295,8 +341,64 @@
       ]
     },
     {
+      id: "adv-seq-net-02",
+      version: 1,
+      familyId: "net",
+      variantId: "new-escape-geometry",
+      variationAxes: ["escape-geometry", "local-shape"],
+      trackId: "reading-tesuji",
+      title: "枷變形：出口換位置也要兩邊驗",
+      target: "換一組局部支援與出口後，仍先找不打吃的封鎖手，再驗兩個逃路。",
+      boardSize: 5,
+      playerColor: B,
+      setupStones: [[3,3,W],[3,4,B],[3,1,B],[4,3,B],[4,2,B],[2,2,B],[1,3,B]],
+      trackedPoint: [3,3],
+      trackedColor: W,
+      decisions: [
+        {
+          id: "net",
+          prompt: "黑先。哪一手不直接打吃，卻能把右下白棋的上方與左方出口一起罩住？",
+          acceptedMoves: [[2,4]],
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 2,
+          hint: "白棋目前的兩個出口在左邊與上方；找一個位於左下、能同時封住後續逃路的黑點。",
+          success: "封鎖手成立，但白棋仍有兩口氣；現在必須真的測逃路。",
+          opponentMove: [2,3],
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 1,
+          opponentText: "白棋先往左延長，整串只剩上方一口氣。"
+        },
+        {
+          id: "close-net",
+          prompt: "白棋往左逃後，黑下一手在哪裡可以提掉整串？",
+          acceptedMoves: [[3,2]],
+          expectedLearnerCapturedCount: 2,
+          hint: "重新數延長後的白串，不要沿用原本兩口氣。",
+          success: "黑補掉上方最後一氣，提掉兩顆白棋。"
+        }
+      ],
+      verificationBranches: [
+        {
+          afterDecisionIndex: 0,
+          opponentMove: [3,2],
+          expectedOpponentCapturedCount: 0,
+          learnerReply: [2,3],
+          expectedLearnerCapturedCount: 2
+        }
+      ],
+      expectedFinalEmpty: [[2,3],[3,3]],
+      takeaway: "出口位置變了，枷的檢查仍相同：封鎖手本身不必打吃，但兩個主要逃路都必須被後續收住。",
+      terms: [
+        ["枷", "利用空間與支援封住逃路，而非只靠連續打吃。"],
+        ["出口", "弱棋可以延長、連接或衝出的主要空點。"]
+      ]
+    },
+    {
       id: "adv-seq-semeai-01",
       version: 1,
+      familyId: "semeai",
+      variantId: "black-to-move",
+      variationAxes: ["baseline"],
       trackId: "reading-tesuji",
       title: "對殺實走：先壓一口氣，再重算雙方最後一氣",
       target: "把雙方氣數與行棋次序帶進同一條可驗證的三手交換。",
@@ -310,6 +412,7 @@
           id: "reduce",
           prompt: "黑先。白棋右上這串目前有兩口關鍵氣；黑先填哪一口，能迫使白棋只剩另一口延長？",
           acceptedMoves: [[3,0]],
+          expectedTrackedLibertiesBeforeLearner: 2,
           expectedLearnerCapturedCount: 0,
           expectedTrackedLibertiesAfterLearner: 1,
           hint: "先只數白棋右上的兩口氣：上方與左上方。找能直接壓到一口氣的黑手。",
@@ -336,8 +439,56 @@
       ]
     },
     {
+      id: "adv-seq-semeai-02",
+      version: 1,
+      familyId: "semeai",
+      variantId: "white-to-move",
+      variationAxes: ["player-color", "role-reversal"],
+      trackId: "reading-tesuji",
+      title: "對殺變形：換成白先也要重新算",
+      target: "棋形角色對調後，不依賴『黑棋永遠是學習者』，仍從氣與輪到誰走判斷。",
+      boardSize: 5,
+      playerColor: W,
+      setupStones: [[1,1,W],[3,1,B],[4,1,W],[1,2,B],[2,2,W],[3,2,B],[4,2,W],[3,3,W]],
+      trackedPoint: [3,2],
+      trackedColor: B,
+      decisions: [
+        {
+          id: "reduce",
+          prompt: "白先。黑棋右上這串目前有兩口關鍵氣；白先填哪一口，能把黑棋壓成一口氣？",
+          acceptedMoves: [[3,0]],
+          expectedTrackedLibertiesBeforeLearner: 2,
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 1,
+          hint: "先忘掉上一題的顏色，直接數右上黑串的兩口氣。",
+          success: "白填上方後，黑串只剩左上方一口氣。",
+          opponentMove: [2,1],
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 1,
+          opponentText: "黑棋延長後仍只剩最後一口氣；現在輪到白重新算。"
+        },
+        {
+          id: "finish-race",
+          prompt: "輪到白。在哪裡補掉黑棋最後一氣，可以先提掉黑串？",
+          acceptedMoves: [[2,0]],
+          expectedLearnerCapturedCount: 3,
+          hint: "只看目前盤面；沿上邊找黑串唯一剩下的氣。",
+          success: "白先補最後一氣，規則引擎提掉三顆黑棋。"
+        }
+      ],
+      expectedFinalEmpty: [[2,1],[3,1],[3,2]],
+      takeaway: "對殺判斷不能綁定棋色；角色交換後仍要用當下氣數與先後手重算。",
+      terms: [
+        ["對殺", "雙方弱棋彼此競爭，先填掉對方最後一氣的一方取得局部結果。"],
+        ["角色交換", "把攻守或黑白角色互換，檢查是否真的理解條件，而非記顏色或座標。"]
+      ]
+    },
+    {
       id: "adv-seq-ladder-01",
       version: 1,
+      familyId: "ladder",
+      variantId: "seven-by-seven",
+      variationAxes: ["baseline"],
       trackId: "reading-tesuji",
       title: "征子實走：每次都把逃棋壓回一口氣",
       target: "在沒有引征干擾的局部，連續走出強制打吃，確認對手每次只有唯一延長，直到邊線提子。",
@@ -454,11 +605,65 @@
         ["引征", "位在征子路線上的接應棋；一旦逃棋能連上或產生反擊，原本成立的征子可能失效。"],
         ["強制序列", "每一步都把對手限制到唯一能維持該目標的應手；不是只背一串座標。"]
       ]
+    },
+    {
+      id: "adv-seq-ladder-02",
+      version: 1,
+      familyId: "ladder",
+      variantId: "eight-by-eight-longer",
+      variationAxes: ["board-size", "path-length", "edge-distance"],
+      trackId: "reading-tesuji",
+      title: "征子變形：路線拉長後仍逐手驗證",
+      target: "把同一強制條件帶到 8×8、更長的追逐路線；不能靠記住 7×7 的終點。",
+      boardSize: 8,
+      playerColor: B,
+      setupStones: [[2,2,W],[2,3,W],[1,2,B],[2,1,B],[1,3,B],[2,4,B]],
+      trackedPoint: [2,2],
+      trackedColor: W,
+      decisions: [
+        {
+          id: "ladder-1", prompt: "黑先。第一個打吃在哪裡？", acceptedMoves: [[3,2]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [3,3], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 2, hint: "仍從兩口氣中選一口，讓白棋只剩唯一延長。", success: "第一個打吃成立。", opponentText: "白棋唯一延長後回到兩口氣。"
+        },
+        {
+          id: "ladder-2", prompt: "第二個打吃在哪裡？", acceptedMoves: [[4,3]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [3,4], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 2, hint: "每一步重新數氣。", success: "第二個打吃成立。", opponentText: "白棋再次只能延長。"
+        },
+        {
+          id: "ladder-3", prompt: "第三個打吃在哪裡？", acceptedMoves: [[3,5]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [4,4], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 2, hint: "不要照上一手方向猜。", success: "第三個打吃成立。", opponentText: "白棋唯一延長。"
+        },
+        {
+          id: "ladder-4", prompt: "第四個打吃在哪裡？", acceptedMoves: [[5,4]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [4,5], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 2, hint: "維持『兩口變一口』。", success: "第四個打吃成立。", opponentText: "白棋唯一延長。"
+        },
+        {
+          id: "ladder-5", prompt: "第五個打吃在哪裡？", acceptedMoves: [[4,6]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [5,5], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 2, hint: "盤面變大後仍只看當下氣。", success: "第五個打吃成立。", opponentText: "白棋還沒有到邊線。"
+        },
+        {
+          id: "ladder-6", prompt: "第六個打吃在哪裡？", acceptedMoves: [[6,5]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [5,6], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 2, hint: "7×7 題在這附近已接近終點；8×8 還要繼續讀。", success: "第六個打吃成立。", opponentText: "白棋延長後仍有兩口氣。"
+        },
+        {
+          id: "ladder-7", prompt: "第七個打吃在哪裡？", acceptedMoves: [[5,7]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [6,6], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 2, hint: "繼續找能壓成一口氣的點。", success: "第七個打吃成立。", opponentText: "白棋再次唯一延長。"
+        },
+        {
+          id: "ladder-8", prompt: "第八個打吃在哪裡？", acceptedMoves: [[6,7]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [7,6], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 2, hint: "已靠近右下邊界，但仍不能跳步。", success: "第八個打吃成立。", opponentText: "白棋往右側延長。"
+        },
+        {
+          id: "ladder-9", prompt: "第九個打吃在哪裡？", acceptedMoves: [[7,7]], expectedTrackedLibertiesBeforeLearner: 2, expectedLearnerCapturedCount: 0, expectedTrackedLibertiesAfterLearner: 1, opponentMove: [7,5], opponentMoveMustBeUniqueLiberty: true, expectedOpponentCapturedCount: 0, expectedTrackedLibertiesAfterOpponent: 1, hint: "邊線改變了逃路；先確認唯一一口氣。", success: "第九個打吃把白棋壓到最後一口氣。", opponentText: "白棋被迫沿右邊線延長，延長後仍只剩最後一氣。"
+        },
+        {
+          id: "ladder-finish", prompt: "最後在哪裡補掉白棋最後一氣？", acceptedMoves: [[7,4]], expectedTrackedLibertiesBeforeLearner: 1, expectedLearnerCapturedCount: 11, hint: "整串已貼右邊線，直接找唯一剩下的氣。", success: "黑提掉十一顆白棋，較長征子完成。"
+        }
+      ],
+      expectedFinalEmpty: [[2,2],[2,3],[3,3],[3,4],[4,4],[4,5],[5,5],[5,6],[6,6],[7,6],[7,5]],
+      takeaway: "盤面變大、路線拉長後，征子的判斷規則沒有變：逐手證明唯一延長，而不是記原題終點。",
+      terms: [
+        ["征子", "逐手打吃並迫使對方沿唯一逃路延長的強制追逐。"],
+        ["路線長度", "棋盤大小與起始位置會改變需要讀的手數；不能把某一題的終點當固定答案。"],
+        ["引征", "路線上的接應可能打破強制性，因此更長路線更需要檢查前方。"]
+      ]
     }
   ];
 
   const api = {
-    version: 4,
+    version: 5,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
     experiences,
