@@ -24,7 +24,7 @@
 
 2026-09-26 進階多手讀棋 v3 補充：多手區從單一倒撲擴成三個可切換棋盤題（倒撲／枷／對殺），加入 sequence tab、下一題、重設與 responsive 修正。所有題先由 `advanced-sequence-contract.js` 在載入時完整重播；若任何內建手順、提子數、tracked-group 氣數或 branch QA 不一致，多手區直接停用。枷另驗另一個主要逃路；征子仍不顯示，因尚缺 forced-line／引征分支 oracle。這些改善的是內容維護與互動可信度，不等同真人理解或學習效果。
 
-2026-09-26 進階多手讀棋 v4 補充：sequence selector 增加第 4 題征子。這不是把固定手順標成「征子已會」：內容 contract 逐手驗 tracked group 在黑手前／後的氣數，前六個白方自動應手都必須恰好等於唯一 liberty，最後黑手必須實際提八子；另用引征路線上的白色干擾子做 negative oracle，確認原 forced line 會失效。UI 仍只呈現 practice-only，完成後不顯示 mastery 或級位。\n\n## 結論
+2026-09-26 進階多手讀棋 v4 補充：sequence selector 增加第 4 題征子。這不是把固定手順標成「征子已會」：內容 contract 逐手驗 tracked group 在黑手前／後的氣數，前六個白方自動應手都必須恰好等於唯一 liberty，最後黑手必須實際提八子；另用引征路線上的白色干擾子做 negative oracle，確認原 forced line 會失效。UI 仍只呈現 practice-only，完成後不顯示 mastery 或級位。\n\n2026-09-27 進階 sequence family v5 補充：多手 selector 從 4 題增為 8 題，每個手筋 family 兩題；tab 顯示 family 與分段數，桌面四欄、窄版單欄。第二題不是只換方向：倒撲改回提三子、枷改出口幾何、對殺改白方作答、征子改 8×8 與更長路線。這可降低單一座標／棋色／終點記憶對 practice 的支配，但「是否真的降低記題」仍需真人 first-response 比較。\n\n## 結論
 
 目前可判定課程、單題回饋與首次作答流程可正常使用，**還不能判定整體操作舒服或順手**。已修正的首訪阻礙包括：按鈕沒有明確結果、手機先看到棋盤才看到題幹、換題後停在舊位置、選單直接跳課，以及七天檢查沒有事前說明。真人首次任務測試仍是可用性結論的必要證據。
 
