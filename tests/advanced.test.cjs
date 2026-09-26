@@ -34,7 +34,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
   assert.match(js, /answer_retry/);
 });
 
-test("進階 v1 先建立三條可用訓練線與一條後續路線", () => {
+test("進階 choice scaffold 保留三條可用訓練線與一條後續路線", () => {
   assert.equal(content.version, 3);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 3);
