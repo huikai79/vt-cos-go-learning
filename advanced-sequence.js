@@ -63,6 +63,9 @@
       experienceId: item.id,
       experienceVersion: item.version,
       trackId: item.trackId,
+      familyId: item.familyId,
+      variantId: item.variantId,
+      variationAxes: item.variationAxes,
       type,
       occurredAt: now(),
       decisionId: activeDecision ? activeDecision.id : null,
@@ -94,8 +97,12 @@
       return;
     }
     const summary = Events.summarize(result.store);
+    const family = Events.classifyFamilyTransition(result.store, current().familyId);
+    const familyText = family.status === "DESCRIPTIVE_ONLY"
+      ? " · family 首答已有 seed／variant 描述資料"
+      : " · family 首答資料尚不足";
     $("advanced-sequence-summary").textContent = "棋盤題 " + (experienceIndex + 1) + " / " + experiences.length +
-      " · 已保存 " + summary.firstMoves + " 次分段首答 · 完成 " + summary.completedExperiences + " 題";
+      " · 已保存 " + summary.firstMoves + " 次分段首答 · 完成 " + summary.completedExperiences + " 題" + familyText;
   }
 
   function renderBoard() {
