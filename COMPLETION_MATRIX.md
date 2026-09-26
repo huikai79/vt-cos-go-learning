@@ -483,3 +483,4 @@
 - **修正：** 首段改標「直三專用 · 4 段探索」，四個 tab 都加上「直三」前綴，並在區塊說明「其他名型依各自 geometry／scoring contract 安排，不固定套用這四步」。
 - **反證：** browser regression 讀取 `classic-stage-list`，必須得到四個帶「直三」前綴的 stage；靜態 contract 同時檢查 scope 文案與 aria label。
 - **證據邊界：** 只修 learner-facing scope 與資訊架構，不改任何名型 scoring、variation semantics、learner evidence 或學習成效狀態。
+- **Validation：** PR #24 verify run #429 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；browser regression 已實際讀取四個 stage，確認全部帶「直三」前綴。PR 已於 2026-09-27 squash merge 至 `main`（merge commit `cb42fb03051cc6a33430dc114ea898f80939c18a`）。
