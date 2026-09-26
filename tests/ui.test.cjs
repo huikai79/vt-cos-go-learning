@@ -131,9 +131,15 @@ async function main() {
       return {
         siteIntroVisible: !document.querySelector('#site-introduction').hidden,
         siteIntroTitle: document.querySelector('#site-introduction-title').textContent,
-        siteIntroFacts: document.querySelectorAll('.intro-facts > span').length,
+        landingHeaderVisible: getComputedStyle(document.querySelector('.landing-header')).display !== 'none',
+        sidebarDisplay: getComputedStyle(document.querySelector('.sidebar')).display,
+        topbarDisplay: getComputedStyle(document.querySelector('.topbar')).display,
+        trustItems: document.querySelectorAll('.intro-trust-row > span').length,
+        loopSteps: document.querySelectorAll('.intro-loop > li').length,
+        assessmentCards: document.querySelectorAll('.intro-evidence-grid > article').length,
         siteIntroSources: document.querySelectorAll('.intro-source-grid a').length,
-        curriculumBoundary: document.querySelector('.intro-path-grid + .intro-boundary').textContent,
+        researchOpen: document.querySelector('.intro-research-details').open,
+        curriculumBoundary: document.querySelector('#site-introduction-path .intro-course-count').textContent,
         introOpen: document.querySelector('#lesson-intro-dialog').open,
         introTitle: document.querySelector('#lesson-intro-title').textContent,
         startLabel: document.querySelector('#resume-button').textContent,
@@ -156,7 +162,7 @@ async function main() {
         stageBadge: document.querySelector('#learning-stage-badge').textContent
       };
     })()`);
-    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "先會下，再慢慢學會在新局面裡自己判斷。", siteIntroFacts: 5, siteIntroSources: 9, curriculumBoundary: "重要：「初級／中級／高級」只是本網站的課程層次，並不是棋力認證。現階段沒有足夠真人資料把完成課程可靠換算成某個 K 級或段位。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, termCount: "（1 個）", firstTerm: "氣", legendItems: 4, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", stageBadge: "目前 1/5 · 先看懂" });
+    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "從 0 開始，先學氣與提子，再走進 9 路棋局。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 3, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, termCount: "（1 個）", firstTerm: "氣", legendItems: 4, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", stageBadge: "目前 1/5 · 先看懂" });
     const screenshotDirectory = process.env.GO_UI_SCREENSHOT_DIR;
     if (screenshotDirectory) {
       assert.ok(fs.existsSync(screenshotDirectory), "screenshot directory must already exist");
@@ -169,8 +175,8 @@ async function main() {
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     }
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
-    const landingMobile = await evaluate(socket, "({overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth, siteIntroVisible: !document.querySelector('#site-introduction').hidden})");
-    assert.deepEqual(landingMobile, { overflow: false, siteIntroVisible: true });
+    const landingMobile = await evaluate(socket, "({overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth, siteIntroVisible: !document.querySelector('#site-introduction').hidden, sidebarDisplay: getComputedStyle(document.querySelector('.sidebar')).display, topbarDisplay: getComputedStyle(document.querySelector('.topbar')).display, pathColumns: getComputedStyle(document.querySelector('.intro-path-grid')).gridTemplateColumns.split(' ').length})");
+    assert.deepEqual(landingMobile, { overflow: false, siteIntroVisible: true, sidebarDisplay: "none", topbarDisplay: "none", pathColumns: 1 });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const landingStart = await evaluate(socket, `(() => { document.querySelector('[data-site-intro-start]').click(); return {siteIntroHidden: document.querySelector('#site-introduction').hidden, introOpen: document.querySelector('#lesson-intro-dialog').open, introTitle: document.querySelector('#lesson-intro-title').textContent}; })()`);
     assert.deepEqual(landingStart, { siteIntroHidden: true, introOpen: true, introTitle: "現在先學：認識氣" });
@@ -253,7 +259,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v41"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v42"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -370,7 +376,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v41");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v42");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -387,9 +393,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v41");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v42");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v41");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v42");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");

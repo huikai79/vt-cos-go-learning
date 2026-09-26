@@ -8,7 +8,7 @@
   <meta name="application-name" content="VT-COS｜悟之一手">
   <meta name="description" content="從零開始的互動圍棋學習原型：短講、棋盤練習、具體回饋、延後新題與局面應用。">
   <title>VT-COS｜悟之一手｜從零開始的互動圍棋學習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v41">
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v42">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -23,7 +23,7 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v41"></script>
+  <script defer src="app.js?v=learner-flow-v42"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
@@ -82,7 +82,7 @@
       <header class="topbar">
         <span class="eyebrow">VT-COS <span class="eyebrow-dot">●</span> PERSONAL GO STUDIO · OFFLINE</span>
         <div class="top-actions">
-          <button class="text-button about-course-action" id="about-course-button" type="button">這套課程怎麼教</button>
+          <button class="text-button about-course-action" id="about-course-button" type="button">課程首頁</button>
           <button class="primary-top-action" id="resume-button" type="button">開始第 1 題</button>
           <button class="due-review-action" id="due-review-button" type="button" hidden>今日到期 <span id="due-review-count">0</span></button>
           <button class="text-button" id="review-button" type="button">複習錯題 <span id="review-count">0</span></button>
@@ -126,73 +126,115 @@
       </header>
 
       <section class="site-introduction" id="site-introduction" aria-labelledby="site-introduction-title" hidden>
+        <header class="landing-header" aria-label="悟之一手首頁導覽">
+          <div class="landing-header-inner">
+            <a class="landing-brand" href="#site-introduction" aria-label="悟之一手首頁">
+              <span class="landing-brand-mark" aria-hidden="true">●○</span>
+              <span><strong>悟之一手</strong><small>從 0 開始的互動圍棋學習</small></span>
+            </a>
+            <button class="landing-header-action" type="button" data-site-intro-start>開始第一課 <span aria-hidden="true">→</span></button>
+          </div>
+        </header>
+
         <div class="site-introduction-inner">
           <section class="intro-hero">
             <div class="intro-hero-copy">
-              <span class="intro-kicker">從 0 開始的互動圍棋學習原型</span>
-              <h2 id="site-introduction-title" tabindex="-1">先會下，再慢慢學會在新局面裡自己判斷。</h2>
-              <p>悟之一手的設計目標，是讓完全零基礎的學習者從「氣」與提子開始：先看一個概念，立刻在棋盤上做，再用具體回饋修正；之後換成延後的新棋形與較少提示的局面，檢查能不能自己認出來、讀出來、用出來。</p>
+              <span class="intro-kicker">完全零基礎也可以從這裡開始</span>
+              <h2 id="site-introduction-title" tabindex="-1">從 0 開始，先學氣與提子，再走進 9 路棋局。</h2>
+              <p>每次只學一個概念：先看懂，再在棋盤上落子，得到具體回饋；之後隔一段時間換一個新棋形，看看自己還會不會。</p>
               <div class="intro-actions">
                 <button class="primary-button intro-primary" type="button" data-site-intro-start>開始第一課 <span aria-hidden="true">→</span></button>
-                <a class="intro-secondary" href="#site-introduction-assessment">先看怎麼評量</a>
+                <a class="intro-secondary" href="#site-introduction-path">先看看怎麼學</a>
+              </div>
+              <div class="intro-trust-row" aria-label="使用方式">
+                <span><strong>5 → 7 → 9 路</strong><small>從局部規則逐步走到完整小棋局</small></span>
+                <span><strong>免帳號</strong><small>進度只保存在這台瀏覽器</small></span>
               </div>
             </div>
-            <div class="intro-facts" aria-label="目前課程概況">
-              <span><strong>15</strong><small>單元</small></span>
-              <span><strong>19</strong><small>課</small></span>
-              <span><strong>106</strong><small>課程題</small></span>
-              <span><strong>5·7·9 路</strong><small>分階段棋盤練習</small></span>
-              <span><strong>免帳號</strong><small>進度只存這個瀏覽器</small></span>
-            </div>
+            <ol class="intro-loop" aria-label="每次學習的四個步驟">
+              <li><span>1</span><div><strong>看懂</strong><small>一次先抓一個棋盤概念</small></div></li>
+              <li><span>2</span><div><strong>落子</strong><small>自己先做，不先看答案</small></div></li>
+              <li><span>3</span><div><strong>回饋</strong><small>看見哪個棋盤線索值得重算</small></div></li>
+              <li><span>4</span><div><strong>換新棋形</strong><small>隔一段時間再自己判斷</small></div></li>
+            </ol>
           </section>
-          <section class="intro-section" aria-labelledby="intro-path-title">
-            <div class="intro-section-head"><span>怎麼從 0 開始</span><h3 id="intro-path-title">從規則到完整棋局，不用先知道自己幾級</h3><p>課程先降低盤面負擔，再逐步增加讀棋、選擇與全局取捨；小棋盤是學習支架，不是棋力標籤。</p></div>
+
+          <section class="intro-section" id="site-introduction-path" aria-labelledby="intro-path-title">
+            <div class="intro-section-head">
+              <span>你會怎麼一路學下去</span>
+              <h3 id="intro-path-title">從規則開始，逐步走到局部判斷與全局應用</h3>
+              <p>小棋盤只是降低一開始的盤面負擔，不是棋力標籤；你不需要先知道自己幾級。</p>
+            </div>
             <div class="intro-path-grid">
               <article><span>01</span><h4>基礎建立</h4><p>氣、提子、連接與切斷、禁著與劫、眼與基礎死活，最後進入 9 路小局。</p><small>原課綱：初級 · 單元 1–5</small></article>
               <article><span>02</span><h4>局部與棋局判斷</h4><p>佈局、地與厚勢、攻守與弱棋、死活閱讀、官子與數目，開始比較不同選擇的後果。</p><small>原課綱：中級 · 單元 6–10</small></article>
               <article><span>03</span><h4>全局與綜合應用</h4><p>全局方向、戰鬥與棄子、劫爭、定石條件與棋譜複盤，把局部技巧放回完整棋局思考。</p><small>原課綱：高級 · 單元 11–15</small></article>
             </div>
-            <p class="intro-boundary"><strong>重要：</strong>「初級／中級／高級」只是本網站的課程層次，並不是棋力認證。現階段沒有足夠真人資料把完成課程可靠換算成某個 K 級或段位。</p>
+            <p class="intro-course-count">目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。</p>
           </section>
+
           <section class="intro-section intro-assessment" id="site-introduction-assessment" aria-labelledby="intro-assessment-title">
-            <div class="intro-section-head"><span>怎麼判斷有沒有學會</span><h3 id="intro-assessment-title">不是看做了幾題，而是看隔一段時間後還能不能自己做</h3><p>日常學習紀錄把「第一次作答」和提示、重試、最後改對分開；主要方向是延後、無提示、未見過的新局面。</p></div>
+            <div class="intro-section-head">
+              <span>怎樣才算真的學會</span>
+              <h3 id="intro-assessment-title">不是看做了幾題，而是看隔一段時間後還能不能自己做</h3>
+            </div>
             <div class="intro-evidence-grid">
-              <article><strong>第一次自己作答</strong><p>答案揭露前先保存第一個判斷。重試後答對不會回頭抹掉首答錯誤。</p></article>
-              <article><strong>延後的新棋形</strong><p>換成沒有做過的棋形，再看同一原理能不能無提示辨認與讀出來。</p></article>
-              <article><strong>少提示的局面應用</strong><p>不先告訴你要用哪個技巧，觀察能不能自己發現值得處理的位置；標準化局面與自然實戰分開。</p></article>
-              <article><strong>實戰只算可安全評分的機會</strong><p>目前 9 路實戰只對少數可由規則客觀判定的局部情境計分，其餘回合保留紀錄但不硬湊成能力分數。</p></article>
+              <article><strong>第一次自己作答</strong><p>答案揭露前先保存第一個判斷；重試後答對不會回頭抹掉首答。</p></article>
+              <article><strong>隔一段時間再做</strong><p>重要概念之後會再次出現，避免只因剛看過答案而覺得自己會了。</p></article>
+              <article><strong>換一個沒見過的新棋形</strong><p>改變方向、位置或棋形，並逐步減少題型提示，檢查能不能把原理帶到陌生局面。</p></article>
             </div>
-            <div class="intro-status-note"><strong>目前證據狀態</strong><p>正式未見評量目前停用：舊保留題已隨公開原始碼曝光；外部棋理審查、三位目標初學者正式 usability 任務與真人無障礙檢查也尚未完成。因此本網站目前是公開的個人學習原型，不能宣稱已驗證學習成效或正式定級。</p></div>
           </section>
-          <section class="intro-section" aria-labelledby="intro-science-title">
-            <div class="intro-section-head"><span>認知與學習科學怎麼進來</span><h3 id="intro-science-title">把研究轉成可觀察的學習行為，而不是貼一個「科學學習」標籤</h3></div>
+
+          <section class="intro-section intro-science" aria-labelledby="intro-science-title">
+            <div class="intro-section-head">
+              <span>為什麼這樣教</span>
+              <h3 id="intro-science-title">把學習研究轉成簡單的練習動作</h3>
+            </div>
             <div class="intro-science-grid">
-              <article><strong>Retrieval · 提取</strong><p>先自己想與落子，再看答案；避免只因剛讀過解說而產生熟悉感。</p></article>
-              <article><strong>Feedback · 回饋</strong><p>錯誤後指出可以再次觀察的棋盤線索，再回去重算，不把心理原因猜成事實。</p></article>
-              <article><strong>Spacing · 分散練習</strong><p>重要概念隔一段時間重新出現。間隔會依實際結果調整，不宣稱固定天數是普遍最佳。</p></article>
-              <article><strong>Transfer · 遷移</strong><p>換方向、換棋形、減少題型提示，逐步檢查是否能把同一原理帶到陌生局面。</p></article>
+              <article><strong>Retrieval · 提取</strong><p>先自己想，再看答案。</p></article>
+              <article><strong>Feedback · 回饋</strong><p>錯了就回到可觀察的棋盤線索。</p></article>
+              <article><strong>Spacing · 間隔</strong><p>隔一段時間再重新想起來。</p></article>
+              <article><strong>Transfer · 遷移</strong><p>換新棋形，減少提示，再自己判斷。</p></article>
             </div>
-            <p class="intro-boundary">這些一般學習研究支持的是設計方向；它們沒有直接證明這套圍棋課程是「最佳方法」，也不能替代本專案仍缺的真人內容、可用性與成效資料。</p>
+            <p class="intro-boundary">這些研究支持的是設計方向；目前沒有證據證明這套圍棋課程是所有人的最佳方法。</p>
           </section>
+
           <section class="intro-section" aria-labelledby="intro-outcome-title">
-            <div class="intro-section-head"><span>上完整套課程，大約會到哪裡</span><h3 id="intro-outcome-title">先用「能做什麼」描述，而不是先貼 K 級或段位</h3></div>
+            <div class="intro-section-head">
+              <span>學完整套課程，大約會到哪裡</span>
+              <h3 id="intro-outcome-title">先看你能做什麼，不先貼 K 級或段位</h3>
+            </div>
             <div class="intro-outcome-grid">
-              <article><strong>規則與小棋盤</strong><p>課程目標涵蓋合法落子、氣與提子、連斷、眼、劫與基本死活，並能在 9 路完成完整小棋局的學習流程。</p></article>
-              <article><strong>局部讀棋與取捨</strong><p>逐步練習候選手、對手抵抗、攻守、厚勢、死活與官子，不只記一個固定座標。</p></article>
-              <article><strong>全局與複盤入口</strong><p>接觸全局方向、戰鬥、棄子、劫材、定石條件與棋譜單點複盤，為後續持續實戰建立共同語言。</p></article>
+              <article><strong>規則與小棋盤</strong><p>理解合法落子、氣與提子、連斷、眼、劫與基本死活，並能完成 9 路小棋局的學習流程。</p></article>
+              <article><strong>局部讀棋與取捨</strong><p>練習候選手、對手抵抗、攻守、厚勢、死活與官子，不只記住固定座標。</p></article>
+              <article><strong>全局與複盤入口</strong><p>接觸全局方向、戰鬥、棄子、劫材、定石條件與棋譜單點複盤。</p></article>
             </div>
-            <p class="intro-boundary"><strong>尚不能回答：</strong>完成「綜合應用」後等同 15K、10K、5K 或其他級位。日本棋院等機構有自己的級位課程範例，但本課程尚未做外部棋力對照與真人校準，不能直接套用。</p>
+            <p class="intro-boundary"><strong>目前不能換算：</strong>完成課程不等同 15K、10K、5K 或某個段位；本站尚未做外部棋力對照與真人校準。</p>
           </section>
-          <section class="intro-section intro-sources" aria-labelledby="intro-sources-title">
-            <div class="intro-section-head"><span>內容與設計參考來源</span><h3 id="intro-sources-title">來源分層：棋理順序、學習研究、介面參考各自只支持自己的範圍</h3></div>
-            <div class="intro-source-grid">
-              <article><h4>圍棋內容與入門順序</h4><p><a href="https://www.nihonkiin.or.jp/teach/lesson/" target="_blank" rel="noreferrer">日本棋院｜楽しい囲碁入門</a></p><p><a href="https://www.nihonkiin.or.jp/teach/school_teach/digest/11.html" target="_blank" rel="noreferrer">日本棋院｜課程別技術指導範例</a></p><p><a href="https://britgo.org/organisers/handbook/club4" target="_blank" rel="noreferrer">British Go Association｜Teaching Beginners</a></p></article>
-              <article><h4>提取、間隔與新情境</h4><p><a href="https://pubmed.ncbi.nlm.nih.gov/16507066/" target="_blank" rel="noreferrer">Roediger &amp; Karpicke, 2006｜Test-enhanced learning</a></p><p><a href="https://pubmed.ncbi.nlm.nih.gov/20804289/" target="_blank" rel="noreferrer">Butler, 2010｜Transfer from repeated testing</a></p><p><a href="https://pubmed.ncbi.nlm.nih.gov/19076480/" target="_blank" rel="noreferrer">Cepeda et al., 2008｜Spacing effects</a></p></article>
-              <article><h4>互動與首頁敘事參考</h4><p><a href="https://online-go.com/learn-to-play-go" target="_blank" rel="noreferrer">Online Go Server｜互動式入門路徑</a></p><p><a href="https://gomagic.org/" target="_blank" rel="noreferrer">Go Magic｜互動課程與分級呈現</a></p><p><a href="https://brilliant.org/resources/choosing-brilliant/how-brilliant-teaches-math/" target="_blank" rel="noreferrer">Brilliant｜learn by doing 與證據邊界敘事</a></p></article>
+
+          <details class="intro-research-details">
+            <summary>
+              <span><strong>完整來源、研究限制與目前驗證狀態</strong><small>想知道內容參考哪裡、哪些事情尚未驗證，再展開這裡。</small></span>
+              <span aria-hidden="true">＋</span>
+            </summary>
+            <div class="intro-research-body">
+              <div class="intro-source-grid">
+                <article><h4>圍棋內容與入門順序</h4><p><a href="https://www.nihonkiin.or.jp/teach/lesson/" target="_blank" rel="noreferrer">日本棋院｜楽しい囲碁入門</a></p><p><a href="https://www.nihonkiin.or.jp/teach/school_teach/digest/11.html" target="_blank" rel="noreferrer">日本棋院｜課程別技術指導範例</a></p><p><a href="https://britgo.org/organisers/handbook/club4" target="_blank" rel="noreferrer">British Go Association｜Teaching Beginners</a></p></article>
+                <article><h4>提取、間隔與新情境</h4><p><a href="https://pubmed.ncbi.nlm.nih.gov/16507066/" target="_blank" rel="noreferrer">Roediger &amp; Karpicke, 2006｜Test-enhanced learning</a></p><p><a href="https://pubmed.ncbi.nlm.nih.gov/20804289/" target="_blank" rel="noreferrer">Butler, 2010｜Transfer from repeated testing</a></p><p><a href="https://pubmed.ncbi.nlm.nih.gov/19076480/" target="_blank" rel="noreferrer">Cepeda et al., 2008｜Spacing effects</a></p></article>
+                <article><h4>互動與首頁敘事參考</h4><p><a href="https://online-go.com/learn-to-play-go" target="_blank" rel="noreferrer">Online Go Server｜互動式入門路徑</a></p><p><a href="https://gomagic.org/" target="_blank" rel="noreferrer">Go Magic｜互動課程與分級呈現</a></p><p><a href="https://brilliant.org/resources/choosing-brilliant/how-brilliant-teaches-math/" target="_blank" rel="noreferrer">Brilliant｜learn by doing 與證據邊界敘事</a></p></article>
+              </div>
+              <div class="intro-status-note">
+                <strong>目前驗證狀態</strong>
+                <p>正式教學仍為 BLOCKED：外部棋理審查、三位目標初學者正式 usability 任務與真人無障礙 spot check 尚未完成。正式未見評量目前停用，學習成效也尚未量測。</p>
+                <p>最新狀態以 repository 的 <a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/COMPLETION_MATRIX.md" target="_blank" rel="noreferrer">完成矩陣</a>、<a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/TEACHING_GATE.md" target="_blank" rel="noreferrer">正式教學閘門</a>、<a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/RESEARCH_LEARNING_METRICS.md" target="_blank" rel="noreferrer">研究查核</a>為準。</p>
+              </div>
             </div>
-            <details class="intro-truth-details"><summary>查看目前專案證據邊界</summary><p>最新工程／證據狀態以 repository 的 current-truth 文件為準：<a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/COMPLETION_MATRIX.md" target="_blank" rel="noreferrer">完成矩陣</a>、<a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/TEACHING_GATE.md" target="_blank" rel="noreferrer">正式教學閘門</a>、<a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/RESEARCH_LEARNING_METRICS.md" target="_blank" rel="noreferrer">研究查核</a>。競品首頁只用來參考資訊架構，不是本課程有效性的證據。</p></details>
+          </details>
+
+          <section class="intro-final-cta" aria-label="開始學習">
+            <div><span>先從第一口氣開始</span><h3>第一課只先學會看「氣」。</h3><p>不用背完整規則，也不用先知道自己的棋力。</p></div>
+            <button class="primary-button intro-primary" type="button" data-site-intro-start>開始第一課 <span aria-hidden="true">→</span></button>
           </section>
-          <section class="intro-final-cta" aria-label="開始學習"><div><span>準備開始</span><h3>第一課只先學會看「氣」。</h3><p>不用背完整規則，也不用先知道自己的棋力。</p></div><button class="primary-button intro-primary" type="button" data-site-intro-start>開始第一課 <span aria-hidden="true">→</span></button></section>
         </div>
       </section>
 

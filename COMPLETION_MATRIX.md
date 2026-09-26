@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v41`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v42`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -38,7 +38,7 @@
 | standardized T3 固定應用探測 | 5 個減少技能線索的固定局面；Evidence Taxonomy v2 以 `evaluationContext=standardized` 與 live T3 分開 | SGF、試行、UI 與 evidence-taxonomy contract 測試 | 工程 | 條件通過；只支持既定局部 scoring contract，不代表全局判斷或 live 實戰遷移 |
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
-| 首頁下一步清楚 | 首次到訪先顯示設置用意、從零路徑、評量依據、能力邊界與來源；回訪者保留直接續學流程，並可用「這套課程怎麼教」重開說明。只有確實有題目到期時顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 首訪重排反證 | 工程 | `learner-flow-v41` 條件通過；資訊是否對初學者真正清楚仍待 candidate 凍結後真人觀察 |
+| 首頁下一步清楚 | 首次到訪以獨立一頁式首頁顯示零基礎起點、三段能力路徑、評量依據與可展開的來源／限制；Landing 狀態隱藏 sidebar、學習 topbar 與題目工作區，主 CTA 才進入既有課程。回訪者直接續學，並可用「課程首頁」重開；只有確實有題目到期時顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 首訪單欄、sidebar/topbar 隱藏與無橫向溢出反證 | 工程 | `learner-flow-v42` 條件通過；資訊是否對初學者真正清楚仍待 candidate 凍結後真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v4 答案盲審流程條件通過；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
@@ -47,6 +47,14 @@
 | 正式教學使用閘門 | R1a、三位初學者關鍵任務及真人無障礙 spot check 分開驗證 | `teaching-gate.test.cjs`、`teaching-gate-verify.cjs` | 外部內容與真人證據 | BLOCKED；缺 R1a 外部回條、初學者觀察及真人無障礙證據 |
 | 個人七天流程試行 | `personal-pilot-v3` 使用舊 R1 已曝光題，只檢查資料、返回與負擔；v1／v2 保留為 legacy | trial、狀態與 UI 測試 | 個人描述 | 工程通過；`formalEligible=false` |
 | 學習成效與排程增益 | 有試行資料管線與 Minimal Sufficient Policy 設計 | 試行流程測試 | 學習成效 | 未量測；個人單機正式驗收停用 |
+
+## 2026-09-26 Change note｜一頁式 reader-first 首頁
+
+- **問題：** v41 已把設置用意、路徑、評量與來源帶到首訪，但首頁仍嵌在學習 workspace 的 sidebar／topbar 框架裡；實際手機截圖顯示讀者先看到產品導覽與工具架構，而不是單一路徑的「我會學什麼／怎麼開始」。Hero 的 15／19／106 也比較像產品產量，而不是首次決策所需資訊。
+- **改動：** `learner-flow-v42` 將首訪／主動重開的介紹狀態改成獨立一頁式 Landing Page：隱藏 sidebar、學習 topbar、題目工作區與原 skip-link；加入只含品牌＋主 CTA 的 landing header。Hero 改為「從 0 開始，先學氣與提子，再走進 9 路棋局」，只保留 5→7→9 路與免帳號／本機進度兩個直接使用資訊；15 單元／19 課／106 題後移到課程路徑下方。評量主閱讀流收斂為首答、延後、未見新棋形三項；研究來源、formal teaching／evaluation／learning outcome 狀態改為預設收合的透明度區塊。
+- **不變 invariant：** 不改 item／KC／scoring、first response／retry、scheduler、storage schema、holdout 曝光、formal evaluation、live eligibility／scoring、evidence taxonomy 或第一課短講；只是重新切分 Landing 與 Learning Workspace 的資訊架構。
+- **反證／驗收：** 首訪時 sidebar 與 topbar 必須 `display:none`；375px 必須單欄、無橫向溢出，課程路徑為一欄；研究來源預設收合；按主 CTA 後才進第一課短講。回訪者重開首頁不得修改學習事件或進度。自動測試只證明介面契約，不能證明真人理解或轉換率。
+- **證據邊界：** 正式教學仍 `BLOCKED`；正式評量不可用；學習成效與完成課程對 K／段位換算仍 `NOT_MEASURED`。
 
 ## 2026-09-26 Change note｜首次到訪首頁與課程層級去歧義
 
