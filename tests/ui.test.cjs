@@ -720,7 +720,7 @@ async function main() {
       const afterFirstCorrect = document.querySelector('#advanced-sequence-feedback').textContent;
       const stepAfterOpponent = document.querySelector('#advanced-sequence-step').textContent;
       clickPoint(0, 2);
-      const raw = JSON.parse(localStorage.getItem('go-advanced-sequence-events-v1'));
+      const raw = JSON.parse(localStorage.getItem('go-advanced-sequence-events-v2'));
       return {
         sequenceTabs: document.querySelectorAll('#advanced-sequence-list [data-sequence-index]').length,
         afterWrong,
@@ -729,7 +729,8 @@ async function main() {
         finalFeedback: document.querySelector('#advanced-sequence-feedback').textContent,
         takeawayHidden: document.querySelector('#advanced-sequence-takeaway').hidden,
         eventTypes: raw.events.map((event) => event.type),
-        learnerMoves: raw.events.filter((event) => event.type === 'move_first' || event.type === 'move_retry').map((event) => ({type:event.type, step:event.stepIndex, correct:event.correct, firstResponse:event.firstResponse}))
+        learnerMoves: raw.events.filter((event) => event.type === 'move_first' || event.type === 'move_retry').map((event) => ({type:event.type, step:event.stepIndex, correct:event.correct, firstResponse:event.firstResponse})),
+        familyMeta: raw.events.filter((event) => event.type === 'move_first').map((event) => ({familyId:event.familyId, variantId:event.variantId, axes:event.variationAxes}))
       };
     })()`);
     assert.equal(advancedFlow.sequenceTabs, 8);
@@ -743,6 +744,10 @@ async function main() {
       {type:"move_first", step:0, correct:false, firstResponse:true},
       {type:"move_retry", step:0, correct:true, firstResponse:false},
       {type:"move_first", step:1, correct:true, firstResponse:true}
+    ]);
+    assert.deepEqual(advancedFlow.familyMeta, [
+      {familyId:"snapback", variantId:"seed", axes:["baseline"]},
+      {familyId:"snapback", variantId:"seed", axes:["baseline"]}
     ]);
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
     const advancedOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
