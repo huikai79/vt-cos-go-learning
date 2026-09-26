@@ -346,4 +346,5 @@
 - **問題：** WhatsApp／Facebook 分享預覽原先缺乏可辨識的品牌大圖；舊 `og-wu-zhi-yi-shou.jpg` 僅保留為既有公開資產，不再作目前分享入口。
 - **改動：** 新增 `og-wu-zhi-yi-shou-v2.jpg`（1200×630，JPEG），首頁 `og:image` 與 `twitter:image` 改指向 v2；`release-manifest.json` 同步納入兩個已追蹤 OG 圖檔，維持 repository boundary 的 exact-match 契約。
 - **驗證邊界：** 檔案尺寸、metadata 與 CI 只證明發布契約；WhatsApp／Facebook 是否實際抓到新版、中文字在手機縮圖是否清楚、平台裁切是否正常，仍需平台實際預覽驗收後才能把 v2 升為正式分享資產。
+- **WhatsApp 舊快取診斷：** 若分享卡仍顯示舊 `<title>`／一般 `description` 而不是現行 `og:title`／`og:description`，視為舊 URL 預覽快取的強訊號；正式驗收優先使用 canonical 根網址並以 Meta Sharing Debugger 重新抓取，不把重複貼同一個 `index.html` URL 當成已重新抓取。
 - **Rollback：** 將 `og:image`／`twitter:image` 指回舊圖即可；不影響課程、題目、事件、scoring、scheduler 或任何學習證據語義。
