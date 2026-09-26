@@ -70,6 +70,8 @@
     "app.js",
     "classic-shape-practice-contract.js",
     "classic-shape-practice.js",
+    "classic-shape-read-contract.js",
+    "classic-shape-read.js",
     "classic-shapes-catalog.js",
     "classic-shapes.css",
     "classic-shapes.html",
