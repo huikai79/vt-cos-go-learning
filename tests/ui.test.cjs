@@ -163,7 +163,7 @@ async function main() {
     const steppedDemo = await evaluate(socket, `(() => { const before = {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, previousDisabled: document.querySelector('#teaching-demo-previous').disabled}; document.querySelector('#teaching-demo-next').click(); return {before, after: {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, nextDisabled: document.querySelector('#teaching-demo-next').disabled}}; })()`);
     assert.deepEqual(steppedDemo, { before: {step: "第 1 / 2 步", caption: "先看角上的黑棋：棋盤外不是交叉點，所以不算氣。", previousDisabled: true}, after: {step: "第 2 / 2 步", caption: "只剩右邊和下邊兩個盤內空點，因此這顆棋有 2 口氣；斜角不算。", nextDisabled: true} });
     const started = await evaluate(socket, `(() => { document.querySelector('#lesson-intro-start-button').click(); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros}; })()`);
-    assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-title", activeFlow: "learning-step-1", seen: [0] });
+    assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-prompt", activeFlow: "learning-step-1", seen: [0] });
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
     assert.deepEqual(flowDialog, { inlineFlow: false, open: true, closed: true });
     let courseShape = await evaluate(socket, "({units: document.querySelector('#unit-select').options.length, shownUnits: document.querySelectorAll('.nav-unit').length, lessons: document.querySelectorAll('[data-lesson]').length, toolDescriptions: document.querySelectorAll('.tool-item p').length, r1LinkAbsent: document.querySelector('a[href=\"r1-review.html\"]') === null, contextBars: document.querySelectorAll('.lesson-context-bar').length, advancedClosed: !document.querySelector('#advanced-tools').open, advancedLabel: document.querySelector('#advanced-tools summary').textContent.trim(), rawBackupHint: document.querySelector('#export-events-button').nextElementSibling.textContent})");
@@ -197,7 +197,7 @@ async function main() {
     assert.equal(response.progress, "1 / 106");
     assert.equal(await evaluate(socket, "document.querySelector('.learning-steps li.active')?.id"), "learning-step-2");
     const nextQuestion = await evaluate(socket, `(() => { document.querySelector('#next-button').click(); return {title: document.querySelector('#question-title').textContent, focused: document.activeElement.id}; })()`);
-    assert.deepEqual(nextQuestion, { title: "邊上的一顆棋", focused: "question-title" });
+    assert.deepEqual(nextQuestion, { title: "邊上的一顆棋", focused: "question-prompt" });
     response = await evaluate(socket, `(() => {
       document.querySelector('[data-lesson="1"]').click();
       document.querySelector('#lesson-intro-start-button').click();
@@ -238,7 +238,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v37"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v38"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -324,7 +324,7 @@ async function main() {
     assert.match(dueReview.label, /1 題到期複習/);
     assert.match(dueReview.number, /間隔練習/);
     await delay(30);
-    assert.equal(await evaluate(socket, "document.activeElement.id"), "question-title");
+    assert.equal(await evaluate(socket, "document.activeElement.id"), "question-prompt");
     const phase4 = await evaluate(socket, `document.querySelector('#tools-menu').open = true; document.querySelector('#application-button').click(); const application = {number: document.querySelector('#question-number').textContent, tag: document.querySelector('#question-tag').textContent, why: document.querySelector('#learning-why').textContent, toolsClosed: !document.querySelector('#tools-menu').open, focused: document.activeElement.id}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sample-sgf-button').click(); const picker = {open: document.querySelector('#sgf-picker-dialog').open, choices: document.querySelector('#sgf-picker-move').options.length}; document.querySelector('#sgf-picker-confirm-button').click(); const candidate = document.querySelector('#sgf-candidate-input'); const reason = document.querySelector('#sgf-reason-input'); const expectedResponse = document.querySelector('#sgf-opponent-response-input'); candidate.value = '第 5 行第 5 列'; reason.value = '先確認中央氣數'; expectedResponse.value = '預期白棋會先補氣'; document.querySelector('#sgf-reflection-save-button').click(); const local = {number: document.querySelector('#question-number').textContent, player: document.querySelector('#player-color').textContent, status: document.querySelector('#sgf-reflection-status').textContent}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sgf-review-status-input').value = 'original_confirmed'; document.querySelector('#sgf-acceptable-answer-input').value = '人工複盤確認原著可接受'; document.querySelector('#sgf-review-save-button').click(); const review = document.querySelector('#sgf-review-status').textContent; ({application, picker, local, review, feedback: document.querySelector('#feedback').textContent})`);
     assert.match(phase4.application.number, /固定應用探測/);
     assert.equal(phase4.application.tag, "固定應用探測");
@@ -355,7 +355,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v37");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v38");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -372,9 +372,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v37");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v38");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v37");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v38");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
@@ -638,8 +638,8 @@ async function main() {
     }
     await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
-    const typography = await evaluate(socket, `({body: getComputedStyle(document.querySelector('.teaching-card p')).fontSize, prompt: getComputedStyle(document.querySelector('.question-prompt')).fontSize, heading: getComputedStyle(document.querySelector('.title-row h2')).fontSize})`);
-    assert.deepEqual(typography, { body: "16px", prompt: "16px", heading: "32px" });
+    const typography = await evaluate(socket, `({body: getComputedStyle(document.querySelector('.teaching-card p')).fontSize, topic: getComputedStyle(document.querySelector('.question-topic')).fontSize, prompt: getComputedStyle(document.querySelector('.question-prompt')).fontSize, policy: getComputedStyle(document.querySelector('.answer-policy')).fontSize, heading: getComputedStyle(document.querySelector('.title-row h2')).fontSize, topicLabel: document.querySelector('.question-topic-label').textContent, promptLabel: document.querySelector('.question-prompt-label').textContent, policyLabel: document.querySelector('.answer-policy-label').textContent, labelledBy: document.querySelector('.question-card').getAttribute('aria-labelledby')})`);
+    assert.deepEqual(typography, { body: "16px", topic: "16px", prompt: "24px", policy: "16px", heading: "32px", topicLabel: "本題重點", promptLabel: "問題", policyLabel: "作答方式", labelledBy: "question-prompt" });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 320, height: 812, deviceScaleFactor: 1, mobile: true });
     const narrowOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
     assert.ok(narrowOverflow.scrollWidth <= narrowOverflow.width + 1, `320px horizontal overflow: ${JSON.stringify(narrowOverflow)}`);
