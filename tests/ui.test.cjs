@@ -734,7 +734,7 @@ async function main() {
     })()`);
     assert.equal(advancedFlow.sequenceTabs, 4);
     assert.match(advancedFlow.afterWrong, /這手合法，但不是本題 contract 的下一手/);
-    assert.match(advancedFlow.afterFirstCorrect, /白棋依題目中的最強局部應手/);
+    assert.match(advancedFlow.afterFirstCorrect, /白棋依題目中的局部應手/);
     assert.equal(advancedFlow.stepAfterOpponent, "第 2 / 2 步");
     assert.match(advancedFlow.finalFeedback, /這條多手變化已走完/);
     assert.equal(advancedFlow.takeawayHidden, false);
