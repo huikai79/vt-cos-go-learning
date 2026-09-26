@@ -139,6 +139,13 @@
 - **Evidence boundary：** 目前只是 2 variants/family 的 practice seed。不能由此聲稱平行題等難、transfer 已建立或 KC 已被驗證；要進下一級至少需要真人 first-response 資料與 family 內差異檢查。
 - **歷史語義：** v4 四題 ID 與 version 不變；新增四個新 ID。舊事件不回寫 family metadata，也不把過去曝光重新標成 unseen。
 
+## 2026-09-27 Change note｜進階 family cue-control flow
+
+- **Bottleneck：** v2 已能保存 family／variant 首答，但舊 UI 在作答前直接顯示「倒撲／枷／對殺／征子」、family ID 與「變形」名稱，且可任意先點 variant；這會讓 seed→variant 的描述資料混入明顯的題型 cue 與順序污染。
+- **改動：** multi-step 棋盤題在完成前只顯示中性「棋盤練習 N」與當前 prompt；完整題名、target、術語、takeaway 於完成後才揭露。variant 在同 family 的 seed 尚未完成前 disabled；完成 seed 後才開放。事件分析另要求 seed 的 `presented` 必須早於 variant，否則 family transition 保持 `INSUFFICIENT_DATA`。
+- **不變 invariant：** prompt 本身仍保留完成該局部任務所需的棋理條件；不隱藏輪到誰走、棋盤狀態或合法性資訊。首答／retry 分離、practice-only、formalEligible=false、mastery=null、transferClaim=false 均不變。
+- **驗收：** Node negative test 驗 variant-first 必須資料不足；browser test 驗完成前名稱／術語隱藏、variant disabled，完成 seed 後名稱揭露且 variant 才可點。這只降低已知 cue leakage，不證明兩題等難或真人 transfer。
+
 ## 2026-09-27 Change note｜進階 family first-response evidence v2
 
 - **目標：** v5 已有每族兩個非單純旋轉變形，下一個 bottleneck 是事件流仍只保存 experience ID，無法在不回查當前內容定義的情況下重建「當時屬於哪個 family／variant／variation axes」。
