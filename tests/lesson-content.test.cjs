@@ -23,7 +23,7 @@ function validateDiagram(title, diagram) {
     assert.ok(!stones.has(`${x},${y}`), `${title} 有重疊棋子`);
     stones.add(`${x},${y}`);
   }
-  for (const marker of ["highlights", "blocked", "emphasis"]) {
+  for (const marker of ["highlights", "blocked", "emphasis", "reference"]) {
     const points = new Set();
     for (const point of diagram[marker] || []) {
       const [x, y] = point;
@@ -31,7 +31,7 @@ function validateDiagram(title, diagram) {
       assert.ok(!points.has(key(point)), `${title} 有重複 ${marker} 標記`);
       points.add(key(point));
       if (marker === "emphasis") assert.ok(stones.has(key(point)), `${title} 的強調圈未落在棋子上`);
-      else assert.ok(!stones.has(key(point)), `${title} 的 ${marker} 標記被棋子佔住`);
+      else if (marker !== "reference") assert.ok(!stones.has(key(point)), `${title} 的 ${marker} 標記被棋子佔住`);
     }
   }
   assert.match(diagram.label, /\S/, `${title} 缺少棋形替代文字`);
@@ -104,4 +104,35 @@ test("直三示範先呈現同一眼空間，再以中央急所分成兩眼", ()
   assert.equal(new Set(eyeRegions).size, 2);
   assert.ok(eyeRegions.every(({ touchesEdge }) => !touchesEdge));
   assert.ok(madeAlive.stones.some(([x, y, color]) => x === 2 && y === 1 && color === 1));
+});
+
+
+test("每課都有精簡關鍵詞定義，避免核心術語只靠上下文猜", () => {
+  for (const lesson of lessons) {
+    assert.ok(Array.isArray(lesson.terms) && lesson.terms.length >= 1, `${lesson.title} 缺少關鍵詞`);
+    for (const entry of lesson.terms) {
+      assert.match(entry.term, /\S/, `${lesson.title} 有空白術語`);
+      assert.match(entry.definition, /\S/, `${lesson.title} 的 ${entry.term} 缺少定義`);
+    }
+  }
+  assert.ok(lessons[6].terms.some((entry) => entry.term === "劫"));
+  assert.ok(lessons[7].terms.some((entry) => entry.term === "假眼"));
+  assert.ok(lessons[13].terms.some((entry) => entry.term === "目"));
+  assert.ok(lessons[15].terms.some((entry) => entry.term === "棄子"));
+  assert.ok(lessons[18].terms.some((entry) => entry.term === "原著手"));
+});
+
+test("關鍵抽象概念使用多步對照，而不是只用一張結果圖", () => {
+  assert.ok(lessons[6].demoSteps.length >= 6, "劫課必須包含禁著、提劫、禁止回提與隔手後再爭");
+  assert.match(lessons[6].demoSteps.map((step) => step.caption).join(" "), /不能立刻|別處走|再回劫/);
+  assert.ok(lessons[7].demoSteps.length >= 5, "兩眼課必須包含真假眼對照");
+  assert.match(lessons[7].demoSteps.map((step) => step.caption).join(" "), /假眼|不能當作真眼/);
+  assert.ok(lessons[12].demoSteps.length >= 4, "死活閱讀課必須示範候選、應手與反例檢查");
+  assert.match(lessons[12].demoSteps.map((step) => step.caption).join(" "), /最強應手|反例|合法/);
+  assert.ok(lessons[13].demoSteps.length >= 3, "官子課必須比較雙方先走結果");
+  assert.match(lessons[13].demoSteps.map((step) => step.caption).join(" "), /結果 A|結果 B|點數差/);
+  assert.ok(lessons[15].demoSteps.length >= 3, "棄子課必須比較救與棄兩條路");
+  assert.match(lessons[15].demoSteps.map((step) => step.caption).join(" "), /路線 A|路線 B|救棋成本/);
+  assert.ok(lessons[18].demoSteps.some((step) => Array.isArray(step.reference) && step.reference.length), "複盤課要用中性 reference 標記原著位置");
+  assert.equal(lessons[18].demoSteps.some((step) => Array.isArray(step.blocked) && step.blocked.length), false, "紅叉只保留給禁著，不再表示複盤原著");
 });
