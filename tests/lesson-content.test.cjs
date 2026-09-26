@@ -1,6 +1,7 @@
 const assert = require("node:assert/strict");
 const { test } = require("node:test");
 const { lessons } = require("../content.js");
+const Go = require("../go.js");
 
 const DIAGRAM_LESSONS = lessons.map((_, index) => index);
 
@@ -135,4 +136,19 @@ test("關鍵抽象概念使用多步對照，而不是只用一張結果圖", ()
   assert.match(lessons[15].demoSteps.map((step) => step.caption).join(" "), /路線 A|路線 B|救棋成本/);
   assert.ok(lessons[18].demoSteps.some((step) => Array.isArray(step.reference) && step.reference.length), "複盤課要用中性 reference 標記原著位置");
   assert.equal(lessons[18].demoSteps.some((step) => Array.isArray(step.blocked) && step.blocked.length), false, "紅叉只保留給禁著，不再表示複盤原著");
+});
+
+test("劫示範的提子與回提符合規則引擎，不留下已被提走的棋", () => {
+  const koStart = lessons[6].demoSteps[2];
+  const board = Go.boardFromStones(koStart.stones, 5);
+  const whiteCapture = Go.playMove(board, 2, 1, Go.WHITE);
+  assert.equal(whiteCapture.legal, true);
+  assert.equal(whiteCapture.board[2][2], Go.EMPTY);
+  const immediateRecapture = Go.playMove(whiteCapture.board, 2, 2, Go.BLACK, board);
+  assert.equal(immediateRecapture.legal, false);
+
+  const finalDiagram = lessons[6].demoSteps.at(-1);
+  const finalBoard = Go.boardFromStones(finalDiagram.stones, 5);
+  assert.equal(finalBoard[1][2], Go.EMPTY, "回劫後原白棋應已被提走");
+  assert.equal(finalBoard[2][2], Go.BLACK, "回劫點應為黑棋");
 });
