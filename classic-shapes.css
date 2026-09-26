@@ -23,7 +23,7 @@
 .classic-board .classic-hit{fill:transparent;cursor:pointer}
 .classic-board .classic-hit:hover,.classic-board .classic-hit.cursor{fill:#fff6b955}
 .classic-board .classic-hit:focus{outline:none}
-.classic-board .classic-cursor-ring{fill:none;stroke:#315f40;stroke-width:3}
+.classic-board .classic-cursor-ring{fill:none;stroke:#315f40;stroke-width:3;pointer-events:none}
 @media(max-width:900px){.classic-grid{grid-template-areas:"question" "board";grid-template-columns:1fr}.classic-question{min-height:auto}.classic-progress ol{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.classic-shell{padding:22px 14px 40px}.classic-header h1{font-size:1.8rem}.classic-progress ol{grid-template-columns:1fr}.classic-board{max-width:100%}}
 
