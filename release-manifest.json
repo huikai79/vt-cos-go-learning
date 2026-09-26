@@ -72,6 +72,8 @@
     "classic-shape-practice.js",
     "classic-shape-read-contract.js",
     "classic-shape-read.js",
+    "classic-shape-reduction-contract.js",
+    "classic-shape-reduction.js",
     "classic-shapes-catalog.js",
     "classic-shapes.css",
     "classic-shapes.html",

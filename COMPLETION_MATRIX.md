@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v5 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v4 | `classic-shapes.html` 由單一直三探索擴為「已驗證直三練習＋多語圖鑑」。`classic-shapes-catalog.js` 以棋形／family 為主體，跨語名稱分 `exact-established-name`、`category-equivalent`、`project-established-name` 與 `needs_review`；中文名稱另分 `established`、`established_alias`、`teaching_translation`、`descriptive_translation`、`no_established_name_found`、`needs_review`；盤角曲四標記 ruleset-sensitive；刀把五已具 bounded vital-point＋A/B short-read practice，梅花五、葡萄六、大／小豬嘴、金雞獨立仍只作 catalog candidate，不建立可評分答案 | `classic-shapes.test.cjs`、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語 provenance | 條件通過僅限資料模型與呈現；直三可玩；刀把五已有兩層 bounded practice：第一手共同急所＋「攻方急所 → 守方 A/B → 攻方補另一點」三手 short-read。這仍不是完整答案樹；其他 candidate 仍需逐一完成幾何、來源與 scoring／variation contract 後才能變成練習 |
+| 世界死活名型館 v5 | `classic-shapes.html` 由單一直三探索擴為「已驗證直三練習＋多語圖鑑」。`classic-shapes-catalog.js` 以棋形／family 為主體，跨語名稱分 `exact-established-name`、`category-equivalent`、`project-established-name` 與 `needs_review`；中文名稱另分 `established`、`established_alias`、`teaching_translation`、`descriptive_translation`、`no_established_name_found`、`needs_review`；盤角曲四標記 ruleset-sensitive；刀把五已具 bounded vital-point＋A/B short-read＋sealed reduction practice，梅花五、葡萄六、大／小豬嘴、金雞獨立仍只作 catalog candidate，不建立可評分答案 | `classic-shapes.test.cjs`、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語 provenance | 條件通過僅限資料模型與呈現；直三可玩；刀把五已有三層 bounded practice：第一手共同急所、A/B 三手 short-read、以及「零外氣＋守方局部手抜き」時的 sealed reduction（提四子後收束為方四）。這仍不是完整答案樹；其他 candidate 仍需逐一完成幾何、來源與 scoring／variation contract 後才能變成練習 |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -434,3 +434,12 @@
 - **反證：** 非 A/B 守方回應、錯誤 complement、鏡像後沿用 seed 舊座標都必須 fail；未列分支保持 `UNKNOWN`，不 fallback 成固定答案。
 - **證據邊界：** 只支持三手主分支 reading practice；不支持完整做活／殺棋答案樹、所有外氣／角部條件、mastery、transfer、T2/T3 或 formal evaluation。
 - **Validation：** PR #19 verify run #411 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `15cc9e482a594fa7452cf53f2fe481fd5a8d7bc5`）。這只支持 bounded A/B 三手主分支工程／內容契約，不升格完整死活效度或學習成效。
+
+
+## 2026-09-27 Change note｜刀把五 sealed reduction v1
+
+- **進入條件：** 守方整串在局部 setup 中只有五個眼空作 liberties，沒有任何外氣；攻方已先佔共同急所，守方之後的外部著手不改變此局部。
+- **contract：** `classic-bulky-five-sealed-reduction-v1` 推導唯一 2×2 square core 與突出 capture point。攻方可用任意次序補完其餘三個 core 點；完成後守方只剩突出點一口氣，規則引擎必須證明該手合法且正好提四子，終局眼空等於 2×2 square four。
+- **negative oracle：** 移除外圍封閉層、讓守方存在外氣時，`forcedCapture=false` 且 `squareFourReached=false`；不得把 sealed 分支套到一般刀把五局面。
+- **來源：** Board to Bits Go 描述 Bulky Five 內部逐步填入、迫使提四子並縮成 square four 的路徑；Malaysia Weiqi Association 教材另把完全包圍的 square four 列為 dead shape。來源只支持此條件分支，不代表完整答案樹。
+- **證據邊界：** 仍為 practice-only；不寫 KC／scheduler／T2-T3／mastery／formal evaluation。未列守方應手、有外氣、角部差異或其他 ruleset 條件維持 UNKNOWN。

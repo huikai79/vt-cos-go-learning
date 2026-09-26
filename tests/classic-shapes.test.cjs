@@ -9,6 +9,8 @@ const Practice = require("../classic-shape-practice.js");
 const PracticeContract = require("../classic-shape-practice-contract.js");
 const ShortRead = require("../classic-shape-read.js");
 const ShortReadContract = require("../classic-shape-read-contract.js");
+const Reduction = require("../classic-shape-reduction.js");
+const ReductionContract = require("../classic-shape-reduction-contract.js");
 
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "classic-shapes.html"), "utf8");
@@ -28,7 +30,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /直三使用既有 scoring contract；刀把五有 bounded「共同急所」與三手 A\/B short-read contract/);
+  assert.match(html, /刀把五有三層 bounded practice：共同急所、A\/B 三手 short-read、以及「零外氣＋守方局部手抜き」的 sealed reduction/);
   assert.match(html, /名稱仍在作答後才揭示/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
@@ -44,7 +46,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v4");
+  assert.equal(Catalog.version, "world-classic-shapes-v5");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -67,7 +69,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
   const longL = Catalog.entries.find((entry) => entry.id === "long-l-group-v1");
   assert.equal(knife.zhNameStatus, S.ESTABLISHED_ALIAS);
   assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), true);
-  assert.equal(knife.practiceStatus, "playable_bounded_vital_point_and_short_read_contract");
+  assert.equal(knife.practiceStatus, "playable_bounded_vital_point_short_read_and_sealed_reduction_contract");
   assert.equal(grape.zhNameStatus, S.NEEDS_REVIEW);
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
   assert.equal(carpenter.zhNameStatus, S.ESTABLISHED_ALIAS);
@@ -192,4 +194,65 @@ test("刀把五 short-read UI 明示只覆蓋 A/B 主分支，未列分支保持
   assert.match(html, /未列分支保持 UNKNOWN/);
   assert.match(js, /GoClassicShapeReadContract/);
   assert.match(js, /未列分支仍是 UNKNOWN/);
+});
+
+
+test("刀把五 sealed reduction 兩個 variant 在零外氣條件下都收束成 square four", () => {
+  assert.equal(Reduction.version, "classic-shape-reduction-v1");
+  assert.equal(Reduction.scoringContractVersion, ReductionContract.CONTRACT_VERSION);
+  assert.equal(Reduction.items.length, 2);
+  const all = ReductionContract.validateAll(Reduction.items, { Go, PracticeContract });
+  assert.equal(all.ok, true, all.errors.join("; "));
+  for (const item of Reduction.items) {
+    const validation = ReductionContract.validateItem(item, { Go, PracticeContract });
+    assert.equal(validation.ok, true, item.id);
+    assert.equal(validation.reductionPoints.length, 3, item.id);
+    const result = ReductionContract.finalize(item, validation.reductionPoints, { Go, PracticeContract });
+    assert.equal(result.ok, true, item.id);
+    assert.equal(result.complete, true, item.id);
+    assert.equal(result.status, "SQUARE_FOUR_REACHED", item.id);
+    assert.equal(result.result.sealedBefore, true, item.id);
+    assert.equal(result.result.forcedCapture, true, item.id);
+    assert.equal(result.result.capturedInner.length, 4, item.id);
+    assert.deepEqual(result.result.defenderLiberties, [validation.capturePoint], item.id);
+    assert.deepEqual(
+      result.result.result ? result.result.result : undefined,
+      undefined
+    );
+  }
+});
+
+test("sealed reduction 三顆縮眼子的次序可交換，但不能下突出 capture point", () => {
+  const item = Reduction.items[0];
+  const validation = ReductionContract.validateItem(item, { Go, PracticeContract });
+  assert.equal(validation.ok, true);
+  const [a,b,c] = validation.reductionPoints;
+  for (const order of [[a,b,c],[a,c,b],[b,a,c],[b,c,a],[c,a,b],[c,b,a]]) {
+    const result = ReductionContract.finalize(item, order, { Go, PracticeContract });
+    assert.equal(result.complete, true, order.map(String).join(" -> "));
+  }
+  const wrong = ReductionContract.scoreNext(item, [], validation.capturePoint, { Go, PracticeContract });
+  assert.equal(wrong.ok, true);
+  assert.equal(wrong.correct, false);
+});
+
+test("有外氣時 sealed reduction 不得錯報 forced capture 或 square-four terminal", () => {
+  const item = Reduction.items[0];
+  const validation = ReductionContract.validateItem(item, { Go, PracticeContract });
+  assert.equal(validation.ok, true);
+  const open = ReductionContract.replay(item, validation.reductionPoints, { Go, PracticeContract }, { sealed:false });
+  assert.equal(open.ok, true);
+  assert.equal(open.sealedBefore, false);
+  assert.equal(open.forcedCapture, false);
+  assert.equal(open.squareFourReached, false);
+});
+
+
+test("sealed reduction UI 明示零外氣前提與 square-four terminal", () => {
+  assert.match(html, /刀把五：手抜き後如何縮成方四/);
+  assert.match(html, /守方整串無外氣/);
+  assert.match(html, /若有外氣，本 contract 直接判定不適用/);
+  assert.match(html, /提四子 → 方四/);
+  assert.match(js, /GoClassicShapeReductionContract/);
+  assert.match(js, /其他應手與有外氣局面仍是 UNKNOWN/);
 });
