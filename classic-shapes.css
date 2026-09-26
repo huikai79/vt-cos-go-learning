@@ -53,3 +53,5 @@
 .bulky-practice .classic-actions{margin-top:auto}
 .bulky-hit{fill:#ffffff18}
 @media(max-width:900px){.bulky-practice-grid{grid-template-columns:1fr}}
+
+.bulky-read{margin-top:34px;padding-top:6px}
