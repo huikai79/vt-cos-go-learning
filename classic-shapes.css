@@ -3,7 +3,7 @@
 .classic-header{max-width:760px;margin-bottom:24px}
 .classic-header h1{font-size:2.25rem;margin:12px 0 10px}
 .classic-header p{font-size:1rem;line-height:1.75;color:#5f7465}
-.classic-progress{margin:18px 0 22px}
+.classic-practice-intro{margin:22px 0 10px;padding:16px 18px;border:1px solid #dbe5d8;border-radius:12px;background:#fbfdf9}.classic-practice-intro h2{margin:6px 0 6px;font-size:1.25rem}.classic-practice-intro p{margin:0;color:#617363;line-height:1.7}.classic-progress{margin:10px 0 22px}
 .classic-progress ol{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;list-style:none;padding:0;margin:0}
 .classic-progress li{padding:10px 12px;border:1px solid #dfe7dd;border-radius:10px;background:#fff;color:#758776;font-size:.875rem}
 .classic-progress li.active{border-color:#709579;background:#edf4ec;color:#244c35;font-weight:700}
