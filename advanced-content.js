@@ -244,7 +244,7 @@
   ];
 
   const api = {
-    version: 1,
+    version: 2,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
     experiences,
