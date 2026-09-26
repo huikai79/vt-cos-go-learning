@@ -83,7 +83,7 @@
   function renderSequenceList() {
     $("advanced-sequence-list").innerHTML = experiences.map((item, index) =>
       '<button type="button" class="advanced-sequence-tab' + (index === experienceIndex ? ' active' : '') + '" data-sequence-index="' + index + '">' +
-      '<strong>' + escapeHtml(item.title) + '</strong><small>' + item.decisions.length + ' 段實走 · 規則驗證</small></button>'
+      '<strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.familyId) + ' · ' + item.decisions.length + ' 段實走 · 規則驗證</small></button>'
     ).join("");
   }
 
