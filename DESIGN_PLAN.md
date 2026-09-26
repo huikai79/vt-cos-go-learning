@@ -1,3 +1,5 @@
+2026-09-27 刀把五 sealed reduction v1：新增第三層 bounded branch，只處理「守方零外氣＋局部連續手抜き」條件。contract 從五點眼空推導唯一 2×2 square core 與突出 capture point；攻方已佔 vital point 後，可任意次序補滿其餘三個 core 點，之後守方必須只剩 capture point 一口氣，並由 rules engine 證明提四子後 terminal eye-space 恰為 2×2 square four。另以有外氣 setup 作 negative oracle，要求 forced capture 與 square-four terminal 都失敗。這不是完整刀把五答案樹。
+
 2026-09-27 刀把五 A/B short-read v1：在 vital-point recognition 之上增加一個 3 手 bounded branch：攻方先佔共同急所，守方若走 geometry 推導出的 A/B 任一點，攻方需立即補另一點。A/B 不是手寫座標，而是 eye-space adjacency graph 中「與 vital point 相鄰且 degree=2」的兩個點；seed、反向應手與鏡像共三個 variant。rules engine 必須重播三手合法性。這個 branch 由外部教材支持，但未列抵抗保持 UNKNOWN；仍不宣稱完整刀把五答案樹、mastery 或 transfer。
 
 2026-09-27 刀把五 bounded practice v1：世界名型館第一個從 catalog 升成可玩 family 的新名型只評「共同急所」第一手。geometry contract 以五點 P-pentomino 同構＋唯一 degree-3 眼空節點推導急所，rules engine 再驗 setup 與五個候選落子合法；守／攻、旋轉、鏡像共四個 variant。這個 contract 只支持 vital-point recognition，不支持完整生死、所有外氣／角部條件、mastery、transfer 或 formal evaluation。若要升格完整死活 practice，先補 variation tree、主要抵抗與 negative oracle。
