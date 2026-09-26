@@ -165,7 +165,8 @@ test("多手 sequence event store 逐 decision 保留首答與 retry", () => {
 });
 
 test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Response", () => {
-  const storage = memoryStorage("{broken");
+  const storage = memoryStorage();
+  storage.setItem(SequenceEvents.STORAGE_KEY, "{broken");
   const result = SequenceEvents.read(storage);
   assert.equal(result.ok, false);
   assert.equal(result.error, "advanced_sequence_store_malformed");
