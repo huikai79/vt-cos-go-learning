@@ -186,8 +186,13 @@ async function main() {
     assert.equal(finalLessonDemo.after.step, "第 2 / 2 步");
     assert.match(finalLessonDemo.after.caption, /比較原著手|候選方向/);
     await evaluate(socket, "(() => { const select = document.querySelector('#unit-select'); select.value = '0'; select.dispatchEvent(new Event('change', {bubbles: true})); document.querySelector('[data-lesson=\"0\"]').click(); })()");
-    let response = await evaluate(socket, `document.querySelector('[data-answer="4"]').click(); ({feedback: document.querySelector('#feedback').textContent, nextDisabled: document.querySelector('#next-button').disabled, progress: document.querySelector('#progress-count').textContent})`);
+    let response = await evaluate(socket, `document.querySelector('[data-answer="4"]').click(); (() => { const feedback = document.querySelector('#feedback'); return {feedback: feedback.textContent, feedbackClass: feedback.className, feedbackTitle: feedback.querySelector('.feedback-title')?.textContent, feedbackBadge: feedback.querySelector('.feedback-badge')?.textContent, explanation: feedback.querySelector('.answer-explanation')?.textContent, nextDisabled: document.querySelector('#next-button').disabled, progress: document.querySelector('#progress-count').textContent}; })()`);
     assert.match(response.feedback, /答對了/);
+    assert.match(response.feedbackClass, /answer-result/);
+    assert.match(response.feedbackClass, /success/);
+    assert.equal(response.feedbackTitle, "答對了");
+    assert.equal(response.feedbackBadge, "✓");
+    assert.ok(response.explanation.length > 0);
     assert.equal(response.nextDisabled, false);
     assert.equal(response.progress, "1 / 106");
     assert.equal(await evaluate(socket, "document.querySelector('.learning-steps li.active')?.id"), "learning-step-2");
@@ -210,11 +215,18 @@ async function main() {
       const moved = document.activeElement;
       const afterMove = {x: moved.dataset.x, y: moved.dataset.y, label: moved.getAttribute('aria-label'), tabbable: document.querySelectorAll('[data-board-point][tabindex="0"]').length};
       moved.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
-      return {before, afterMove, feedback: document.querySelector('#feedback').textContent, missed: document.querySelector('#review-count').textContent};
+      const feedback = document.querySelector('#feedback');
+      return {before, afterMove, feedback: feedback.textContent, feedbackClass: feedback.className, feedbackTitle: feedback.querySelector('.feedback-title')?.textContent, feedbackBadge: feedback.querySelector('.feedback-badge')?.textContent, nextDisabled: document.querySelector('#next-button').disabled, hintDisabled: document.querySelector('#hint-button').disabled, missed: document.querySelector('#review-count').textContent};
     })()`);
     assert.deepEqual(response.before, { points: 81, tabbable: 1, x: "4", y: "4", label: "第 5 行第 5 列，白棋，已有棋子" });
     assert.deepEqual(response.afterMove, { x: "5", y: "5", label: "第 6 行第 6 列，空點，可落子", tabbable: 1 });
     assert.match(response.feedback, /再試一次/);
+    assert.match(response.feedbackClass, /answer-result/);
+    assert.match(response.feedbackClass, /error/);
+    assert.equal(response.feedbackTitle, "答錯，再看一次");
+    assert.equal(response.feedbackBadge, "×");
+    assert.equal(response.nextDisabled, true);
+    assert.equal(response.hintDisabled, false);
     assert.equal(response.missed, "1");
     response = await evaluate(socket, `document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); ({feedback: document.querySelector('#feedback').textContent, white: document.querySelectorAll('#board .stone-white').length})`);
     assert.match(response.feedback, /答對了/);
@@ -226,7 +238,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v36"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v37"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -343,7 +355,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v36");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v37");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -360,9 +372,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v36");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v37");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v36");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v37");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
