@@ -454,6 +454,8 @@ async function main() {
       if (await evaluate(socket, "document.querySelector('#question-title')?.textContent === '中央的一顆棋'")) break;
       await delay(100);
     }
+    await evaluate(socket, "document.querySelector('[data-site-intro-start]').click()");
+    assert.equal(await evaluate(socket, "document.querySelector('#lesson-intro-dialog').open"), true);
     await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     const lessonTransition = await evaluate(socket, `(() => {
       const unit = document.querySelector('#unit-select');
