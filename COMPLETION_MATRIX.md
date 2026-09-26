@@ -1,15 +1,15 @@
 # 完成矩陣：悟之一手
 
-更新日期：2026-09-26  
+更新日期：2026-09-27  
 用途：將產品承諾、現有實作、自動驗證與證據邊界分開記錄。此表的「工程通過」只表示指定程式行為可運作，不表示內容正確、初學者可理解或學習有效。
 
 ## Current Status
 
-- `as_of`: 2026-09-26
+- `as_of`: 2026-09-27
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v44`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v45`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -375,3 +375,13 @@
 - **驗證邊界：** 檔案尺寸、metadata 與 CI 只證明發布契約；WhatsApp／Facebook 是否實際抓到新版、中文字在手機縮圖是否清楚、平台裁切是否正常，仍需平台實際預覽驗收後才能把 v2 升為正式分享資產。
 - **WhatsApp 舊快取診斷：** 若分享卡仍顯示舊 `<title>`／一般 `description` 而不是現行 `og:title`／`og:description`，視為舊 URL 預覽快取的強訊號；正式驗收優先使用 canonical 根網址並以 Meta Sharing Debugger 重新抓取，不把重複貼同一個 `index.html` URL 當成已重新抓取。
 - **Rollback：** 將 `og:image`／`twitter:image` 指回舊圖即可；不影響課程、題目、事件、scoring、scheduler 或任何學習證據語義。
+
+## 2026-09-27 Change note｜工具面板語意與品牌邊界複核（v45）
+
+- **Johari 開放區：** 「工具與資料」的分層本身成立：日常練習／複盤留第一層，流程試行、排程政策與匯出留在預設收合區；頂端「今日到期」仍只在確實有到期題時顯示。
+- **盲點修正：** 原 HTML 真的含有兩段字面量 `\n`，瀏覽器因此把 `\n` 當文字顯示；已改成真正換行並加反回歸。原工具按鈕「今日複習」也不精確，因 scheduler 在沒有到期題時會選尚未呈現的新 practice item；v45 改為依既有 `dueCount` 動態顯示「複習今日到期（N）」或「開始間隔練習」，但沒有改 scheduler 規則。
+- **前輪判斷糾正：** 不採「公開介面移除 VT-COS」的全面做法。依 `BRAND.md`，第一次出現產品名稱仍保留母品牌 `VT-COS｜悟之一手`；後續操作列可只顯示「悟之一手」，避免重複品牌與英文狀態字串干擾任務。亦不把「棋譜單點復盤」泛化成「棋譜復盤」，因現行能力仍是 bounded single-move historical recall；「進階訓練」也保留既有產品路徑名稱。
+- **learner-facing 文案：** 「局面小測驗」改為「局面應用練習」；自由棋盤、進階訓練與 SGF 說明縮短並改成使用者可理解的功能／邊界，不再直接顯示 raw `practice`、KC／T2-T3 等不必要內部語言。SGF 仍明示單手重建不是最佳手評分。
+- **不可破壞 invariant：** 不改 item／KC、scoring、first response／retry、scheduler policy、storage schema、Evidence Taxonomy、formal evaluation、live evidence 或 advanced event contract。v45 只改 learner-facing HTML、顯示文案、現有 due state 的呈現與 UI version。
+- **未知與證據邊界：** 這些修正可由靜態／狀態／browser regression 驗證其工程契約，但「是否更快看懂工具用途、是否降低誤點」仍是 formative hypothesis；正式 usability、正式教學、正式評量與學習成效狀態不因此升格。
+
