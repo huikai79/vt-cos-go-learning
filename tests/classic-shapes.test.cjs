@@ -22,8 +22,9 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 });
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
-  assert.match(html, /只作練習，不寫入 KC、排程、T2／T3 或正式評量/);
-  assert.match(html, /先自己找急所，再揭曉棋形名稱/);
+  assert.match(html, /圖鑑不是能力證據/);
+  assert.match(html, /只有已存在 scoring contract 的直三練習可互動/);
+  assert.match(html, /名稱仍在作答後才揭示/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
   assert.match(js, /\$\("classic-reveal"\)\.hidden = true/);
