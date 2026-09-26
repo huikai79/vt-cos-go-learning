@@ -39,7 +39,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v1");
+  assert.equal(Catalog.version, "world-classic-shapes-v2");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -51,16 +51,28 @@ test("世界名型圖鑑把精確別名、分類對應與待核對分開", () =>
   assert.ok(carpenter.aliases.some((alias) => alias.name === "Carpenter's Square"));
 });
 
-test("未完成幾何核對的中文俗稱不冒充跨語精確同義詞", () => {
-  for (const id of ["knife-five-candidate-v1", "plum-five-candidate-v1", "grape-six-candidate-v1", "big-pigs-mouth-candidate-v1", "small-pigs-mouth-candidate-v1", "golden-chicken-candidate-v1"]) {
-    const entry = Catalog.entries.find((item) => item.id === id);
-    assert.equal(entry.reviewStatus, Catalog.REVIEW.NEEDS_REVIEW, id);
-    assert.equal(entry.practiceStatus, "catalog_candidate_only", id);
-  }
+test("中文名稱身分與描述性翻譯保持分離", () => {
+  const S = Catalog.ZH_NAME_STATUS;
   const knife = Catalog.entries.find((entry) => entry.id === "knife-five-candidate-v1");
   const grape = Catalog.entries.find((entry) => entry.id === "grape-six-candidate-v1");
-  assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), false);
+  const carpenter = Catalog.entries.find((entry) => entry.id === "carpenters-square-v1");
+  const lGroup = Catalog.entries.find((entry) => entry.id === "l-group-v1");
+  const lPlusOne = Catalog.entries.find((entry) => entry.id === "l-plus-one-group-v1");
+  const tripod = Catalog.entries.find((entry) => entry.id === "tripod-group-v1");
+  assert.equal(knife.zhNameStatus, S.ESTABLISHED_ALIAS);
+  assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), true);
+  assert.equal(knife.practiceStatus, "catalog_candidate_only");
+  assert.equal(grape.zhNameStatus, S.NEEDS_REVIEW);
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
+  assert.equal(carpenter.zhNameStatus, S.NEEDS_REVIEW);
+  assert.equal(carpenter.preferredZhTW, null);
+  assert.ok(carpenter.zhAliases.some((alias) => alias.name === "斗方"));
+  assert.equal(carpenter.teachingTranslation, "木匠方");
+  for (const entry of [lGroup, lPlusOne, tripod]) {
+    assert.equal(entry.zhNameStatus, S.NO_ESTABLISHED_NAME_FOUND, entry.id);
+    assert.equal(entry.preferredZhTW, null, entry.id);
+    assert.ok(entry.teachingTranslation, entry.id);
+  }
 });
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
@@ -69,4 +81,17 @@ test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => 
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
+});
+
+
+test("韓文術語有來源層級且不因次級來源升格為 verified", () => {
+  const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
+  const flowerSix = Catalog.entries.find((entry) => entry.id === "flower-six-v1");
+  const koBent = bentFour.aliases.find((alias) => alias.locale === "ko-KR");
+  const koFlower = flowerSix.aliases.find((alias) => alias.locale === "ko-KR");
+  assert.equal(koBent.name, "귀곡사");
+  assert.equal(koBent.reviewStatus, Catalog.REVIEW.PARTIAL);
+  assert.equal(koFlower.name, "매화6궁");
+  assert.equal(koFlower.reviewStatus, Catalog.REVIEW.PARTIAL);
+  assert.ok(bentFour.sources.some((source) => source.sourceTier === "community_secondary"));
 });
