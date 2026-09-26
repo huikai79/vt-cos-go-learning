@@ -20,6 +20,7 @@ const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "classic-shapes.html"), "utf8");
 const js = fs.readFileSync(path.join(root, "classic-shapes.js"), "utf8");
 const catalogSource = fs.readFileSync(path.join(root, "classic-shapes-catalog.js"), "utf8");
+const css = fs.readFileSync(path.join(root, "classic-shapes.css"), "utf8");
 
 test("經典眼形探索只重用既有 practice 題，不建立第二套答案來源", () => {
   const ids = ["u4-m01", "u4-m02", "u4-m03", "u4-m05"];
@@ -383,4 +384,22 @@ test("contrast UI 首答前隱藏 family，答後才揭示，且不宣稱 transf
   assert.match(html, /答對只代表這一題第一手正確，不代表 transfer 或 mastery/);
   assert.match(js, /\$\("contrast-reveal"\)\.hidden=true/);
   assert.match(js, /不代表已證明跨 family transfer/);
+});
+
+
+test("直三首屏明示單題落子操作，且 shared grid-area 不得把題幹卡擠走", () => {
+  assert.match(html, /這是單題落子練習，不是自由對局/);
+  assert.match(html, /請在棋盤空點下 1 手/);
+  assert.match(html, /錯答與正答都會立即顯示回饋/);
+  assert.match(html, /9 × 9 單題落子練習/);
+  assert.match(css, /\.classic-grid\{display:grid;grid-template-areas:"question board"/);
+  assert.match(css, /\.bulky-practice-grid\{display:grid;grid-template-areas:"question board"/);
+});
+
+test("直三棋盤已有棋子與游標圈不再造成無反應點擊", () => {
+  assert.match(js, /function initialClassicCursor/);
+  assert.match(js, /class="stone-black classic-occupied"/);
+  assert.match(js, /class="stone-white classic-occupied"/);
+  assert.match(js, /這裡已有棋子。先找眼空或邊界中的可落子點。/);
+  assert.match(css, /classic-cursor-ring\{[^}]*pointer-events:none/);
 });

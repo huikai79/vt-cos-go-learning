@@ -14,6 +14,7 @@ const baseUrl = requestedBaseUrl ? new URL(requestedBaseUrl.endsWith("/") ? requ
 const page = baseUrl ? new URL("index.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../index.html")).href;
 const reviewPage = baseUrl ? new URL("r1-review.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../r1-review.html")).href;
 const advancedPage = baseUrl ? new URL("advanced.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../advanced.html")).href;
+const classicPage = baseUrl ? new URL("classic-shapes.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../classic-shapes.html")).href;
 
 function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
@@ -771,6 +772,73 @@ async function main() {
     const advancedOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
     assert.ok(advancedOverflow.scrollWidth <= advancedOverflow.width + 1, `advanced mobile horizontal overflow: ${JSON.stringify(advancedOverflow)}`);
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+
+    await command(socket, "Page.navigate", { url: classicPage });
+    let classicReady = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      classicReady = await evaluate(socket, "Boolean(document.querySelector('#classic-board [data-x]') && document.querySelector('#classic-prompt')?.textContent)");
+      if (classicReady) break;
+      await delay(100);
+    }
+    assert.equal(classicReady, true);
+    const classicLayout = await evaluate(socket, `(() => {
+      const question = document.querySelector('.classic-question');
+      const board = document.querySelector('.classic-grid .board-card');
+      const operation = document.querySelector('.classic-operation');
+      const qr = question.getBoundingClientRect();
+      const br = board.getBoundingClientRect();
+      return {
+        questionDisplay: getComputedStyle(question).display,
+        questionVisible: qr.width > 100 && qr.height > 100,
+        boardVisible: br.width > 100 && br.height > 100,
+        questionBeforeBoard: qr.left < br.left,
+        prompt: document.querySelector('#classic-prompt').textContent,
+        operation: operation.textContent.replace(/\\s+/g,' ').trim(),
+        cursorPointerEvents: getComputedStyle(document.querySelector('#classic-board .classic-cursor-ring')).pointerEvents,
+        cursorOnOccupied: (() => {
+          const ring = document.querySelector('#classic-board .classic-cursor-ring');
+          const occupied = [...document.querySelectorAll('#classic-board .classic-occupied')];
+          if (!ring) return null;
+          const cx = ring.getAttribute('cx'), cy = ring.getAttribute('cy');
+          return occupied.some((stone) => stone.getAttribute('cx') === cx && stone.getAttribute('cy') === cy);
+        })()
+      };
+    })()`);
+    assert.equal(classicLayout.questionDisplay, "flex");
+    assert.equal(classicLayout.questionVisible, true);
+    assert.equal(classicLayout.boardVisible, true);
+    assert.equal(classicLayout.questionBeforeBoard, true);
+    assert.match(classicLayout.prompt, /輪到黑棋/);
+    assert.match(classicLayout.operation, /單題落子練習/);
+    assert.match(classicLayout.operation, /點|空點/);
+    assert.equal(classicLayout.cursorPointerEvents, "none");
+    assert.equal(classicLayout.cursorOnOccupied, false);
+
+    const occupiedFeedback = await evaluate(socket, `(() => {
+      const stone = document.querySelector('#classic-board .classic-occupied');
+      stone.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return document.querySelector('#classic-feedback').textContent;
+    })()`);
+    assert.match(occupiedFeedback, /這裡已有棋子/);
+
+    const wrongFeedback = await evaluate(socket, `(() => {
+      const point = document.querySelector('#classic-board [data-x="2"][data-y="3"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {text: document.querySelector('#classic-feedback').textContent, revealHidden: document.querySelector('#classic-reveal').hidden, nextDisabled: document.querySelector('#classic-next').disabled};
+    })()`);
+    assert.match(wrongFeedback.text, /沒有達成本層目標/);
+    assert.equal(wrongFeedback.revealHidden, true);
+    assert.equal(wrongFeedback.nextDisabled, true);
+
+    const correctFeedback = await evaluate(socket, `(() => {
+      const point = document.querySelector('#classic-board [data-x="3"][data-y="3"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {text: document.querySelector('#classic-feedback').textContent, revealHidden: document.querySelector('#classic-reveal').hidden, name: document.querySelector('#classic-name').textContent, nextDisabled: document.querySelector('#classic-next').disabled};
+    })()`);
+    assert.match(correctFeedback.text, /找到急所/);
+    assert.equal(correctFeedback.revealHidden, false);
+    assert.equal(correctFeedback.name, "直三");
+    assert.equal(correctFeedback.nextDisabled, false);
 
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;

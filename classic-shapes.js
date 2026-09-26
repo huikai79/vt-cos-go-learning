@@ -72,6 +72,21 @@
   const $ = (id) => document.getElementById(id);
 
   function pointKey(x, y) { return x + "," + y; }
+
+  function initialClassicCursor(problem) {
+    const occupied = new Set(problem.stones.map(([x,y]) => pointKey(x,y)));
+    const candidates = Array.isArray(problem.focus) ? problem.focus : [];
+    const preferred = candidates.find(([x,y]) =>
+      !occupied.has(pointKey(x,y)) &&
+      !(problem.answer && problem.answer[0] === x && problem.answer[1] === y)
+    );
+    if (preferred) return preferred.slice();
+    for (let y=0; y<9; y+=1) for (let x=0; x<9; x+=1) {
+      if (!occupied.has(pointKey(x,y)) && !(problem.answer && problem.answer[0] === x && problem.answer[1] === y)) return [x,y];
+    }
+    return problem.answer ? problem.answer.slice() : [0,0];
+  }
+
   function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]); }
 
   function reviewLabel(status) {
@@ -668,8 +683,8 @@
       const cx = pad + x * (90 / (size - 1));
       const cy = pad + y * (90 / (size - 1));
       const color = stoneByPoint.get(pointKey(x, y));
-      if (color === 1) nodes.push('<circle cx="' + cx + '" cy="' + cy + '" r="4.2" class="stone-black"/>');
-      if (color === 2) nodes.push('<circle cx="' + cx + '" cy="' + cy + '" r="4.2" class="stone-white"/>');
+      if (color === 1) nodes.push('<circle data-x="' + x + '" data-y="' + y + '" cx="' + cx + '" cy="' + cy + '" r="4.2" class="stone-black classic-occupied"/>');
+      if (color === 2) nodes.push('<circle data-x="' + x + '" data-y="' + y + '" cx="' + cx + '" cy="' + cy + '" r="4.2" class="stone-white classic-occupied"/>');
       if (!color) nodes.push('<circle data-x="' + x + '" data-y="' + y + '" cx="' + cx + '" cy="' + cy + '" r="5.2" class="classic-hit"/>');
     }
     const [cx0, cy0] = cursor;
@@ -685,7 +700,7 @@
     const meta = stageMeta[stage];
     solved = false;
     hintShown = false;
-    cursor = [4, 4];
+    cursor = initialClassicCursor(problem);
     $("classic-tag").textContent = meta.tag;
     $("classic-title").textContent = meta.title;
     $("classic-prompt").textContent = problem.prompt;
