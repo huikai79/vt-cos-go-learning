@@ -39,7 +39,10 @@
     ogsBulkyVital: { label: "Online Go Forum：Bulky Five vital point discussion", url: "https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356", sourceTier: "community_secondary" },
     yeefanBulkyAB: { label: "YeeFan：Multiple-Space Eyes, Bulky Five A/B sequence", url: "https://yeefan.sg/weiqi/howtoplaygo/howtoplaygo06.htm", sourceTier: "instructional_secondary" },
     malaysiaWeiqiBulky: { label: "Malaysia Weiqi Association：Multiple Eye Space", url: "https://www.weiqi.org.my/wp-content/uploads/2013/05/moduleav21.pdf", sourceTier: "association" },
-    boardToBitsBulkyReduction: { label: "Board to Bits Go：Big Eyes / Bulky Five reduction", url: "https://boardtobitsgo.wordpress.com/2020/09/02/lesson-6-big-eyes/", sourceTier: "instructional_secondary" }
+    boardToBitsBulkyReduction: { label: "Board to Bits Go：Big Eyes / Bulky Five reduction", url: "https://boardtobitsgo.wordpress.com/2020/09/02/lesson-6-big-eyes/", sourceTier: "instructional_secondary" },
+    meaningfulStonesCrossFive: { label: "Meaningful Stones：Cross Five", url: "https://jimseibert.github.io/Meaningful-Stones/sec-shapes.html", sourceTier: "instructional_secondary" },
+    yikePlumFive: { label: "弈客圍棋：大眼（5）梅花五", url: "https://www.sohu.com/a/475377109_533159", sourceTier: "publisher_secondary" },
+    hzSchoolVitalShapes: { label: "浙江工大附校：死活棋要點", url: "https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml", sourceTier: "educational_secondary" }
   });
 
   const entries = [
@@ -170,15 +173,18 @@
       zhAliases: [],
       teachingTranslation: null,
       literalTranslation: null,
-      zhNameStatus: ZH_NAME_STATUS.NEEDS_REVIEW,
-      zhNameNote: "保留華語候選名；跨語名稱與幾何仍需可靠來源核對。",
-      teachingLabel: "五點大眼名型候選",
-      practiceStatus: "catalog_candidate_only",
-      reviewStatus: REVIEW.NEEDS_REVIEW,
-      aliases: [],
-      note: "目前只收錄為待核對名型，不與所有五目中手或英文俗稱自動合併。",
+      zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
+      zhNameNote: "華語教材使用「梅花五／花五」描述十字形五點眼空；英語教材稱 Cross Five。兩者的中心共同急所有來源支持，但本專案目前只建立第一手 vital-point contract。",
+      teachingLabel: "十字形五點眼空的中央急所",
+      practiceStatus: "playable_bounded_center_vital_point_contract",
+      reviewStatus: REVIEW.PARTIAL,
+      aliases: [
+        { locale: "zh-TW", name: "花五", relationType: "established-alias", reviewStatus: REVIEW.PARTIAL },
+        { locale: "en", name: "Cross Five", relationType: "geometry-equivalent", reviewStatus: REVIEW.PARTIAL }
+      ],
+      note: "已建立 bounded 中央急所 practice：十字五點幾何必須有唯一 degree-4 中心；守方與攻方第一手都以該中心為共同急所。這不代表完整五目中手答案樹。",
       rulesetSensitive: false,
-      sources: []
+      sources: [sources.meaningfulStonesCrossFive, sources.yikePlumFive, sources.hzSchoolVitalShapes]
     },
     {
       id: "grape-six-candidate-v1",
@@ -363,7 +369,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v5",
+    version: "world-classic-shapes-v6",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
