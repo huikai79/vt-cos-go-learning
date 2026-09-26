@@ -36,7 +36,9 @@
     badukworldSeven: { label: "BadukWorld：사활7형제", url: "https://www.badukworld.co.kr/biz/7bros.html", sourceTier: "community_secondary" },
     badukworldDeath: { label: "BadukWorld：사활특강-사(死)", url: "https://www.badukworld.co.kr/biz/lesson2/special/death.html", sourceTier: "community_secondary" },
     bgaBulkyPractice: { label: "British Go Journal：Bulky Five / vital point examples", url: "https://britgo.org/files/bgj/bgj121.pdf", sourceTier: "association" },
-    ogsBulkyVital: { label: "Online Go Forum：Bulky Five vital point discussion", url: "https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356", sourceTier: "community_secondary" }
+    ogsBulkyVital: { label: "Online Go Forum：Bulky Five vital point discussion", url: "https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356", sourceTier: "community_secondary" },
+    yeefanBulkyAB: { label: "YeeFan：Multiple-Space Eyes, Bulky Five A/B sequence", url: "https://yeefan.sg/weiqi/howtoplaygo/howtoplaygo06.htm", sourceTier: "instructional_secondary" },
+    malaysiaWeiqiBulky: { label: "Malaysia Weiqi Association：Multiple Eye Space", url: "https://www.weiqi.org.my/wp-content/uploads/2013/05/moduleav21.pdf", sourceTier: "association" }
   });
 
   const entries = [
@@ -158,7 +160,7 @@
       ],
       note: "已建立兩層 bounded practice：第一層找共同急所；第二層只讀「攻方急所 → 守方 A/B → 攻方補另一點」的三手主分支。兩層都不代表完整死活答案樹或所有外氣條件。",
       rulesetSensitive: false,
-      sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital]
+      sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital, sources.yeefanBulkyAB, sources.malaysiaWeiqiBulky]
     },
     {
       id: "plum-five-candidate-v1",
