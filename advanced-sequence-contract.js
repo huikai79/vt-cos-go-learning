@@ -182,6 +182,9 @@
     if (!Number.isInteger(item.version) || item.version < 1) errors.push((item.id || "experience") + " version invalid");
     if (!Number.isInteger(item.boardSize) || item.boardSize < Go.MIN_SIZE || item.boardSize > Go.MAX_SIZE) errors.push((item.id || "experience") + " boardSize invalid");
     if (![Go.BLACK, Go.WHITE].includes(item.playerColor)) errors.push((item.id || "experience") + " playerColor invalid");
+    if (typeof item.familyId !== "string" || !item.familyId) errors.push((item.id || "experience") + " familyId missing");
+    if (typeof item.variantId !== "string" || !item.variantId) errors.push((item.id || "experience") + " variantId missing");
+    if (!Array.isArray(item.variationAxes) || !item.variationAxes.length || item.variationAxes.some((axis) => typeof axis !== "string" || !axis)) errors.push((item.id || "experience") + " variationAxes invalid");
     if (!Array.isArray(item.decisions) || !item.decisions.length) errors.push((item.id || "experience") + " decisions missing");
     if (errors.length) return { ok: false, errors, finalBoard: null };
     const replay = replayCanonical(item, Go);
@@ -189,11 +192,37 @@
   }
 
   function validateAll(experiences, Go) {
-    const results = (Array.isArray(experiences) ? experiences : []).map((item) => ({ id: item && item.id || "", ...validateExperience(item, Go) }));
-    return { ok: results.length > 0 && results.every((result) => result.ok), results, errors: results.flatMap((result) => result.errors) };
+    const source = Array.isArray(experiences) ? experiences : [];
+    const results = source.map((item) => ({ id: item && item.id || "", ...validateExperience(item, Go) }));
+    const errors = results.flatMap((result) => result.errors);
+    const ids = new Set();
+    const variants = new Set();
+    for (const item of source) {
+      if (!item || typeof item !== "object") continue;
+      if (ids.has(item.id)) errors.push("duplicate experience id " + item.id);
+      ids.add(item.id);
+      const key = item.familyId + "/" + item.variantId;
+      if (variants.has(key)) errors.push("duplicate family variant " + key);
+      variants.add(key);
+    }
+    return { ok: results.length > 0 && errors.length === 0, results, errors };
   }
 
-  const api = { samePoint, sortedPoints, trackedLiberties, setupGroupsHaveLiberties, validateExperience, validateAll };
+  function summarizeFamilies(experiences) {
+    const families = new Map();
+    for (const item of Array.isArray(experiences) ? experiences : []) {
+      if (!item || typeof item.familyId !== "string") continue;
+      if (!families.has(item.familyId)) families.set(item.familyId, []);
+      families.get(item.familyId).push(item);
+    }
+    return Array.from(families.entries()).map(([familyId, items]) => ({
+      familyId,
+      variants: items.length,
+      axes: Array.from(new Set(items.flatMap((item) => item.variationAxes || []))).sort()
+    }));
+  }
+
+  const api = { samePoint, sortedPoints, trackedLiberties, setupGroupsHaveLiberties, validateExperience, validateAll, summarizeFamilies };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.GoAdvancedSequenceContract = api;
 })(typeof window !== "undefined" ? window : globalThis);
