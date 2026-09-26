@@ -87,10 +87,21 @@
         <div id="live-board" class="live-board" aria-label="棋盤練習"></div>
         <p class="live-board-help" id="board-help">黑棋先下。滑鼠、觸控或鍵盤方向鍵移動，Enter／Space 落子。</p>
         <div class="live-primary-actions" aria-label="棋局操作">
-          <button class="primary-button" id="pass-button" type="button">Pass</button>
+          <button class="primary-button" id="pass-button" type="button">停一手（Pass）</button>
           <button class="subtle-button" id="undo-button" type="button">悔一手</button>
           <button class="subtle-button danger-button" id="resign-button" type="button">認輸</button>
         </div>
+        <details class="live-term-help">
+          <summary>看懂棋盤上的規則與檔案名詞</summary>
+          <dl>
+            <div><dt>停一手（Pass）</dt><dd>這一回合不落子，把行棋權交給對方；雙方連續各停一手後，本頁進入終局確認。</dd></div>
+            <div><dt>死子</dt><dd>終局時雙方同意已無法逃脫、應從盤上移除的棋。系統不自動判死活，有爭議就繼續下。</dd></div>
+            <div><dt>中國式面積</dt><dd>本頁把盤上活棋與其圍住的空點一起計入面積，再加上貼目比較結果。</dd></div>
+            <div><dt>貼目</dt><dd>為補償白棋後下，在最後計分時加給白棋的點數；9×9 本頁目前使用 7.5。</dd></div>
+            <div><dt>簡單劫</dt><dd>剛提子後不能立刻回到上一個棋形；先到別處走一手後，是否能再提要重新依局面判定。</dd></div>
+            <div><dt>SGF 棋譜檔</dt><dd>常見的純文字圍棋棋譜格式，可保存棋盤尺寸、手順、Pass、貼目與結果等資料。</dd></div>
+          </dl>
+        </details>
         <div class="live-feedback" id="live-feedback" role="status" aria-live="polite"></div>
       </section>
       <aside class="live-side-panel">
