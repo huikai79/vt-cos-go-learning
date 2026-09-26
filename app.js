@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v37";
+  const uiVersion = "learner-flow-v38";
   const contentCatalogVersion = 3;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -530,7 +530,7 @@
   }
 
   function revealLessonStart() { revealElement($("lesson-intro-dialog").open ? "lesson-intro-title" : "lesson-title"); }
-  function revealQuestionStart() { revealElement("question-title"); }
+  function revealQuestionStart() { revealElement("question-prompt"); }
 
   function markCurrentLessonIntroSeen() {
     const lessonIndex = current().lesson;
