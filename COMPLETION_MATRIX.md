@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v38`；棋盤練習頁 `live-game-ui-v10`
+- `ui_version`: `learner-flow-v39`；棋盤練習頁 `live-game-ui-v10`
 - `storage_schema`: 7
 - `content_catalog_version`: 3
 - `formal_evaluation_available`: false
@@ -55,6 +55,15 @@
 - **不可破壞 invariant：** 不改 item/scoring、答案、首答／retry、提示資格、scheduler、formal evaluation 遮蔽或事件欄位；只改 learner-facing information hierarchy。
 - **反證／驗收：** UI 測試要求題卡 `aria-labelledby` 指向真正問題、焦點落在真正問題，且桌面樣式保持「重點 16px／問題 24px／作答方式 16px」的層級；320px 重排與既有作答生命週期回歸仍需全套 CI 通過。
 - **證據邊界：** 這只證明介面契約改正；是否真的降低初學者困惑仍需真人觀察。
+
+## 2026-09-26 Change note｜作答頁內容權重收斂
+
+- **問題：** `learner-flow-v38` 雖已讓真正問題取得最高文字權重，但實際頁面仍同時出現「觀察題／本題重點／問題／作答方式」四層 metadata；文字選擇題的 question／answer cards 亦保留過高 min-height，造成「問題 → 選項」距離過大。「記住這句」又在首答前顯示，會與當下作答競爭注意力，部分題型還可能形成額外線索。
+- **改動：** `learner-flow-v39` 將題型與題目 context 合併為單行「題型 · 重點」，只保留「問題」一個明確標籤；作答說明移到選項下方。text-only choice 題取消固定最小高度，讓問題與選項緊接。程式性聚焦不再顯示橙色框，只在 `:focus-visible` 時顯示鍵盤焦點。`記住這句` 首答前隱藏，一般 practice／scheduled／application／SGF 在第一次有效回答後才揭露；evaluation 模式整批完成前仍不顯示正誤或記憶 cue。
+- **位置資訊：** 一般課程右上由全域「題目 N / 106」改為「本課第 N / M 題」；左側「課程完成 X / 106」保留為完成量，避免兩種不同語義共用同一分母。單元 kicker 簡化為「第 N 單元 · 等級」。
+- **不可破壞 invariant：** 不改題目答案、scoring、first response／retry、提示資格、scheduler、formal evaluation 遮蔽、KC、event schema 或 storage schema。
+- **反證／驗收：** UI contract 檢查首答前 takeaway 隱藏、作答後揭露、evaluation 不揭露；真正問題仍為 24px 高權重、程式 focus 無 outline 而 keyboard focus-visible 保留；320px 與 200% text reflow、Windows file-URL UI、Edge smoke 與 evidence lifecycle 回歸必須通過。
+- **證據邊界：** 這是依 formative observation 收斂注意力競爭的工程假說，不等於真人 usability 已通過。
 
 ## 目前執行順序
 
