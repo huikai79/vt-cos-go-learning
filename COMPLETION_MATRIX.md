@@ -28,7 +28,7 @@
 | 承諾 | 現況與實作 | 已有驗證 | 證據等級 | 狀態 |
 |---|---|---|---|---|
 | 離線個人課程 | 15 單元、19 課、106 題；直接開啟 `index.html` | 課程與 Chrome 流程測試 | 工程 | 條件通過 |
-| Core 後續進階訓練 v2 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience，新增 1 個規則引擎可驗證的兩段棋盤 Response（倒撲：學習者一手 → 固定對手應手 → 學習者再一手）；完整棋局／複盤仍為 planned track | `advanced.test.cjs`、Go rules oracle、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限 practice sequence 契約；不更新 KC／scheduler／T2-T3／formal evaluation，內容效度與真人價值仍待外部審查／觀察 |
+| Core 後續進階訓練 v3 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience，棋盤 Response 擴為 3 題：倒撲、枷、對殺。三題皆可由 rules-backed sequence contract 重播；枷另驗第二逃路分支。完整棋局／複盤仍為 planned track | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限 practice sequence 契約；不更新 KC／scheduler／T2-T3／formal evaluation。征子仍 BLOCKED，待 forced-line／逃路分支 oracle；內容效度與真人價值仍待外部審查／觀察 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
 | 經典眼形探索 v1 | 第 4 單元新增 practice-only 選修入口；重用既有直三／第二眼題，流程為先找急所、作答後揭名、換方向、攻守交換、相似反例；不寫 KC／scheduler／T2-T3／formal evaluation | `classic-shapes.test.cjs`＋既有內容／UI 回歸；完整 browser CI 以分支 workflow 為準 | 工程／教學 UX | 條件通過僅限工程契約；直三文案 contentVersion 2，棋理適切性、真人理解與學習效益仍待 R1a／真人觀察 |
@@ -119,6 +119,16 @@
 - **Failure handling：** 規則引擎判非法時保存為實際 move response 並留在原局面；若內建對手應手與規則引擎衝突，UI 直接停題並顯示工程錯誤；event storage 損壞或寫入失敗 fail closed，不繼續假裝完成。
 - **反證／oracle：** `advanced.test.cjs` 直接以 `Go.playMove` 重建 sequence，驗證第一手合法且不提子、白應手提掉送子、第二手再提兩子；另驗證 first／retry event 不被覆寫與 malformed store fail closed。
 - **證據邊界：** 一個規則可驗證 sequence 只證明 interaction/scoring contract 可行，不證明「倒撲能力」已量測，也不代表進階讀棋已達中高級棋力。
+
+## 2026-09-26 Change note｜進階多手讀棋 v3：倒撲／枷／對殺
+
+- **上一輪盲點：** 只有一個倒撲 sequence 雖能證明 multi-step interaction 可行，但尚不能證明 sequence data 本身不會因內容維護而悄悄漂移；而且 runtime 只支援第一題，沒有題間切換。
+- **rules-backed contract：** 新增 `advanced-sequence-contract.js`。頁面載入前會重播所有 canonical sequence，驗 setup 合法、學習者手、固定對手應手、預期提子數、可選的 tracked-group 氣數、終局空點，以及額外 verification branch。任一項不一致時整個多手區 fail closed，不開始寫入練習事件。
+- **內容擴充：** 棋盤 Response 由 1 題增至 3 題：倒撲保留「送一子→被提→提回兩子」；枷要求第一手本身不打吃，並驗證白棋兩個主要逃路都能被下一手收住；對殺從雙方各兩口關鍵氣開始，實走「黑壓一氣→白延長→黑先提三子」，明示結果依賴行棋次序。
+- **分支邊界：** 枷除了 learner-facing canonical 白左逃路，contract 另重播白下方逃路；兩條分支都必須得到同樣可提結果。這是最低限度的 branch QA，不表示已窮舉所有實戰應手。
+- **UI：** 新增三個棋盤 sequence 切換按鈕、下一個棋盤題、重設、鍵盤操作與 375px responsive contract。切換或重設會建立新的 presentation；舊 presentation 事件保留，不覆寫。
+- **征子停止線：** 暫不加入 learner-facing 征子 sequence。原因不是缺教材名稱，而是目前尚未建立能驗證「每一步最強逃路／打吃選擇與引征干擾」的 forced-line oracle；不用一條看似梯形的固定手順冒充完整征子判定。
+- **Evidence boundary：** 三題仍全部為 `advanced_practice_only`、`formalEligible=false`、`qualifiedOpportunity=false`。rules oracle 只證明規則與已定 sequence contract 一致，不證明手筋構念效度、難度可比或學習成效。
 
 ## 目前執行順序
 
