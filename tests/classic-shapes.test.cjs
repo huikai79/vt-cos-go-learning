@@ -11,6 +11,8 @@ const ShortRead = require("../classic-shape-read.js");
 const ShortReadContract = require("../classic-shape-read-contract.js");
 const Reduction = require("../classic-shape-reduction.js");
 const ReductionContract = require("../classic-shape-reduction-contract.js");
+const CrossFive = require("../classic-cross-five-practice.js");
+const CrossFiveContract = require("../classic-cross-five-contract.js");
 
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "classic-shapes.html"), "utf8");
@@ -46,7 +48,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v5");
+  assert.equal(Catalog.version, "world-classic-shapes-v6");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -62,6 +64,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
   const S = Catalog.ZH_NAME_STATUS;
   const knife = Catalog.entries.find((entry) => entry.id === "knife-five-candidate-v1");
   const grape = Catalog.entries.find((entry) => entry.id === "grape-six-candidate-v1");
+  const plum = Catalog.entries.find((entry) => entry.id === "plum-five-candidate-v1");
   const carpenter = Catalog.entries.find((entry) => entry.id === "carpenters-square-v1");
   const lGroup = Catalog.entries.find((entry) => entry.id === "l-group-v1");
   const lPlusOne = Catalog.entries.find((entry) => entry.id === "l-plus-one-group-v1");
@@ -70,6 +73,9 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
   assert.equal(knife.zhNameStatus, S.ESTABLISHED_ALIAS);
   assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), true);
   assert.equal(knife.practiceStatus, "playable_bounded_vital_point_short_read_and_sealed_reduction_contract");
+  assert.equal(plum.zhNameStatus, S.ESTABLISHED_ALIAS);
+  assert.equal(plum.practiceStatus, "playable_bounded_center_vital_point_contract");
+  assert.ok(plum.aliases.some((alias) => alias.name === "Cross Five"));
   assert.equal(grape.zhNameStatus, S.NEEDS_REVIEW);
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
   assert.equal(carpenter.zhNameStatus, S.ESTABLISHED_ALIAS);
@@ -89,7 +95,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["knife-five-candidate-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -255,4 +261,49 @@ test("sealed reduction UI 明示零外氣前提與 square-four terminal", () => 
   assert.match(html, /提四子 → 方四/);
   assert.match(js, /GoClassicShapeReductionContract/);
   assert.match(js, /其他應手與有外氣局面仍是 UNKNOWN/);
+});
+
+
+test("梅花五四個 variant 通過 cross-five geometry + rules bounded contract", () => {
+  assert.equal(CrossFive.version, "cross-five-practice-v1");
+  assert.equal(CrossFive.scoringContractVersion, CrossFiveContract.CONTRACT_VERSION);
+  assert.equal(CrossFive.items.length, 4);
+  const all = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
+  assert.equal(all.ok, true, all.errors.join("; "));
+  for (const item of CrossFive.items) {
+    const center = CrossFiveContract.deriveCenter(item.eyeSpace, PracticeContract);
+    assert.deepEqual(center, item.vitalPoint, item.id);
+    const scored = CrossFiveContract.score(item, item.vitalPoint, { Go, PracticeContract });
+    assert.equal(scored.ok, true, item.id);
+    assert.equal(scored.correct, true, item.id);
+    assert.equal(scored.status, "CORRECT", item.id);
+  }
+});
+
+test("梅花五 contract 對非十字幾何、錯誤中心與平移後舊座標 fail closed", () => {
+  const seed = CrossFive.items[0];
+  const wrongGeometry = {
+    ...seed,
+    id: "cross-wrong-geometry",
+    eyeSpace: [[2,2],[3,2],[4,2],[2,3],[3,3]]
+  };
+  assert.equal(CrossFiveContract.validateItem(wrongGeometry, { Go, PracticeContract }).ok, false);
+
+  const wrongVital = { ...seed, id: "cross-wrong-vital", vitalPoint: [3,2] };
+  assert.equal(CrossFiveContract.validateItem(wrongVital, { Go, PracticeContract }).ok, false);
+
+  const shifted = CrossFive.items.find((item) => item.variantId === "defend-left-shift");
+  assert.ok(shifted);
+  assert.notDeepEqual(shifted.vitalPoint, seed.vitalPoint);
+  const stale = CrossFiveContract.score(shifted, seed.vitalPoint, { Go, PracticeContract });
+  assert.equal(stale.ok, true);
+  assert.equal(stale.correct, false);
+});
+
+test("梅花五 UI 明示棋形中央而非棋盤中央，且不升格完整答案樹", () => {
+  assert.match(html, /梅花五：不要找棋盤中央，要找棋形中央/);
+  assert.match(html, /唯一的 degree-4 中心/);
+  assert.match(html, /不宣稱完整五目中手答案樹/);
+  assert.match(js, /GoCrossFiveContract/);
+  assert.match(js, /不代表完整五目中手答案樹或 mastery/);
 });
