@@ -207,11 +207,47 @@
     }
   ];
 
+  const sequenceExperiences = [
+    {
+      id: "adv-seq-snapback-01",
+      version: 1,
+      trackId: "reading-tesuji",
+      title: "倒撲實走：送一子後重新數氣",
+      target: "不用選項，實際走完「我一手 → 對手應手 → 我再一手」的兩段讀棋。",
+      boardSize: 5,
+      playerColor: B,
+      setupStones: [[0,1,W],[1,2,W],[1,3,B],[0,4,W],[1,4,B]],
+      decisions: [
+        {
+          id: "sacrifice",
+          prompt: "黑先。第一手下哪裡，能故意送一子，讓白提完後產生新的最後一氣？",
+          acceptedMoves: [[0,2]],
+          hint: "看左邊邊線：先找一個下完後只剩一口氣、但仍然合法的黑棋落點。",
+          success: "第一手成立。這顆黑棋可以被提，但目的正是讓白棋改變氣的結構。",
+          opponentMove: [0,3],
+          opponentText: "白棋依題目中的最強局部應手，在下方提掉剛才的黑棋。現在不要停，重新數白棋整串的氣。"
+        },
+        {
+          id: "recapture",
+          prompt: "白棋提掉送子後，黑下一手在哪裡可以立即提回更多白棋？",
+          acceptedMoves: [[0,2]],
+          hint: "回到剛才送子的位置，檢查現在落下去會提掉哪些白棋。",
+          success: "讀完了：黑回到原點，這次會提掉兩顆白棋。重點不是記座標，而是能在提子後重新建立局面並再數氣。"
+        }
+      ],
+      takeaway: "多手讀棋要在每次提子後重新建盤；不能沿用上一個局面的氣數。",
+      terms: [
+        ["倒撲", "先送一子，誘使對方提子後，再利用新的氣形提回更多棋。"],
+        ["重建局面", "每走一手、尤其發生提子後，把盤面當成新的狀態重新數氣與檢查合法手。"]
+      ]
+    }
+  ];
+
   const api = {
     version: 1,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
-    experiences
+    experiences,\n    sequenceScoringContractVersion: "advanced-sequence-v1",\n    sequenceExperiences
   };
 
   if (typeof module !== "undefined" && module.exports) module.exports = api;
