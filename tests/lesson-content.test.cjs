@@ -108,6 +108,13 @@ test("直三示範先呈現同一眼空間，再以中央急所分成兩眼", ()
 });
 
 
+test("修改過的正式題目文案保留獨立 contentVersion", () => {
+  const { problems } = require("../content.js");
+  assert.equal(problems.find((problem) => problem.id === "u4-06").contentVersion, 2);
+  assert.equal(problems.find((problem) => problem.id === "u9-06").contentVersion, 2);
+  assert.equal(problems.find((problem) => problem.id === "u4-05").contentVersion, 1);
+});
+
 test("每課都有精簡關鍵詞定義，避免核心術語只靠上下文猜", () => {
   for (const lesson of lessons) {
     assert.ok(Array.isArray(lesson.terms) && lesson.terms.length >= 1, `${lesson.title} 缺少關鍵詞`);
