@@ -2,7 +2,13 @@
   "use strict";
 
   const Catalog = window.GoClassicShapeCatalog;
+  const Practice = window.GoClassicShapePractice;
+  const PracticeContract = window.GoClassicShapePracticeContract;
+  const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
+  if (!Practice || !PracticeContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
+  if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
 
   const stageIds = ["u4-m01", "u4-m02", "u4-m03", "u4-m05"];
   const stageMeta = [
@@ -19,6 +25,10 @@
   let cursor = [4, 4];
   let solved = false;
   let hintShown = false;
+  let bulkyIndex = 0;
+  let bulkySolved = false;
+  let bulkyHintShown = false;
+  let bulkyCursor = [3, 3];
 
   const $ = (id) => document.getElementById(id);
 
@@ -84,6 +94,96 @@
       document.querySelectorAll(".classic-filter").forEach((item) => item.classList.toggle("active", item === button));
       renderCatalog(button.dataset.filter);
     });
+  }
+
+  function renderBulkyBoard() {
+    const item = Practice.items[bulkyIndex];
+    const validation = PracticeContract.validateItem(item, Go);
+    const size = item.boardSize;
+    const pad = 7;
+    const span = 86;
+    const step = span / (size - 1);
+    const setup = new Map(validation.setupStones.map(([x,y,color]) => [pointKey(x,y), color]));
+    const eye = new Set(item.eyeSpace.map(([x,y]) => pointKey(x,y)));
+    const lines = [];
+    const nodes = [];
+    for (let i=0; i<size; i+=1) {
+      const p = pad + i * step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let y=0; y<size; y+=1) for (let x=0; x<size; x+=1) {
+      const px = pad + x * step;
+      const py = pad + y * step;
+      const color = setup.get(pointKey(x,y));
+      if (color === Go.BLACK) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black"/>');
+      if (color === Go.WHITE) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white"/>');
+      if (eye.has(pointKey(x,y))) nodes.push('<circle data-bulky-x="' + x + '" data-bulky-y="' + y + '" cx="' + px + '" cy="' + py + '" r="6.2" class="classic-hit bulky-hit"/>');
+    }
+    const [cx0, cy0] = bulkyCursor;
+    const cx = pad + cx0 * step;
+    const cy = pad + cy0 * step;
+    nodes.push('<circle cx="' + cx + '" cy="' + cy + '" r="6.4" class="classic-cursor-ring"/>');
+    $("bulky-board").innerHTML = '<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("bulky-cursor-status").textContent = "游標：第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderBulky() {
+    const item = Practice.items[bulkyIndex];
+    bulkySolved = false;
+    bulkyHintShown = false;
+    bulkyCursor = item.eyeSpace[0].slice();
+    $("bulky-tag").textContent = (bulkyIndex + 1) + " / " + Practice.items.length + " · 名稱不提示答案";
+    $("bulky-title").textContent = bulkyIndex === 0 ? "找共同急所" : "同一 family，換條件再找";
+    $("bulky-prompt").textContent = item.prompt;
+    $("bulky-feedback").className = "feedback";
+    $("bulky-feedback").textContent = "";
+    $("bulky-reveal").hidden = true;
+    $("bulky-hint").disabled = false;
+    $("bulky-next").disabled = true;
+    $("bulky-next").textContent = bulkyIndex === Practice.items.length - 1 ? "完成刀把五練習" : "下一題 →";
+    $("bulky-side").textContent = item.playerColor === Go.BLACK ? "● 黑棋" : "○ 白棋";
+    renderBulkyBoard();
+  }
+
+  function attemptBulky(x, y) {
+    if (bulkySolved) return;
+    const item = Practice.items[bulkyIndex];
+    if (!item.eyeSpace.some(([ex,ey]) => ex === x && ey === y)) {
+      $("bulky-feedback").className = "feedback error";
+      $("bulky-feedback").textContent = "這一區只比較五個眼空中的候選點。";
+      return;
+    }
+    const result = PracticeContract.score(item, [x,y], Go);
+    if (!result.ok) {
+      $("bulky-feedback").className = "feedback error";
+      $("bulky-feedback").textContent = "題目 contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if (result.correct) {
+      bulkySolved = true;
+      $("bulky-feedback").className = "feedback success";
+      $("bulky-feedback").textContent = item.success;
+      $("bulky-reveal").hidden = false;
+      $("bulky-name").textContent = item.revealName;
+      $("bulky-story").textContent = "這個五點眼空是 2×2 方形加一個突出點；共同急所是眼空圖上唯一同時接觸三個鄰點的位置。這裡只練第一手急所，不把它升格成完整死活答案樹。";
+      $("bulky-hint").disabled = true;
+      $("bulky-next").disabled = false;
+    } else {
+      $("bulky-feedback").className = "feedback error";
+      $("bulky-feedback").textContent = bulkyHintShown
+        ? "還不是。重新數每個空點在眼空圖裡直接相鄰的空點數。"
+        : "這一點不是共同急所。先不要看名稱，改用相鄰關係重新判斷。";
+    }
+  }
+
+  function moveBulkyCursor(dx, dy) {
+    const item = Practice.items[bulkyIndex];
+    const next = [bulkyCursor[0] + dx, bulkyCursor[1] + dy];
+    if (item.eyeSpace.some(([x,y]) => x === next[0] && y === next[1])) {
+      bulkyCursor = next;
+      renderBulkyBoard();
+    }
   }
 
   function renderBoard() {
@@ -200,6 +300,43 @@
     $("classic-feedback").textContent = problems[stage].hint;
   });
 
+  $("bulky-board").addEventListener("click", (event) => {
+    const hit = event.target.closest("[data-bulky-x][data-bulky-y]");
+    if (!hit) return;
+    bulkyCursor = [Number(hit.dataset.bulkyX), Number(hit.dataset.bulkyY)];
+    renderBulkyBoard();
+    attemptBulky(bulkyCursor[0], bulkyCursor[1]);
+  });
+
+  $("bulky-board").addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") { event.preventDefault(); moveBulkyCursor(-1, 0); }
+    else if (event.key === "ArrowRight") { event.preventDefault(); moveBulkyCursor(1, 0); }
+    else if (event.key === "ArrowUp") { event.preventDefault(); moveBulkyCursor(0, -1); }
+    else if (event.key === "ArrowDown") { event.preventDefault(); moveBulkyCursor(0, 1); }
+    else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      attemptBulky(bulkyCursor[0], bulkyCursor[1]);
+    }
+  });
+
+  $("bulky-hint").addEventListener("click", () => {
+    bulkyHintShown = true;
+    $("bulky-feedback").className = "feedback";
+    $("bulky-feedback").textContent = Practice.items[bulkyIndex].hint;
+  });
+
+  $("bulky-next").addEventListener("click", () => {
+    if (!bulkySolved) return;
+    if (bulkyIndex < Practice.items.length - 1) {
+      bulkyIndex += 1;
+      renderBulky();
+    } else {
+      $("bulky-feedback").className = "feedback success";
+      $("bulky-feedback").textContent = "刀把五共同急所練習完成。這只表示你完成了四個 bounded practice variant，不代表 mastery 或完整死活已驗證。";
+      $("bulky-next").disabled = true;
+    }
+  });
+
   $("classic-next").addEventListener("click", () => {
     if (!solved) return;
     if (stage < problems.length - 1) {
@@ -214,5 +351,6 @@
 
   renderCatalogFilters();
   renderCatalog("all");
+  renderBulky();
   render();
 })();
