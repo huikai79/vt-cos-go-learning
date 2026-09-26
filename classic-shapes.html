@@ -7,15 +7,17 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v5">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v6">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v4"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v5"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-shape-read-contract.js?v=classic-bulky-five-short-read-v1"></script>
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v5"></script>
+  <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
+  <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v6"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -28,7 +30,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五有 bounded「共同急所」與三手 A/B short-read contract。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五有三層 bounded practice：共同急所、A/B 三手 short-read、以及「零外氣＋守方局部手抜き」的 sealed reduction。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro"><span class="question-tag">已驗證可玩的練習</span><h2>先練直三，再看世界名型</h2><p>名稱仍在作答後才揭示；先用棋形結構找急所，再把名稱當記憶鉤子。</p></section>
@@ -125,6 +127,37 @@
           <div class="card-top"><span>7 × 7 short read</span><span class="board-status"><i></i> 3-move branch</span></div>
           <div id="read-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五短讀棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="read-cursor-status">方向鍵移動 · Enter 落子</span><span id="read-side">○ 白棋</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="bulky-reduction" aria-labelledby="bulky-reduction-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">條件分支 · zero outside liberties</span>
+        <h2 id="bulky-reduction-title">刀把五：手抜き後如何縮成方四</h2>
+        <p>這一層只在「守方沒有外氣，而且連續不在局部應手」時成立。白棋先佔共同急所後，你要補滿 2×2 核心的其餘三點；完成後系統會自動重播黑棋唯一的提子。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="reduction-tag">1 / 2 · sealed local branch</span>
+          <h3 id="reduction-title">填滿 2×2 核心</h3>
+          <p id="reduction-prompt"></p>
+          <div class="classic-rule"><strong>本區成立條件</strong><span>守方整串無外氣；局部手抜き只表示外部著手不改變這個局部。若有外氣，本 contract 直接判定不適用。</span></div>
+          <div id="reduction-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="reduction-terminal" class="classic-reveal" hidden>
+            <span>規則引擎重播結果</span>
+            <strong>提四子 → 方四</strong>
+            <p>黑棋只剩突出點一口氣；在那裡提掉四顆白子後，原五點眼空只剩 2×2 方四。</p>
+          </div>
+          <div class="classic-actions">
+            <button id="reduction-hint" class="subtle-button" type="button">給我縮眼提示</button>
+            <button id="reduction-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="刀把五 sealed reduction 棋盤">
+          <div class="card-top"><span>7 × 7 sealed branch</span><span class="board-status"><i></i> no outside liberties</span></div>
+          <div id="reduction-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五縮眼練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="reduction-cursor-status">方向鍵移動 · Enter 落子</span><span>○ 白棋縮眼</span></div>
         </section>
       </div>
     </section>
