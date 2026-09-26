@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v45";
+  const uiVersion = "learner-flow-v46";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -1121,7 +1121,7 @@
     }
     if ($("classic-shapes-link")) {
       $("classic-shapes-link").hidden = Boolean(state.externalMode || courseUnit !== 3);
-      $("classic-shapes-link").setAttribute("aria-label", "開啟經典眼形探索：先自己找急所，再揭曉名稱與變形");
+      $("classic-shapes-link").setAttribute("aria-label", "開啟世界死活名型館：先練已驗證棋形，再查看多語名稱與來源");
     }
     $("teaching-text").textContent = lesson.text;
     $("teaching-demo").textContent = (lesson.demo || "先依題目找出本課要觀察的棋形，再作答。").replace(/^示範：\s*/, "");

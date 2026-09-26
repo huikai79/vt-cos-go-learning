@@ -1,6 +1,9 @@
 (function () {
   "use strict";
 
+  const Catalog = window.GoClassicShapeCatalog;
+  if (!Catalog) throw new Error("Classic shape catalog missing.");
+
   const stageIds = ["u4-m01", "u4-m02", "u4-m03", "u4-m05"];
   const stageMeta = [
     { tag: "先不要看名稱", title: "自己找第一個急所", goal: "先看眼空結構，再決定第一手。", reveal: true },
@@ -20,6 +23,68 @@
   const $ = (id) => document.getElementById(id);
 
   function pointKey(x, y) { return x + "," + y; }
+  function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]); }
+
+  function reviewLabel(status) {
+    if (status === Catalog.REVIEW.VERIFIED) return "已核實";
+    if (status === Catalog.REVIEW.PARTIAL) return "部分核實";
+    return "待棋形核對";
+  }
+
+  function zhNameStatusLabel(status) {
+    const S = Catalog.ZH_NAME_STATUS;
+    if (status === S.ESTABLISHED) return "中文既有名";
+    if (status === S.ESTABLISHED_ALIAS) return "中文既有／常用別名";
+    if (status === S.TEACHING_TRANSLATION) return "專案教學翻譯";
+    if (status === S.DESCRIPTIVE_TRANSLATION) return "中文描述，不是專名";
+    if (status === S.NO_ESTABLISHED_NAME_FOUND) return "本輪未找到固定中文名";
+    return "中文名稱待核實";
+  }
+
+  function displayZh(entry) {
+    if (entry.preferredZhTW) return entry.preferredZhTW;
+    if (entry.teachingTranslation) return entry.teachingTranslation;
+    return entry.teachingLabel;
+  }
+
+  function renderCatalog(filter) {
+    const entries = Catalog.entries.filter((entry) => !filter || filter === "all" || entry.category === filter);
+    $("classic-atlas-grid").innerHTML = entries.map((entry) => {
+      const aliases = entry.aliases.length
+        ? entry.aliases.map((alias) => '<li><strong>' + escapeHtml(alias.locale) + '</strong><span>' + escapeHtml(alias.name) + '</span><small>' + escapeHtml(alias.relationType) + ' · ' + reviewLabel(alias.reviewStatus) + '</small></li>').join("")
+        : '<li class="alias-empty">其他語言名稱尚未完成可靠的一對一核對。</li>';
+      const zhAliases = entry.zhAliases.length
+        ? '<div class="catalog-zh-aliases"><span>中文別名候選</span>' + entry.zhAliases.map((alias) => '<small>' + escapeHtml(alias.name) + ' · ' + reviewLabel(alias.reviewStatus) + '</small>').join("") + '</div>'
+        : "";
+      const sources = entry.sources.length
+        ? '<div class="catalog-sources"><span>來源</span>' + entry.sources.map((source) => '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label) + '</a>').join("") + '</div>'
+        : '<div class="catalog-sources pending"><span>來源</span><em>待補可靠來源與幾何核對</em></div>';
+      return '<article class="classic-catalog-card" data-review="' + escapeHtml(entry.reviewStatus) + '">' +
+        '<div class="catalog-card-top"><span>' + escapeHtml(Catalog.categories[entry.category]) + '</span><strong>' + reviewLabel(entry.reviewStatus) + '</strong></div>' +
+        '<h3>' + escapeHtml(displayZh(entry)) + '</h3>' +
+        '<div class="catalog-zh-status"><strong>' + zhNameStatusLabel(entry.zhNameStatus) + '</strong><span>' + escapeHtml(entry.zhNameNote) + '</span></div>' +
+        zhAliases +
+        '<p class="catalog-teaching-label">' + escapeHtml(entry.teachingLabel) + '</p>' +
+        '<ul class="catalog-aliases">' + aliases + '</ul>' +
+        '<p class="catalog-note">' + escapeHtml(entry.note) + '</p>' +
+        (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：未指定 ruleset 前不建立單一評分答案。</p>' : '') +
+        sources +
+        '</article>';
+    }).join("");
+  }
+
+  function renderCatalogFilters() {
+    const options = [["all", "全部"], ...Object.entries(Catalog.categories)];
+    $("classic-filter-row").innerHTML = options.map(([id, label], index) =>
+      '<button type="button" class="subtle-button classic-filter' + (index === 0 ? ' active' : '') + '" data-filter="' + escapeHtml(id) + '">' + escapeHtml(label) + '</button>'
+    ).join("");
+    $("classic-filter-row").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-filter]");
+      if (!button) return;
+      document.querySelectorAll(".classic-filter").forEach((item) => item.classList.toggle("active", item === button));
+      renderCatalog(button.dataset.filter);
+    });
+  }
 
   function renderBoard() {
     const problem = problems[stage];
@@ -147,5 +212,7 @@
     }
   });
 
+  renderCatalogFilters();
+  renderCatalog("all");
   render();
 })();
