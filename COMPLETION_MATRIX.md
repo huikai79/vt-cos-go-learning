@@ -139,6 +139,14 @@
 - **Evidence boundary：** 目前只是 2 variants/family 的 practice seed。不能由此聲稱平行題等難、transfer 已建立或 KC 已被驗證；要進下一級至少需要真人 first-response 資料與 family 內差異檢查。
 - **歷史語義：** v4 四題 ID 與 version 不變；新增四個新 ID。舊事件不回寫 family metadata，也不把過去曝光重新標成 unseen。
 
+## 2026-09-27 Change note｜進階 family first-response evidence v2
+
+- **目標：** v5 已有每族兩個非單純旋轉變形，下一個 bottleneck 是事件流仍只保存 experience ID，無法在不回查當前內容定義的情況下重建「當時屬於哪個 family／variant／variation axes」。
+- **事件版本：** 新事件流升為 `advanced-sequence-events-v2`／schema 2，寫入新的 `go-advanced-sequence-events-v2` storage；每個事件不可變地保存當時的 `familyId`、`variantId`、`variationAxes`。v1 storage 保留原樣，只能由 legacy reader 讀取，不猜測補 family metadata、不覆寫舊事件。
+- **診斷輸出：** 新增 family summary 與 seed→variant first-response transition。輸出只允許 `DESCRIPTIVE_ONLY` 或 `INSUFFICIENT_DATA`；明示 `mastery:null`、`transferClaim:false`，不由 retry 或 eventual correction 覆寫首答。
+- **分母／提示：** family summary 以 presentation 與實際 `move_first` 為基礎；hint 與 completed 另計。沒有 seed 或 variant 首答時保持資料不足，不把未答自動算成答對／答錯，也不從現有資料推估 mastery。
+- **證據邊界：** 這建立的是 practice-only 可重算資料管線，不證明兩 variant 等難、同一 KC、retention、transfer 或學習成效。
+
 ## 目前執行順序
 
 1. Completion Truth P0–P3：已完成工程驗證。
