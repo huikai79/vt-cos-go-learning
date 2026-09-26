@@ -30,6 +30,7 @@
     bgaIndex: { label: "British Go Journal：Life & Death index", url: "https://britgo.org/bgj/index/subj-inf.html", sourceTier: "association" },
     bgaTripod: { label: "British Go Journal：Tripod Group example", url: "https://www.britgo.org/files/bgj/bgj135.pdf", sourceTier: "association" },
     go4goChinese: { label: "Go4Go：Chinese Go Terms", url: "https://www.go4go.net/go/chinese_go_terms", sourceTier: "community_secondary" },
+    goMagicGlossary: { label: "Go Magic：multilingual glossary", url: "https://gomagic.org/fr/glossary-of-go-terms/", sourceTier: "publisher_secondary" },
     chineseTermsPdf: { label: "Chinese Go Terms glossary", url: "https://www.hebsacker-verlag.de/download/Chinese_Go_Terms.pdf", sourceTier: "community_secondary" },
     takumiKyu: { label: "Takumi Go：kyu exercises", url: "https://en.1200igo.com/kyulevel", sourceTier: "specialist_secondary" },
     badukworldSeven: { label: "BadukWorld：사활7형제", url: "https://www.badukworld.co.kr/biz/7bros.html", sourceTier: "community_secondary" },
@@ -119,15 +120,14 @@
     {
       id: "carpenters-square-v1",
       category: "complex_corner",
-      preferredZhTW: null,
+      preferredZhTW: "斗方",
       zhAliases: [
-        { name: "斗方", reviewStatus: REVIEW.PARTIAL, relationType: "candidate-established-alias" },
-        { name: "金櫃角", reviewStatus: REVIEW.PARTIAL, relationType: "candidate-established-alias" }
+        { name: "金櫃角", reviewStatus: REVIEW.PARTIAL, relationType: "established-alias" }
       ],
       teachingTranslation: "木匠方",
       literalTranslation: "木匠的方尺／方形",
-      zhNameStatus: ZH_NAME_STATUS.NEEDS_REVIEW,
-      zhNameNote: "中文術語來源出現「斗方」與「金櫃角」等不同稱法；在確認地區慣用度前，不選一個當唯一標準名。「木匠方」只作專案教學翻譯。",
+      zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
+      zhNameNote: "多個中文術語來源使用「斗方」對應 Carpenter's Square；另有「金櫃角」。本館以「斗方」作主要顯示，「木匠方」只保留為字面教學翻譯。",
       teachingLabel: "一合マス／Carpenter's Square",
       practiceStatus: "catalog_only_variation_contract_required",
       reviewStatus: REVIEW.VERIFIED,
@@ -137,7 +137,7 @@
       ],
       note: "日文與英文慣用名不是字面互譯，但來源明確指向同一經典死活 family。此型變化多，需 variation tree／branch oracle 後才能成為可評分練習。",
       rulesetSensitive: false,
-      sources: [sources.nihonkiinCarpenter, sources.bgaTerms, sources.go4goChinese, sources.chineseTermsPdf]
+      sources: [sources.nihonkiinCarpenter, sources.bgaTerms, sources.go4goChinese, sources.goMagicGlossary, sources.chineseTermsPdf]
     },
     {
       id: "knife-five-candidate-v1",
@@ -307,15 +307,15 @@
     {
       id: "long-l-group-v1",
       category: "complex_corner",
-      preferredZhTW: null,
+      preferredZhTW: "帶鉤",
       zhAliases: [
-        { name: "帶鉤型", reviewStatus: REVIEW.PARTIAL, relationType: "candidate-established-alias" },
-        { name: "緊帶鉤", reviewStatus: REVIEW.PARTIAL, relationType: "condition-specific-alias" }
+        { name: "緊帶鉤", reviewStatus: REVIEW.PARTIAL, relationType: "condition-specific-alias" },
+        { name: "寬帶鉤", reviewStatus: REVIEW.PARTIAL, relationType: "condition-specific-alias" }
       ],
       teachingTranslation: "長 L 形角部死活",
       literalTranslation: null,
-      zhNameStatus: ZH_NAME_STATUS.NEEDS_REVIEW,
-      zhNameNote: "華語術語表可找到帶鉤／緊帶鉤，但可能依外氣條件細分；未確認是否可把 Long L Group 無條件統一命名為帶鉤。",
+      zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
+      zhNameNote: "多個中文術語表使用「帶鉤」對應 Long L Group；並依外氣條件區分「緊帶鉤／寬帶鉤」。條件別名仍須和實際幾何一起使用。",
       teachingLabel: "Long L Group",
       practiceStatus: "catalog_only",
       reviewStatus: REVIEW.PARTIAL,
@@ -324,7 +324,7 @@
       ],
       note: "先保留英文原名與中文候選別名；需把外氣條件與幾何一起核對後才決定 preferred 中文名。",
       rulesetSensitive: false,
-      sources: [sources.bgaIndex, sources.go4goChinese]
+      sources: [sources.bgaIndex, sources.go4goChinese, sources.chineseTermsPdf]
     }
   ];
 
