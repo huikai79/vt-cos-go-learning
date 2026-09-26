@@ -17,7 +17,7 @@
 
 ## 新增 Experience 工作線｜Core 後續進階訓練
 
-進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。v1 choice Experience 與 v2 的單一 multi-step 棋盤 sequence 均為 practice-only：讀棋／手筋、中盤攻防、官子／全局判斷。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由版本化 sequence contract 判定；任何進階項目若要進 KC、scheduler、T2/T3 或 formal evaluation，必須先回到 evidence-integrity 與內容效度條件，建立獨立 scoring contract／version／negative test；不得因頁面已存在就升格證據。
+進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。choice Experience 與 v3 的倒撲／枷／對殺 multi-step 棋盤 sequence 均為 practice-only：讀棋／手筋、中盤攻防、官子／全局判斷。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。征子在 forced-line／引征 branch oracle 建立前維持 BLOCKED。任何進階項目若要進 KC、scheduler、T2/T3 或 formal evaluation，必須先回到 evidence-integrity 與內容效度條件，建立獨立 scoring contract／version／negative test；不得因頁面已存在就升格證據。
 
 ## 優先順序與閘門
 
