@@ -319,7 +319,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v40");
+  assert.equal(exported.uiVersion, "learner-flow-v41");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -485,7 +485,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v40");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v41");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -619,7 +619,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-flow-v40/);
+  assert.match(html, /styles\.css\?v=learner-flow-v41/);
   assert.match(css, /--font-zh:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif/);
   assert.doesNotMatch(css, /word-break\s*:\s*break-all/i);
   assert.match(css, /:where\(a,button,input,select,textarea,summary,\[role="button"\]\):focus-visible/);

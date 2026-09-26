@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v40`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v41`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -38,7 +38,7 @@
 | standardized T3 固定應用探測 | 5 個減少技能線索的固定局面；Evidence Taxonomy v2 以 `evaluationContext=standardized` 與 live T3 分開 | SGF、試行、UI 與 evidence-taxonomy contract 測試 | 工程 | 條件通過；只支持既定局部 scoring contract，不代表全局判斷或 live 實戰遷移 |
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
-| 首頁下一步清楚 | 可繼續課程、錯題與工具入口；只有確實有題目到期時顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試 | 工程 | 條件通過；是否容易理解仍待真人觀察 |
+| 首頁下一步清楚 | 首次到訪先顯示設置用意、從零路徑、評量依據、能力邊界與來源；回訪者保留直接續學流程，並可用「這套課程怎麼教」重開說明。只有確實有題目到期時顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 首訪重排反證 | 工程 | `learner-flow-v41` 條件通過；資訊是否對初學者真正清楚仍待 candidate 凍結後真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v4 答案盲審流程條件通過；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
@@ -47,6 +47,15 @@
 | 正式教學使用閘門 | R1a、三位初學者關鍵任務及真人無障礙 spot check 分開驗證 | `teaching-gate.test.cjs`、`teaching-gate-verify.cjs` | 外部內容與真人證據 | BLOCKED；缺 R1a 外部回條、初學者觀察及真人無障礙證據 |
 | 個人七天流程試行 | `personal-pilot-v3` 使用舊 R1 已曝光題，只檢查資料、返回與負擔；v1／v2 保留為 legacy | trial、狀態與 UI 測試 | 個人描述 | 工程通過；`formalEligible=false` |
 | 學習成效與排程增益 | 有試行資料管線與 Minimal Sufficient Policy 設計 | 試行流程測試 | 學習成效 | 未量測；個人單機正式驗收停用 |
+
+## 2026-09-26 Change note｜首次到訪首頁與課程層級去歧義
+
+- **問題：** v40 直接把首次到訪者放進第一課；雖然課內已有五步流程，使用者仍無法先知道網站設置用意、如何從零前進、評量依據、內容來源與「高級」是否等同高棋力。上一輪長篇首頁草稿反向產生另一個風險：把研究方法與證據聲明全部放在最前面，會讓新手先讀系統自證，而不是先知道下一步。
+- **跨語言參考：** 日本棋院與 British Go Association 強調短規則後盡快進小棋盤；OGS 將入門拆成可直接操作的逐步路徑；Go Magic 以「適合誰／課程層次／立即開始」建立首頁方向；Brilliant 的現行教學敘事把 learn-by-doing、feedback、spacing／retrieval 與「不是正式診斷」放在同一證據邊界內。這些只作資訊架構或教學順序參考，不作本專案成效證據。
+- **改動：** `learner-flow-v41` 新增首次到訪 orientation：hero 先回答「這是什麼／現在能做什麼」，再以能力路徑、日常評量、認知與學習科學、完成後能力範圍、來源與 current-truth 狀態逐層展開。側欄把 learner-facing「初／中／高級」改為「基礎建立／局部與棋局判斷／全局與綜合應用」，仍保留原課綱名稱，並明示不等同 K／段位。回訪者不強制重看，頂端可手動重開。
+- **不可破壞 invariant：** 不改 item／KC／scoring、首答／retry、scheduler、storage schema、holdout 曝光、formal evaluation、live eligibility／scoring 或 evidence taxonomy；第一課短講仍是開始學習前的教學入口。
+- **反證與驗證：** 首次載入時 orientation 可見且第一課 modal 不得同時彈出；按「開始第一課」後才進短講；375px 不得產生橫向溢出；回訪／手動重開不改學習資料。自動測試只能證明上述工程契約，不能證明首頁敘事真的被初學者理解。
+- **證據邊界：** 正式教學仍依 `TEACHING_GATE.md` 維持 `BLOCKED`；formal evaluation 仍不可用，學習成效仍 `NOT_MEASURED`。首頁不得把日本棋院的級位課程對照直接換算成本站完成後棋力。
 
 ## 2026-09-26 Change note｜題目卡資訊層級
 

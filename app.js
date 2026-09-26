@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v40";
+  const uiVersion = "learner-flow-v41";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -62,6 +62,7 @@
     events: Array.isArray(saved.events) ? saved.events : [],
     exposures: buildExposures(saved)
   };
+  let siteIntroductionOpen = !savedHasStarted && Boolean(document.getElementById("site-introduction"));
   let storageWriteFailed = false;
   let demoLessonTitle = null;
   let demoStepIndex = 0;
@@ -540,6 +541,36 @@
     state.lessonIntroPending = false;
   }
 
+  function setSiteIntroduction(open, focus = true) {
+    const panel = $("site-introduction");
+    siteIntroductionOpen = Boolean(open);
+    if (!panel) return;
+    panel.hidden = !siteIntroductionOpen;
+    document.body.classList.toggle("site-introduction-open", siteIntroductionOpen);
+    document.querySelectorAll("[data-site-intro-start]").forEach((button) => {
+      button.innerHTML = state.hasStarted ? '回到目前學習 <span aria-hidden="true">→</span>' : '開始第一課 <span aria-hidden="true">→</span>';
+    });
+    if (siteIntroductionOpen) {
+      const lessonDialog = $("lesson-intro-dialog");
+      if (lessonDialog && lessonDialog.open) lessonDialog.close();
+      if (focus) {
+        panel.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+        const title = $("site-introduction-title");
+        if (title && typeof title.focus === "function") title.focus({ preventScroll: true });
+      }
+    }
+  }
+
+  function leaveSiteIntroductionForLearning() {
+    setSiteIntroduction(false, false);
+    if (state.externalMode) {
+      $("resume-button").click();
+      return;
+    }
+    if (state.lessonIntroPending && !state.reviewMode) showLessonIntroDialog();
+    else revealQuestionStart();
+  }
+
   function showLessonIntroDialog() {
     const dialog = $("lesson-intro-dialog");
     if (!dialog || dialog.open) return;
@@ -549,6 +580,7 @@
   }
 
   function syncLessonIntroDialog() {
+    if (siteIntroductionOpen) return;
     if (state.lessonIntroPending && !state.externalMode && !state.reviewMode) showLessonIntroDialog();
   }
 
@@ -1527,6 +1559,10 @@
   $("next-button").addEventListener("click", nextProblem);
   $("resume-button").addEventListener("click", () => {
     closeTools();
+    if (siteIntroductionOpen) {
+      leaveSiteIntroductionForLearning();
+      return;
+    }
     if (state.externalMode) startProblem(state.index, "return_to_course");
     state.hasStarted = true;
     markCurrentLessonIntroSeen();
@@ -1534,6 +1570,14 @@
     render();
     revealQuestionStart();
   });
+  const aboutCourseButton = $("about-course-button");
+  if (aboutCourseButton) aboutCourseButton.addEventListener("click", () => {
+    closeTools();
+    setSiteIntroduction(true);
+  });
+  if (typeof document.querySelectorAll === "function") {
+    document.querySelectorAll("[data-site-intro-start]").forEach((button) => button.addEventListener("click", leaveSiteIntroductionForLearning));
+  }
   $("lesson-intro-button").addEventListener("click", showLessonIntroDialog);
   $("lesson-intro-dismiss-button").addEventListener("click", dismissLessonIntro);
   $("lesson-intro-start-button").addEventListener("click", dismissLessonIntro);
@@ -1623,5 +1667,6 @@
   recoverInterruptedApplicationPresentation();
   recoverInterruptedPresentation();
   setSchedulerPolicy(state.schedulerPolicy);
+  setSiteIntroduction(siteIntroductionOpen, false);
   startProblem(state.index, "initial_load", false, state.lessonIntroPending);
 })();
