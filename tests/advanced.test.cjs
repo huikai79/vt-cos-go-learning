@@ -325,6 +325,34 @@ test("family transition 只輸出描述狀態，不產生 mastery 或 transfer c
   });
 });
 
+test("family transition 若 variant 先於 seed 呈現，保持 INSUFFICIENT_DATA", () => {
+  const storage = memoryStorage();
+  const base = {
+    sessionId: "family-order",
+    experienceVersion: 1,
+    trackId: "reading-tesuji",
+    familyId: "snapback",
+    occurredAt: "2026-09-27T00:00:00.000Z"
+  };
+  assert.equal(SequenceEvents.append(storage, { ...base, eventId: "o1", presentationId: "variant-p", experienceId: "adv-seq-snapback-02", variantId: "capture-three", variationAxes: ["capture-count", "local-shape"], type: "presented" }).ok, true);
+  assert.equal(SequenceEvents.append(storage, { ...base, eventId: "o2", presentationId: "variant-p", experienceId: "adv-seq-snapback-02", variantId: "capture-three", variationAxes: ["capture-count", "local-shape"], type: "move_first", decisionId: "sacrifice", stepIndex: 0, point: [0,2], correct: true, legal: true, capturedCount: 0 }).ok, true);
+  assert.equal(SequenceEvents.append(storage, { ...base, eventId: "o3", presentationId: "seed-p", experienceId: "adv-seq-snapback-01", variantId: "seed", variationAxes: ["baseline"], type: "presented" }).ok, true);
+  assert.equal(SequenceEvents.append(storage, { ...base, eventId: "o4", presentationId: "seed-p", experienceId: "adv-seq-snapback-01", variantId: "seed", variationAxes: ["baseline"], type: "move_first", decisionId: "sacrifice", stepIndex: 0, point: [0,2], correct: true, legal: true, capturedCount: 0 }).ok, true);
+  const transition = SequenceEvents.classifyFamilyTransition(SequenceEvents.read(storage).store, "snapback");
+  assert.equal(transition.status, "INSUFFICIENT_DATA");
+  assert.equal(transition.reason, "seed_not_presented_before_variant");
+});
+
+test("棋盤 family cue 在完成前隱藏，variant 未完成 seed 時不可跳入", () => {
+  assert.match(js, /棋盤練習/);
+  assert.match(js, /完整名稱、術語與重點會在走完後揭露/);
+  assert.match(js, /familyReady/);
+  assert.match(js, /disabled aria-disabled/);
+  assert.match(js, /advanced-sequence-terms"\)\.hidden = true/);
+  assert.doesNotMatch(js, /<strong>' \+ escapeHtml\(item\.title\)/);
+  assert.doesNotMatch(js, /escapeHtml\(item\.familyId\) \+ ' · '/);
+});
+
 test("family transition 缺 seed 或 variant 首答時保持 INSUFFICIENT_DATA", () => {
   const storage = memoryStorage();
   const common = {
@@ -395,7 +423,7 @@ test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Respon
   assert.match(html, /棋盤 Response/);
   assert.match(html, /多手讀棋實走/);
   assert.match(html, /advanced-sequence-events\.js\?v=advanced-sequence-v2/);
-  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v4/);
+  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v5/);
   assert.match(html, /advanced-sequence-contract\.js\?v=advanced-sequence-v1/);
   assert.match(html, /go\.js/);
 });
