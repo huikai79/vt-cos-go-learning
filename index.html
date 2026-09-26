@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="color-scheme" content="light">
-  <meta name="application-name" content="VT-COS｜悟之一手">
+  <meta name="application-name" content="悟之一手">
   <meta name="description" content="悟之一手：從零開始的核心圍棋課程，以及 Core 後續的讀棋、手筋、中盤與官子進階訓練。">
   <link rel="canonical" href="https://huikai.com.kg/vt-cos-go-learning/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="zh_TW">
-  <meta property="og:site_name" content="VT-COS｜悟之一手">
+  <meta property="og:site_name" content="悟之一手">
   <meta property="og:title" content="悟之一手｜從 0 開始，也能繼續進階">
   <meta property="og:description" content="從氣與提子開始，以短教學、落子練習、具體回饋與新棋形，一步一步學圍棋。">
   <meta property="og:url" content="https://huikai.com.kg/vt-cos-go-learning/">
@@ -25,8 +25,8 @@
   <meta name="twitter:title" content="悟之一手｜從 0 開始，也能繼續進階">
   <meta name="twitter:description" content="從氣與提子開始，以短教學、落子練習、具體回饋與新棋形，一步一步學圍棋。">
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
-  <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v44">
+  <title>悟之一手｜從零開始到進階的互動圍棋學習</title>
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v45">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -41,13 +41,13 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v44"></script>
+  <script defer src="app.js?v=learner-flow-v45"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
   <div class="app-shell">
     <aside class="sidebar">
-      <div class="brand"><span class="brand-mark" aria-hidden="true">●○</span><span>悟之一手<small>VT-COS · 個人圍棋練習</small></span></div>
+      <div class="brand"><span class="brand-mark" aria-hidden="true">●○</span><span>悟之一手<small>個人圍棋練習 · 本機進度</small></span></div>
       <div class="side-label">你的圍棋學習地圖</div>
       <h1>每一手，<br>都更懂圍棋。</h1>
       <p class="side-intro">短教學、立刻練習、具體回饋，再用延後的新棋形檢查是否仍能自己解出來。進度只存於這台瀏覽器。</p>
@@ -98,7 +98,7 @@
 
     <main class="main-content" id="learning-main">
       <header class="topbar">
-        <span class="eyebrow">VT-COS <span class="eyebrow-dot">●</span> PERSONAL GO STUDIO · OFFLINE</span>
+        <span class="eyebrow">悟之一手 <span class="eyebrow-dot">●</span> 個人學習空間</span>
         <div class="top-actions">
           <button class="text-button about-course-action" id="about-course-button" type="button">課程首頁</button>
           <button class="primary-top-action" id="resume-button" type="button">開始第 1 題</button>
@@ -109,13 +109,15 @@
             <div class="tools-panel">
               <section class="tool-group" aria-labelledby="review-tools-title">
                 <h2 id="review-tools-title">練習與複盤</h2>
-                <div class="tool-item"><button id="scheduled-practice-button" type="button">今日複習</button><p>依到期題目安排複習，不會跳過你的新課進度。</p></div>
-                <div class="tool-item"><button id="application-button" type="button">局面小測驗</button><p>用較少提示的局面檢查是否能自行發現學過的技巧；結果與實戰分開。</p></div>\n                <div class="tool-item"><a class="tool-action-link" href="live-game.html?size=9">棋盤自由練習</a><p>可隨時切換 5×5、7×7、9×9；5×5 用於基礎規則與局部練習，7×7 用於過渡攻防，9×9 用於完整小棋盤對局。全部只作練習，不自動升格成正式評量。</p></div>\n                <div class="tool-item"><a class="tool-action-link" href="advanced.html">進階訓練</a><p>核心 15 單元後，以讀棋／手筋、中盤攻防、官子／全局判斷等訓練線深化；首答與重試分開保存，目前只作 practice，不更新正式學習證據。</p></div>
+                <div class="tool-item"><button id="scheduled-practice-button" type="button">開始間隔練習</button><p id="scheduled-practice-description">今天沒有到期題；可先做尚未練過的練習題，之後再依間隔回來複習。</p></div>
+                <div class="tool-item"><button id="application-button" type="button">局面應用練習</button><p>減少題型提示，練習自己發現何時使用學過的技巧；與自然實戰及正式評量分開。</p></div>
+                <div class="tool-item"><a class="tool-action-link" href="live-game.html?size=9">棋盤自由練習</a><p>自由切換 5×5、7×7、9×9 棋盤。只作練習；不改核心課程進度，也不作正式評量。</p></div>
+                <div class="tool-item"><a class="tool-action-link" href="advanced.html">進階訓練</a><p>讀棋／手筋、中盤攻防、官子／全局判斷的獨立進階練習。首答與重試分開保存；不改核心課程進度，也不作正式評量。</p></div>
               </section>
               <section class="tool-group" aria-labelledby="sgf-tools-title">
                 <h2 id="sgf-tools-title">棋譜單點復盤</h2>
-                <div class="tool-item"><button id="sample-sgf-button" type="button">開啟示範棋譜</button><p>選一手 9 路棋譜，在看見原著前先憑記憶重建；這不是整盤連續猜手。</p></div>
-                <div class="tool-item"><label class="tool-upload" for="sgf-file-input">匯入自己的 SGF</label><p>讀取這台電腦上的單一主線 9 路 SGF，建立一手原著的記憶重建與反思。</p></div>
+                <div class="tool-item"><button id="sample-sgf-button" type="button">開啟示範棋譜</button><p>選一手 9 路棋譜，先回想並下出原著手，再揭曉棋譜內容比較；這是單手重建，不是最佳手評分。</p></div>
+                <div class="tool-item"><label class="tool-upload" for="sgf-file-input">匯入自己的 SGF</label><p>讀取這台電腦上的單一主線 9 路 SGF，選一手做原著重建與反思。</p></div>
                 <input id="sgf-file-input" type="file" accept=".sgf,application/x-go-sgf,text/plain" hidden>
               </section>
               <details class="tool-disclosure" id="advanced-tools">
