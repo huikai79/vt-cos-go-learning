@@ -136,18 +136,7 @@
     const cursorCy = pad + cursorY * pitch;
     elements.push('<circle class="seq-cursor" cx="' + cursorCx + '" cy="' + cursorCy + '" r="' + Math.max(15,pitch*.43) + '"/>');
 
-    $("advanced-sequence-board").innerHTML = '<svg viewBox="0 0 ' + width + ' ' + width + '" aria-hidden="true"><rect class="seq-board-bg" width="' + width + '" height="' + width + '" rx="12"/>' + elements.join("") + stonesSvg(stoneMap, pitch, pad) + '</svg>';
-
-    function stonesSvg(map, localPitch, localPad) {
-      const stones = [];
-      for (const [key, color] of map.entries()) {
-        const [x, y] = key.split(",").map(Number);
-        const cx = localPad + x * localPitch;
-        const cy = localPad + y * localPitch;
-        stones.push('<circle class="' + (color === Go.BLACK ? 'seq-black' : 'seq-white') + '" cx="' + cx + '" cy="' + cy + '" r="' + Math.max(11,localPitch*.34) + '"/>');
-      }
-      return stones.join("");
-    }
+    $("advanced-sequence-board").innerHTML = '<svg viewBox="0 0 ' + width + ' ' + width + '" aria-hidden="true"><rect class="seq-board-bg" width="' + width + '" height="' + width + '" rx="12"/>' + elements.join("") + '</svg>';
 
     $("advanced-sequence-cursor").textContent = "游標：第 " + (cursorY + 1) + " 行，第 " + (cursorX + 1) + " 列";
   }
