@@ -41,6 +41,8 @@
     ".nojekyll",
     "advanced-content.js",
     "advanced-events.js",
+    "advanced-sequence-events.js",
+    "advanced-sequence.js",
     "advanced.css",
     "advanced.html",
     "advanced.js",
