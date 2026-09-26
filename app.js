@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v38";
+  const uiVersion = "learner-flow-v39";
   const contentCatalogVersion = 3;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -1046,12 +1046,16 @@
     const problem = current();
     const lesson = currentLesson();
     document.querySelector(".practice-grid").classList.toggle("text-practice", problem.type === "choice" && problem.stones.length === 0);
-    $("lesson-kicker").textContent = problem.lesson === undefined ? "外部題庫 · 本機資料" : `第 ${currentLesson().unit + 1} 單元 · 課程 ${String(problem.lesson + 1).padStart(2, "0")} / ${String(lessons.length).padStart(2, "0")}`;
-    $("question-number").textContent = state.externalMode === "scheduled" ? `間隔練習 · ${state.schedulerPolicy === "fixed-spacing-v1" ? "固定方案" : "候選自適應"}` : state.externalMode === "application" ? "固定應用探測 · 局部局面" : state.externalMode === "evaluation" ? `個人 pilot · ${state.evaluationBatch && state.evaluationBatch.role === "baseline" ? "基線" : "追蹤"}批次` : state.externalMode === "local_sgf" ? "棋譜單點復盤 · 原著重建" : `題目 ${String(state.index + 1).padStart(2, "0")} / ${problems.length}`;
+    const courseUnitIndex = Number.isInteger(lesson.unit) ? lesson.unit : 0;
+    const lessonProblems = Number.isInteger(problem.lesson) ? problems.filter((item) => item.lesson === problem.lesson) : [];
+    const lessonQuestionIndex = lessonProblems.findIndex((item) => item.id === problem.id);
+    const lessonQuestionLabel = lessonQuestionIndex >= 0 ? `本課第 ${lessonQuestionIndex + 1} / ${lessonProblems.length} 題` : "目前題目";
+    $("lesson-kicker").textContent = problem.lesson === undefined ? "外部題庫 · 本機資料" : `第 ${courseUnitIndex + 1} 單元 · ${units[courseUnitIndex]?.level || "課程"}`;
+    $("question-number").textContent = state.externalMode === "scheduled" ? `間隔練習 · ${state.schedulerPolicy === "fixed-spacing-v1" ? "固定方案" : "候選自適應"}` : state.externalMode === "application" ? "固定應用探測 · 局部局面" : state.externalMode === "evaluation" ? `個人 pilot · ${state.evaluationBatch && state.evaluationBatch.role === "baseline" ? "基線" : "追蹤"}批次` : state.externalMode === "local_sgf" ? "棋譜單點復盤 · 原著重建" : state.reviewMode ? `錯題複習 · ${lessonQuestionLabel}` : lessonQuestionLabel;
     $("lesson-title").textContent = lesson.title;
     $("lesson-subtitle").textContent = lesson.subtitle;
     $("lesson-badge").textContent = lesson.badge || "概念練習";
-    const courseUnit = Number.isInteger(lesson.unit) ? lesson.unit : 0;
+    const courseUnit = courseUnitIndex;
     if ($("stage-board-practice-link")) {
       const recommendedBoardSize = courseUnit <= 2 ? 5 : courseUnit === 3 ? 7 : 9;
       const practiceNames = { 5: "氣、提子、連斷與規則", 7: "死活與局部攻防", 9: "完整小棋盤對局" };
@@ -1077,6 +1081,7 @@
     $("question-title").textContent = problem.title;
     $("question-prompt").textContent = problem.prompt;
     $("takeaway-text").textContent = lesson.takeaway;
+    document.querySelector(".takeaway").hidden = true;
     $("feedback").className = "feedback";
     $("feedback").textContent = "";
     $("hint-button").textContent = "給我一點提示";
@@ -1165,6 +1170,7 @@
       save();
       return;
     }
+    document.querySelector(".takeaway").hidden = false;
     state.attempts[problem.id] = (state.attempts[problem.id] || 0) + 1;
     recordEvent("answer", {
       answerValue,
