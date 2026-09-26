@@ -3,13 +3,13 @@
 
   const Content = window.GoAdvancedContent;
   const Events = window.GoAdvancedSequenceEvents;
+  const Contract = window.GoAdvancedSequenceContract;
   const Go = window.GoCore;
-  if (!Content || !Events || !Go) throw new Error("Advanced sequence dependencies missing.");
+  if (!Content || !Events || !Contract || !Go) throw new Error("Advanced sequence dependencies missing.");
 
   const $ = (id) => document.getElementById(id);
   const experiences = Array.isArray(Content.sequenceExperiences) ? Content.sequenceExperiences : [];
-  if (!experiences.length) return;
-
+  const validation = Contract.validateAll(experiences, Go);
   let experienceIndex = 0;
   let decisionIndex = 0;
   let attemptsThisDecision = 0;
@@ -19,7 +19,7 @@
   let cursor = [0, 0];
   let presentationId = "";
   let eventCounter = 0;
-  let blockedByStorage = false;
+  let blocked = false;
   const sessionId = "adv-seq-session-" + Date.now().toString(36);
 
   function now() { return new Date().toISOString(); }
@@ -27,8 +27,31 @@
   function current() { return experiences[experienceIndex]; }
   function decision() { return current().decisions[decisionIndex]; }
   function pointKey(x, y) { return x + "," + y; }
-  function acceptedMove(x, y) { return decision().acceptedMoves.some(([ax, ay]) => ax === x && ay === y); }
   function cloneBoard(source) { return source.map((row) => row.slice()); }
+  function acceptedMove(x, y) { return decision().acceptedMoves.some(([ax, ay]) => ax === x && ay === y); }
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
+  }
+
+  function firstEmptyNearCenter(source) {
+    const size = source.length;
+    const center = (size - 1) / 2;
+    const empties = [];
+    for (let y = 0; y < size; y += 1) for (let x = 0; x < size; x += 1) {
+      if (source[y][x] === Go.EMPTY) empties.push([x, y]);
+    }
+    empties.sort((a, b) => (Math.abs(a[0] - center) + Math.abs(a[1] - center)) - (Math.abs(b[0] - center) + Math.abs(b[1] - center)) || a[1] - b[1] || a[0] - b[0]);
+    return empties[0] || [0, 0];
+  }
+
+  function setBlocked(message) {
+    blocked = true;
+    $("advanced-sequence-feedback").className = "feedback error";
+    $("advanced-sequence-feedback").textContent = message;
+    $("advanced-sequence-hint").disabled = true;
+    $("advanced-sequence-reset").disabled = true;
+    $("advanced-sequence-next").disabled = true;
+  }
 
   function record(type, extra = {}) {
     const item = current();
@@ -51,12 +74,28 @@
       hintShown
     });
     if (!result.ok) {
-      blockedByStorage = true;
-      $("advanced-sequence-feedback").className = "feedback error";
-      $("advanced-sequence-feedback").textContent = "多手讀棋紀錄無法寫入；本題已停止，不會把未保存的作答假裝成成功。";
+      setBlocked("多手讀棋紀錄無法寫入；本題已停止，不會把未保存的作答假裝成成功。");
       return false;
     }
     return true;
+  }
+
+  function renderSequenceList() {
+    $("advanced-sequence-list").innerHTML = experiences.map((item, index) =>
+      '<button type="button" class="advanced-sequence-tab' + (index === experienceIndex ? ' active' : '') + '" data-sequence-index="' + index + '">' +
+      '<strong>' + escapeHtml(item.title) + '</strong><small>' + item.decisions.length + ' 段實走 · 規則驗證</small></button>'
+    ).join("");
+  }
+
+  function renderSummary() {
+    const result = Events.read(localStorage);
+    if (!result.ok) {
+      $("advanced-sequence-summary").textContent = "多手讀棋紀錄不可讀；不顯示推測進度。";
+      return;
+    }
+    const summary = Events.summarize(result.store);
+    $("advanced-sequence-summary").textContent = "棋盤題 " + (experienceIndex + 1) + " / " + experiences.length +
+      " · 已保存 " + summary.firstMoves + " 次分段首答 · 完成 " + summary.completedExperiences + " 題";
   }
 
   function renderBoard() {
@@ -68,11 +107,9 @@
     const elements = [];
     const stoneMap = new Map();
 
-    for (let y = 0; y < size; y += 1) {
-      for (let x = 0; x < size; x += 1) {
-        const color = board[y][x];
-        if (color) stoneMap.set(pointKey(x, y), color);
-      }
+    for (let y = 0; y < size; y += 1) for (let x = 0; x < size; x += 1) {
+      const color = board[y][x];
+      if (color) stoneMap.set(pointKey(x, y), color);
     }
 
     for (let i = 0; i < size; i += 1) {
@@ -88,18 +125,30 @@
       elements.push('<circle class="seq-point" cx="' + cx + '" cy="' + cy + '" r="2"/>');
       const color = stoneMap.get(key);
       if (color) {
-        elements.push('<circle class="' + (color === Go.BLACK ? 'seq-black' : 'seq-white') + '" cx="' + cx + '" cy="' + cy + '" r="' + Math.max(11, pitch * .34) + '"/>');
+        elements.push('<circle class="' + (color === Go.BLACK ? 'seq-black' : 'seq-white') + '" cx="' + cx + '" cy="' + cy + '" r="' + Math.max(11,pitch*.34) + '"/>');
       } else {
-        elements.push('<circle class="seq-hit" data-seq-x="' + x + '" data-seq-y="' + y + '" cx="' + cx + '" cy="' + cy + '" r="' + Math.max(13, pitch * .38) + '"/>');
+        elements.push('<circle class="seq-hit" data-seq-x="' + x + '" data-seq-y="' + y + '" cx="' + cx + '" cy="' + cy + '" r="' + Math.max(13,pitch*.38) + '"/>');
       }
     }
 
     const [cursorX, cursorY] = cursor;
     const cursorCx = pad + cursorX * pitch;
     const cursorCy = pad + cursorY * pitch;
-    elements.push('<circle class="seq-cursor" cx="' + cursorCx + '" cy="' + cursorCy + '" r="' + Math.max(15, pitch * .43) + '"/>');
+    elements.push('<circle class="seq-cursor" cx="' + cursorCx + '" cy="' + cursorCy + '" r="' + Math.max(15,pitch*.43) + '"/>');
 
-    $("advanced-sequence-board").innerHTML = '<svg viewBox="0 0 ' + width + ' ' + width + '" aria-hidden="true"><rect class="seq-board-bg" width="' + width + '" height="' + width + '" rx="12"/>' + elements.join("") + '</svg>';
+    $("advanced-sequence-board").innerHTML = '<svg viewBox="0 0 ' + width + ' ' + width + '" aria-hidden="true"><rect class="seq-board-bg" width="' + width + '" height="' + width + '" rx="12"/>' + elements.join("") + stonesSvg(stoneMap, pitch, pad) + '</svg>';
+
+    function stonesSvg(map, localPitch, localPad) {
+      const stones = [];
+      for (const [key, color] of map.entries()) {
+        const [x, y] = key.split(",").map(Number);
+        const cx = localPad + x * localPitch;
+        const cy = localPad + y * localPitch;
+        stones.push('<circle class="' + (color === Go.BLACK ? 'seq-black' : 'seq-white') + '" cx="' + cx + '" cy="' + cy + '" r="' + Math.max(11,localPitch*.34) + '"/>');
+      }
+      return stones.join("");
+    }
+
     $("advanced-sequence-cursor").textContent = "游標：第 " + (cursorY + 1) + " 行，第 " + (cursorX + 1) + " 列";
   }
 
@@ -111,10 +160,13 @@
     $("advanced-sequence-prompt").textContent = active.prompt;
     $("advanced-sequence-step").textContent = "第 " + (decisionIndex + 1) + " / " + item.decisions.length + " 步";
     $("advanced-sequence-side").textContent = item.playerColor === Go.BLACK ? "● 黑棋" : "○ 白棋";
-    $("advanced-sequence-hint").disabled = blockedByStorage;
+    $("advanced-sequence-hint").disabled = blocked;
     $("advanced-sequence-hint").textContent = "給我觀察提示";
     $("advanced-sequence-takeaway").hidden = true;
+    $("advanced-sequence-next").disabled = true;
     renderBoard();
+    renderSequenceList();
+    renderSummary();
   }
 
   function beginPresentation() {
@@ -122,16 +174,17 @@
     decisionIndex = 0;
     attemptsThisDecision = 0;
     hintShown = false;
-    blockedByStorage = false;
+    blocked = false;
     board = Go.boardFromStones(item.setupStones, item.boardSize);
     previousBoard = null;
-    cursor = [0, 0];
+    cursor = firstEmptyNearCenter(board);
     presentationId = uid("presentation");
     $("advanced-sequence-feedback").className = "feedback";
     $("advanced-sequence-feedback").textContent = "";
+    $("advanced-sequence-reset").disabled = false;
     $("advanced-sequence-takeaway-text").textContent = item.takeaway;
     $("advanced-sequence-term-count").textContent = "（" + item.terms.length + " 個）";
-    $("advanced-sequence-term-list").innerHTML = item.terms.map(([term, definition]) => '<div><dt>' + term + '</dt><dd>' + definition + '</dd></div>').join("");
+    $("advanced-sequence-term-list").innerHTML = item.terms.map(([term, definition]) => '<div><dt>' + escapeHtml(term) + '</dt><dd>' + escapeHtml(definition) + '</dd></div>').join("");
     $("advanced-sequence-terms").open = false;
     renderDecision();
     if (!record("presented")) return;
@@ -139,7 +192,7 @@
   }
 
   function attemptMove(x, y) {
-    if (blockedByStorage) return;
+    if (blocked) return;
     const item = current();
     const active = decision();
     const before = cloneBoard(board);
@@ -157,13 +210,13 @@
 
     if (!result.legal) {
       $("advanced-sequence-feedback").className = "feedback error";
-      $("advanced-sequence-feedback").textContent = result.reason + " 這一步已保留為本輪作答；請重新讀目前局面。";
+      $("advanced-sequence-feedback").textContent = result.reason + " 這一步已保存為本輪作答；盤面不推進，請重新讀目前局面。";
       return;
     }
 
     if (!correct) {
       $("advanced-sequence-feedback").className = "feedback answer-result error";
-      $("advanced-sequence-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">這手合法，但沒有走完本題變化</strong><span class="answer-explanation">棋盤維持在作答前局面。請比較候選與對手最強應手；首答已保存。</span>';
+      $("advanced-sequence-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">這手合法，但不是本題 contract 的下一手</strong><span class="answer-explanation">盤面維持在作答前局面。請重新比較氣、出口與對手應手；首答已保存。</span>';
       return;
     }
 
@@ -171,27 +224,24 @@
     board = result.board;
     $("advanced-sequence-feedback").className = "feedback success";
     $("advanced-sequence-feedback").textContent = active.success;
+    cursor = firstEmptyNearCenter(board);
     renderBoard();
 
     if (active.opponentMove) {
       const responseBefore = cloneBoard(board);
-      const response = Go.playMove(board, active.opponentMove[0], active.opponentMove[1], item.playerColor === Go.BLACK ? Go.WHITE : Go.BLACK, { previousBoard });
+      const opponentColor = item.playerColor === Go.BLACK ? Go.WHITE : Go.BLACK;
+      const response = Go.playMove(board, active.opponentMove[0], active.opponentMove[1], opponentColor, { previousBoard });
       if (!response.legal) {
-        blockedByStorage = true;
-        $("advanced-sequence-feedback").className = "feedback error";
-        $("advanced-sequence-feedback").textContent = "題目內建對手應手與規則引擎衝突；本題停止並標記為工程錯誤。";
+        setBlocked("題目內建對手應手與規則引擎衝突；本題停止並標記為工程錯誤。");
         return;
       }
-      if (!record("opponent_move", {
-        point: active.opponentMove,
-        capturedCount: response.captured.length
-      })) return;
+      if (!record("opponent_move", { point: active.opponentMove, capturedCount: response.captured.length })) return;
       previousBoard = responseBefore;
       board = response.board;
       decisionIndex += 1;
       attemptsThisDecision = 0;
       hintShown = false;
-      cursor = [0, 0];
+      cursor = firstEmptyNearCenter(board);
       renderDecision();
       $("advanced-sequence-feedback").className = "feedback";
       $("advanced-sequence-feedback").textContent = active.opponentText + " " + decision().prompt;
@@ -201,11 +251,22 @@
 
     if (!record("completed")) return;
     $("advanced-sequence-feedback").className = "feedback answer-result success";
-    $("advanced-sequence-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">兩段讀棋完成</strong><span class="answer-explanation">' + active.success + '</span>';
+    $("advanced-sequence-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">這條多手變化已走完</strong><span class="answer-explanation">' + escapeHtml(active.success) + '</span>';
     $("advanced-sequence-takeaway").hidden = false;
     $("advanced-sequence-hint").disabled = true;
-    $("advanced-sequence-summary").textContent = "已走完本題一次；這只代表完成 practice sequence，不代表已掌握倒撲。";
+    $("advanced-sequence-next").disabled = experiences.length < 2;
+    $("advanced-sequence-next").textContent = experienceIndex === experiences.length - 1 ? "回到第一個棋盤題 →" : "下一個棋盤題 →";
+    renderSummary();
   }
+
+  $("advanced-sequence-list").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-sequence-index]");
+    if (!button || blocked) return;
+    const index = Number(button.dataset.sequenceIndex);
+    if (!Number.isInteger(index) || index < 0 || index >= experiences.length || index === experienceIndex) return;
+    experienceIndex = index;
+    beginPresentation();
+  });
 
   $("advanced-sequence-board").addEventListener("click", (event) => {
     const hit = event.target.closest("[data-seq-x][data-seq-y]");
@@ -233,7 +294,7 @@
   });
 
   $("advanced-sequence-hint").addEventListener("click", () => {
-    if (blockedByStorage || hintShown) return;
+    if (blocked || hintShown) return;
     hintShown = true;
     if (!record("hint")) return;
     $("advanced-sequence-feedback").className = "feedback";
@@ -242,7 +303,27 @@
     $("advanced-sequence-hint").textContent = "提示已顯示";
   });
 
-  $("advanced-sequence-reset").addEventListener("click", beginPresentation);
+  $("advanced-sequence-reset").addEventListener("click", () => {
+    if (!blocked) beginPresentation();
+  });
 
+  $("advanced-sequence-next").addEventListener("click", () => {
+    if (blocked || $("advanced-sequence-next").disabled) return;
+    experienceIndex = (experienceIndex + 1) % experiences.length;
+    beginPresentation();
+  });
+
+  if (!validation.ok) {
+    $("advanced-sequence-list").innerHTML = "";
+    $("advanced-sequence-name").textContent = "多手讀棋暫停";
+    $("advanced-sequence-target").textContent = "內容 contract 未通過規則驗證。";
+    $("advanced-sequence-prompt").textContent = "";
+    $("advanced-sequence-board").innerHTML = "";
+    setBlocked("進階多手題內容與 rules-backed contract 不一致；已 fail closed。");
+    console.error("Advanced sequence validation failed", validation.errors);
+    return;
+  }
+
+  renderSequenceList();
   beginPresentation();
 })();
