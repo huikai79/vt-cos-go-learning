@@ -1081,7 +1081,7 @@
     $("question-title").textContent = problem.title;
     $("question-prompt").textContent = problem.prompt;
     $("takeaway-text").textContent = lesson.takeaway;
-    document.querySelector(".takeaway").hidden = true;
+    $("takeaway").hidden = true;
     $("feedback").className = "feedback";
     $("feedback").textContent = "";
     $("hint-button").textContent = "給我一點提示";
@@ -1170,7 +1170,7 @@
       save();
       return;
     }
-    document.querySelector(".takeaway").hidden = false;
+    $("takeaway").hidden = false;
     state.attempts[problem.id] = (state.attempts[problem.id] || 0) + 1;
     recordEvent("answer", {
       answerValue,
