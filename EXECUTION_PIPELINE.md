@@ -147,3 +147,8 @@
 ## 2026-09-27 Decision note｜中文命名與可評分資格分離
 
 世界名型新增兩個獨立 gate：第一個是 nomenclature gate，確認來源語名稱、中文既有名／候選別名／描述性翻譯與來源層級；第二個才是 geometry/scoring gate。即使名稱已有多語對照，若標準幾何、先後手、外氣、ruleset 或主要 variation 尚未驗證，仍只能是 catalog-only。反之，沒有固定中文專名也不阻止圖鑑收錄：保留來源語原名，中文只提供明示為 descriptive translation 的解釋。任何 teaching translation 都不得回填成 established 中文名。
+
+
+## 2026-09-27 Decision note｜名型館第一個 geometry-backed practice：刀把五
+
+刀把五從 nomenclature gate 往 geometry/scoring gate 前進，但只建立 `classic-vital-point-v1`：五點眼空必須與 P-pentomino 同構，唯一 degree-3 眼空點才是 bounded vital point；rules engine 另驗 setup 與所有候選點合法。四個 variant 只測守／攻角色與方向改變後是否仍找到同一結構急所。這不是完整 life/death solver，也不允許把四題完成升格為 mastery、transfer、T2/T3 或 formal evaluation。完整做活／殺棋需下一層 variation/branch contract。
