@@ -143,12 +143,15 @@ async function main() {
         demo: document.querySelector('#teaching-demo').textContent,
         check: document.querySelector('#teaching-check').textContent,
         visualDemo: document.querySelectorAll('#teaching-demo-board .demo-liberty').length,
+        termCount: document.querySelector('#lesson-term-count').textContent,
+        firstTerm: document.querySelector('#lesson-term-list dt')?.textContent,
+        legendItems: document.querySelectorAll('.demo-legend span').length,
         compactGuidance: document.querySelector('#learning-now-summary').textContent,
         currentLevel: document.querySelector('.level-path > .active')?.id,
         stageBadge: document.querySelector('#learning-stage-badge').textContent
       };
     })()`);
-    assert.deepEqual(firstUse, { introOpen: true, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", stageBadge: "目前 1/5 · 先看懂" });
+    assert.deepEqual(firstUse, { introOpen: true, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, termCount: "（1 個）", firstTerm: "氣", legendItems: 4, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", stageBadge: "目前 1/5 · 先看懂" });
     const screenshotDirectory = process.env.GO_UI_SCREENSHOT_DIR;
     if (screenshotDirectory) {
       assert.ok(fs.existsSync(screenshotDirectory), "screenshot directory must already exist");
@@ -239,7 +242,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v39"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v40"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -356,7 +359,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v39");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v40");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -373,9 +376,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v39");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v40");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v39");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v40");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
