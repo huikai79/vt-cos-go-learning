@@ -77,6 +77,7 @@
         break;
       }
       const learnerMove = decision.acceptedMoves[0];
+      validateExpectedLiberties(board, item, decision.expectedTrackedLibertiesBeforeLearner, label + " before learner", Go, errors);
       const beforeLearner = board.map((row) => row.slice());
       const learner = Go.playMove(board, learnerMove[0], learnerMove[1], item.playerColor, previousBoard ? { previousBoard } : {});
       if (!learner.legal) {
@@ -88,6 +89,20 @@
       validateExpectedLiberties(board, item, decision.expectedTrackedLibertiesAfterLearner, label + " after learner", Go, errors);
       snapshots.push({ decisionIndex: index, afterLearnerBoard: board.map((row) => row.slice()), previousBoard: beforeLearner });
       previousBoard = beforeLearner;
+
+      if (decision.opponentMoveMustBeUniqueLiberty) {
+        if (!point(item.trackedPoint) || ![Go.BLACK, Go.WHITE].includes(item.trackedColor)) {
+          errors.push(label + " unique-liberty check needs trackedPoint/trackedColor");
+        } else {
+          const [tx, ty] = item.trackedPoint;
+          const trackedGroup = board[ty] && board[ty][tx] === item.trackedColor ? Go.groupAt(board, tx, ty) : null;
+          if (!trackedGroup || trackedGroup.liberties.length !== 1) {
+            errors.push(label + " expected exactly one forced target liberty");
+          } else if (!samePoint(trackedGroup.liberties[0], decision.opponentMove)) {
+            errors.push(label + " opponentMove is not the tracked group's unique liberty");
+          }
+        }
+      }
 
       if (decision.opponentMove) {
         if (!point(decision.opponentMove)) {
