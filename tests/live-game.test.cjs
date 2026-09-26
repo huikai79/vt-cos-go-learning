@@ -376,3 +376,16 @@ test("棋盤頁套用 CJK 語系、20px 手機邊距與可辨識連結", () => {
   assert.match(css, /\.provider-help a\{[^}]*text-decoration:underline/);
   assert.doesNotMatch(css, /word-break\s*:\s*break-all/i);
 });
+
+
+test("棋盤頁用白話解釋 Pass、死子、面積計分、貼目、簡單劫與 SGF", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  assert.match(html, /停一手（Pass）/);
+  assert.match(html, /雙方連續各停一手後/);
+  assert.match(html, /死子/);
+  assert.match(html, /中國式面積/);
+  assert.match(html, /貼目/);
+  assert.match(html, /簡單劫/);
+  assert.match(html, /SGF 棋譜檔/);
+  assert.match(html, /常見的純文字圍棋棋譜格式/);
+});
