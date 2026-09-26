@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v43";
+  const uiVersion = "learner-flow-v44";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -24,6 +24,7 @@
   let storageWarningMessage = "";
   const saved = readSaved();
   const savedHasStarted = Boolean(saved.hasStarted || (saved.completed && saved.completed.length) || (saved.events && saved.events.length) || (saved.attempts && Object.keys(saved.attempts).length));
+  const coreRouteRequested = typeof window !== "undefined" && window.location && window.location.hash === "#core";
   const state = {
     index: Number.isInteger(saved.index) && saved.index >= 0 && saved.index < problems.length ? saved.index : 0,
     navUnitIndex: Number.isInteger(saved.navUnitIndex) && saved.navUnitIndex >= 0 && saved.navUnitIndex < units.length
@@ -62,7 +63,7 @@
     events: Array.isArray(saved.events) ? saved.events : [],
     exposures: buildExposures(saved)
   };
-  let siteIntroductionOpen = !savedHasStarted && Boolean(document.getElementById("site-introduction"));
+  let siteIntroductionOpen = !coreRouteRequested && Boolean(document.getElementById("site-introduction"));
   let storageWriteFailed = false;
   let demoLessonTitle = null;
   let demoStepIndex = 0;
@@ -548,8 +549,22 @@
     panel.hidden = !siteIntroductionOpen;
     document.body.classList.toggle("site-introduction-open", siteIntroductionOpen);
     document.querySelectorAll("[data-site-intro-start]").forEach((button) => {
-      button.innerHTML = state.hasStarted ? '回到目前學習 <span aria-hidden="true">→</span>' : '開始第一課 <span aria-hidden="true">→</span>';
+      const label = state.hasStarted
+        ? (button.dataset.returnLabel || "繼續核心課程")
+        : (button.dataset.freshLabel || "開始第一課");
+      button.innerHTML = `${label} <span aria-hidden="true">→</span>`;
     });
+    const coreStatus = $("core-entry-status");
+    if (coreStatus) {
+      const lesson = lessons[current().lesson];
+      coreStatus.textContent = state.hasStarted && lesson
+        ? `上次停在：${lesson.title}`
+        : "適合完全零基礎，從第一口氣開始。";
+    }
+    if (typeof window !== "undefined" && window.history && window.location) {
+      const baseUrl = window.location.href.split("#")[0];
+      window.history.replaceState(null, "", siteIntroductionOpen ? baseUrl : `${baseUrl}#core`);
+    }
     if (siteIntroductionOpen) {
       const lessonDialog = $("lesson-intro-dialog");
       if (lessonDialog && lessonDialog.open) lessonDialog.close();

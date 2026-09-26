@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v4`
-- `ui_version`: `learner-flow-v43`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v44`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -39,7 +39,7 @@
 | standardized T3 固定應用探測 | 5 個減少技能線索的固定局面；Evidence Taxonomy v2 以 `evaluationContext=standardized` 與 live T3 分開 | SGF、試行、UI 與 evidence-taxonomy contract 測試 | 工程 | 條件通過；只支持既定局部 scoring contract，不代表全局判斷或 live 實戰遷移 |
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
-| 首頁下一步清楚 | 首次到訪以獨立一頁式首頁顯示零基礎起點、三段能力路徑、評量依據與可展開的來源／限制；Landing 狀態隱藏 sidebar、學習 topbar 與題目工作區，主 CTA 才進入既有課程。回訪者直接續學，並可用「課程首頁」重開；只有確實有題目到期時顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 首訪單欄、sidebar/topbar 隱藏與無橫向溢出反證 | 工程 | `learner-flow-v42` 條件通過；資訊是否對初學者真正清楚仍待 candidate 凍結後真人觀察 |
+| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：先以零基礎 Core 為主要路徑，再在首屏後直接提供核心課程與獨立進階訓練兩個入口；Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、進階入口與無橫向溢出反證 | 工程 | `learner-flow-v44` 條件通過；首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v4 答案盲審流程條件通過；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
@@ -48,6 +48,15 @@
 | 正式教學使用閘門 | R1a、三位初學者關鍵任務及真人無障礙 spot check 分開驗證 | `teaching-gate.test.cjs`、`teaching-gate-verify.cjs` | 外部內容與真人證據 | BLOCKED；缺 R1a 外部回條、初學者觀察及真人無障礙證據 |
 | 個人七天流程試行 | `personal-pilot-v3` 使用舊 R1 已曝光題，只檢查資料、返回與負擔；v1／v2 保留為 legacy | trial、狀態與 UI 測試 | 個人描述 | 工程通過；`formalEligible=false` |
 | 學習成效與排程增益 | 有試行資料管線與 Minimal Sufficient Policy 設計 | 試行流程測試 | 學習成效 | 未量測；個人單機正式驗收停用 |
+
+## 2026-09-26 Change note｜永久首頁學習樞紐與 Core／Advanced 分流
+
+- **Johari 缺口：** 上兩輪的開放區是 reader-first 一頁式首頁與主 CTA 已成立；盲點是「回訪者自動略過首頁」只適合單課程產品，和目前已有獨立 `advanced.html` 的多路徑架構衝突。隱藏區是進階頁已經在 main 可用，但首頁仍沒有入口，只藏在 Core 工具面板。未知區是不同程度真人是否能更快選對入口，仍需 usability 觀察。
+- **最新判斷：** `/` 長期作為整個悟之一手的學習樞紐，不再只作首次 onboarding。Core 仍是零基礎的單一主 CTA；進階訓練在 Hero 後的「選擇學習入口」出現為第二層選項，不和第一課搶主視覺。Core workspace 以 `#core` 表示，重新載入／書籤可直接回工作區；回根網址則回首頁。
+- **實作：** `learner-flow-v44` 新增 Core／Advanced 兩張入口卡；Core 顯示 15 單元／19 課／106 題與動態「上次停在」；Advanced 直接連 `advanced.html`，明示較適合已有基礎者、不是第 16 單元、目前 practice-only。進階頁同時提供「悟之一手首頁」與「核心課程」兩個一致導航。
+- **不可破壞 invariant：** 不改題目、KC、scoring、first response／retry、scheduler、storage schema、formal evaluation、live evidence 或 advanced event contract；Core／Advanced 原始資料仍分開保存。
+- **反證／驗收：** fresh root 必須顯示首頁；Core CTA 後 URL 為 `#core` 且才開第一課短講；已有 Core 進度後重新進 root 仍顯示首頁並改為「繼續核心課程」＋上次課名；375px 仍單欄且無橫向溢出；Advanced 必須可由首頁直接到達。這些只證明路由／資訊架構契約，不證明使用者已選對課程或學得更好。
+- **證據邊界：** 正式教學仍 `BLOCKED`；正式評量不可用；Core 完課對 K／段位與 Advanced 學習效益仍 `NOT_MEASURED`。
 
 ## 2026-09-26 Change note｜一頁式 reader-first 首頁
 
