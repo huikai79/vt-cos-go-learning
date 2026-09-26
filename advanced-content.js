@@ -222,15 +222,18 @@
           id: "sacrifice",
           prompt: "黑先。第一手下哪裡，能故意送一子，讓白提完後產生新的最後一氣？",
           acceptedMoves: [[0,2]],
+          expectedLearnerCapturedCount: 0,
           hint: "看左邊邊線：先找一個下完後只剩一口氣、但仍然合法的黑棋落點。",
           success: "第一手成立。這顆黑棋可以被提，但目的正是讓白棋改變氣的結構。",
           opponentMove: [0,3],
-          opponentText: "白棋依題目中的最強局部應手，在下方提掉剛才的黑棋。現在不要停，重新數白棋整串的氣。"
+          expectedOpponentCapturedCount: 1,
+          opponentText: "白棋依題目中的局部應手，在下方提掉剛才的黑棋。現在不要停，重新數白棋整串的氣。"
         },
         {
           id: "recapture",
           prompt: "白棋提掉送子後，黑下一手在哪裡可以立即提回更多白棋？",
           acceptedMoves: [[0,2]],
+          expectedLearnerCapturedCount: 2,
           hint: "回到剛才送子的位置，檢查現在落下去會提掉哪些白棋。",
           success: "讀完了：黑回到原點，這次會提掉兩顆白棋。重點不是記座標，而是能在提子後重新建立局面並再數氣。"
         }
@@ -240,11 +243,102 @@
         ["倒撲", "先送一子，誘使對方提子後，再利用新的氣形提回更多棋。"],
         ["重建局面", "每走一手、尤其發生提子後，把盤面當成新的狀態重新數氣與檢查合法手。"]
       ]
+    },
+    {
+      id: "adv-seq-net-01",
+      version: 1,
+      trackId: "reading-tesuji",
+      title: "枷實走：不打吃也能封住兩個出口",
+      target: "先下不直接打吃的封鎖手，再讀對手兩個逃路都會被提。",
+      boardSize: 5,
+      playerColor: B,
+      setupStones: [[1,1,B],[2,1,B],[0,2,B],[2,2,W],[3,2,B],[3,3,B],[2,4,B]],
+      trackedPoint: [2,2],
+      trackedColor: W,
+      decisions: [
+        {
+          id: "net",
+          prompt: "黑先。哪一手不是直接打吃，卻能把中央白棋兩個出口一起罩住？",
+          acceptedMoves: [[1,3]],
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 2,
+          hint: "白棋目前有左邊與下方兩個出口；找一手能同時控制兩邊、又不必貼著白棋下。",
+          success: "這是枷的封鎖手：白棋仍有兩口氣，所以不是打吃；接下來要真的驗證每個逃路。",
+          opponentMove: [1,2],
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 1,
+          opponentText: "先驗證左邊逃路：白棋向左延長後，整串只剩下方一口氣。"
+        },
+        {
+          id: "close-net",
+          prompt: "白棋走左邊逃路後，黑下一手在哪裡可以把整串提掉？",
+          acceptedMoves: [[2,3]],
+          expectedLearnerCapturedCount: 2,
+          hint: "重新數白棋的最後一口氣；現在不需要再猜枷的形狀。",
+          success: "黑補上下方最後一氣，提掉兩顆白棋。枷成立是因為逃路被封，不是因為第一手本身打吃。"
+        }
+      ],
+      verificationBranches: [
+        {
+          afterDecisionIndex: 0,
+          opponentMove: [2,3],
+          expectedOpponentCapturedCount: 0,
+          learnerReply: [1,2],
+          expectedLearnerCapturedCount: 2
+        }
+      ],
+      expectedFinalEmpty: [[1,2],[2,2]],
+      takeaway: "枷要驗兩邊：第一手不必打吃，但對方每個主要逃路都要能被下一手收住。",
+      terms: [
+        ["枷", "不靠連續貼身打吃，而用封鎖位置限制對方逃路的手筋。"],
+        ["分支驗證", "不只驗一條示範路線；另一個主要逃路也必須得到一致結果。"]
+      ]
+    },
+    {
+      id: "adv-seq-semeai-01",
+      version: 1,
+      trackId: "reading-tesuji",
+      title: "對殺實走：先壓一口氣，再重算雙方最後一氣",
+      target: "把雙方氣數與行棋次序帶進同一條可驗證的三手交換。",
+      boardSize: 5,
+      playerColor: B,
+      setupStones: [[1,1,B],[3,1,W],[4,1,B],[1,2,W],[2,2,B],[3,2,W],[4,2,B],[3,3,B]],
+      trackedPoint: [3,2],
+      trackedColor: W,
+      decisions: [
+        {
+          id: "reduce",
+          prompt: "黑先。白棋右上這串目前有兩口關鍵氣；黑先填哪一口，能迫使白棋只剩另一口延長？",
+          acceptedMoves: [[3,0]],
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 1,
+          hint: "先只數白棋右上的兩口氣：上方與左上方。找能直接壓到一口氣的黑手。",
+          success: "黑填上方後，白棋只剩左上方一口氣；這一步沒有提子，但已改變對殺次序。",
+          opponentMove: [2,1],
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 1,
+          opponentText: "白棋延長到左上方。現在白串仍只有一口氣；同時中央黑棋也只剩自己的最後一口氣，所以必須算清楚下一手。"
+        },
+        {
+          id: "finish-race",
+          prompt: "輪到黑。在哪裡補掉白棋最後一氣，可以先提掉白串？",
+          acceptedMoves: [[2,0]],
+          expectedLearnerCapturedCount: 3,
+          hint: "白棋剛延長後，沿著上邊重新找整串唯一的空交叉點。",
+          success: "黑先補掉白棋最後一氣，提掉三顆白棋。這個結果依賴『黑先』與目前氣形，不能抽成所有對殺的固定口訣。"
+        }
+      ],
+      expectedFinalEmpty: [[2,1],[3,1],[3,2]],
+      takeaway: "對殺先把氣與輪到誰走寫清楚；每一手後都要重新數，不能只比較起始總氣數。",
+      terms: [
+        ["對殺", "雙方未安定棋串互相競爭，誰能先填掉對方最後一氣。"],
+        ["行棋次序", "同一組氣數，輪到誰先走可能直接改變提子順序與結果。"]
+      ]
     }
   ];
 
   const api = {
-    version: 2,
+    version: 3,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
     experiences,
