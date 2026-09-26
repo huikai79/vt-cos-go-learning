@@ -313,7 +313,9 @@ test("family transition 只輸出描述狀態，不產生 mastery 或 transfer c
     variationAxes: ["baseline"],
     occurredAt: "2026-09-27T00:00:00.000Z"
   };
+  assert.equal(SequenceEvents.append(storage, { ...base, eventId: "f0", presentationId: "seed-p", experienceId: "adv-seq-snapback-01", variantId: "seed", type: "presented" }).ok, true);
   assert.equal(SequenceEvents.append(storage, { ...base, eventId: "f1", presentationId: "seed-p", experienceId: "adv-seq-snapback-01", variantId: "seed", type: "move_first", decisionId: "sacrifice", stepIndex: 0, point: [0,2], correct: true, legal: true, capturedCount: 0 }).ok, true);
+  assert.equal(SequenceEvents.append(storage, { ...base, eventId: "f1b", presentationId: "variant-p", experienceId: "adv-seq-snapback-02", variantId: "capture-three", variationAxes: ["capture-count", "local-shape"], type: "presented" }).ok, true);
   assert.equal(SequenceEvents.append(storage, { ...base, eventId: "f2", presentationId: "variant-p", experienceId: "adv-seq-snapback-02", variantId: "capture-three", variationAxes: ["capture-count", "local-shape"], type: "move_first", decisionId: "sacrifice", stepIndex: 0, point: [1,1], correct: false, legal: true, capturedCount: 0 }).ok, true);
   const transition = SequenceEvents.classifyFamilyTransition(SequenceEvents.read(storage).store, "snapback");
   assert.deepEqual(transition, {
