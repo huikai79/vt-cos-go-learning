@@ -6,6 +6,8 @@ const { units, lessons, problems } = require("../content.js");
 const { phase2Problems } = require("../phase2-content.js");
 
 const matrix = fs.readFileSync(path.join(__dirname, "..", "COMPLETION_MATRIX.md"), "utf8");
+const pipeline = fs.readFileSync(path.join(__dirname, "..", "EXECUTION_PIPELINE.md"), "utf8");
+const teachingGate = fs.readFileSync(path.join(__dirname, "..", "TEACHING_GATE.md"), "utf8");
 
 test("完成矩陣的題庫與示範計數可由目前內容重算", () => {
   assert.equal(units.length, 15);
@@ -40,4 +42,16 @@ test("完成矩陣明示個人 pilot、已知曝光及正式評量停用", () =>
   assert.match(matrix, /`formal_evaluation_available`: false/);
   assert.match(matrix, /舊 R1 自我審查草稿中的 22 題/);
   assert.match(matrix, /`formalEligible=false`/);
+});
+
+
+test("開發期 formative observation 與正式三位 usability gate 保持分離", () => {
+  assert.match(pipeline, /formative usability observation（非 gate）/);
+  assert.match(pipeline, /不要求湊滿三次，也不作正式教學 gate 的 PASS 證據/);
+  assert.match(pipeline, /正式教學前最後閘門：凍結 candidate 後做三位初學者 usability/);
+  assert.match(pipeline, /formative observation 不得補進這三位正式分母/);
+  assert.match(teachingGate, /candidate 的 UI／content version 與 critical tasks 已凍結後收集/);
+  assert.match(teachingGate, /formative observation 只作產品診斷，不補入正式三位分母/);
+  assert.match(matrix, /正式 usability 仍 NOT_TESTED/);
+  assert.match(matrix, /正式教學仍 `BLOCKED`/);
 });
