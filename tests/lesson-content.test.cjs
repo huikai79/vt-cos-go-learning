@@ -151,7 +151,7 @@ test("劫示範的提子與回提符合規則引擎，不留下已被提走的�
   const whiteCapture = Go.playMove(board, 2, 1, Go.WHITE);
   assert.equal(whiteCapture.legal, true);
   assert.equal(whiteCapture.board[2][2], Go.EMPTY);
-  const immediateRecapture = Go.playMove(whiteCapture.board, 2, 2, Go.BLACK, board);
+  const immediateRecapture = Go.playMove(whiteCapture.board, 2, 2, Go.BLACK, { previousBoard: board });
   assert.equal(immediateRecapture.legal, false);
 
   const finalDiagram = lessons[6].demoSteps.at(-1);
