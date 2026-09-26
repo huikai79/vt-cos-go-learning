@@ -43,7 +43,7 @@
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v4 答案盲審流程條件通過；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
 | R1b 平行題可比性 | 基線與追蹤在已知結構特徵上配對 | 結構比對 | 真人難度資料 | 未建立；不得由 R1a 自動升格 |
-| 初學者使用順手 | 有導覽、鍵盤與窄版工程檢查；一般練習的正確／錯誤回饋以圖示、明確標題與不同背景 banner 區分，錯答仍留在原題重試，formal evaluation 仍不揭露正誤 | UI 測試 | 真人可用性 | 工程條件通過；是否能一眼辨識與實際負擔仍待短任務觀察 |
+| 初學者使用順手 | 有導覽、鍵盤與窄版工程檢查；一般練習的正確／錯誤回饋以圖示、明確標題與不同背景 banner 區分，錯答仍留在原題重試，formal evaluation 仍不揭露正誤；開發期間可持續 formative observation | UI 測試＋開發期觀察僅作診斷 | 真人可用性 | 工程條件通過；正式 usability 仍 NOT_TESTED，待 candidate 凍結後三位 target novice 關鍵任務 |
 | 正式教學使用閘門 | R1a、三位初學者關鍵任務及真人無障礙 spot check 分開驗證 | `teaching-gate.test.cjs`、`teaching-gate-verify.cjs` | 外部內容與真人證據 | BLOCKED；缺 R1a 外部回條、初學者觀察及真人無障礙證據 |
 | 個人七天流程試行 | `personal-pilot-v3` 使用舊 R1 已曝光題，只檢查資料、返回與負擔；v1／v2 保留為 legacy | trial、狀態與 UI 測試 | 個人描述 | 工程通過；`formalEligible=false` |
 | 學習成效與排程增益 | 有試行資料管線與 Minimal Sufficient Policy 設計 | 試行流程測試 | 學習成效 | 未量測；個人單機正式驗收停用 |
@@ -56,7 +56,7 @@
 4. Evidence Boundary P2：同步現況文件與回歸測試。
 5. Demonstration Coverage P0–P2：19 課逐步棋盤示範、內容結構檢查與介面回歸已完成。
 6. Interaction Coverage P0–P2：第 5–14 單元局部棋形點選、內容邊界與介面回歸已完成。
-7. 依 `TEACHING_GATE.md` 收集外部 R1a 回條、三位初學者關鍵任務及真人無障礙證據；R1b 與新 private holdout 另屬正式評量，不以工程測試代替。
+7. 開發期間持續 formative usability observation，不作 gate；learner-facing candidate 相對收斂後，再依 `TEACHING_GATE.md` 收集外部 R1a 回條、三位初學者關鍵任務及真人無障礙證據。R1b 與新 private holdout 另屬正式評量，不以工程測試代替。
 
 ## 新增工程項目
 
@@ -260,3 +260,10 @@
 - **證據邊界：** 探索頁為 practice-only，不產生 formal evidence；正式教學仍受 `TEACHING_GATE.md` 阻擋，學習成效仍 NOT_MEASURED。
 - **Rollback：** 移除第 4 單元入口與三個 classic-shapes 資產，回復四題文案及 UI version；既有 storage 不需 migration。
 - **Validation：** PR #14 的 verify run #197 全數通過：node-contracts、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均 PASS；PR 已於 2026-09-26 squash merge 至 `main`（merge commit `1f89f79f8969d7d81cd682b4e2ef44c447df841d`）。這些仍只屬工程驗證。
+
+
+## 2026-09-26 Decision note｜真人觀察時序調整
+
+- **開發期間：** formative observation 可持續，目的是找 bottleneck、修 UX、補反證測試；不要求三次完成、不阻擋工程迭代，也不計入正式 usability 分母。
+- **正式教學前：** learner-facing candidate 凍結後，才執行至少三位唯一 target novice 的五項 critical tasks 與真人 accessibility spot check。
+- **狀態不變：** 正式 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`；這次只調整證據收集時序，不降低 gate。
