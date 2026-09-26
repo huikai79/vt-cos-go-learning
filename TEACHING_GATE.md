@@ -12,7 +12,7 @@
 | 正式評量 | 正式教學使用通過、另建未公開的新 holdout、R1b 實際難度可比性成立 | BLOCKED |
 | 學習成效 | 預先定義的 retention／transfer 研究與足夠資料 | NOT MEASURED；不屬 release verdict |
 
-三位初學者是正式教學發布前的最低 usability smoke gate，不是統計樣本，也不能證明教學有效。任一參與者無法完成開始課程、棋盤作答、錯答後修正、重新載入續學或匯出資料，均須先記錄並處理阻擋問題。
+三位初學者是正式教學發布前的最低 usability smoke gate，不是統計樣本，也不能證明教學有效。這三位正式證據應在 learner-facing 核心流程相對收斂、candidate 的 UI／content version 與 critical tasks 已凍結後收集；開發期間邊使用邊修改的 formative observation 只作產品診斷，不補入正式三位分母。任一參與者無法完成開始課程、棋盤作答、錯答後修正、重新載入續學或匯出資料，均須先記錄並處理阻擋問題；若因此修改會影響 critical task 的 learner-facing 行為，受影響的正式觀察須在新 candidate 重做。
 
 ## R1a 外部棋理審查
 
@@ -38,3 +38,8 @@
 - **隱私：** 只使用匿名 code 與證據引用，不在 repo 保存姓名、聯絡資料或其他個資。
 - **證據邊界：** 此修改只提高真人證據的可稽核性，不產生任何真人證據；目前 usability／accessibility 狀態仍是 NOT_TESTED／BLOCKED。
 - **Migration／rollback：** 尚無正式真人證據檔，因此沒有歷史真人資料需要升格；舊格式檔會 fail closed，需依原始觀察補成逐位紀錄，不能猜測補值。若 rollback，恢復舊 verifier，但會重新暴露彙總證據缺口。
+
+
+## 2026-09-26 Clarification｜formative observation 不等於正式三位 usability evidence
+
+開發期間可以持續由產品作者／目前使用者與零散使用者回饋發現卡點並修改，不要求先完成三次觀察。這些資料標記為 formative／development observation；正式教學 gate 仍要求 candidate 凍結後至少三位唯一 target novice 的逐位證據與真人 accessibility spot check。此澄清不改 verifier schema、不降低既有 gate，也不把歷史零散觀察回溯升格。
