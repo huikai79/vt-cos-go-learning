@@ -6,13 +6,17 @@
   const PracticeContract = window.GoClassicShapePracticeContract;
   const ShortRead = window.GoClassicShapeRead;
   const ShortReadContract = window.GoClassicShapeReadContract;
+  const Reduction = window.GoClassicShapeReduction;
+  const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !ShortRead || !ShortReadContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const shortReadValidation = ShortReadContract.validateAll(ShortRead.items, { Go, PracticeContract });
   if (!shortReadValidation.ok) throw new Error("Classic shape short-read contract invalid: " + shortReadValidation.errors.join("; "));
+  const reductionValidation = ReductionContract.validateAll(Reduction.items, { Go, PracticeContract });
+  if (!reductionValidation.ok) throw new Error("Classic shape reduction contract invalid: " + reductionValidation.errors.join("; "));
 
   const stageIds = ["u4-m01", "u4-m02", "u4-m03", "u4-m05"];
   const stageMeta = [
@@ -37,6 +41,11 @@
   let readSolved = false;
   let readHintShown = false;
   let readCursor = [2, 2];
+  let reductionIndex = 0;
+  let reductionMoves = [];
+  let reductionSolved = false;
+  let reductionHintShown = false;
+  let reductionCursor = [2, 2];
 
   const $ = (id) => document.getElementById(id);
 
@@ -299,6 +308,133 @@
     }
   }
 
+  function reductionState(item) {
+    const validation = ReductionContract.validateItem(item,{ Go, PracticeContract });
+    if (!validation.ok) throw new Error(item.id + " reduction contract invalid");
+    const setup = ReductionContract.buildSetupStones(item,Go,{sealed:true});
+    let board = Go.boardFromStones(setup,item.boardSize);
+    let played = Go.playMove(board,validation.vitalPoint[0],validation.vitalPoint[1],item.attackerColor);
+    if (!played.legal) throw new Error(item.id + " reduction vital replay failed");
+    board = played.board;
+    for (const point of reductionMoves) {
+      played = Go.playMove(board,point[0],point[1],item.attackerColor);
+      if (!played.legal) throw new Error(item.id + " reduction replay failed");
+      board = played.board;
+    }
+    return { validation, board };
+  }
+
+  function reductionCandidates(item,state) {
+    const used = new Set(reductionMoves.map(([x,y]) => pointKey(x,y)));
+    return state.validation.reductionPoints.filter(([x,y]) => !used.has(pointKey(x,y)) && state.board[y][x] === Go.EMPTY);
+  }
+
+  function renderReductionBoard(finalResult) {
+    const item = Reduction.items[reductionIndex];
+    const current = finalResult && finalResult.result
+      ? { validation:ReductionContract.validateItem(item,{ Go, PracticeContract }), board:finalResult.result.board }
+      : reductionState(item);
+    const board = current.board;
+    const size = item.boardSize;
+    const pad = 7;
+    const span = 86;
+    const step = span / (size - 1);
+    const candidates = new Set((finalResult ? [] : reductionCandidates(item,current)).map(([x,y]) => pointKey(x,y)));
+    const lines = [];
+    const nodes = [];
+    for (let i=0;i<size;i+=1) {
+      const p=pad+i*step;
+      lines.push('<line x1="'+pad+'" y1="'+p+'" x2="'+(pad+span)+'" y2="'+p+'" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="'+p+'" y1="'+pad+'" x2="'+p+'" y2="'+(pad+span)+'" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let y=0;y<size;y+=1) for (let x=0;x<size;x+=1) {
+      const px=pad+x*step;
+      const py=pad+y*step;
+      if (board[y][x]===Go.BLACK) nodes.push('<circle cx="'+px+'" cy="'+py+'" r="5.3" class="stone-black"/>');
+      if (board[y][x]===Go.WHITE) nodes.push('<circle cx="'+px+'" cy="'+py+'" r="5.3" class="stone-white"/>');
+      if (candidates.has(pointKey(x,y))) nodes.push('<circle data-reduction-x="'+x+'" data-reduction-y="'+y+'" cx="'+px+'" cy="'+py+'" r="6.2" class="classic-hit bulky-hit"/>');
+    }
+    if (!finalResult) {
+      const [cx0,cy0]=reductionCursor;
+      nodes.push('<circle cx="'+(pad+cx0*step)+'" cy="'+(pad+cy0*step)+'" r="6.4" class="classic-cursor-ring"/>');
+    }
+    $("reduction-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">'+lines.join("")+nodes.join("")+'</svg>';
+    if (!finalResult) $("reduction-cursor-status").textContent="游標：第 "+(reductionCursor[1]+1)+" 行，第 "+(reductionCursor[0]+1)+" 列";
+    else $("reduction-cursor-status").textContent="終局：黑棋提四子後留下 2×2 方四";
+  }
+
+  function renderReduction() {
+    const item=Reduction.items[reductionIndex];
+    const state=reductionState(item);
+    const candidates=reductionCandidates(item,state);
+    reductionMoves=[];
+    reductionSolved=false;
+    reductionHintShown=false;
+    reductionCursor=candidates[0].slice();
+    $("reduction-tag").textContent=(reductionIndex+1)+" / "+Reduction.items.length+" · sealed local branch";
+    $("reduction-title").textContent=reductionIndex===0?"填滿 2×2 核心":"鏡像後再找 2×2 核心";
+    $("reduction-prompt").textContent=item.prompt;
+    $("reduction-feedback").className="feedback";
+    $("reduction-feedback").textContent="";
+    $("reduction-terminal").hidden=true;
+    $("reduction-hint").disabled=false;
+    $("reduction-next").disabled=true;
+    $("reduction-next").textContent=reductionIndex===Reduction.items.length-1?"完成 sealed reduction":"下一題 →";
+    renderReductionBoard();
+  }
+
+  function attemptReduction(x,y) {
+    if (reductionSolved) return;
+    const item=Reduction.items[reductionIndex];
+    const result=ReductionContract.scoreNext(item,reductionMoves,[x,y],{ Go, PracticeContract });
+    if (!result.ok) {
+      $("reduction-feedback").className="feedback error";
+      $("reduction-feedback").textContent="sealed reduction contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if (!result.correct) {
+      $("reduction-feedback").className="feedback error";
+      $("reduction-feedback").textContent=reductionHintShown
+        ? "這一點不是 2×2 核心剩餘空點。突出點要留給黑棋最後提子。"
+        : "這一手不屬於本分支的縮眼核心。先重新找包含急所的 2×2 方形。";
+      return;
+    }
+    reductionMoves.push([x,y]);
+    if (reductionMoves.length<3) {
+      const state=reductionState(item);
+      const candidates=reductionCandidates(item,state);
+      reductionCursor=candidates[0].slice();
+      $("reduction-feedback").className="feedback success";
+      $("reduction-feedback").textContent="這一顆正確。再補一顆 2×2 核心空點。";
+      renderReductionBoard();
+      return;
+    }
+    const finalResult=ReductionContract.finalize(item,reductionMoves,{ Go, PracticeContract });
+    if (!finalResult.ok || !finalResult.complete) {
+      $("reduction-feedback").className="feedback error";
+      $("reduction-feedback").textContent="終局 contract 未能證明提四子後形成方四；本題停止。";
+      return;
+    }
+    reductionSolved=true;
+    $("reduction-feedback").className="feedback success";
+    $("reduction-feedback").textContent=item.success;
+    $("reduction-terminal").hidden=false;
+    $("reduction-hint").disabled=true;
+    $("reduction-next").disabled=false;
+    renderReductionBoard(finalResult);
+  }
+
+  function moveReductionCursor(dx,dy) {
+    const item=Reduction.items[reductionIndex];
+    const state=reductionState(item);
+    const candidates=reductionCandidates(item,state);
+    const next=[reductionCursor[0]+dx,reductionCursor[1]+dy];
+    if (candidates.some(([x,y]) => x===next[0] && y===next[1])) {
+      reductionCursor=next;
+      renderReductionBoard();
+    }
+  }
+
   function renderBoard() {
     const problem = problems[stage];
     const size = 9;
@@ -487,6 +623,43 @@
     }
   });
 
+  $("reduction-board").addEventListener("click",(event) => {
+    const hit=event.target.closest("[data-reduction-x][data-reduction-y]");
+    if (!hit) return;
+    reductionCursor=[Number(hit.dataset.reductionX),Number(hit.dataset.reductionY)];
+    renderReductionBoard();
+    attemptReduction(reductionCursor[0],reductionCursor[1]);
+  });
+
+  $("reduction-board").addEventListener("keydown",(event) => {
+    if (event.key==="ArrowLeft") { event.preventDefault(); moveReductionCursor(-1,0); }
+    else if (event.key==="ArrowRight") { event.preventDefault(); moveReductionCursor(1,0); }
+    else if (event.key==="ArrowUp") { event.preventDefault(); moveReductionCursor(0,-1); }
+    else if (event.key==="ArrowDown") { event.preventDefault(); moveReductionCursor(0,1); }
+    else if (event.key==="Enter" || event.key===" ") {
+      event.preventDefault();
+      attemptReduction(reductionCursor[0],reductionCursor[1]);
+    }
+  });
+
+  $("reduction-hint").addEventListener("click",() => {
+    reductionHintShown=true;
+    $("reduction-feedback").className="feedback";
+    $("reduction-feedback").textContent=Reduction.items[reductionIndex].hint;
+  });
+
+  $("reduction-next").addEventListener("click",() => {
+    if (!reductionSolved) return;
+    if (reductionIndex<Reduction.items.length-1) {
+      reductionIndex+=1;
+      renderReduction();
+    } else {
+      $("reduction-feedback").className="feedback success";
+      $("reduction-feedback").textContent="sealed reduction 練習完成。這只支持零外氣＋局部手抜き條件下的縮眼分支；其他應手與有外氣局面仍是 UNKNOWN。";
+      $("reduction-next").disabled=true;
+    }
+  });
+
   $("classic-next").addEventListener("click", () => {
     if (!solved) return;
     if (stage < problems.length - 1) {
@@ -503,5 +676,6 @@
   renderCatalog("all");
   renderBulky();
   renderRead();
+  renderReduction();
   render();
 })();
