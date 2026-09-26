@@ -464,3 +464,4 @@
 - **cue control：** 首答前 UI 不顯示 family 名稱；正答後才顯示「刀把五／Bulky Five」或「梅花五／Cross Five」及 degree-3／degree-4 幾何依據。
 - **反證：** 連續同 family、缺 source item、contrast round 偷塞答案欄位都 fail closed；contrast 正答結果必須與直接呼叫 source contract 完全一致。
 - **證據邊界：** 這是 practice-only 的 interleaving / contrast Experience，不是 transfer assessment。完成 6 題不能升格為跨 family transfer、mastery、T2/T3 或 formal evaluation。
+- **Validation：** PR #22 verify run #422 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `62d38c18bf688ac67fd6ac309150fe421e31b645`）。這只支持 interleaved contrast 的工程／Experience contract，不升格跨 family transfer 或學習成效。
