@@ -7,11 +7,13 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v3">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v4">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v2"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v3"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v3"></script>
+  <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
+  <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v4"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -24,7 +26,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。只有已存在 scoring contract 的直三練習可互動；其他名型在完成棋形、答案樹與規則核對前不評分，也不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五另有 bounded「共同急所」contract。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro"><span class="question-tag">已驗證可玩的練習</span><h2>先練直三，再看世界名型</h2><p>名稱仍在作答後才揭示；先用棋形結構找急所，再把名稱當記憶鉤子。</p></section>
@@ -69,6 +71,34 @@
     <section class="classic-note">
       <h2>為什麼名稱最後才出現？</h2>
       <p>如果題目一開始就寫「直三」，名稱本身可能變成提示。這個探索頁刻意把名稱放到第一手之後；回到正式課程時仍以題目版本、首答與提示狀態為準。</p>
+    </section>
+
+
+    <section class="bulky-practice" aria-labelledby="bulky-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">新可玩 family · bounded practice</span>
+        <h2 id="bulky-practice-title">刀把五：找共同急所</h2>
+        <p>先不背完整死活變化，只練一件可驗證的事：在五個眼空中找出雙方共同急所。四題涵蓋守方、攻方、旋轉與鏡像。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="bulky-tag">1 / 4 · 名稱不提示答案</span>
+          <h3 id="bulky-title">找共同急所</h3>
+          <p id="bulky-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只判第一手是否落在 geometry contract 推導出的唯一共同急所；不宣稱完整死活答案樹。</span></div>
+          <div id="bulky-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="bulky-reveal" class="classic-reveal" hidden><span>作答後揭名</span><strong id="bulky-name">刀把五／Bulky Five</strong><p id="bulky-story"></p></div>
+          <div class="classic-actions">
+            <button id="bulky-hint" class="subtle-button" type="button">給我幾何提示</button>
+            <button id="bulky-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="刀把五共同急所練習棋盤">
+          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> vital point only</span></div>
+          <div id="bulky-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="bulky-cursor-status">方向鍵移動 · Enter 落子</span><span id="bulky-side">● 黑棋</span></div>
+        </section>
+      </div>
     </section>
 
     <section class="classic-atlas" aria-labelledby="classic-atlas-title">
