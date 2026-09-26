@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="悟之一手的進階訓練：從核心課程轉入多路線、可回跳的讀棋與全局訓練。">
+  <title>進階訓練｜悟之一手</title>
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v40">
+  <link rel="stylesheet" href="advanced.css?v=advanced-training-v1">
+  <script defer src="advanced-content.js?v=advanced-training-v1"></script>
+  <script defer src="advanced-events.js?v=advanced-training-v1"></script>
+  <script defer src="advanced.js?v=advanced-training-v1"></script>
+</head>
+<body class="advanced-page">
+  <a class="skip-link" href="#advanced-main">跳到進階訓練</a>
+  <main id="advanced-main" class="advanced-shell">
+    <header class="advanced-header">
+      <div class="advanced-header-actions">
+        <a class="subtle-button" href="index.html">← 回核心課程</a>
+        <a class="subtle-button" href="live-game.html?size=9">9×9 實戰練習</a>
+      </div>
+      <span class="question-tag">Core 後續 · practice only</span>
+      <h1>進階訓練</h1>
+      <p>這不是第 16 單元。完成核心課程後，改用多條訓練線反覆深化同一能力：先自己判斷，再看逐步圖、理由與反例。</p>
+      <div class="advanced-boundary">
+        <strong>證據邊界</strong>
+        <span>本頁保存首答、提示與重試，但只作進階練習紀錄；不更新 KC、scheduler、T2／T3、mastery 或正式評量。</span>
+      </div>
+    </header>
+
+    <section class="advanced-tracks" aria-labelledby="advanced-track-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">選擇訓練線</span>
+          <h2 id="advanced-track-title">先從目前最需要的能力開始</h2>
+        </div>
+        <p id="advanced-progress-summary">尚未有本頁練習紀錄。</p>
+      </div>
+      <div id="advanced-track-list" class="advanced-track-list"></div>
+    </section>
+
+    <section class="advanced-workbench" aria-labelledby="advanced-title">
+      <div class="advanced-question-panel">
+        <div class="advanced-meta">
+          <span id="advanced-track-label"></span>
+          <span id="advanced-count"></span>
+        </div>
+        <h2 id="advanced-title" tabindex="-1"></h2>
+        <p class="advanced-target"><span>Target</span><strong id="advanced-target"></strong></p>
+        <p class="advanced-prompt" id="advanced-prompt"></p>
+        <div id="advanced-choices" class="advanced-choices" role="group" aria-label="作答選項"></div>
+        <p class="answer-policy">先作答再看完整理由；答錯可重試，但首答會和重試分開保存。</p>
+        <div id="advanced-feedback" class="feedback" role="status" aria-live="polite"></div>
+        <div class="advanced-actions">
+          <button class="subtle-button" id="advanced-hint" type="button">給我觀察提示</button>
+          <button class="primary-button" id="advanced-next" type="button" disabled>下一題 →</button>
+        </div>
+        <div id="advanced-takeaway" class="takeaway" hidden>
+          <span>這題帶走</span>
+          <p id="advanced-takeaway-text"></p>
+        </div>
+      </div>
+
+      <aside class="advanced-study-panel">
+        <section class="advanced-demo" aria-labelledby="advanced-demo-title">
+          <div class="advanced-demo-head">
+            <div>
+              <span class="advanced-kicker">逐步示意</span>
+              <h2 id="advanced-demo-title">先看盤面變化，不背座標</h2>
+            </div>
+            <span id="advanced-demo-count"></span>
+          </div>
+          <figure class="teaching-demo-board" id="advanced-demo-board"></figure>
+          <p id="advanced-demo-caption" class="advanced-demo-caption"></p>
+          <div class="demo-stepper-actions">
+            <button class="subtle-button" id="advanced-demo-previous" type="button">← 上一步</button>
+            <button class="subtle-button" id="advanced-demo-next" type="button">看下一步 →</button>
+          </div>
+          <div class="demo-legend" aria-label="示意圖符號說明">
+            <span><i class="legend-observe" aria-hidden="true"></i>金色小圈：觀察／候選空點</span>
+            <span><i class="legend-focus" aria-hidden="true"></i>金色大圈：目前強調的棋</span>
+            <span><i class="legend-blocked" aria-hidden="true">×</i>紅叉：這一步不能下</span>
+            <span><i class="legend-reference" aria-hidden="true"></i>藍框：比較／前一步位置</span>
+          </div>
+        </section>
+
+        <details class="lesson-terms" id="advanced-terms">
+          <summary>本題關鍵詞 <span id="advanced-term-count"></span></summary>
+          <dl id="advanced-term-list"></dl>
+        </details>
+      </aside>
+    </section>
+
+    <section class="advanced-roadmap" aria-labelledby="advanced-roadmap-title">
+      <span class="advanced-kicker">Next Experience</span>
+      <h2 id="advanced-roadmap-title">進階不是一直往下排單元</h2>
+      <p>本頁先建立讀棋／手筋、中盤攻防、官子／全局判斷三條 practice-only 線。完整 19 路對局與棋譜回流仍是下一個獨立 Experience；在 scoring contract 與內容審查不足前，不把 AI 候選手當唯一答案。</p>
+    </section>
+  </main>
+</body>
+</html>
