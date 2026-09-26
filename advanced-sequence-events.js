@@ -234,7 +234,8 @@
           experienceId: event.experienceId,
           firstMoves: [],
           hintShown: false,
-          completed: false
+          completed: false,
+          firstEventIndex: valid.indexOf(event)
         });
       }
       const row = presentations.get(event.presentationId);
@@ -270,6 +271,19 @@
     const variants = family.variants.filter((variant) => variant.variantId !== "seed");
     if (!seed || seed.firstMoveCount === 0 || variants.length === 0 || variants.every((variant) => variant.firstMoveCount === 0)) {
       return { status: "INSUFFICIENT_DATA", familyId, reason: "seed_or_variant_first_response_missing" };
+    }
+    const valid = events.filter(validEvent);
+    const firstPresentationIndex = (variantId) => {
+      const indexes = valid
+        .map((event, index) => ({ event, index }))
+        .filter(({ event }) => event.familyId === familyId && event.variantId === variantId && event.type === "presented")
+        .map(({ index }) => index);
+      return indexes.length ? Math.min(...indexes) : Infinity;
+    };
+    const seedPresentationIndex = firstPresentationIndex("seed");
+    const earliestVariantIndex = Math.min(...variants.map((variant) => firstPresentationIndex(variant.variantId)));
+    if (!Number.isFinite(seedPresentationIndex) || !Number.isFinite(earliestVariantIndex) || seedPresentationIndex >= earliestVariantIndex) {
+      return { status: "INSUFFICIENT_DATA", familyId, reason: "seed_not_presented_before_variant" };
     }
     const seedLabel = seed.firstCorrectCount === seed.firstMoveCount ? "seed_first_all_correct" : seed.firstCorrectCount === 0 ? "seed_first_all_wrong" : "seed_first_mixed";
     const variantFirst = variants.reduce((sum, variant) => sum + variant.firstMoveCount, 0);
