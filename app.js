@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v36";
+  const uiVersion = "learner-flow-v37";
   const contentCatalogVersion = 3;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -1197,20 +1197,23 @@
         state.localExercises.push({ id: problem.id, completed: true, completedAt: new Date().toISOString(), source: problem.source, linkedSkill: problem.linkedSkill, reflection, uiVersion });
       }
       if (!state.externalMode && state.reviewMode && state.wrongThisTurn === 0) state.missed.delete(problem.id);
-      feedback.className = "feedback success";
+      feedback.className = "feedback answer-result success";
       feedback.innerHTML = state.externalMode === "local_sgf"
-        ? `與原著一致。<span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`
-        : `答對了。<span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
+        ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原著一致</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`
+        : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">答對了</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
       $("next-button").disabled = false;
       renderBoard();
       for (const button of $("answer-area").querySelectorAll("button")) button.disabled = true;
     } else {
       state.wrongThisTurn += 1;
       if (!state.externalMode) state.missed.add(problem.id);
-      feedback.className = "feedback error";
-      feedback.textContent = state.externalMode === "local_sgf"
-        ? "與棋譜原著不同。可以再試；這只比較歷史著手，不代表你選的手一定不好。"
+      feedback.className = "feedback answer-result error";
+      const retryMessage = state.externalMode === "local_sgf"
+        ? "可以再試；這只比較歷史著手，不代表你選的手一定不好。"
         : `${reason} 再試一次，或看看提示。`;
+      feedback.innerHTML = state.externalMode === "local_sgf"
+        ? `<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">與原著不同</strong><span class="answer-explanation">${escapeHtml(retryMessage)}</span>`
+        : `<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">答錯，再看一次</strong><span class="answer-explanation">${escapeHtml(retryMessage)}</span>`;
     }
     save();
     renderSgfReflection();
