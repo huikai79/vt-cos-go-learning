@@ -31,8 +31,9 @@
     bgaTripod: { label: "British Go Journal：Tripod Group example", url: "https://www.britgo.org/files/bgj/bgj135.pdf", sourceTier: "association" },
     go4goChinese: { label: "Go4Go：Chinese Go Terms", url: "https://www.go4go.net/go/chinese_go_terms", sourceTier: "community_secondary" },
     chineseTermsPdf: { label: "Chinese Go Terms glossary", url: "https://www.hebsacker-verlag.de/download/Chinese_Go_Terms.pdf", sourceTier: "community_secondary" },
-    lifeDeathIndex: { label: "Life & Death Index", url: "https://m.universitas.no/", sourceTier: "specialist_secondary" },
-    takumiKyu: { label: "Takumi Go：kyu exercises", url: "https://en.1200igo.com/kyulevel", sourceTier: "specialist_secondary" }
+    takumiKyu: { label: "Takumi Go：kyu exercises", url: "https://en.1200igo.com/kyulevel", sourceTier: "specialist_secondary" },
+    badukworldSeven: { label: "BadukWorld：사활7형제", url: "https://www.badukworld.co.kr/biz/7bros.html", sourceTier: "community_secondary" },
+    badukworldDeath: { label: "BadukWorld：사활특강-사(死)", url: "https://www.badukworld.co.kr/biz/lesson2/special/death.html", sourceTier: "community_secondary" }
   });
 
   const entries = [
@@ -87,11 +88,12 @@
       practiceStatus: "catalog_only",
       reviewStatus: REVIEW.VERIFIED,
       aliases: [
-        { locale: "ja-JP", name: "花六", relationType: "shape-name", reviewStatus: REVIEW.VERIFIED }
+        { locale: "ja-JP", name: "花六", relationType: "shape-name", reviewStatus: REVIEW.VERIFIED },
+        { locale: "ko-KR", name: "매화6궁", relationType: "candidate-shape-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
       note: "日本囲碁連盟將花六定義為花形的六目中手；本專案暫不把其他六點俗稱自動視為同形。",
       rulesetSensitive: false,
-      sources: [sources.ntkrFlowerSix]
+      sources: [sources.ntkrFlowerSix, sources.badukworldDeath]
     },
     {
       id: "bent-four-corner-v1",
@@ -107,11 +109,12 @@
       reviewStatus: REVIEW.VERIFIED,
       aliases: [
         { locale: "ja-JP", name: "隅の曲り四目", relationType: "exact-established-name", reviewStatus: REVIEW.VERIFIED },
-        { locale: "en", name: "Bent Four in the Corner", relationType: "exact-established-name", reviewStatus: REVIEW.VERIFIED }
+        { locale: "en", name: "Bent Four in the Corner", relationType: "exact-established-name", reviewStatus: REVIEW.VERIFIED },
+        { locale: "ko-KR", name: "귀곡사", relationType: "terminology-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
       note: "這一型不能只做固定局部答案。日本規則有明確死活確認例；其他規則可能要求實際走完，因此未建立 ruleset-aware scoring 前只作圖鑑。",
       rulesetSensitive: true,
-      sources: [sources.nihonkiinBentFour, sources.bgaRules]
+      sources: [sources.nihonkiinBentFour, sources.bgaRules, sources.badukworldSeven]
     },
     {
       id: "carpenters-square-v1",
@@ -261,7 +264,7 @@
       ],
       note: "英語死活教材長期把它作為獨立 corner-shape family；中文描述只幫助理解，不產生新的中文術語。",
       rulesetSensitive: false,
-      sources: [sources.bgaIndex, sources.lifeDeathIndex]
+      sources: [sources.bgaIndex]
     },
     {
       id: "l-plus-one-group-v1",
