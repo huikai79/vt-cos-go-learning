@@ -8,7 +8,7 @@
   <meta name="application-name" content="VT-COS｜悟之一手">
   <meta name="description" content="VT-COS 旗下的個人離線圍棋互動課程。">
   <title>VT-COS｜悟之一手｜個人圍棋練習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v39">
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v40">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -23,7 +23,7 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v39"></script>
+  <script defer src="app.js?v=learner-flow-v40"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
@@ -219,6 +219,16 @@
               <button class="subtle-button" id="teaching-demo-next" type="button">看下一步 →</button>
             </div>
           </section>
+          <div class="demo-legend" aria-label="示意圖符號說明">
+            <span><i class="legend-observe" aria-hidden="true"></i>金色小圈：觀察／候選空點</span>
+            <span><i class="legend-focus" aria-hidden="true"></i>金色大圈：目前強調的棋</span>
+            <span><i class="legend-blocked" aria-hidden="true">×</i>紅叉：這一步不能下</span>
+            <span><i class="legend-reference" aria-hidden="true"></i>藍框：比較／前一步位置</span>
+          </div>
+          <details class="lesson-terms" id="lesson-terms">
+            <summary>本課關鍵詞 <span id="lesson-term-count"></span></summary>
+            <dl id="lesson-term-list"></dl>
+          </details>
           <p class="teaching-check"><span>解題前先做：</span><span id="teaching-check"></span></p>
         </div>
       </section>
