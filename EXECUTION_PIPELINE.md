@@ -17,7 +17,7 @@
 
 ## 新增 Experience 工作線｜Core 後續進階訓練
 
-進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。choice Experience 與 v4 的倒撲／枷／對殺／征子 multi-step 棋盤 sequence 均為 practice-only：讀棋／手筋、中盤攻防、官子／全局判斷。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。征子只允許「每次打吃後 tracked group 恰剩一口，固定對手應手就是唯一 liberty」的 bounded forced line，並須有引征干擾 negative oracle；這不等於一般征子能力已驗證。任何進階項目若要進 KC、scheduler、T2/T3 或 formal evaluation，必須先回到 evidence-integrity 與內容效度條件，建立獨立 scoring contract／version／negative test；不得因頁面已存在就升格證據。
+進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。v5 將倒撲／枷／對殺／征子各做成兩個 multi-step practice variant；每題必須有唯一 `familyId/variantId` 與明示 `variationAxes`，第二題至少改一個非單純旋轉的作答條件。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。這些 family 只用於 practice 與後續診斷，不得在缺少真人 first-response／難度資料時升格為 KC、transfer 證據或平行題等難。任何進階項目若要進 scheduler、T2/T3 或 formal evaluation，仍須回到 evidence-integrity 與內容效度 gate。
 
 ## 優先順序與閘門
 
