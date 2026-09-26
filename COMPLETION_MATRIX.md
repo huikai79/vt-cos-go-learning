@@ -474,3 +474,4 @@
 - **修正：** `classic-grid` 與名型 practice grid 明確宣告 `grid-template-areas:"question board"`；直三初始游標選可落子的非答案空點；已有棋子也帶座標 hit target；cursor ring 設 `pointer-events:none`；首屏明示「單題落子練習，不是自由對局」。
 - **反證：** browser regression 必須實際開 `classic-shapes.html`，驗題幹與棋盤同時可見、點已有棋子立即顯示提示、錯答保留未揭名狀態、正答顯示成功 feedback 並揭示「直三」。
 - **證據邊界：** 這是 learner-facing engineering／usability regression fix，不改 scoring、KC、scheduler、formal evaluation 或學習成效狀態。
+- **Validation：** PR #23 verify run #425 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；新增 browser regression 已實際驗證題幹與棋盤同時可見、occupied click 有回饋、錯答不揭名、正答揭示「直三」。PR 已於 2026-09-27 squash merge 至 `main`（merge commit `66c48bc44dd41c1cdfa9280711d382f225d122d2`）。
