@@ -1,3 +1,5 @@
+2026-09-27 梅花五 / Cross Five bounded practice v1：在刀把五已有三層深度後，下一個 bottleneck 改為名型館缺跨 family 變異。新增十字五點 family，只評第一手共同急所；geometry 必須與十字五點同構，且唯一 degree-4 中心才是 vital point。四個 variant 改變攻守、棋色與整體位置，專門防止把棋盤中心座標當答案。這只建立第二個可玩 family，不宣稱完整五目中手變化或 transfer 已成立。
+
 2026-09-27 刀把五 sealed reduction v1：新增第三層 bounded branch，只處理「守方零外氣＋局部連續手抜き」條件。contract 從五點眼空推導唯一 2×2 square core 與突出 capture point；攻方已佔 vital point 後，可任意次序補滿其餘三個 core 點，之後守方必須只剩 capture point 一口氣，並由 rules engine 證明提四子後 terminal eye-space 恰為 2×2 square four。另以有外氣 setup 作 negative oracle，要求 forced capture 與 square-four terminal 都失敗。這不是完整刀把五答案樹。
 
 2026-09-27 刀把五 A/B short-read v1：在 vital-point recognition 之上增加一個 3 手 bounded branch：攻方先佔共同急所，守方若走 geometry 推導出的 A/B 任一點，攻方需立即補另一點。A/B 不是手寫座標，而是 eye-space adjacency graph 中「與 vital point 相鄰且 degree=2」的兩個點；seed、反向應手與鏡像共三個 variant。rules engine 必須重播三手合法性。這個 branch 由外部教材支持，但未列抵抗保持 UNKNOWN；仍不宣稱完整刀把五答案樹、mastery 或 transfer。

@@ -4,15 +4,19 @@
   const Catalog = window.GoClassicShapeCatalog;
   const Practice = window.GoClassicShapePractice;
   const PracticeContract = window.GoClassicShapePracticeContract;
+  const CrossFive = window.GoCrossFivePractice;
+  const CrossFiveContract = window.GoCrossFiveContract;
   const ShortRead = window.GoClassicShapeRead;
   const ShortReadContract = window.GoClassicShapeReadContract;
   const Reduction = window.GoClassicShapeReduction;
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
+  const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
+  if (!crossFiveValidation.ok) throw new Error("Cross Five practice contract invalid: " + crossFiveValidation.errors.join("; "));
   const shortReadValidation = ShortReadContract.validateAll(ShortRead.items, { Go, PracticeContract });
   if (!shortReadValidation.ok) throw new Error("Classic shape short-read contract invalid: " + shortReadValidation.errors.join("; "));
   const reductionValidation = ReductionContract.validateAll(Reduction.items, { Go, PracticeContract });
@@ -33,6 +37,10 @@
   let cursor = [4, 4];
   let solved = false;
   let hintShown = false;
+  let crossIndex = 0;
+  let crossSolved = false;
+  let crossHintShown = false;
+  let crossCursor = [3, 3];
   let bulkyIndex = 0;
   let bulkySolved = false;
   let bulkyHintShown = false;
@@ -111,6 +119,93 @@
       document.querySelectorAll(".classic-filter").forEach((item) => item.classList.toggle("active", item === button));
       renderCatalog(button.dataset.filter);
     });
+  }
+
+
+  function renderCrossBoard() {
+    const item = CrossFive.items[crossIndex];
+    const validation = CrossFiveContract.validateItem(item,{ Go, PracticeContract });
+    const size = item.boardSize;
+    const pad = 7;
+    const span = 86;
+    const step = span / (size - 1);
+    const setup = new Map(validation.setupStones.map(([x,y,color]) => [pointKey(x,y), color]));
+    const eye = new Set(item.eyeSpace.map(([x,y]) => pointKey(x,y)));
+    const lines = [];
+    const nodes = [];
+    for (let i=0; i<size; i+=1) {
+      const p = pad + i * step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let y=0; y<size; y+=1) for (let x=0; x<size; x+=1) {
+      const px = pad + x * step;
+      const py = pad + y * step;
+      const color = setup.get(pointKey(x,y));
+      if (color === Go.BLACK) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black"/>');
+      if (color === Go.WHITE) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white"/>');
+      if (eye.has(pointKey(x,y))) nodes.push('<circle data-cross-x="' + x + '" data-cross-y="' + y + '" cx="' + px + '" cy="' + py + '" r="6.2" class="classic-hit bulky-hit"/>');
+    }
+    const [cx0,cy0] = crossCursor;
+    nodes.push('<circle cx="' + (pad+cx0*step) + '" cy="' + (pad+cy0*step) + '" r="6.4" class="classic-cursor-ring"/>');
+    $("cross-board").innerHTML = '<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("cross-cursor-status").textContent = "游標：第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderCross() {
+    const item = CrossFive.items[crossIndex];
+    crossSolved = false;
+    crossHintShown = false;
+    crossCursor = item.eyeSpace[0].slice();
+    $("cross-tag").textContent = (crossIndex+1) + " / " + CrossFive.items.length + " · 名稱不提示答案";
+    $("cross-title").textContent = crossIndex === 0 ? "找十字形共同急所" : "換角色／位置再找中心";
+    $("cross-prompt").textContent = item.prompt;
+    $("cross-feedback").className = "feedback";
+    $("cross-feedback").textContent = "";
+    $("cross-reveal").hidden = true;
+    $("cross-hint").disabled = false;
+    $("cross-next").disabled = true;
+    $("cross-next").textContent = crossIndex === CrossFive.items.length-1 ? "完成梅花五練習" : "下一題 →";
+    $("cross-side").textContent = item.playerColor === Go.BLACK ? "● 黑棋" : "○ 白棋";
+    renderCrossBoard();
+  }
+
+  function attemptCross(x,y) {
+    if (crossSolved) return;
+    const item = CrossFive.items[crossIndex];
+    if (!item.eyeSpace.some(([ex,ey]) => ex===x && ey===y)) {
+      $("cross-feedback").className = "feedback error";
+      $("cross-feedback").textContent = "這一區只比較五個眼空中的候選點。";
+      return;
+    }
+    const result = CrossFiveContract.score(item,[x,y],{ Go, PracticeContract });
+    if (!result.ok) {
+      $("cross-feedback").className = "feedback error";
+      $("cross-feedback").textContent = "梅花五 contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if (result.correct) {
+      crossSolved = true;
+      $("cross-feedback").className = "feedback success";
+      $("cross-feedback").textContent = item.success;
+      $("cross-reveal").hidden = false;
+      $("cross-hint").disabled = true;
+      $("cross-next").disabled = false;
+    } else {
+      $("cross-feedback").className = "feedback error";
+      $("cross-feedback").textContent = crossHintShown
+        ? "還不是。重新數每個眼空直接相鄰的眼空；只有一點會同時接觸四個。"
+        : "這一點不是十字形中心。不要找棋盤中心，請找棋形裡唯一的 degree-4 點。";
+    }
+  }
+
+  function moveCrossCursor(dx,dy) {
+    const item = CrossFive.items[crossIndex];
+    const next = [crossCursor[0]+dx,crossCursor[1]+dy];
+    if (item.eyeSpace.some(([x,y]) => x===next[0] && y===next[1])) {
+      crossCursor = next;
+      renderCrossBoard();
+    }
   }
 
   function renderBulkyBoard() {
@@ -549,6 +644,43 @@
     $("classic-feedback").textContent = problems[stage].hint;
   });
 
+  $("cross-board").addEventListener("click",(event) => {
+    const hit = event.target.closest("[data-cross-x][data-cross-y]");
+    if (!hit) return;
+    crossCursor = [Number(hit.dataset.crossX),Number(hit.dataset.crossY)];
+    renderCrossBoard();
+    attemptCross(crossCursor[0],crossCursor[1]);
+  });
+
+  $("cross-board").addEventListener("keydown",(event) => {
+    if (event.key==="ArrowLeft") { event.preventDefault(); moveCrossCursor(-1,0); }
+    else if (event.key==="ArrowRight") { event.preventDefault(); moveCrossCursor(1,0); }
+    else if (event.key==="ArrowUp") { event.preventDefault(); moveCrossCursor(0,-1); }
+    else if (event.key==="ArrowDown") { event.preventDefault(); moveCrossCursor(0,1); }
+    else if (event.key==="Enter" || event.key===" ") {
+      event.preventDefault();
+      attemptCross(crossCursor[0],crossCursor[1]);
+    }
+  });
+
+  $("cross-hint").addEventListener("click",() => {
+    crossHintShown = true;
+    $("cross-feedback").className = "feedback";
+    $("cross-feedback").textContent = CrossFive.items[crossIndex].hint;
+  });
+
+  $("cross-next").addEventListener("click",() => {
+    if (!crossSolved) return;
+    if (crossIndex < CrossFive.items.length-1) {
+      crossIndex += 1;
+      renderCross();
+    } else {
+      $("cross-feedback").className = "feedback success";
+      $("cross-feedback").textContent = "梅花五中央急所練習完成。這只表示完成四個 bounded variant，不代表完整五目中手答案樹或 mastery。";
+      $("cross-next").disabled = true;
+    }
+  });
+
   $("bulky-board").addEventListener("click", (event) => {
     const hit = event.target.closest("[data-bulky-x][data-bulky-y]");
     if (!hit) return;
@@ -674,6 +806,7 @@
 
   renderCatalogFilters();
   renderCatalog("all");
+  renderCross();
   renderBulky();
   renderRead();
   renderReduction();
