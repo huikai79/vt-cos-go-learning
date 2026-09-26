@@ -7,14 +7,14 @@
   <meta name="description" content="悟之一手的進階訓練：從核心課程轉入多路線、可回跳的讀棋與全局訓練。">
   <title>進階訓練｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v44">
-  <link rel="stylesheet" href="advanced.css?v=advanced-training-v3">
+  <link rel="stylesheet" href="advanced.css?v=advanced-training-v5">
   <script defer src="go.js"></script>
-  <script defer src="advanced-content.js?v=advanced-training-v4"></script>
+  <script defer src="advanced-content.js?v=advanced-training-v5"></script>
   <script defer src="advanced-events.js?v=advanced-training-v1"></script>
   <script defer src="advanced-sequence-events.js?v=advanced-sequence-v1"></script>
   <script defer src="advanced-sequence-contract.js?v=advanced-sequence-v1"></script>
   <script defer src="advanced.js?v=advanced-training-v2"></script>
-  <script defer src="advanced-sequence.js?v=advanced-sequence-v2"></script>
+  <script defer src="advanced-sequence.js?v=advanced-sequence-v3"></script>
 </head>
 <body class="advanced-page">
   <a class="skip-link" href="#advanced-main">跳到進階訓練</a>
@@ -142,7 +142,7 @@
     <section class="advanced-roadmap" aria-labelledby="advanced-roadmap-title">
       <span class="advanced-kicker">Next Experience</span>
       <h2 id="advanced-roadmap-title">進階不是一直往下排單元</h2>
-      <p>本頁先建立讀棋／手筋、中盤攻防、官子／全局判斷三條 practice-only 線；多手棋盤 Response 目前只收錄能由規則引擎與 sequence contract 重播驗證的倒撲、枷、對殺與征子。征子只收錄「每次打吃後對手都只有唯一延長」的 bounded forced line，並用引征干擾子做 negative oracle；不把這個局部 sequence 升格成所有征子都已判定。完整 19 路對局與棋譜回流仍是下一個獨立 Experience。</p>
+      <p>本頁先建立讀棋／手筋、中盤攻防、官子／全局判斷三條 practice-only 線；多手棋盤 Response 現在把倒撲、枷、對殺、征子各做成兩個 practice-only 變形；第二題至少改一個非單純旋轉的條件，例如提子數、出口幾何、學習者棋色或征子路線長度。所有變形仍須由規則引擎與 sequence contract 重播；這只是小型 family seed，不代表難度已可比或已證明遷移。完整 19 路對局與棋譜回流仍是下一個獨立 Experience。</p>
     </section>
   </main>
 </body>
