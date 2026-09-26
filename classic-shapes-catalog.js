@@ -38,7 +38,8 @@
     bgaBulkyPractice: { label: "British Go Journal：Bulky Five / vital point examples", url: "https://britgo.org/files/bgj/bgj121.pdf", sourceTier: "association" },
     ogsBulkyVital: { label: "Online Go Forum：Bulky Five vital point discussion", url: "https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356", sourceTier: "community_secondary" },
     yeefanBulkyAB: { label: "YeeFan：Multiple-Space Eyes, Bulky Five A/B sequence", url: "https://yeefan.sg/weiqi/howtoplaygo/howtoplaygo06.htm", sourceTier: "instructional_secondary" },
-    malaysiaWeiqiBulky: { label: "Malaysia Weiqi Association：Multiple Eye Space", url: "https://www.weiqi.org.my/wp-content/uploads/2013/05/moduleav21.pdf", sourceTier: "association" }
+    malaysiaWeiqiBulky: { label: "Malaysia Weiqi Association：Multiple Eye Space", url: "https://www.weiqi.org.my/wp-content/uploads/2013/05/moduleav21.pdf", sourceTier: "association" },
+    boardToBitsBulkyReduction: { label: "Board to Bits Go：Big Eyes / Bulky Five reduction", url: "https://boardtobitsgo.wordpress.com/2020/09/02/lesson-6-big-eyes/", sourceTier: "instructional_secondary" }
   });
 
   const entries = [
@@ -153,14 +154,14 @@
       zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
       zhNameNote: "多份華語術語表將刀把五及若干別名對應 Bulky Five；但本專案尚未完成 geometry/scoring contract，因此仍只作圖鑑。",
       teachingLabel: "五點大眼名型候選",
-      practiceStatus: "playable_bounded_vital_point_and_short_read_contract",
+      practiceStatus: "playable_bounded_vital_point_short_read_and_sealed_reduction_contract",
       reviewStatus: REVIEW.PARTIAL,
       aliases: [
         { locale: "en", name: "Bulky Five", relationType: "terminology-table-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
-      note: "已建立兩層 bounded practice：第一層找共同急所；第二層只讀「攻方急所 → 守方 A/B → 攻方補另一點」的三手主分支。兩層都不代表完整死活答案樹或所有外氣條件。",
+      note: "已建立三層 bounded practice：共同急所、A/B 三手 short-read、以及「零外氣＋守方局部手抜き」條件下的 sealed reduction。第三層驗證攻方填滿 2×2 核心後，守方被迫在突出點提四子，終局眼空收束為 square four。任何有外氣或未列應手仍不得套用。",
       rulesetSensitive: false,
-      sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital, sources.yeefanBulkyAB, sources.malaysiaWeiqiBulky]
+      sources: [sources.go4goChinese, sources.chineseTermsPdf, sources.bgaBulkyPractice, sources.ogsBulkyVital, sources.yeefanBulkyAB, sources.malaysiaWeiqiBulky, sources.boardToBitsBulkyReduction]
     },
     {
       id: "plum-five-candidate-v1",
@@ -362,7 +363,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v4",
+    version: "world-classic-shapes-v5",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
