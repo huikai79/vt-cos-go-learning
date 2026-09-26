@@ -59,20 +59,25 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
   const lGroup = Catalog.entries.find((entry) => entry.id === "l-group-v1");
   const lPlusOne = Catalog.entries.find((entry) => entry.id === "l-plus-one-group-v1");
   const tripod = Catalog.entries.find((entry) => entry.id === "tripod-group-v1");
+  const longL = Catalog.entries.find((entry) => entry.id === "long-l-group-v1");
   assert.equal(knife.zhNameStatus, S.ESTABLISHED_ALIAS);
   assert.equal(knife.aliases.some((alias) => alias.name === "Bulky Five"), true);
   assert.equal(knife.practiceStatus, "catalog_candidate_only");
   assert.equal(grape.zhNameStatus, S.NEEDS_REVIEW);
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
-  assert.equal(carpenter.zhNameStatus, S.NEEDS_REVIEW);
-  assert.equal(carpenter.preferredZhTW, null);
-  assert.ok(carpenter.zhAliases.some((alias) => alias.name === "斗方"));
+  assert.equal(carpenter.zhNameStatus, S.ESTABLISHED_ALIAS);
+  assert.equal(carpenter.preferredZhTW, "斗方");
+  assert.ok(carpenter.zhAliases.some((alias) => alias.name === "金櫃角"));
   assert.equal(carpenter.teachingTranslation, "木匠方");
   for (const entry of [lGroup, lPlusOne, tripod]) {
     assert.equal(entry.zhNameStatus, S.NO_ESTABLISHED_NAME_FOUND, entry.id);
     assert.equal(entry.preferredZhTW, null, entry.id);
     assert.ok(entry.teachingTranslation, entry.id);
   }
+  assert.equal(longL.zhNameStatus, S.ESTABLISHED_ALIAS);
+  assert.equal(longL.preferredZhTW, "帶鉤");
+  assert.ok(longL.zhAliases.some((alias) => alias.name === "緊帶鉤"));
+  assert.ok(longL.zhAliases.some((alias) => alias.name === "寬帶鉤"));
 });
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
