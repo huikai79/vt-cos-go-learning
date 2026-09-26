@@ -335,10 +335,130 @@
         ["行棋次序", "同一組氣數，輪到誰先走可能直接改變提子順序與結果。"]
       ]
     }
-  ];
+,
+    {
+      id: "adv-seq-ladder-01",
+      version: 1,
+      trackId: "reading-tesuji",
+      title: "征子實走：每次都把逃棋壓回一口氣",
+      target: "在沒有引征干擾的局部，連續走出強制打吃，確認對手每次只有唯一延長，直到邊線提子。",
+      boardSize: 7,
+      playerColor: B,
+      setupStones: [[2,2,W],[2,3,W],[1,2,B],[2,1,B],[1,3,B],[2,4,B]],
+      trackedPoint: [2,2],
+      trackedColor: W,
+      decisions: [
+        {
+          id: "ladder-1",
+          prompt: "黑先。白棋目前有兩口氣；第一手從哪裡開始，能把白棋壓成只剩唯一延長？",
+          acceptedMoves: [[3,2]],
+          expectedTrackedLibertiesBeforeLearner: 2,
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 1,
+          opponentMove: [3,3],
+          opponentMoveMustBeUniqueLiberty: true,
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 2,
+          hint: "先數白棋右側與右下方的兩口氣；征子每個攻擊手都要把它壓回一口氣。",
+          success: "第一個打吃成立；白棋只剩右下方唯一延長。",
+          opponentText: "白棋只能沿唯一一口氣延長。延長後又有兩口氣，黑必須繼續選正確方向。"
+        },
+        {
+          id: "ladder-2",
+          prompt: "第二次打吃要下在哪裡，才能讓白棋再次只剩唯一出口？",
+          acceptedMoves: [[4,3]],
+          expectedTrackedLibertiesBeforeLearner: 2,
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 1,
+          opponentMove: [3,4],
+          opponentMoveMustBeUniqueLiberty: true,
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 2,
+          hint: "不要照固定方向連下；每次都重新找整串目前的兩口氣。",
+          success: "第二個打吃成立，白棋再次只有唯一延長。",
+          opponentText: "白棋延長後，路線開始折向右下；黑仍要保持『兩口變一口』。"
+        },
+        {
+          id: "ladder-3",
+          prompt: "第三次，哪一手能維持征子的強制性？",
+          acceptedMoves: [[3,5]],
+          expectedTrackedLibertiesBeforeLearner: 2,
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 1,
+          opponentMove: [4,4],
+          opponentMoveMustBeUniqueLiberty: true,
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 2,
+          hint: "看目前兩口氣，不看上一手方向；其中一點下完後會讓白棋只剩另一點。",
+          success: "第三個打吃仍維持唯一逃路。",
+          opponentText: "白棋只能再延長。若路線上有白棋接應，這裡之後可能改變；本題目前沒有引征。"
+        },
+        {
+          id: "ladder-4",
+          prompt: "第四次，繼續把白棋壓成一口氣。",
+          acceptedMoves: [[5,4]],
+          expectedTrackedLibertiesBeforeLearner: 2,
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 1,
+          opponentMove: [4,5],
+          opponentMoveMustBeUniqueLiberty: true,
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 2,
+          hint: "重新數白棋整串：找能填掉其中一口、又不讓它變成三口氣的手。",
+          success: "第四個打吃成立。",
+          opponentText: "白棋再次唯一延長；征子不是口訣，是每一步都可重算的強制序列。"
+        },
+        {
+          id: "ladder-5",
+          prompt: "第五次，哪裡是正確的打吃方向？",
+          acceptedMoves: [[4,6]],
+          expectedTrackedLibertiesBeforeLearner: 2,
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 1,
+          opponentMove: [5,5],
+          opponentMoveMustBeUniqueLiberty: true,
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 2,
+          hint: "接近下邊線後仍先數氣；不要因快到邊線就跳過合法性。",
+          success: "第五個打吃成立，白棋繼續被迫往右下延長。",
+          opponentText: "白棋延長後仍有兩口氣，但空間已接近棋盤邊界。"
+        },
+        {
+          id: "ladder-6",
+          prompt: "第六次，先把兩口氣壓成一口。",
+          acceptedMoves: [[6,5]],
+          expectedTrackedLibertiesBeforeLearner: 2,
+          expectedLearnerCapturedCount: 0,
+          expectedTrackedLibertiesAfterLearner: 1,
+          opponentMove: [5,6],
+          opponentMoveMustBeUniqueLiberty: true,
+          expectedOpponentCapturedCount: 0,
+          expectedTrackedLibertiesAfterOpponent: 1,
+          hint: "邊線會減少可用方向；確認白棋被打吃後唯一延長是哪一點。",
+          success: "第六個打吃成立。",
+          opponentText: "白棋被迫延長到下邊線；延長後仍只有最後一口氣，所以黑下一手可直接提。"
+        },
+        {
+          id: "ladder-finish",
+          prompt: "最後，在哪裡補掉白棋唯一一口氣，完成征子？",
+          acceptedMoves: [[6,6]],
+          expectedTrackedLibertiesBeforeLearner: 1,
+          expectedLearnerCapturedCount: 8,
+          hint: "現在不需要再找方向：整串白棋只剩右下角這一口氣。",
+          success: "征子完成：黑提掉整串八顆白棋。這個結論只對本題沒有引征干擾的局部成立。"
+        }
+      ],
+      expectedFinalEmpty: [[2,2],[2,3],[3,3],[3,4],[4,4],[4,5],[5,5],[5,6]],
+      takeaway: "征子要逐手維持『打吃 → 對手唯一延長 → 再打吃』；任何一步若讓對方多出第三口氣或接上引征，都要停止重算。",
+      terms: [
+        ["征子", "用連續打吃把一串棋沿斜向追趕，讓對方每次只能延長，最後在邊線或角落被提。"],
+        ["引征", "位在征子路線上的接應棋；一旦逃棋能連上或產生反擊，原本成立的征子可能失效。"],
+        ["強制序列", "每一步都把對手限制到唯一能維持該目標的應手；不是只背一串座標。"]
+      ]
+    }  ];
 
   const api = {
-    version: 3,
+    version: 4,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
     experiences,
