@@ -11,6 +11,7 @@ const Go = require("../go.js");
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "advanced.html"), "utf8");
 const js = fs.readFileSync(path.join(root, "advanced.js"), "utf8");
+const sequenceJs = fs.readFileSync(path.join(root, "advanced-sequence.js"), "utf8");
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
 
 function memoryStorage(initial = null) {
@@ -344,13 +345,13 @@ test("family transition 若 variant 先於 seed 呈現，保持 INSUFFICIENT_DAT
 });
 
 test("棋盤 family cue 在完成前隱藏，variant 未完成 seed 時不可跳入", () => {
-  assert.match(js, /棋盤練習/);
-  assert.match(js, /完整名稱、術語與重點會在走完後揭露/);
-  assert.match(js, /familyReady/);
-  assert.match(js, /disabled aria-disabled/);
-  assert.match(js, /advanced-sequence-terms"\)\.hidden = true/);
-  assert.doesNotMatch(js, /<strong>' \+ escapeHtml\(item\.title\)/);
-  assert.doesNotMatch(js, /escapeHtml\(item\.familyId\) \+ ' · '/);
+  assert.match(sequenceJs, /棋盤練習/);
+  assert.match(sequenceJs, /完整名稱、術語與重點會在走完後揭露/);
+  assert.match(sequenceJs, /familyReady/);
+  assert.match(sequenceJs, /disabled aria-disabled/);
+  assert.match(sequenceJs, /advanced-sequence-terms"\)\.hidden = true/);
+  assert.doesNotMatch(sequenceJs, /<strong>' \+ escapeHtml\(item\.title\)/);
+  assert.doesNotMatch(sequenceJs, /escapeHtml\(item\.familyId\) \+ ' · '/);
 });
 
 test("family transition 缺 seed 或 variant 首答時保持 INSUFFICIENT_DATA", () => {
