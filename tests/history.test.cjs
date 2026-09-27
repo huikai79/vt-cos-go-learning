@@ -157,7 +157,7 @@ test("孫策呂範棋譜真實性以後世 attribution 與質疑呈現，不冒�
 });
 
 
-test("History Explore v3 不保留泛用來源入口，改用實際 claim-near source", () => {
+test("History Explore v4 不保留泛用來源入口，改用實際 claim-near source", () => {
   assert.doesNotMatch(html, /href="https:\/\/ctext\.org\/"\s/);
   assert.ok(html.includes("https://ctext.org/mengzi/gaozi-i"));
   assert.ok(html.includes("chapter=578656"));
