@@ -28,7 +28,7 @@
 | 承諾 | 現況與實作 | 已有驗證 | 證據等級 | 狀態 |
 |---|---|---|---|---|
 | 離線個人課程 | 15 單元、19 課、106 題；直接開啟 `index.html` | 課程與 Chrome 流程測試 | 工程 | 條件通過 |
-| Core 後續進階訓練 v5 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
+| Core 後續進階訓練 v6 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
 | 世界死活名型館 v19 / 四目眼 status contrast + 曲四 | playable practice 現有直三、曲三、丁四、方四、直四、曲四／Curved Four、刀把五、梅花五、花六、金雞獨立與大豬嘴 exact source-case。新增獨立 `classic-curved-four-status-v1`：sealed L-tetromino 曲四對攻方四種第一手逐一驗證，守方均有回應留下兩個分離 eye points，因此導出 alive；兩個 variant 覆蓋換色、旋轉與位移。既有方四／直四 v1 contract 不修改；ontology 加入 Curved Four ≠ Bent Four in the Corner negative mapping | Curved Four proof/negative tests、browser 第 5/6 題、geometry evidence、release manifest；既有 four-space status 與 research-governance tests 不變；完整 CI 以 PR workflow 為準 | 工程／rules-backed local status proof | 工程 PASS 只支持 sealed interior Curved Four，不代表盤角曲四、含缺陷／外氣局面或全局死活；內容效度、formal assessment、retention／transfer、learning effect 未由此建立。真人 R1a/usability/accessibility 延後到最後階段 |
@@ -138,6 +138,14 @@
 - **不是旋轉題庫：** 第二變形至少改一個會改變作答條件的 axis，而不是只做平移／旋轉／鏡射。旋轉仍可作低成本 UI 或規則回歸，但不計入本輪 family evidence。
 - **Evidence boundary：** 目前只是 2 variants/family 的 practice seed。不能由此聲稱平行題等難、transfer 已建立或 KC 已被驗證；要進下一級至少需要真人 first-response 資料與 family 內差異檢查。
 - **歷史語義：** v4 四題 ID 與 version 不變；新增四個新 ID。舊事件不回寫 family metadata，也不把過去曝光重新標成 unseen。
+
+## 2026-09-28 Change note｜進階固定交錯階段 v1
+
+- **Bottleneck：** cue-control 已避免題名前洩漏 family，但舊流程仍讓同 family variant 可在 seed 完成後立刻作答，短期記憶與相鄰題型線索仍會污染 family transition 的解讀。
+- **固定 baseline：** 新增 `advanced-fixed-interleave-v1`，順序固定為四個 seed（倒撲→枷→對殺→征子）後，再進四個 variant；一次只開放下一個位置，不做 learner-model 自適應選題。這是 fixed mixed-practice baseline，不是 scheduler 增益主張。
+- **Evidence version：** 新事件流為 `advanced-sequence-events-v3`／schema 3，保存 `presentationPolicyVersion` 與 `policyPosition`；v2 與 v1 各自保留 legacy reader，不回填新 policy 語義。對殺／征子第一題因 seed metadata 語義修正升 experience version 2。
+- **Negative gate：** family 描述資格除 seed→variant 首答外，還要求其他三個 family 在兩者之間都實際呈現；缺任一 family、policy position 不符、legacy event 或 storage failure 都不得升格。
+- **證據邊界：** 只改善 practice family 的可解釋性；仍不證明 spacing 最佳、題目等難、retention、transfer、KC mastery 或 learning effect。若沒有真人新資料，不再增加更複雜 adaptive policy。
 
 ## 2026-09-27 Change note｜進階 family cue-control flow
 
