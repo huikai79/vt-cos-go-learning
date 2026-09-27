@@ -649,3 +649,7 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 ### 2026-09-28 Bent Three bounded practice validation
 
 PR #43 verify run #499 全數 PASS：Node contracts、JavaScript syntax、deterministic R1 review bank、formal teaching candidate、teaching gate、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。此結果只支持曲三 geometry-derived first-move contract；不建立完整答案樹、內容效度、formal assessment 或 learning effect。
+
+### 2026-09-28 Four-space status proof validation
+
+PR #44 verify run #505 全數 PASS：Node contracts、JavaScript syntax、deterministic R1 review bank、formal teaching candidate、teaching gate、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。此結果只支持 sealed eye-space 的方四 dead／直四 alive 有限規則 proof 與狀態 UI；不外推所有實戰四點眼空。
