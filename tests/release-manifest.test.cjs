@@ -106,6 +106,12 @@ test("學習入口載入完整題庫，R1 入口只載入去答案審查資料",
 });
 
 
+test("丁四 bounded practice 資產列入公開發佈清單", () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
+  assert.ok(manifest.publicFiles.includes("classic-pyramid-four-contract.js"));
+  assert.ok(manifest.publicFiles.includes("classic-pyramid-four-practice.js"));
+});
+
 test("大豬嘴 source-case 與第三方 notice 一併列入公開發佈清單", () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
   for (const file of ["classic-big-pigs-mouth-contract.js","classic-big-pigs-mouth-practice.js","THIRD_PARTY_NOTICES.md"]) {
