@@ -185,37 +185,25 @@
     const entries = Catalog.entries.filter((entry) => !filter || filter === "all" || entry.category === filter);
     $("classic-atlas-grid").innerHTML = entries.map((entry) => {
       const aliases = entry.aliases.length
-        ? entry.aliases.map((alias) => '<li><strong>' + escapeHtml(alias.locale) + '</strong><span>' + escapeHtml(alias.name) + '</span><small>' + escapeHtml(alias.relationType) + ' · ' + reviewLabel(alias.reviewStatus) + '</small></li>').join("")
+        ? entry.aliases.map((alias) => '<li><strong>' + escapeHtml(alias.locale) + '</strong><span>' + escapeHtml(alias.name) + '</span><small>' + reviewLabel(alias.reviewStatus) + '</small></li>').join("")
         : '<li class="alias-empty">其他語言名稱尚未完成可靠的一對一核對。</li>';
       const zhAliases = entry.zhAliases.length
         ? '<div class="catalog-zh-aliases"><span>中文別名候選</span>' + entry.zhAliases.map((alias) => '<small>' + escapeHtml(alias.name) + ' · ' + reviewLabel(alias.reviewStatus) + '</small>').join("") + '</div>'
         : "";
       const ambiguities = entry.nameAmbiguities.length
-        ? '<div class="catalog-ambiguity"><strong>名稱歧義</strong>' + entry.nameAmbiguities.map((item) => '<span>' + escapeHtml(item.name) + ' · ' + escapeHtml(item.status) + ' · ' + escapeHtml(item.note) + '</span>').join("") + '</div>'
+        ? '<div class="catalog-ambiguity"><strong>名稱還有不同解讀</strong>' + entry.nameAmbiguities.map((item) => '<span>' + escapeHtml(item.name) + '：' + escapeHtml(item.note) + '</span>').join("") + '</div>'
         : '';
       const taxonomy = entry.taxonomyMemberships.length || entry.taxonomyRelations.length
-        ? '<div class="catalog-taxonomy"><strong>Taxonomy</strong><span>' +
-            escapeHtml([
-              ...entry.taxonomyMemberships.map((item) => item.taxonomyId + ' / ' + item.familyId + ' / ' + item.role),
-              ...entry.taxonomyRelations.map((item) => item.taxonomyId + ' / ' + item.relation)
-            ].join('；')) +
-          '</span></div>'
+        ? '<div class="catalog-taxonomy"><strong>分類資料</strong><span>已整理 ' + (entry.taxonomyMemberships.length + entry.taxonomyRelations.length) + ' 項內部分類關係；這些只用來整理資料，不影響練習評分。</span></div>'
         : '';
       const geometryRelations = entry.geometryRelations.length
-        ? '<div class="catalog-geometry-rel"><strong>Geometry relation</strong><span>' +
-            escapeHtml(entry.geometryRelations.map((item) => item.relation + ' · ' + item.note).join('；')) +
+        ? '<div class="catalog-geometry-rel"><strong>棋形關係</strong><span>' +
+            escapeHtml(entry.geometryRelations.map((item) => item.note).join('；')) +
           '</span></div>'
         : '';
       const geometryEvidence = entry.geometryEvidence.length
-        ? '<div class="catalog-geometry-evidence"><strong>Geometry evidence</strong><span>' +
-            escapeHtml(entry.geometryEvidence.map((item) =>
-              item.evidenceStatus +
-              (item.licenseStatus ? ' · rights=' + item.licenseStatus : '') +
-              (item.publicGeometryPromotion ? ' · public=' + item.publicGeometryPromotion : '') +
-              (item.note ? ' · ' + item.note : '')
-            ).join('；')) +
-          '</span></div>'
-        : '<div class="catalog-geometry-evidence pending"><strong>Geometry evidence</strong><span>尚無可重算幾何證據。</span></div>';
+        ? '<div class="catalog-geometry-evidence"><strong>棋形核對</strong><span>' + escapeHtml(geometryReviewLabel(entry.geometryIdentity.reviewStatus)) + '。詳細依據請看下方來源。</span></div>'
+        : '<div class="catalog-geometry-evidence pending"><strong>棋形核對</strong><span>目前還沒有足夠資料完成棋形核對。</span></div>';
       const sources = entry.sources.length
         ? '<div class="catalog-sources"><span>來源</span>' + entry.sources.map((source) => '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label) + '</a>').join("") + '</div>'
         : '<div class="catalog-sources pending"><span>來源</span><em>待補可靠來源與幾何核對</em></div>';
@@ -233,7 +221,7 @@
         geometryRelations +
         geometryEvidence +
         (entry.negativeMappings.length ? '<p class="catalog-warning">禁止自動合併：' + escapeHtml(entry.negativeMappings.map((item) => item.name + ' · ' + item.reason).join('；')) + '</p>' : '') +
-        (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：已記錄 ' + entry.rulesetBehavior.length + ' 個 ruleset behavior；未指定規則與程序階段前不建立單一評分答案。</p>' : '') +
+        (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：不同規則下可能出現不同結果；沒有指定使用哪套規則前，不會硬給單一答案。</p>' : '') +
         sources +
         '</article>';
     }).join("");
