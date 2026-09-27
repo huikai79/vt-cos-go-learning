@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v5 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v12 / ontology v2 | playable practice 不變：直三、丁四／Pyramid Four、刀把五、梅花五、花六、金雞獨立與大豬嘴 exact source-case。新增 `classic-shapes-ontology.js` 作唯一 canonical concept source，分離 entityType、names、geometryIdentity、rulesetBehavior、negativeMappings、dated nameResearch 與 evidenceChain；`classic-shapes-catalog.js` 降為 compatibility adapter，舊 `preferredZhTW / zhNameStatus / aliases / rulesetSensitive` 皆由 ontology 衍生。Carpenter's Square 的臺灣繁中首選改為 unresolved；小豬嘴新增 Tripod Group with Extra Leg mapping 與 plain Tripod negative mapping；金雞獨立固定為 tesuji mechanism | ontology validator、compatibility adapter regression、existing classic-shape contracts、release manifest、browser UI；完整 CI 以 PR workflow 為準 | 工程／metadata provenance | schema migration 不改棋盤/scoring authority，不代表名稱 regional usage、geometry、內容效度或學習成效已全面驗證。正式教學仍 BLOCKED |
+| 世界死活名型館 v13 / ontology v3 | playable practice 不變：直三、丁四／Pyramid Four、刀把五、梅花五、花六、金雞獨立與大豬嘴 exact source-case。Ontology v3 在既有 entityType／names／geometryIdentity／rulesetBehavior／negativeMappings／nameResearch／evidenceChain 上新增 `nameAmbiguities`、`nameRelations`、`taxonomyMemberships`、`taxonomyRelations`、`geometryRelations`。第一個 ambiguity record 是「小曲尺」：歷史資料把它連到 Carpenter's Square，但中文教材死活語義與韓文 L Group／Carpenter 區分產生衝突，因此只記 candidates = Carpenter's Square / L Group、resolution = geometry_required。BadukWorld 的 L+1／Long L／J 關係只作 source-specific taxonomy，不升格 geometry | ontology v3 relation validators、compatibility adapter regression、browser ambiguity/taxonomy UI、existing classic-shape contracts；完整 CI 以 PR workflow 為準 | 工程／metadata provenance | ontology relation PASS 不證明小曲尺 canonical geometry、L/Carpenter parentage 或任何新的死活答案。正式教學仍 BLOCKED |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -560,3 +560,14 @@
 - **Rollback：** 回復 ontology 前 catalog + HTML script ordering；無 learner/storage migration。
 - **未驗：** regional usage、未完成 geometry、完整 ruleset scoring、外部內容審查、真人 usability、formal assessment、retention／transfer、learning effect。
 - **Validation：** PR #31 initial verify run #454 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持 ontology migration／compatibility 工程契約。
+
+## 2026-09-27 Change note｜世界死活名型館 ontology v3 relations
+
+- **新增：** `nameAmbiguities[]`、`nameRelations[]`、`taxonomyMemberships[]`、`taxonomyRelations[]`、`geometryRelations[]`。
+- **小曲尺：** 2007 臺灣英中術語鏈支持 Carpenter's Square → 小曲尺；另一中文教材把小曲尺描述為死棋；韓文 BadukWorld 則明確區分 Carpenter's Square 為劫、L Group 為死。故保留 `ambiguous_historical_mapping / geometry_required`，不把任一假說升格。
+- **L Group：** 新增日文「隅のL字型」與韓文 `작은 됫박형` name records；仍沒有確認固定中文專名。
+- **多 taxonomy：** BadukWorld 的 L／L+1／Long L／J 延伸系列只屬該教材 taxonomy；不取代英文／其他教材分類。
+- **Geometry boundary：** L Group ↔ Carpenter's Square = `related_unresolved`。名稱或 taxonomy relation 不取得 geometry/scoring authority。
+- **Migration／rollback：** practice/scoring/storage/evidence semantics 不變；回復 v2 ontology 檔與 asset version 即可，不需 learner data migration。
+- **未驗：** 小曲尺 canonical geometry、L+1 的多 geometry 細分、Notcher／鎖型、Comb／Notcher taxonomy 的原始教材關係、真人 usability、formal assessment、learning effect。
+- **Validation：** PR #32 verify run #459 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持 ontology v3 relation schema／compatibility UI 工程契約。

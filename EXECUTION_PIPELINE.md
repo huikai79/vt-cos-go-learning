@@ -230,3 +230,15 @@
 - **反證：** tests 必須證明 catalog entries 不是手寫第二套 source、Carpenter preferredZhTW 為 null、小豬嘴 plain Tripod 有 negative mapping、Bent Four ruleset flag 從 rulesetBehavior 衍生、同 evidence chain 不得當成多份獨立來源。
 - **Rollback：** 恢復上一版 catalog 與移除 ontology script 即可，不需 learner data migration。
 - **Validation：** PR #31 initial verify run #454 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。
+
+## 2026-09-27 Decision note｜Ontology v3：名稱歧義與多套 taxonomy 成為一級資料
+
+- **Bottleneck：** v2 能分離 name／geometry／ruleset，但仍假設一個 name record 最終會指向單一 concept，且 concept 之間只靠隱含 family 文字關聯。`小曲尺` 顯示這個假設不成立。
+- **外部 QA：** 日本專業教學使用「隅のL字型」；BadukWorld 將 `작은 됫박형` 直接譯為 L Group，並把 L+1、L+2、Long L、J、Straight J 列成延伸系列；2007 臺灣舊英中術語鏈則把 Carpenter's Square 對到「小曲尺」，另一中文教材稱「小曲尺是死棋」。
+- **Canonical schema v3：** 新增 `nameAmbiguities[]`、`nameRelations[]`、每 concept 的 `taxonomyMemberships[]`、全域 `taxonomyRelations[]` 與 `geometryRelations[]`。名稱關係、taxonomy 關係與 geometry 關係不可互相自動升格。
+- **第一個 ambiguity record：** `小曲尺` → candidates = `carpenters-square-v1`、`l-group-v1`；狀態 `ambiguous_historical_mapping`；resolution requirement = `geometry_required`。這不是宣告兩者同形。
+- **Source-specific taxonomy：** BadukWorld 的 `small-carpenter-like-series` 只作該教材的 teaching taxonomy；L+1、Long L、J 可屬該系列，同時保留各自 canonical concept。
+- **Geometry stop line：** L Group ↔ Carpenter's Square 只記 `related_unresolved`；taxonomy distinction／名稱相似都不能決定 parent／variant。
+- **不可破壞 invariant：** practice/scoring contracts、first response、learner events、KC、scheduler、storage、T2/T3、formal evaluation 全部不變。
+- **下一個研究方法：** 文字搜尋只繼續服務 names／taxonomy provenance；若要解除 `geometry_required`，必須轉成 geometry-first retrieval、座標 normalize 與獨立 fingerprint review。
+- **Validation：** PR #32 verify run #459 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。

@@ -67,3 +67,7 @@
 .classic-operation{margin:12px 0 0;padding:11px 13px;border:1px solid #d9e5d7;border-radius:9px;background:#fffdf7;color:#395640;font-size:.95rem;line-height:1.65}
 
 .flower-six-practice{margin-top:34px;padding-top:6px}
+
+.catalog-ambiguity,.catalog-taxonomy,.catalog-geometry-rel{display:grid;gap:5px;margin:10px 0;padding:10px 12px;border-radius:9px;background:#f8f7f1;line-height:1.55}
+.catalog-ambiguity strong,.catalog-taxonomy strong,.catalog-geometry-rel strong{font-size:.78rem;color:#5f5435}
+.catalog-ambiguity span,.catalog-taxonomy span,.catalog-geometry-rel span{font-size:.84rem;color:#655f52}

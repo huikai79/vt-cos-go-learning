@@ -96,8 +96,18 @@
   function sourceObjects(concept) {
     const ids = new Set(concept.sourceIds);
     for (const item of concept.names) for (const id of item.sourceIds) ids.add(id);
+    for (const membership of concept.taxonomyMemberships || []) for (const id of membership.sourceIds || []) ids.add(id);
     for (const behavior of concept.rulesetBehavior) for (const id of behavior.sourceIds || []) ids.add(id);
     for (const mapping of concept.negativeMappings) for (const id of mapping.sourceIds || []) ids.add(id);
+    for (const ambiguity of Ontology.nameAmbiguities || []) {
+      if ((ambiguity.candidateConceptIds || []).includes(concept.id)) for (const id of ambiguity.sourceIds || []) ids.add(id);
+    }
+    for (const relation of Ontology.taxonomyRelations || []) {
+      if (relation.subjectConceptId === concept.id || relation.objectConceptId === concept.id) for (const id of relation.sourceIds || []) ids.add(id);
+    }
+    for (const relation of Ontology.geometryRelations || []) {
+      if (relation.subjectConceptId === concept.id || relation.objectConceptId === concept.id) for (const id of relation.sourceIds || []) ids.add(id);
+    }
     return [...ids].map((id) => Ontology.sources[id]).filter(Boolean);
   }
 
@@ -153,6 +163,10 @@
       note:concept.note,
       geometryIdentity:concept.geometryIdentity,
       nameResearch:concept.nameResearch,
+      nameAmbiguities:(Ontology.nameAmbiguities || []).filter((item) => (item.candidateConceptIds || []).includes(concept.id)),
+      taxonomyMemberships:concept.taxonomyMemberships || [],
+      taxonomyRelations:(Ontology.taxonomyRelations || []).filter((item) => item.subjectConceptId === concept.id || item.objectConceptId === concept.id),
+      geometryRelations:(Ontology.geometryRelations || []).filter((item) => item.subjectConceptId === concept.id || item.objectConceptId === concept.id),
       rulesetBehavior:concept.rulesetBehavior,
       negativeMappings:concept.negativeMappings,
       rulesetSensitive:concept.rulesetBehavior.length > 0,
@@ -182,7 +196,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog compatibility entry.");
 
   return Object.freeze({
-    version:"world-classic-shapes-v11",
+    version:"world-classic-shapes-v12",
     ontologyVersion:Ontology.version,
     REVIEW,
     ZH_NAME_STATUS,
@@ -190,9 +204,16 @@
     NAME_STATUS:Ontology.NAME_STATUS,
     SEMANTIC_ROLE:Ontology.SEMANTIC_ROLE,
     RELATION:Ontology.RELATION,
+    TAXONOMY_RELATION:Ontology.TAXONOMY_RELATION,
+    GEOMETRY_RELATION:Ontology.GEOMETRY_RELATION,
+    AMBIGUITY_STATUS:Ontology.AMBIGUITY_STATUS,
     USAGE_SCOPE:Ontology.USAGE_SCOPE,
     sources:Ontology.sources,
     concepts:Ontology.concepts,
+    nameAmbiguities:Ontology.nameAmbiguities,
+    nameRelations:Ontology.nameRelations,
+    taxonomyRelations:Ontology.taxonomyRelations,
+    geometryRelations:Ontology.geometryRelations,
     categories,
     entries,
     validateEntry,

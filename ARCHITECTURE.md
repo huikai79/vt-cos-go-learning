@@ -119,9 +119,9 @@ v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個�
 - provider／model version 隨 computer event 保存；KataGo 候選仍只是搜尋結果，不是 canonical 教學答案、learner diagnosis 或正式 T3 scoring authority。
 - `katago-bridge.cjs` 是本機 optional integration，不改 Pages 的離線核心。Remote API 模式明示會產生網路請求；只有使用者主動選擇才啟用。
 
-## 世界死活名型館 Ontology v2
+## 世界死活名型館 Ontology v3
 
-名型館的 canonical source 已由「中文欄位 + aliases」改為 `classic-shapes-ontology.js` 的 versioned concept ontology。這次只重構 terminology / identity / rules metadata，不改任何 practice item、scoring contract、learner event、KC、scheduler 或 formal evaluation。
+名型館的 canonical source 是 `classic-shapes-ontology.js` 的 versioned concept ontology。v3 在 v2 的 terminology / identity / rules metadata 上，再分離名稱歧義、名稱關係、教材 taxonomy 與 concept-to-concept geometry relation；仍不改任何 practice item、scoring contract、learner event、KC、scheduler 或 formal evaluation。
 
 每個 concept 分離保存：
 
@@ -132,6 +132,10 @@ v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個�
 - `negativeMappings[]`：把「不得自動合併」作為一級知識，例如小豬嘴不得直接 alias 普通 Tripod Group、金雞獨立不得視為 static nakade。
 - `nameResearch[]`：負面查核必須有 `reviewedAt` 與 `searchScope`；UI 只能說「截至日期尚未找到」，不能宣稱名稱不存在。
 - `sources.*.evidenceChain`：網址數量不等於獨立證據數。Go4Go 明示其 Chinese Go Terms 為 YeeFan 資料的 copy，因此兩者在 ontology 中共用 evidence chain。
+- `nameAmbiguities[]`：同一名稱可同時指向多個候選 concept；歧義本身是可版本化知識，不強迫提前消歧。
+- `nameRelations[]`：只描述名稱層的跨語 mapping，不取得 geometry authority。
+- `taxonomyMemberships[] / taxonomyRelations[]`：允許不同教材保留不同 family 邊界；source-specific taxonomy 不被壓成世界唯一 parent tree。
+- `geometryRelations[]`：只記 concept-to-concept 的 same／variant／overlap／related_unresolved 等 geometry claim；taxonomy 關係不得自動升格 geometry relation。
 
 `classic-shapes-catalog.js` 現在是 compatibility adapter：舊 UI 所需的 `preferredZhTW`、`zhNameStatus`、`aliases`、`rulesetSensitive` 與 `sources` 皆由 ontology 衍生。它不得再手寫第二套概念資料。新功能應優先讀 `Catalog.concepts`／ontology 欄位；舊欄位只為漸進 migration 保留。
 

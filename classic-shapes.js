@@ -166,6 +166,22 @@
       const zhAliases = entry.zhAliases.length
         ? '<div class="catalog-zh-aliases"><span>中文別名候選</span>' + entry.zhAliases.map((alias) => '<small>' + escapeHtml(alias.name) + ' · ' + reviewLabel(alias.reviewStatus) + '</small>').join("") + '</div>'
         : "";
+      const ambiguities = entry.nameAmbiguities.length
+        ? '<div class="catalog-ambiguity"><strong>名稱歧義</strong>' + entry.nameAmbiguities.map((item) => '<span>' + escapeHtml(item.name) + ' · ' + escapeHtml(item.status) + ' · ' + escapeHtml(item.note) + '</span>').join("") + '</div>'
+        : '';
+      const taxonomy = entry.taxonomyMemberships.length || entry.taxonomyRelations.length
+        ? '<div class="catalog-taxonomy"><strong>Taxonomy</strong><span>' +
+            escapeHtml([
+              ...entry.taxonomyMemberships.map((item) => item.taxonomyId + ' / ' + item.familyId + ' / ' + item.role),
+              ...entry.taxonomyRelations.map((item) => item.taxonomyId + ' / ' + item.relation)
+            ].join('；')) +
+          '</span></div>'
+        : '';
+      const geometryRelations = entry.geometryRelations.length
+        ? '<div class="catalog-geometry-rel"><strong>Geometry relation</strong><span>' +
+            escapeHtml(entry.geometryRelations.map((item) => item.relation + ' · ' + item.note).join('；')) +
+          '</span></div>'
+        : '';
       const sources = entry.sources.length
         ? '<div class="catalog-sources"><span>來源</span>' + entry.sources.map((source) => '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label) + '</a>').join("") + '</div>'
         : '<div class="catalog-sources pending"><span>來源</span><em>待補可靠來源與幾何核對</em></div>';
@@ -178,6 +194,9 @@
         '<p class="catalog-teaching-label">' + escapeHtml(entry.teachingLabel) + '</p>' +
         '<ul class="catalog-aliases">' + aliases + '</ul>' +
         '<p class="catalog-note">' + escapeHtml(entry.note) + '</p>' +
+        ambiguities +
+        taxonomy +
+        geometryRelations +
         (entry.negativeMappings.length ? '<p class="catalog-warning">禁止自動合併：' + escapeHtml(entry.negativeMappings.map((item) => item.name + ' · ' + item.reason).join('；')) + '</p>' : '') +
         (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：已記錄 ' + entry.rulesetBehavior.length + ' 個 ruleset behavior；未指定規則與程序階段前不建立單一評分答案。</p>' : '') +
         sources +

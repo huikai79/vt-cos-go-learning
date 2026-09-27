@@ -47,6 +47,27 @@
     UNKNOWN: "unknown"
   });
 
+  const TAXONOMY_RELATION = Object.freeze({
+    ROOT_OF_SERIES: "root_of_series",
+    EXTENSION_OF: "extension_of",
+    RELATED_SERIES_MEMBER: "related_series_member",
+    SPECIALIZED_RELATED_SHAPE: "specialized_related_shape",
+    UNRESOLVED: "unresolved"
+  });
+
+  const GEOMETRY_RELATION = Object.freeze({
+    SAME: "same",
+    VARIANT_OF: "variant_of",
+    OVERLAPS: "overlaps",
+    RELATED_UNRESOLVED: "related_unresolved",
+    DISTINCT: "distinct"
+  });
+
+  const AMBIGUITY_STATUS = Object.freeze({
+    AMBIGUOUS_HISTORICAL_MAPPING: "ambiguous_historical_mapping",
+    GEOMETRY_REQUIRED: "geometry_required"
+  });
+
   const USAGE_SCOPE = Object.freeze({
     OFFICIAL: "official",
     ASSOCIATION: "association",
@@ -96,7 +117,11 @@
     bgaPyramidFour: source("bgaPyramidFour","British Go Journal：Nakade / Pyramid Four examples","https://www.britgo.org/files/bgj/bgj123.pdf","association","bga-pyramid-four"),
     boodBigPigsMouthConfig: source("boodBigPigsMouthConfig","bood/go-test：j_group_live2 regression config","https://github.com/bood/go-test/blob/2f3db241dc26a5ab59c86cf1293b3b005283c288/config.yml","oss_regression","bood-go-test-j-group"),
     boodBigPigsMouthSgf: source("boodBigPigsMouthSgf","bood/go-test：大猪嘴.sgf","https://github.com/bood/go-test/blob/2f3db241dc26a5ab59c86cf1293b3b005283c288/sgf/%E5%A4%A7%E7%8C%AA%E5%98%B4.sgf","oss_regression","bood-go-test-j-group"),
-    tchanLifeDeathMonth: source("tchanLifeDeathMonth","圍棋死活一月通目錄：大豬嘴型 / J-Group Pattern","https://tchan001.wordpress.com/2010/05/05/weiqi-one-month-to-understand-series-7-books/","bibliographic_secondary","life-death-month-index")
+    tchanLifeDeathMonth: source("tchanLifeDeathMonth","圍棋死活一月通目錄：大豬嘴型 / J-Group Pattern","https://tchan001.wordpress.com/2010/05/05/weiqi-one-month-to-understand-series-7-books/","bibliographic_secondary","life-death-month-index"),
+    badukworldProverbs: source("badukworldProverbs","BadukWorld：사활격언 / L Group related series","https://badukworld.co.kr/biz/terms3.html","community_secondary","badukworld-life-death-proverbs"),
+    ondaCornerL: source("ondaCornerL","恩田烈彦：隅のL字型をマスターしよう","https://note.com/go_pro275_denen/n/n299c0c730c08","professional_instruction","onda-corner-l"),
+    legacyEnglishChineseTerms: source("legacyEnglishChineseTerms","2007 臺灣網路流傳英文圍棋術語：Carpenter's Square → 小曲尺","https://www.ptt.cc/bbs/NCCUGO/M.1191493050.A.A65.html","historical_community","legacy-en-zh-terms-2007"),
+    chineseSmallCarpenterDead: source("chineseSmallCarpenterDead","中文教學：小曲尺是死棋","https://read01.com/BngJNdM.html","instructional_secondary","chinese-small-carpenter-dead")
   });
 
   function name(locale, value, nameStatus, semanticRole, relationToCanonical, usageScope, reviewStatus, sourceIds, extra) {
@@ -140,7 +165,7 @@
       teachingLabel:"三點眼空的中央急所", practiceStatus:"playable_existing_contract", reviewStatus:REVIEW.PARTIAL,
       names:[name("zh-Hant","直三",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[],{displayPreference:"project"})],
       nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.PARTIAL,"existing-content-u4",null,"center",{}),
-      rulesetBehavior:[], negativeMappings:[],
+      taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
       sourceIds:[], note:"名稱是記憶支架；正式能力仍看無提示新棋形。"
     },
     {
@@ -151,7 +176,7 @@
         name("zh-Hant","五目中手（分類）",NAME_STATUS.DESCRIPTIVE_TRANSLATION,SEMANTIC_ROLE.DESCRIPTIVE_LABEL,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[])
       ],
       nameResearch:[], geometryIdentity:geometry("category",REVIEW.VERIFIED,null,null,"local",{}),
-      rulesetBehavior:[],
+      taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"zh-Hant",name:"刀把五",relation:"unique_name_for_category",status:"blocked",reason:"五目中手是上位分類，不是刀把五的唯一專名",sourceIds:["nihonkiinFive"]}],
       sourceIds:["nihonkiinFive"], note:"分類層級不可自動等同任何單一五點名型。"
     },
@@ -166,7 +191,7 @@
         name("ko-KR","삿갓4궁",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["ffgDictionary"])
       ],
       nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-pyramid-four-vital-point-v1","T-tetromino","center",{}),
-      rulesetBehavior:[], negativeMappings:[],
+      taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
       sourceIds:["go4goChinese","yeefanChineseTerms","yeefanPyramidFour","bgaPyramidFour","ffgDictionary"],
       note:"canonical identity 是 T tetromino；答案由唯一 degree-3 center 即時計算。"
     },
@@ -180,7 +205,7 @@
         name("zh-Hant","花六（日本名）／六目中手",NAME_STATUS.DESCRIPTIVE_TRANSLATION,SEMANTIC_ROLE.DESCRIPTIVE_LABEL,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[])
       ],
       nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-flower-six-vital-point-v1","rabbity-six-six-point-graph","center",{}),
-      rulesetBehavior:[],
+      taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"zh-Hant",name:"葡萄六",relation:"exact_alias",status:"blocked_pending_geometry",reason:"目前只支持候選術語鏈，不足以自動合併",sourceIds:["go4goChinese","yeefanChineseTerms"]}],
       sourceIds:["ntkrFlowerSix","cazenaveRabbitySix","badukworldDeath","ffgDictionary"], note:"花六 family mapping 信心高；葡萄六仍分離。"
     },
@@ -194,7 +219,7 @@
         name("ko-KR","귀곡사",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.COMMUNITY,REVIEW.PARTIAL,["badukworldSeven"])
       ],
       nameResearch:[], geometryIdentity:geometry("rules_sensitive_position",REVIEW.PARTIAL,null,null,"corner",{koContext:"ruleset-dependent"}),
-      rulesetBehavior:[
+      taxonomyMemberships:[], rulesetBehavior:[
         {ruleset:"Japanese",rulesetVersion:"Japanese Rules of Go 1989",phase:"adjudication",adjudicationMode:"special_life_death_confirmation",result:"source-specific dead determination",reviewStatus:REVIEW.VERIFIED,sourceIds:["nihonkiinBentFour"]},
         {ruleset:"AGA/Chinese/SST/NZ comparison",rulesetVersion:null,phase:"play_or_adjudication",adjudicationMode:"not_same_as_japanese_special_contract",result:"requires ruleset-specific treatment",reviewStatus:REVIEW.PARTIAL,sourceIds:["bgaRules"]}
       ],
@@ -209,12 +234,13 @@
         name("zh-CN","金柜角",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.FEDERATION_DICTIONARY,REVIEW.PARTIAL,["ffgDictionary"]),
         name("zh-Hant","金櫃角",NAME_STATUS.RARE_OR_LEXICOGRAPHIC,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.SCRIPT_CONVERSION,REVIEW.PARTIAL,["ffgDictionary"]),
         name("zh-CN","斗方",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["go4goChinese","yeefanChineseTerms"]),
+        name("zh-Hant","小曲尺",NAME_STATUS.NEEDS_REVIEW,SEMANTIC_ROLE.FAMILY_NAME,RELATION.UNKNOWN,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.NEEDS_REVIEW,["legacyEnglishChineseTerms"]),
         name("zh-Hant","木匠方",NAME_STATUS.DESCRIPTIVE_TRANSLATION,SEMANTIC_ROLE.DESCRIPTIVE_LABEL,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[])
       ],
       nameResearch:[{locale:"zh-TW",status:"regional_preference_unresolved",reviewedAt:"2026-09-27",searchScope:["Taiwan professional material","Taiwan go associations","Taiwan teaching usage"]}],
-      geometryIdentity:geometry("corner_family",REVIEW.PARTIAL,null,null,"corner",{}), rulesetBehavior:[],
+      geometryIdentity:geometry("corner_family",REVIEW.PARTIAL,null,null,"corner",{}), taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"zh-TW",name:"金櫃角",relation:"regional_preferred_name",status:"blocked_pending_regional_usage",reason:"簡繁字形轉換不等於臺灣慣用名稱",sourceIds:["ffgDictionary"]}],
-      sourceIds:["nihonkiinCarpenter","bgaTerms","ffgDictionary","go4goChinese","yeefanChineseTerms"], note:"日英 mapping 穩固；繁中首選名稱未判定。"
+      sourceIds:["nihonkiinCarpenter","bgaTerms","ffgDictionary","go4goChinese","yeefanChineseTerms","legacyEnglishChineseTerms"], note:"日英 mapping 穩固；繁中首選名稱未判定；「小曲尺」存在歷史映射歧義，不得視為 exact alias。"
     },
     {
       id:"knife-five-candidate-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
@@ -228,7 +254,7 @@
         name("ko-KR","도화오궁",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.FEDERATION_DICTIONARY,REVIEW.PARTIAL,["ffgDictionary"])
       ],
       nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-vital-point-v1","P-pentomino","local",{outsideLiberties:"contract-dependent"}),
-      rulesetBehavior:[], negativeMappings:[],
+      taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
       sourceIds:["go4goChinese","yeefanChineseTerms","chineseTermsPdf","ffgDictionary","bgaBulkyPractice","ogsBulkyVital","yeefanBulkyAB","malaysiaWeiqiBulky","boardToBitsBulkyReduction"],
       note:"名稱 mapping 已支持；geometry 與 bounded scoring 由獨立 contract 驗收。"
     },
@@ -244,14 +270,14 @@
         name("ko-KR","오궁도화",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.FEDERATION_DICTIONARY,REVIEW.PARTIAL,["ffgDictionary"])
       ],
       nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-cross-five-vital-point-v1","cross-five","center",{}),
-      rulesetBehavior:[], negativeMappings:[],
+      taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
       sourceIds:["meaningfulStonesCrossFive","yikePlumFive","hzSchoolVitalShapes","ffgDictionary"], note:"Cross Five / Crossed Five 分別保存 provenance，不自行正規化成單一英文拼法。"
     },
     {
       id:"grape-six-candidate-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
       teachingLabel:"六點大眼名型候選", practiceStatus:"catalog_candidate_only", reviewStatus:REVIEW.NEEDS_REVIEW,
       names:[name("zh-Hant","葡萄六",NAME_STATUS.NEEDS_REVIEW,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.UNKNOWN,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.NEEDS_REVIEW,["go4goChinese","yeefanChineseTerms"],{displayPreference:"project"})],
-      nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.NEEDS_REVIEW,null,null,"local",{}), rulesetBehavior:[],
+      nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.NEEDS_REVIEW,null,null,"local",{}), taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"en",name:"Rabbity Six",relation:"exact_alias",status:"blocked_pending_geometry",reason:"目前主要來自同一術語 Evidence Chain，不能當獨立 geometry 驗證",sourceIds:["go4goChinese","yeefanChineseTerms"]}],
       sourceIds:["go4goChinese","yeefanChineseTerms"], note:"葡萄六保留 established alias candidate；需獨立 geometry confirmation。"
     },
@@ -263,8 +289,11 @@
         name("en","J Group",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.ASSOCIATION,REVIEW.PARTIAL,["bgaIndex","tchanLifeDeathMonth"])
       ],
       nameResearch:[], geometryIdentity:geometry("source_position_plus_unresolved_family",REVIEW.PARTIAL,"classic-big-pigs-mouth-source-case-v1","bood-j-group-live2-pre52","corner",{familyGeometry:"pending"}),
+      taxonomyMemberships:[
+        {taxonomyId:"badukworld-life-death-proverbs",familyId:"small-carpenter-like-series",role:"extension_member",reviewStatus:REVIEW.PARTIAL,sourceIds:["badukworldProverbs"]}
+      ],
       rulesetBehavior:[], negativeMappings:[],
-      sourceIds:["go4goChinese","yeefanChineseTerms","tchanLifeDeathMonth","boodBigPigsMouthConfig","boodBigPigsMouthSgf"], note:"name mapping 支持；只有 exact source-case geometry 已可執行驗證。"
+      sourceIds:["go4goChinese","yeefanChineseTerms","tchanLifeDeathMonth","boodBigPigsMouthConfig","boodBigPigsMouthSgf","badukworldProverbs"], note:"name mapping 支持；只有 exact source-case geometry 已可執行驗證。"
     },
     {
       id:"small-pigs-mouth-candidate-v1", entityType:ENTITY_TYPE.CORNER_LIFE_DEATH_FAMILY, catalogCategory:"corner_life_death",
@@ -273,7 +302,7 @@
         name("zh-Hant","小豬嘴",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["go4goChinese","yeefanChineseTerms"],{displayPreference:"project"}),
         name("en","Tripod Group with Extra Leg",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.OVERLAP,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["go4goChinese","yeefanChineseTerms"])
       ],
-      nameResearch:[], geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{}), rulesetBehavior:[],
+      nameResearch:[], geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{}), taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"en",name:"Tripod Group",relation:"exact_alias",status:"blocked_pending_geometry",reason:"目前術語鏈指向 Tripod Group with Extra Leg，而不是普通 Tripod Group",sourceIds:["go4goChinese","yeefanChineseTerms"]}],
       sourceIds:["go4goChinese","yeefanChineseTerms"], note:"mapping unknown 已縮小；plain Tripod Group 明確列為 negative mapping。"
     },
@@ -288,7 +317,7 @@
         name("ko-KR","양자충",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.MECHANISM_NAME,RELATION.MECHANISM_EQUIVALENT,USAGE_SCOPE.FEDERATION_DICTIONARY,REVIEW.PARTIAL,["ffgDictionary"])
       ],
       nameResearch:[], geometryIdentity:geometry("mechanism",REVIEW.VERIFIED,"classic-golden-chicken-mechanism-v1",null,"edge",{outsideLiberties:"mechanism-specific"}),
-      rulesetBehavior:[],
+      taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:null,name:"static nakade shape",relation:"entity_type",status:"blocked",reason:"金雞獨立是 tesuji mechanism，不是固定中手 geometry",sourceIds:["senseisGoldenChicken","centralGoGoldenChicken"]}],
       sourceIds:["centralGoGoldenChicken","senseisGoldenChicken","ffgDictionary","go4goChinese"], note:"跨語對應採 mechanism-equivalent，不假裝成同一靜態棋形名稱。"
     },
@@ -297,11 +326,17 @@
       teachingLabel:"L Group", practiceStatus:"catalog_only", reviewStatus:REVIEW.PARTIAL,
       names:[
         name("en","L Group",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.ASSOCIATION,REVIEW.VERIFIED,["bgaIndex"]),
+        name("ja-JP","隅のL字型",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.PROFESSIONAL_TEXTBOOK,REVIEW.PARTIAL,["ondaCornerL"]),
+        name("ko-KR","작은 됫박형",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.COMMUNITY,REVIEW.PARTIAL,["badukworldProverbs"]),
         name("zh-Hant","L 形角部死活",NAME_STATUS.DESCRIPTIVE_TRANSLATION,SEMANTIC_ROLE.DESCRIPTIVE_LABEL,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[])
       ],
       nameResearch:[{locale:"zh",status:NAME_STATUS.NO_ESTABLISHED_NAME_FOUND,reviewedAt:"2026-09-27",searchScope:chineseSearchScope}],
-      geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{}), rulesetBehavior:[], negativeMappings:[],
-      sourceIds:["bgaIndex"], note:"UI 應顯示『截至查核日尚未找到可確認固定中文名』，不是宣稱中文不存在名稱。"
+      geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{}),
+      taxonomyMemberships:[
+        {taxonomyId:"badukworld-life-death-proverbs",familyId:"small-carpenter-like-series",role:"root_example",reviewStatus:REVIEW.PARTIAL,sourceIds:["badukworldProverbs"]}
+      ],
+      rulesetBehavior:[], negativeMappings:[],
+      sourceIds:["bgaIndex","ondaCornerL","badukworldProverbs"], note:"英／日／韓教學鏈已明確支持 L Group 對應；中文「小曲尺」仍是 geometry-required ambiguity，不能升格。"
     },
     {
       id:"l-plus-one-group-v1", entityType:ENTITY_TYPE.CORNER_LIFE_DEATH_FAMILY, catalogCategory:"complex_corner",
@@ -311,8 +346,12 @@
         name("zh-Hant","L+1 角部死活",NAME_STATUS.DESCRIPTIVE_TRANSLATION,SEMANTIC_ROLE.DESCRIPTIVE_LABEL,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[])
       ],
       nameResearch:[{locale:"zh",status:NAME_STATUS.NO_ESTABLISHED_NAME_FOUND,reviewedAt:"2026-09-27",searchScope:chineseSearchScope}],
-      geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{}), rulesetBehavior:[], negativeMappings:[],
-      sourceIds:["takumiKyu"], note:"英語 family 名保留；中文只作描述。"
+      geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{}),
+      taxonomyMemberships:[
+        {taxonomyId:"badukworld-life-death-proverbs",familyId:"small-carpenter-like-series",role:"extension_member",reviewStatus:REVIEW.PARTIAL,sourceIds:["badukworldProverbs"]}
+      ],
+      rulesetBehavior:[], negativeMappings:[],
+      sourceIds:["takumiKyu","badukworldProverbs"], note:"英語 family 名保留；BadukWorld 將 L+1 列入 L Group 延伸系列，但這不等於已證明 geometry variant 關係。"
     },
     {
       id:"tripod-group-v1", entityType:ENTITY_TYPE.CORNER_LIFE_DEATH_FAMILY, catalogCategory:"complex_corner",
@@ -322,7 +361,7 @@
         name("zh-Hant","三腳形角部死活",NAME_STATUS.DESCRIPTIVE_TRANSLATION,SEMANTIC_ROLE.DESCRIPTIVE_LABEL,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[])
       ],
       nameResearch:[{locale:"zh",status:NAME_STATUS.NO_ESTABLISHED_NAME_FOUND,reviewedAt:"2026-09-27",searchScope:chineseSearchScope}],
-      geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{}), rulesetBehavior:[], negativeMappings:[],
+      geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{}), taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
       sourceIds:["bgaTripod"], note:"GNU Go oracle 授權邊界另由工程文件管理；本 ontology 不從名稱推導 shipping authority。"
     },
     {
@@ -336,10 +375,42 @@
         name("zh-Hant","長 L 形角部死活",NAME_STATUS.DESCRIPTIVE_TRANSLATION,SEMANTIC_ROLE.DESCRIPTIVE_LABEL,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[])
       ],
       nameResearch:[], geometryIdentity:geometry("corner_family",REVIEW.NEEDS_REVIEW,null,null,"corner",{outsideLiberties:"variation_axis_required"}),
+      taxonomyMemberships:[
+        {taxonomyId:"badukworld-life-death-proverbs",familyId:"small-carpenter-like-series",role:"extension_member",reviewStatus:REVIEW.PARTIAL,sourceIds:["badukworldProverbs"]}
+      ],
       rulesetBehavior:[], negativeMappings:[],
-      sourceIds:["bgaIndex","go4goChinese","yeefanChineseTerms","chineseTermsPdf"], note:"緊／寬帶鉤是條件化名稱，直接掛在 outsideLiberties variation axis，不拆成三個無關 concept。"
+      sourceIds:["bgaIndex","go4goChinese","yeefanChineseTerms","chineseTermsPdf","badukworldProverbs"], note:"緊／寬帶鉤是條件化名稱，直接掛在 outsideLiberties variation axis，不拆成三個無關 concept。"
     }
   ];
+
+  const nameAmbiguities = Object.freeze([
+    Object.freeze({
+      id:"zh-small-carpenters-square-ambiguity-v1",
+      locale:"zh-Hant",
+      name:"小曲尺",
+      status:AMBIGUITY_STATUS.AMBIGUOUS_HISTORICAL_MAPPING,
+      resolutionRequirement:AMBIGUITY_STATUS.GEOMETRY_REQUIRED,
+      candidateConceptIds:Object.freeze(["carpenters-square-v1","l-group-v1"]),
+      reviewStatus:REVIEW.NEEDS_REVIEW,
+      sourceIds:Object.freeze(["legacyEnglishChineseTerms","chineseSmallCarpenterDead","badukworldProverbs"]),
+      note:"舊英中術語鏈直接把 Carpenter's Square 寫成小曲尺；另一中文教學把小曲尺描述為死棋，而韓文教材明確區分 Carpenter's Square 為劫、L Group 為死。衝突只能靠 geometry-first retrieval 解決。"
+    })
+  ]);
+
+  const nameRelations = Object.freeze([
+    Object.freeze({id:"l-group-en-ja-v1",subject:{conceptId:"l-group-v1",locale:"en",name:"L Group"},relation:"cross_language_mapping",object:{conceptId:"l-group-v1",locale:"ja-JP",name:"隅のL字型"},reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["ondaCornerL","bgaIndex"])}),
+    Object.freeze({id:"l-group-en-ko-v1",subject:{conceptId:"l-group-v1",locale:"en",name:"L Group"},relation:"cross_language_mapping",object:{conceptId:"l-group-v1",locale:"ko-KR",name:"작은 됫박형"},reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs","bgaIndex"])})
+  ]);
+
+  const taxonomyRelations = Object.freeze([
+    Object.freeze({id:"badukworld-l-plus-one-extension-v1",taxonomyId:"badukworld-life-death-proverbs",subjectConceptId:"l-plus-one-group-v1",relation:TAXONOMY_RELATION.EXTENSION_OF,objectConceptId:"l-group-v1",reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs"]),note:"教學系列關係；不是 geometry variant 的證明。"}),
+    Object.freeze({id:"badukworld-long-l-extension-v1",taxonomyId:"badukworld-life-death-proverbs",subjectConceptId:"long-l-group-v1",relation:TAXONOMY_RELATION.RELATED_SERIES_MEMBER,objectConceptId:"l-group-v1",reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs"]),note:"同一韓文教學延伸系列。"}),
+    Object.freeze({id:"badukworld-j-extension-v1",taxonomyId:"badukworld-life-death-proverbs",subjectConceptId:"big-pigs-mouth-candidate-v1",relation:TAXONOMY_RELATION.RELATED_SERIES_MEMBER,objectConceptId:"l-group-v1",reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs"]),note:"J Group 被列在 L Group 延伸系列中；不改 J Group 自身 canonical family。"})
+  ]);
+
+  const geometryRelations = Object.freeze([
+    Object.freeze({id:"l-vs-carpenter-unresolved-v1",subjectConceptId:"l-group-v1",relation:GEOMETRY_RELATION.RELATED_UNRESOLVED,objectConceptId:"carpenters-square-v1",reviewStatus:REVIEW.NEEDS_REVIEW,sourceIds:Object.freeze(["badukworldProverbs","legacyEnglishChineseTerms"]),note:"韓文 taxonomy 明確區分兩者；中文小曲尺映射衝突。這只證明需要 geometry review，不證明 parent/variant。"})
+  ]);
 
   const ENTITY_VALUES = new Set(Object.values(ENTITY_TYPE));
   const NAME_VALUES = new Set(Object.values(NAME_STATUS));
@@ -360,28 +431,86 @@
     if (!ENTITY_VALUES.has(concept.entityType)) return false;
     if (!Object.values(REVIEW).includes(concept.reviewStatus)) return false;
     if (!Array.isArray(concept.names) || !concept.names.every(validateName)) return false;
-    if (!Array.isArray(concept.nameResearch) || !Array.isArray(concept.rulesetBehavior) || !Array.isArray(concept.negativeMappings)) return false;
+    if (!Array.isArray(concept.nameResearch) || !Array.isArray(concept.taxonomyMemberships) || !Array.isArray(concept.rulesetBehavior) || !Array.isArray(concept.negativeMappings)) return false;
     if (!concept.geometryIdentity || !Object.values(REVIEW).includes(concept.geometryIdentity.reviewStatus)) return false;
     if (!Array.isArray(concept.sourceIds) || !concept.sourceIds.every((id) => Boolean(sources[id]))) return false;
     for (const research of concept.nameResearch) {
       if (!research.reviewedAt || !Array.isArray(research.searchScope) || !research.searchScope.length) return false;
     }
+    for (const membership of concept.taxonomyMemberships) {
+      if (!membership.taxonomyId || !membership.familyId || !membership.role || !Object.values(REVIEW).includes(membership.reviewStatus)) return false;
+      if (!Array.isArray(membership.sourceIds) || !membership.sourceIds.every((id) => Boolean(sources[id]))) return false;
+    }
     return true;
   }
 
+  const conceptIds = new Set(concepts.map((concept) => concept.id));
+
+  function validSourceIds(ids) {
+    return Array.isArray(ids) && ids.every((id) => Boolean(sources[id]));
+  }
+
+  function validateAmbiguity(item) {
+    return item && item.id && item.locale && item.name
+      && Object.values(AMBIGUITY_STATUS).includes(item.status)
+      && Object.values(AMBIGUITY_STATUS).includes(item.resolutionRequirement)
+      && Array.isArray(item.candidateConceptIds) && item.candidateConceptIds.length >= 2
+      && item.candidateConceptIds.every((id) => conceptIds.has(id))
+      && Object.values(REVIEW).includes(item.reviewStatus)
+      && validSourceIds(item.sourceIds);
+  }
+
+  function validateNameRelation(item) {
+    return item && item.id && item.subject && item.object && item.relation
+      && conceptIds.has(item.subject.conceptId) && conceptIds.has(item.object.conceptId)
+      && Object.values(REVIEW).includes(item.reviewStatus)
+      && validSourceIds(item.sourceIds);
+  }
+
+  function validateTaxonomyRelation(item) {
+    return item && item.id && item.taxonomyId
+      && conceptIds.has(item.subjectConceptId) && conceptIds.has(item.objectConceptId)
+      && Object.values(TAXONOMY_RELATION).includes(item.relation)
+      && Object.values(REVIEW).includes(item.reviewStatus)
+      && validSourceIds(item.sourceIds);
+  }
+
+  function validateGeometryRelation(item) {
+    return item && item.id
+      && conceptIds.has(item.subjectConceptId) && conceptIds.has(item.objectConceptId)
+      && Object.values(GEOMETRY_RELATION).includes(item.relation)
+      && Object.values(REVIEW).includes(item.reviewStatus)
+      && validSourceIds(item.sourceIds);
+  }
+
   if (!concepts.every(validateConcept)) throw new Error("Invalid classic-shape ontology concept.");
+  if (!nameAmbiguities.every(validateAmbiguity)) throw new Error("Invalid classic-shape name ambiguity.");
+  if (!nameRelations.every(validateNameRelation)) throw new Error("Invalid classic-shape name relation.");
+  if (!taxonomyRelations.every(validateTaxonomyRelation)) throw new Error("Invalid classic-shape taxonomy relation.");
+  if (!geometryRelations.every(validateGeometryRelation)) throw new Error("Invalid classic-shape geometry relation.");
 
   return Object.freeze({
-    version:"classic-shape-ontology-v2",
+    version:"classic-shape-ontology-v3",
     REVIEW,
     ENTITY_TYPE,
     NAME_STATUS,
     SEMANTIC_ROLE,
     RELATION,
+    TAXONOMY_RELATION,
+    GEOMETRY_RELATION,
+    AMBIGUITY_STATUS,
     USAGE_SCOPE,
     sources,
     concepts:Object.freeze(concepts.map((concept) => Object.freeze(concept))),
+    nameAmbiguities,
+    nameRelations,
+    taxonomyRelations,
+    geometryRelations,
     validateName,
-    validateConcept
+    validateConcept,
+    validateAmbiguity,
+    validateNameRelation,
+    validateTaxonomyRelation,
+    validateGeometryRelation
   });
 });
