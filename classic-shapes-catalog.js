@@ -2,13 +2,17 @@
   const ontology = typeof module === "object" && module.exports
     ? require("./classic-shapes-ontology.js")
     : root.GoClassicShapeOntology;
-  const api = factory(ontology);
+  const geometryEvidence = typeof module === "object" && module.exports
+    ? require("./classic-geometry-evidence.js")
+    : root.GoClassicGeometryEvidence;
+  const api = factory(ontology, geometryEvidence);
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.GoClassicShapeCatalog = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function (Ontology) {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (Ontology, GeometryEvidence) {
   "use strict";
 
   if (!Ontology || !Array.isArray(Ontology.concepts)) throw new Error("Classic shape ontology runtime missing.");
+  if (!GeometryEvidence || !Array.isArray(GeometryEvidence.records)) throw new Error("Classic geometry evidence runtime missing.");
 
   const REVIEW = Ontology.REVIEW;
   const ZH_NAME_STATUS = Object.freeze({
@@ -167,6 +171,7 @@
       taxonomyMemberships:concept.taxonomyMemberships || [],
       taxonomyRelations:(Ontology.taxonomyRelations || []).filter((item) => item.subjectConceptId === concept.id || item.objectConceptId === concept.id),
       geometryRelations:(Ontology.geometryRelations || []).filter((item) => item.subjectConceptId === concept.id || item.objectConceptId === concept.id),
+      geometryEvidence:GeometryEvidence.recordsForConcept(concept.id),
       rulesetBehavior:concept.rulesetBehavior,
       negativeMappings:concept.negativeMappings,
       rulesetSensitive:concept.rulesetBehavior.length > 0,
@@ -214,6 +219,8 @@
     nameRelations:Ontology.nameRelations,
     taxonomyRelations:Ontology.taxonomyRelations,
     geometryRelations:Ontology.geometryRelations,
+    geometryEvidenceVersion:GeometryEvidence.version,
+    geometryEvidenceRecords:GeometryEvidence.records,
     categories,
     entries,
     validateEntry,
