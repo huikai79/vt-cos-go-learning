@@ -484,3 +484,13 @@
 - **反證：** browser regression 讀取 `classic-stage-list`，必須得到四個帶「直三」前綴的 stage；靜態 contract 同時檢查 scope 文案與 aria label。
 - **證據邊界：** 只修 learner-facing scope 與資訊架構，不改任何名型 scoring、variation semantics、learner evidence 或學習成效狀態。
 - **Validation：** PR #24 verify run #429 全數 PASS：Node contracts、teaching gate verifier、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；browser regression 已實際讀取四個 stage，確認全部帶「直三」前綴。PR 已於 2026-09-27 squash merge 至 `main`（merge commit `cb42fb03051cc6a33430dc114ea898f80939c18a`）。
+
+
+## 2026-09-27 Change note｜formal usability candidate fingerprint v1
+
+- **Learning-loop / evidence bottleneck：** `TEACHING_GATE` 已要求正式三位 usability 在 frozen learner-facing candidate 上完成，但舊 verifier 只綁 R1 內容 fingerprint，無法阻止三位觀察跨 UI／runtime 版本彙總。
+- **實作：** 新增 `formal-teaching-candidate.json`／`.cjs`，凍結五項 critical tasks 所依賴的 Core learner-facing asset set；目前 candidate `formal-teaching-candidate-2026-09-27-a` 的 fingerprint 為 `fnv1a32-js16-db5cff20`。CI 每次從工作樹重算，critical surface 改動後未重新凍結即 FAIL。
+- **gate v2：** `go-formal-teaching-gate-v2` 與 `go-formal-teaching-evidence-v2` 要求 evidence root、usability summary、每位 participant、accessibility spot check 全部綁同一 candidate ID/fingerprint。
+- **反證：** 舊 v1 evidence、任一 participant mismatch、accessibility mismatch、manifest stale fingerprint 均 fail closed；既有 participant denominator／critical-task negative tests 保留。
+- **Migration：** 目前沒有正式真人證據，因此不做自動 migration；舊 evidence 必須回到原始觀察確認版本，不能只改 schema 字串。
+- **證據邊界：** 這只證明 gate 能辨識 candidate 一致性；沒有因此取得 R1a、真人 usability、accessibility、formal evaluation 或 learning-effect 證據。目前正式教學仍 BLOCKED，真人 usability／accessibility 仍 NOT_TESTED。
