@@ -160,6 +160,17 @@ v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個�
 - corner／side geometry 必須保存 board boundary；缺 boundary 不得進 strict comparison。
 - extraction gate 不取得棋理、死活答案或 scoring authority。
 
+### Reference-only geometry oracle
+
+`classic-geometry-reference-oracle.js` 服務 rights=unknown／reference-only 但具研究價值的外部棋形。原始 observation 只在當次研究記憶中進入 fingerprint compare；可保存 report 必須剝除 points、stones、shapeSignature、contextSignature、fingerprint 與其他可重建 geometry 的 payload。
+
+- report authority 固定為 `reference_oracle_only`，且 `canonicalPromotionAllowed=false`。
+- sourceId／sourceLocator／sourceDigest 必須與當次 observation provenance 一致。
+- evidence independence 依 `evidenceChain`，不是網址數或 digest 數；同一 chain 只算一個 evidence unit。
+- 至少兩條獨立 evidence chain 一致，只能形成 `CONSISTENT_REFERENCE_SUPPORT`，不能自動寫回 canonical geometry。
+- 獨立 oracle 衝突時保留 `CONFLICTING_REFERENCE_ORACLES`，不得選邊或平均。
+
+
 
 Migration invariant：
 
