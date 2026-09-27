@@ -218,7 +218,7 @@
       teachingTranslation: null,
       literalTranslation: null,
       zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
-      zhNameNote: "華語名稱已有術語表使用；英文 J Group 對照目前只作次級來源支持，仍未完成本專案幾何 contract。",
+      zhNameNote: "華語術語表、書目整理與 MIT regression 均把大豬嘴／J Group 聯繫在同一 family；本專案仍只把 external source-case 當 bounded oracle，不宣稱整個 family geometry 已完成。",
       teachingLabel: "角部經典死活候選",
       practiceStatus: "playable_source_case_first_move_contract",
       reviewStatus: REVIEW.PARTIAL,
