@@ -14,7 +14,7 @@
   <script defer src="classic-geometry-fingerprint.js?v=classic-geometry-fingerprint-v1"></script>
   <script defer src="classic-geometry-extraction.js?v=classic-geometry-extraction-v1"></script>
   <script defer src="classic-geometry-evidence.js?v=classic-geometry-evidence-v2"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v17"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v18"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
@@ -27,6 +27,8 @@
   <script defer src="classic-curved-four-status-practice.js?v=curved-four-status-practice-v1"></script>
   <script defer src="classic-pyramid-four-contract.js?v=classic-pyramid-four-vital-point-v1"></script>
   <script defer src="classic-pyramid-four-practice.js?v=pyramid-four-practice-v1"></script>
+  <script defer src="classic-rectangular-six-contract.js?v=classic-rectangular-six-miai-v1"></script>
+  <script defer src="classic-rectangular-six-practice.js?v=rectangular-six-miai-practice-v1"></script>
   <script defer src="classic-flower-six-contract.js?v=classic-flower-six-vital-point-v1"></script>
   <script defer src="classic-flower-six-practice.js?v=flower-six-practice-v1"></script>
   <script defer src="classic-golden-chicken-contract.js?v=classic-golden-chicken-mechanism-v1"></script>
@@ -39,7 +41,7 @@
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v20"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v21"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -52,7 +54,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形、family、手筋或規則敏感局面可能在不同語言使用不同名稱；名稱對應、概念類型、geometry 與規則條件分開記錄。本頁以繁中解釋，但不把翻譯詞自動當成跨語 canonical 等價。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；曲三、丁四、刀把五、梅花五與花六有 bounded vital-point practice；方四／直四／曲四另用 rules-backed status proof；金雞獨立走 rules-backed tesuji mechanism contract；大豬嘴目前只開放一個 MIT regression 的 exact source-case first-move practice，不能泛化成整個 J Group family；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；曲三、丁四、刀把五、梅花五與花六有 bounded vital-point practice；板六另有 bounded miai-response practice；方四／直四／曲四另用 rules-backed status proof；金雞獨立走 rules-backed tesuji mechanism contract；大豬嘴目前只開放一個 MIT regression 的 exact source-case first-move practice，不能泛化成整個 J Group family；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
@@ -229,6 +231,37 @@
           <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> unique degree-3</span></div>
           <div id="pyramid-four-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路丁四練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="pyramid-four-cursor-status">方向鍵移動 · Enter 落子</span><span id="pyramid-four-side">● 黑棋</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="rectangular-six-practice" aria-labelledby="rectangular-six-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">六目活形 · bounded miai response</span>
+        <h2 id="rectangular-six-practice-title">板六／Rectangular Six：對方拿一個中心，就回另一個</h2>
+        <p>2×3 六點眼空只有兩個 degree-3 中心。這裡只練最小可驗證機制：攻方已先佔一個中心時，守方是否能從 geometry 找出另一個 miai 中心。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="rect-six-tag">1 / 4 · miai response</span>
+          <h3 id="rect-six-title">找另一個中心</h3>
+          <p id="rect-six-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只接受 sealed、非盤角的 2×3 rectangular-six geometry。攻方先佔的點必須是兩個 degree-3 中心之一；守方答案由 contract 重算為另一中心。不宣稱本題本身就是完整無條件活證明。</span></div>
+          <div id="rect-six-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="rect-six-reveal" class="classic-reveal" hidden>
+            <span>作答後揭名</span>
+            <strong id="rect-six-name">板六／Rectangular Six</strong>
+            <p>名稱來源與教材支持一般板六是經典活形；本 practice 的評分 authority 只到「兩中心 miai 回應」。盤角板六另行處理。</p>
+          </div>
+          <div class="classic-actions">
+            <button id="rect-six-hint" class="subtle-button" type="button">給我 miai 提示</button>
+            <button id="rect-six-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="板六 miai 回應練習棋盤">
+          <div class="card-top"><span id="rect-six-board-size">8 × 8 bounded practice</span><span class="board-status"><i></i> two degree-3 centers</span></div>
+          <div id="rect-six-board" class="board classic-board" tabindex="0" role="application" aria-label="板六 miai 練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="rect-six-cursor-status">方向鍵移動 · Enter 落子</span><span id="rect-six-side">● 黑棋守</span></div>
         </section>
       </div>
     </section>
