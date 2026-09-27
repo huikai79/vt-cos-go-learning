@@ -635,3 +635,12 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - main verify #494：Node、Sabaki、Windows UI／Edge／boundary 以及新的 `served-pages-content` 全數 PASS；Pages deployment #381 亦 PASS。
 - `served-pages-content` 的 GitHub-hosted runner 實際讀回 `https://huikai.com.kg/vt-cos-go-learning/index.html` 與 `history.html`，確認首頁 History 入口、History v3、72 因果修正、來源查核日期與 Advanced CTA 均已公開供應。因此「served content 已更新」在工程部署層由 UNKNOWN 升為 **PASS**。
 - **仍未升格：** 外部歷史專業審查 NOT_REVIEWED；formal novice usability NOT_TESTED；真人鍵盤／螢幕閱讀器 accessibility NOT_TESTED；formal teaching BLOCKED；formal evaluation BLOCKED／unavailable；learning effect NOT_MEASURED。
+
+
+## 2026-09-27 Change note｜R1a external reviewer handoff
+
+- **Bottleneck：** Step 4 verifier／blinded bank 已完成，但外部 reviewer 原本只能直接進 77 題頁或 repository 文件，增加先看到答案／機器結果而破壞 answer-blind 的操作風險。
+- **實作：** 新增 `r1-review-start.html`，固定 `go-r1-independent-content-review-v5`、content fingerprint `fnv1a32-c34ef6a4`、77 題母體與三項獨立性前提；只連到去答案 `r1-review.html`。
+- **反證：** test 會要求 handoff protocol/fingerprint 與 verifier 同步，且不得載入 Phase 2 答案模組或出現 answer/scoring 欄位；served-content gate 也會直接讀公開 handoff。
+- **真人模板修正：** `formal-teaching-evidence.example.json` 從 stale candidate `-a` 修到 current `-b` / `fnv1a32-js16-e9637bc0`，並新增同步測試。
+- **狀態：** R1a 執行條件 = **READY_FOR_EXTERNAL_REVIEW**；R1a 證據本身仍 **AWAITING_EXTERNAL_RECEIPT**。沒有外部回條前，不升格內容效度、正式教學或正式評量。
