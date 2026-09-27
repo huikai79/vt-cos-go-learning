@@ -89,6 +89,8 @@
     nihonkiinBentFour: source("nihonkiinBentFour","日本棋院：隅の曲り四目","https://www.nihonkiin.or.jp/match/kiyaku/shikatsu-07-1.html","official","nihonkiin-bent-four"),
     nihonkiinCarpenter: source("nihonkiinCarpenter","日本棋院：新ポケット詰碁200","https://www.nihonkiin.or.jp/publishing/books/newtsumego200.html","official","nihonkiin-carpenter"),
     nihonkiinFive: source("nihonkiinFive","日本棋院：五目中手實例","https://www.nihonkiin.or.jp/news/docs/2024/spnintei2024springans.pdf","official","nihonkiin-five-nakade"),
+    nihonkiinThreeNakade: source("nihonkiinThreeNakade","日本棋院：三目中手の活用","https://www.nihonkiin.or.jp/publishing/books/igo_drill4.html","official","nihonkiin-three-nakade"),
+    playgoBentThree: source("playgoBentThree","PlayGo：Bent Three vital point","https://playgogame.org/blog/tsumego-trainer-launch","instructional_secondary","playgo-bent-three"),
     ntkrFlowerSix: source("ntkrFlowerSix","日本囲碁連盟：花六","https://www.ntkr.co.jp/igoyogo/yogo_801.html","publisher","ntkr-flower-six"),
     cazenaveRabbitySix: source("cazenaveRabbitySix","Vilà & Cazenave：When One Eye is Sufficient","https://www.lamsade.dauphine.fr/~cazenave/papers/eyeLabelling.pdf","primary_research","cazenave-rabbity-six"),
     bgaTerms: source("bgaTerms","British Go Association：Japanese Go terms","https://www.britgo.org/general/definitions.html","association","bga-terms"),
@@ -180,6 +182,20 @@
       taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"zh-Hant",name:"刀把五",relation:"unique_name_for_category",status:"blocked",reason:"五目中手是上位分類，不是刀把五的唯一專名",sourceIds:["nihonkiinFive"]}],
       sourceIds:["nihonkiinFive"], note:"分類層級不可自動等同任何單一五點名型。"
+    },
+    {
+      id:"bent-three-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
+      teachingLabel:"L 形三點眼空的彎點急所", practiceStatus:"playable_bounded_geometry_derived_vital_point_contract", reviewStatus:REVIEW.VERIFIED,
+      names:[
+        name("zh-Hant","曲三",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.PARTIAL,["go4goChinese","yeefanChineseTerms"],{displayPreference:"project"}),
+        name("zh-Hant","彎三",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.COMMUNITY,REVIEW.PARTIAL,["go4goChinese"]),
+        name("en","Bent Three",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.VERIFIED,["playgoBentThree"]),
+        name("ja-JP","三目中手",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.CATEGORY_NAME,RELATION.BROADER,USAGE_SCOPE.OFFICIAL,REVIEW.VERIFIED,["nihonkiinThreeNakade"])
+      ],
+      nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-bent-three-vital-point-v1","L-triomino","center",{}),
+      taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
+      sourceIds:["go4goChinese","yeefanChineseTerms","nihonkiinThreeNakade","playgoBentThree"],
+      note:"canonical identity 是 L triomino；急所由唯一 degree-2 彎點即時計算。日文三目中手是較廣分類，不當成 Bent Three 的唯一 exact 名稱。"
     },
     {
       id:"pyramid-four-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
