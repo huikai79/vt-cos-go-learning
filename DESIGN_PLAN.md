@@ -1,3 +1,6 @@
+2026-09-28 曲三 / Bent Three bounded geometry practice v1：在 ontology／fingerprint／extraction／reference-oracle 底盤完成後，重新盤點 catalog-only family。L Group 已有更穩定的英／日／韓名稱與『六點角部死形』教學描述，但仍缺可合法 shipping、可重算的 canonical coordinates，因此保持 BLOCKED，不以名稱或受限圖示手寫 geometry。
+為持續提高 playable coverage，轉向曲三。YeeFan／Go4Go 直接把「曲三」對應 Bent Three；日本棋院將三目中手列為基礎生死主題；英語教學資料明確描述三點 L 形的彎點為共同急所。新增 `classic-bent-three-vital-point-v1`：只接受 L triomino，同時接觸另外兩點的唯一 degree-2 彎點由 geometry 即時計算；item 禁止保存 vitalPoint／answer／correctMove。四個 variant 覆蓋攻守、換色、旋轉與位移。這只建立 bounded first-move practice，不建立完整吃淨答案樹、KC、mastery、transfer、T2/T3 或 formal evaluation。
+
 2026-09-27 reference-only geometry oracle v1：extraction gate 解決 public shipping，但研究上仍需要安全使用 rights=unknown/reference-only 的外部棋形作比對。本輪新增 `classic-geometry-reference-oracle.js`：原始座標只存在當次 compare；persistable report 僅保存 source provenance、candidate、MATCH/DIFFERENT 與 context flags，強制移除 points/stones/signatures/fingerprint，且 `canonicalPromotionAllowed=false`。
 多來源 aggregation 依 evidenceChain 去重；同一 Evidence Chain 的網址、鏡像或版本不增加獨立證據數。兩條獨立 oracle 一致只形成 reference support，衝突則保留 conflict，不直接修改 ontology geometry。
 

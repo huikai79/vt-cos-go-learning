@@ -14,11 +14,13 @@
   <script defer src="classic-geometry-fingerprint.js?v=classic-geometry-fingerprint-v1"></script>
   <script defer src="classic-geometry-extraction.js?v=classic-geometry-extraction-v1"></script>
   <script defer src="classic-geometry-evidence.js?v=classic-geometry-evidence-v2"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v14"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v15"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
   <script defer src="classic-cross-five-practice.js?v=cross-five-practice-v1"></script>
+  <script defer src="classic-bent-three-contract.js?v=classic-bent-three-vital-point-v1"></script>
+  <script defer src="classic-bent-three-practice.js?v=bent-three-practice-v1"></script>
   <script defer src="classic-pyramid-four-contract.js?v=classic-pyramid-four-vital-point-v1"></script>
   <script defer src="classic-pyramid-four-practice.js?v=pyramid-four-practice-v1"></script>
   <script defer src="classic-flower-six-contract.js?v=classic-flower-six-vital-point-v1"></script>
@@ -33,7 +35,7 @@
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v17"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v18"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -46,7 +48,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形、family、手筋或規則敏感局面可能在不同語言使用不同名稱；名稱對應、概念類型、geometry 與規則條件分開記錄。本頁以繁中解釋，但不把翻譯詞自動當成跨語 canonical 等價。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；丁四、刀把五、梅花五與花六各有 bounded nakade practice；金雞獨立走 rules-backed tesuji mechanism contract；大豬嘴目前只開放一個 MIT regression 的 exact source-case first-move practice，不能泛化成整個 J Group family；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；曲三、丁四、刀把五、梅花五與花六各有 bounded nakade practice；金雞獨立走 rules-backed tesuji mechanism contract；大豬嘴目前只開放一個 MIT regression 的 exact source-case first-move practice，不能泛化成整個 J Group family；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
@@ -126,6 +128,37 @@
           <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> degree-4 center</span></div>
           <div id="cross-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路梅花五練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="cross-cursor-status">方向鍵移動 · Enter 落子</span><span id="cross-side">● 黑棋</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="bent-three-practice" aria-labelledby="bent-three-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">三目中手 · geometry-derived</span>
+        <h2 id="bent-three-practice-title">曲三／Bent Three：L 形彎點就是共同急所</h2>
+        <p>三個眼空彎成 L 形時，唯一同時接觸另外兩點的 degree-2 彎點就是共同急所。contract 由 geometry 即時計算答案，不在 item 保存 vitalPoint。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="bent-three-tag">1 / 4 · answer derived from geometry</span>
+          <h3 id="bent-three-title">找 L 形唯一彎點</h3>
+          <p id="bent-three-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只接受與 L triomino 同構的三點眼空，並把唯一 degree-2 彎點當共同急所。守方／攻方只評第一手，不宣稱完整後續答案樹。</span></div>
+          <div id="bent-three-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="bent-three-reveal" class="classic-reveal" hidden>
+            <span>作答後揭名</span>
+            <strong id="bent-three-name">曲三／Bent Three</strong>
+            <p>名稱與教材來源支持「曲三／Bent Three」；真正評分 identity 仍是三點 L 形 geometry。</p>
+          </div>
+          <div class="classic-actions">
+            <button id="bent-three-hint" class="subtle-button" type="button">給我幾何提示</button>
+            <button id="bent-three-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="曲三共同急所練習棋盤">
+          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> unique degree-2</span></div>
+          <div id="bent-three-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路曲三練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="bent-three-cursor-status">方向鍵移動 · Enter 落子</span><span id="bent-three-side">● 黑棋</span></div>
         </section>
       </div>
     </section>

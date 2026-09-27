@@ -887,6 +887,45 @@ async function main() {
     assert.match(ontologyCatalogState.bentWarning, /ruleset behavior/);
     assert.equal(ontologyCatalogState.ontologyMeta, true);
 
+    const bentThreeState = await evaluate(socket, `(() => ({
+      points: document.querySelectorAll('#bent-three-board [data-bent-three-x][data-bent-three-y]').length,
+      prompt: document.querySelector('#bent-three-prompt').textContent,
+      revealHidden: document.querySelector('#bent-three-reveal').hidden,
+      nextDisabled: document.querySelector('#bent-three-next').disabled
+    }))()`);
+    assert.equal(bentThreeState.points, 3);
+    assert.match(bentThreeState.prompt, /輪到黑棋守/);
+    assert.equal(bentThreeState.revealHidden, true);
+    assert.equal(bentThreeState.nextDisabled, true);
+
+    const bentThreeWrong = await evaluate(socket, `(() => {
+      const point = document.querySelector('#bent-three-board [data-bent-three-x="3"][data-bent-three-y="2"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#bent-three-feedback').textContent,
+        revealHidden: document.querySelector('#bent-three-reveal').hidden,
+        nextDisabled: document.querySelector('#bent-three-next').disabled
+      };
+    })()`);
+    assert.match(bentThreeWrong.feedback, /不是 L 形 geometry/);
+    assert.equal(bentThreeWrong.revealHidden, true);
+    assert.equal(bentThreeWrong.nextDisabled, true);
+
+    const bentThreeCorrect = await evaluate(socket, `(() => {
+      const point = document.querySelector('#bent-three-board [data-bent-three-x="3"][data-bent-three-y="3"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#bent-three-feedback').textContent,
+        revealHidden: document.querySelector('#bent-three-reveal').hidden,
+        name: document.querySelector('#bent-three-name').textContent,
+        nextDisabled: document.querySelector('#bent-three-next').disabled
+      };
+    })()`);
+    assert.match(bentThreeCorrect.feedback, /共同急所|L 形彎點/);
+    assert.equal(bentThreeCorrect.revealHidden, false);
+    assert.equal(bentThreeCorrect.name, "曲三／Bent Three");
+    assert.equal(bentThreeCorrect.nextDisabled, false);
+
     const pyramidFourState = await evaluate(socket, `(() => ({
       points: document.querySelectorAll('#pyramid-four-board [data-pyramid-four-x][data-pyramid-four-y]').length,
       prompt: document.querySelector('#pyramid-four-prompt').textContent,

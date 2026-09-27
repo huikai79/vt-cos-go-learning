@@ -274,3 +274,13 @@
 - handoff → `r1-review.html` → `R1_獨立審題回條.json` → `r1-review-verify.cjs` 構成完整可執行交接鏈。
 - 本步目前狀態：**READY_FOR_EXTERNAL_REVIEW / BLOCKED_ON_HUMAN_RECEIPT**。自動測試與 handoff 完整性不能替代真人內容審查。
 - 下一個真正的狀態轉換只接受外部 reviewer 回條；若任一題為需修／歧義／多解或建議落子不同，先修內容與升版，不能直接進 4c。
+
+## 2026-09-28 Decision note｜L Group 保持 BLOCKED，曲三 / Bent Three 升格 bounded practice
+
+- **L Group stop line：** 英／日／韓資料已足以支持 L Group 名稱與基礎教學概念，BGA／OGS 也描述六點角部死形；但目前仍缺 rights/provenance 清楚且可重算的 canonical geometry，因此不手寫答案、不從受限圖示抄座標。
+- **替代 playable bottleneck：** 曲三的名稱、geometry 與共同急所更成熟。YeeFan／Go4Go 明列「曲三 = Bent Three」；日本棋院有三目中手基礎教材；英語教學資料直接描述 L 形三點與彎點急所。
+- **Contract：** `classic-bent-three-vital-point-v1` 只接受 L triomino；唯一 degree-2 bend 是 scoring vital point，item 禁止 `vitalPoint`／`answer`／`correctMove`。
+- **反證：** 直三 geometry 必須 fail、偷塞答案 fail、位移後使用 seed 座標判錯。
+- **Variation axes：** attack/defense、black/white、rotation、position shift；表面座標改變後仍須依 geometry 找彎點。
+- **證據邊界：** 只支持 bounded first-move geometry contract。完整 sequence、內容效度、真人 usability、retention／transfer、formal evaluation 與 learning effect 均未建立。
+- **Validation：** PR #43 verify run #499 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。

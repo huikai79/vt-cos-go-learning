@@ -14,6 +14,8 @@ const Reduction = require("../classic-shape-reduction.js");
 const ReductionContract = require("../classic-shape-reduction-contract.js");
 const CrossFive = require("../classic-cross-five-practice.js");
 const CrossFiveContract = require("../classic-cross-five-contract.js");
+const BentThree = require("../classic-bent-three-practice.js");
+const BentThreeContract = require("../classic-bent-three-contract.js");
 const PyramidFour = require("../classic-pyramid-four-practice.js");
 const PyramidFourContract = require("../classic-pyramid-four-contract.js");
 const FlowerSix = require("../classic-flower-six-practice.js");
@@ -215,7 +217,7 @@ test("catalog adapter 暴露 geometry evidence，但不由名稱補 geometry", (
 });
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v14");
+  assert.equal(Catalog.version, "world-classic-shapes-v15");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -265,7 +267,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["big-pigs-mouth-candidate-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "pyramid-four-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["bent-three-v1", "big-pigs-mouth-candidate-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "pyramid-four-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -768,6 +770,59 @@ test("大豬嘴 source-case 有 MIT provenance notice，不把上游 SGF 當本�
   assert.match(contractSource, /source-case scoped/);
 });
 
+
+test("曲三四個 variant 由 L geometry 推導唯一 degree-2 彎點", () => {
+  assert.equal(BentThree.version, "bent-three-practice-v1");
+  assert.equal(BentThree.scoringContractVersion, BentThreeContract.CONTRACT_VERSION);
+  assert.equal(BentThree.items.length, 4);
+  const all = BentThreeContract.validateAll(BentThree.items, { Go, PracticeContract });
+  assert.equal(all.ok, true, all.errors.join("; "));
+  for (const item of BentThree.items) {
+    assert.equal(Object.prototype.hasOwnProperty.call(item, "vitalPoint"), false, item.id);
+    assert.equal(Object.prototype.hasOwnProperty.call(item, "answer"), false, item.id);
+    assert.equal(Object.prototype.hasOwnProperty.call(item, "correctMove"), false, item.id);
+    const validation = BentThreeContract.validateItem(item, { Go, PracticeContract });
+    assert.equal(validation.ok, true, validation.errors.join("; "));
+    const derived = BentThreeContract.deriveBend(item.eyeSpace, PracticeContract);
+    assert.deepEqual(validation.vitalPoint, derived, item.id);
+    const scored = BentThreeContract.score(item, derived, { Go, PracticeContract });
+    assert.equal(scored.ok, true, item.id);
+    assert.equal(scored.correct, true, item.id);
+  }
+});
+
+test("曲三 contract 對直三、偷塞答案與位移後舊座標 fail closed", () => {
+  const seed = BentThree.items[0];
+  const straight = { ...seed, id:"bent-three-wrong-straight", eyeSpace:[[2,3],[3,3],[4,3]] };
+  assert.equal(BentThreeContract.validateItem(straight, { Go, PracticeContract }).ok, false);
+
+  const leaked = { ...seed, id:"bent-three-leaked-answer", vitalPoint:[3,3] };
+  assert.equal(BentThreeContract.validateItem(leaked, { Go, PracticeContract }).ok, false);
+
+  const shifted = BentThree.items.find((item) => item.variantId === "attack-shift");
+  const seedVital = BentThreeContract.deriveBend(seed.eyeSpace, PracticeContract);
+  const shiftedVital = BentThreeContract.deriveBend(shifted.eyeSpace, PracticeContract);
+  assert.notDeepEqual(shiftedVital, seedVital);
+  const stale = BentThreeContract.score(shifted, seedVital, { Go, PracticeContract });
+  assert.equal(stale.ok, true);
+  assert.equal(stale.correct, false);
+});
+
+test("曲三 ontology/catalog/evidence 對齊 geometry-derived contract", () => {
+  const concept = Ontology.concepts.find((item) => item.id === "bent-three-v1");
+  const entry = Catalog.entries.find((item) => item.id === "bent-three-v1");
+  assert.ok(concept);
+  assert.ok(entry);
+  assert.equal(concept.entityType, Ontology.ENTITY_TYPE.NAKADE_SHAPE);
+  assert.equal(concept.geometryIdentity.contractVersion, "classic-bent-three-vital-point-v1");
+  assert.equal(concept.geometryIdentity.fingerprint, "L-triomino");
+  assert.equal(entry.practiceStatus, "playable_bounded_geometry_derived_vital_point_contract");
+  assert.ok(entry.aliases.some((alias) => alias.name === "Bent Three"));
+  assert.ok(entry.geometryEvidence.some((item) => item.id === "bent-three-contract-geometry-v1" && item.evidenceStatus === "geometry_verified_from_contract"));
+  assert.match(html, /曲三／Bent Three：L 形彎點就是共同急所/);
+  assert.match(html, /classic-bent-three-contract\.js\?v=classic-bent-three-vital-point-v1/);
+  assert.match(js, /GoBentThreeContract/);
+});
 
 test("丁四四個 variant 由 T geometry 推導唯一 degree-3 急所", () => {
   assert.equal(PyramidFour.version, "pyramid-four-practice-v1");

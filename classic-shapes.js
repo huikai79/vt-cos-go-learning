@@ -6,6 +6,8 @@
   const PracticeContract = window.GoClassicShapePracticeContract;
   const CrossFive = window.GoCrossFivePractice;
   const CrossFiveContract = window.GoCrossFiveContract;
+  const BentThree = window.GoBentThreePractice;
+  const BentThreeContract = window.GoBentThreeContract;
   const PyramidFour = window.GoPyramidFourPractice;
   const PyramidFourContract = window.GoPyramidFourContract;
   const FlowerSix = window.GoFlowerSixPractice;
@@ -22,11 +24,13 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !PyramidFour || !PyramidFourContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !BentThree || !BentThreeContract || !PyramidFour || !PyramidFourContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
   if (!crossFiveValidation.ok) throw new Error("Cross Five practice contract invalid: " + crossFiveValidation.errors.join("; "));
+  const bentThreeValidation = BentThreeContract.validateAll(BentThree.items, { Go, PracticeContract });
+  if (!bentThreeValidation.ok) throw new Error("Bent Three practice contract invalid: " + bentThreeValidation.errors.join("; "));
   const pyramidFourValidation = PyramidFourContract.validateAll(PyramidFour.items, { Go, PracticeContract });
   if (!pyramidFourValidation.ok) throw new Error("Pyramid Four practice contract invalid: " + pyramidFourValidation.errors.join("; "));
   const flowerSixValidation = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
@@ -71,6 +75,10 @@
   let crossSolved = false;
   let crossHintShown = false;
   let crossCursor = [3, 3];
+  let bentThreeIndex = 0;
+  let bentThreeSolved = false;
+  let bentThreeHintShown = false;
+  let bentThreeCursor = [3, 3];
   let pyramidFourIndex = 0;
   let pyramidFourSolved = false;
   let pyramidFourHintShown = false;
@@ -419,6 +427,95 @@
     if (item.eyeSpace.some(([x,y]) => x===next[0] && y===next[1])) {
       crossCursor = next;
       renderCrossBoard();
+    }
+  }
+
+  function renderBentThreeBoard() {
+    const item=BentThree.items[bentThreeIndex];
+    const validation=BentThreeContract.validateItem(item,{ Go, PracticeContract });
+    if (!validation.ok) throw new Error("Bent Three item invalid: " + validation.errors.join("; "));
+    const size=item.boardSize;
+    const pad=7;
+    const span=86;
+    const step=span/(size-1);
+    const setup=new Map(validation.setupStones.map(([x,y,color])=>[pointKey(x,y),color]));
+    const eye=new Set(item.eyeSpace.map(([x,y])=>pointKey(x,y)));
+    const lines=[];
+    const nodes=[];
+    for(let i=0;i<size;i+=1){
+      const p=pad+i*step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for(let y=0;y<size;y+=1) for(let x=0;x<size;x+=1){
+      const px=pad+x*step;
+      const py=pad+y*step;
+      const color=setup.get(pointKey(x,y));
+      if(color===Go.BLACK) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black"/>');
+      if(color===Go.WHITE) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white"/>');
+      if(eye.has(pointKey(x,y))) nodes.push('<circle data-bent-three-x="' + x + '" data-bent-three-y="' + y + '" cx="' + px + '" cy="' + py + '" r="6.2" class="classic-hit bulky-hit"/>');
+    }
+    const [cx0,cy0]=bentThreeCursor;
+    nodes.push('<circle cx="' + (pad+cx0*step) + '" cy="' + (pad+cy0*step) + '" r="6.4" class="classic-cursor-ring"/>');
+    $("bent-three-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("bent-three-cursor-status").textContent="游標：第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderBentThree() {
+    const item=BentThree.items[bentThreeIndex];
+    const validation=BentThreeContract.validateItem(item,{ Go, PracticeContract });
+    if(!validation.ok) throw new Error("Bent Three item invalid: " + validation.errors.join("; "));
+    bentThreeSolved=false;
+    bentThreeHintShown=false;
+    bentThreeCursor=item.eyeSpace[0].slice();
+    $("bent-three-tag").textContent=(bentThreeIndex+1) + " / " + BentThree.items.length + " · answer derived from geometry";
+    $("bent-three-title").textContent=bentThreeIndex===0 ? "找 L 形唯一彎點" : "換角色／方向，再找共同急所";
+    $("bent-three-prompt").textContent=item.prompt;
+    $("bent-three-feedback").className="feedback";
+    $("bent-three-feedback").textContent="";
+    $("bent-three-reveal").hidden=true;
+    $("bent-three-hint").disabled=false;
+    $("bent-three-next").disabled=true;
+    $("bent-three-next").textContent=bentThreeIndex===BentThree.items.length-1 ? "完成曲三練習" : "下一題 →";
+    $("bent-three-side").textContent=item.playerColor===Go.BLACK ? "● 黑棋" : "○ 白棋";
+    renderBentThreeBoard();
+  }
+
+  function attemptBentThree(x,y) {
+    if(bentThreeSolved) return;
+    const item=BentThree.items[bentThreeIndex];
+    if(!item.eyeSpace.some(([ex,ey])=>ex===x&&ey===y)){
+      $("bent-three-feedback").className="feedback error";
+      $("bent-three-feedback").textContent="這一區只比較三個眼空中的候選點。";
+      return;
+    }
+    const result=BentThreeContract.score(item,[x,y],{ Go, PracticeContract });
+    if(!result.ok){
+      $("bent-three-feedback").className="feedback error";
+      $("bent-three-feedback").textContent="曲三 geometry contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if(result.correct){
+      bentThreeSolved=true;
+      $("bent-three-feedback").className="feedback success";
+      $("bent-three-feedback").textContent=item.success;
+      $("bent-three-reveal").hidden=false;
+      $("bent-three-hint").disabled=true;
+      $("bent-three-next").disabled=false;
+    }else{
+      $("bent-three-feedback").className="feedback error";
+      $("bent-three-feedback").textContent=bentThreeHintShown
+        ? "還不是。重新數三個眼空的直接鄰點；只有彎點會同時碰到另外兩點。"
+        : "這手合法，但不是 L 形 geometry 推導出的共同急所。";
+    }
+  }
+
+  function moveBentThreeCursor(dx,dy){
+    const item=BentThree.items[bentThreeIndex];
+    const next=[bentThreeCursor[0]+dx,bentThreeCursor[1]+dy];
+    if(item.eyeSpace.some(([x,y])=>x===next[0]&&y===next[1])){
+      bentThreeCursor=next;
+      renderBentThreeBoard();
     }
   }
 
@@ -1306,6 +1403,43 @@
     }
   });
 
+  $("bent-three-board").addEventListener("click",(event) => {
+    const hit=event.target.closest("[data-bent-three-x][data-bent-three-y]");
+    if(!hit) return;
+    bentThreeCursor=[Number(hit.dataset.bentThreeX),Number(hit.dataset.bentThreeY)];
+    renderBentThreeBoard();
+    attemptBentThree(bentThreeCursor[0],bentThreeCursor[1]);
+  });
+
+  $("bent-three-board").addEventListener("keydown",(event) => {
+    if(event.key==="ArrowLeft"){ event.preventDefault(); moveBentThreeCursor(-1,0); }
+    else if(event.key==="ArrowRight"){ event.preventDefault(); moveBentThreeCursor(1,0); }
+    else if(event.key==="ArrowUp"){ event.preventDefault(); moveBentThreeCursor(0,-1); }
+    else if(event.key==="ArrowDown"){ event.preventDefault(); moveBentThreeCursor(0,1); }
+    else if(event.key==="Enter" || event.key===" "){
+      event.preventDefault();
+      attemptBentThree(bentThreeCursor[0],bentThreeCursor[1]);
+    }
+  });
+
+  $("bent-three-hint").addEventListener("click",() => {
+    bentThreeHintShown=true;
+    $("bent-three-feedback").className="feedback";
+    $("bent-three-feedback").textContent=BentThree.items[bentThreeIndex].hint;
+  });
+
+  $("bent-three-next").addEventListener("click",() => {
+    if(!bentThreeSolved) return;
+    if(bentThreeIndex<BentThree.items.length-1){
+      bentThreeIndex+=1;
+      renderBentThree();
+    }else{
+      $("bent-three-feedback").className="feedback success";
+      $("bent-three-feedback").textContent="曲三／Bent Three 練習完成。這只表示完成四個 geometry-derived first-move variant，不代表完整答案樹、mastery 或 transfer。";
+      $("bent-three-next").disabled=true;
+    }
+  });
+
   $("pyramid-four-board").addEventListener("click",(event) => {
     const hit=event.target.closest("[data-pyramid-four-x][data-pyramid-four-y]");
     if(!hit) return;
@@ -1581,6 +1715,7 @@
   renderCatalog("all");
   renderContrast();
   renderCross();
+  renderBentThree();
   renderPyramidFour();
   renderFlowerSix();
   renderGoldenChicken();
