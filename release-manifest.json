@@ -37,6 +37,7 @@
   },
   "publicFiles": [
     ".gitattributes",
+    ".github/workflows/pages-smoke.yml",
     ".github/workflows/verify.yml",
     ".gitignore",
     ".nojekyll",
