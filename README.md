@@ -76,7 +76,7 @@
 
 ## 設計邊界
 
-- 原型具備短教學、點選棋盤、即時判定、錯題複習、固定應用探測、5×5／7×7 基礎與過渡棋盤、9×9 完整小棋盤對局，以及 9 路 SGF 可落子著手重建與復盤紀錄匯出。5／7 路只作 practice scaffold；3×3 已退出學習者可玩階段但保留底層相容，9×9 才定位為完整小棋盤對局；三種 active 尺寸都不自動成為正式 T2／T3。完成 9 路局部復盤後可另匯出標準 SGF 交給 KaTrain 開啟；5／7／9 路以 bounded heuristic 練習電腦作零安裝預設；進階 provider 另支援每台裝置自行啟動的 localhost KataGo bridge，以及使用者自架的 Remote HTTP(S) API。GitHub Pages 本身不能執行 KataGo，現行公開部署也沒有共用託管 KataGo endpoint，因此不能把 provider contract 的存在解讀成所有網站訪客都能直接使用 KataGo。
+- 原型具備短教學、點選棋盤、即時判定、錯題複習、固定應用探測、5×5／7×7 基礎與過渡棋盤、9×9 完整小棋盤對局、19×19 全盤 practice，以及 9 路 SGF 可落子著手重建與復盤紀錄匯出。5／7 路只作 practice scaffold；3×3 已退出學習者可玩階段但保留底層相容，9×9 才定位為完整小棋盤對局；三種 active 尺寸都不自動成為正式 T2／T3。完成 9 路局部復盤後可另匯出標準 SGF 交給 KaTrain 開啟；5／7／9／19 路以 bounded heuristic 練習電腦作零安裝預設；進階 provider 另支援每台裝置自行啟動的 localhost KataGo bridge，以及使用者自架的 Remote HTTP(S) API。GitHub Pages 本身不能執行 KataGo，現行公開部署也沒有共用託管 KataGo endpoint，因此不能把 provider contract 的存在解讀成所有網站訪客都能直接使用 KataGo。
 - 題目棋形為教學局面；答題引擎檢查氣、提子、自殺手、簡單劫，並對照題目指定目標。後續若擴充到實戰，需補規則集與棋譜格式。
 - 本機瀏覽器可直接使用；沒有網路請求、外部字體或第三方程式庫。
 - SGF 匯入只接受單一 9 路主線棋譜，不接受多盤 collection 或分支變化；檔案上限 1,000,000 bytes、10,000 個節點、128 層巢狀。格式錯誤、不合法落子與超限輸入會明確拒絕，不會靜默截斷。
@@ -97,7 +97,7 @@
 
 ## 驗證
 
-在本資料夾執行 `node tests/go.test.cjs`，驗證 15 單元、106 題的資料完整性，及棋盤題的氣數、提子、救棋、連接、斷點、基礎死活急所、禁著和簡單劫；執行 `node tests/live-game.test.cjs` 驗證 5／7／9 路 active practice，以及 3×3 legacy 邊界 regression、提子、Pass、計分、續局、SGF round-trip、live evidence UI 接線與 9×9 相容；執行 `node tests/live-evidence.test.cjs` 驗證結果前 eligibility、first response／retry、未答分母、actor provenance、版本隔離與跨局 session；執行 `node tests/learner-progress.test.cjs` 驗證 T0–T2 與 bounded live T3 的描述性 evidence state；執行 `node tests/phase2-content.test.cjs` 驗證 148 題變形庫、公開曝光契約、直三的一至三手結果及第二眼真眼區域；執行 `node tests/sgf.test.cjs`，驗證課程端 9 路 SGF 解析、停一手編號、簡單劫、多盤／分支拒絕及資源上限。Windows 可執行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1`，檢查獨立 Git 根目錄、workflow、gitlink、symlink 與 reparse point；若有 Chrome 或 Edge，也可執行 `node tests/ui.test.cjs` 驗證主要使用流程與版面。
+在本資料夾執行 `node tests/go.test.cjs`，驗證 15 單元、106 題的資料完整性，及棋盤題的氣數、提子、救棋、連接、斷點、基礎死活急所、禁著和簡單劫；執行 `node tests/live-game.test.cjs` 驗證 5／7／9／19 路 active practice，以及 3×3 legacy 邊界 regression、提子、Pass、計分、續局、SGF round-trip、live evidence UI 接線與 9×9 相容；執行 `node tests/live-evidence.test.cjs` 驗證結果前 eligibility、first response／retry、未答分母、actor provenance、版本隔離與跨局 session；執行 `node tests/learner-progress.test.cjs` 驗證 T0–T2 與 bounded live T3 的描述性 evidence state；執行 `node tests/phase2-content.test.cjs` 驗證 148 題變形庫、公開曝光契約、直三的一至三手結果及第二眼真眼區域；執行 `node tests/sgf.test.cjs`，驗證課程端 9 路 SGF 解析、停一手編號、簡單劫、多盤／分支拒絕及資源上限。Windows 可執行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1`，檢查獨立 Git 根目錄、workflow、gitlink、symlink 與 reparse point；若有 Chrome 或 Edge，也可執行 `node tests/ui.test.cjs` 驗證主要使用流程與版面。
 
 ### Windows 本機 KataGo bridge smoke
 
