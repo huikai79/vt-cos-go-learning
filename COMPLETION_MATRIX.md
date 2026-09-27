@@ -591,5 +591,6 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Johari 盲點修正：** 不把前兩輪提出的 Learn／Understand／Explore 三分法做成三個等權首頁入口，也不把研究對話原文直接搬成教材。這會稀釋 Core 的零基礎主路徑，並把研究密度誤當教學密度。
 - **最新判斷：** 新增獨立 `history.html`／`history.css`，以問題導向呈現「起源、19 路、規則演化、典故」四個 MVP 主題；證據標籤固定為確證、高度可信、有爭議、傳說、研究假說、未知。首頁只在主學習與教學方法之後提供低優先級 Explore 入口。
 - **Authority boundary：** 歷史頁不載入 `app.js`、`scheduler.js`、`learner-progress.js`，不讀寫 localStorage，不建立 KC、mastery、T0–T3、formal evaluation 或 learner event；歷史證據標籤也不是 learner evidence taxonomy。
+- **Formal usability candidate：** 因首頁 `index.html` 新增 History Explore 低優先級入口，舊 `formal-teaching-candidate-2026-09-27-a` fingerprint 不再適用；已重新凍結為 `formal-teaching-candidate-2026-09-27-b`。目前尚無正式三位 usability 證據，因此沒有舊證據可遷移或沿用。
 - **反證／測試：** `tests/history.test.cjs` 驗證傳說與未知不被升格、孫策—呂範棋譜不被寫成三國 19 路硬證據、首頁仍只有兩張 Core／Advanced 主入口卡、歷史頁不接 learner runtime。release manifest 另把 `history.html` 列為靜態 entrypoint。
 - **證據邊界：** 這是內容架構與歷史敘事工程 PASS 候選；不代表歷史內容已完成獨立學術同行審查，也不改正式教學 `BLOCKED`、formal evaluation unavailable、learning outcome `NOT_MEASURED`。
