@@ -380,11 +380,11 @@ test("KataGo 與 Remote API 只在進階設定出現，且 API key 不進 learne
   assert.match(html, /本機 KataGo/);
   assert.match(html, /遠端對弈 API/);
   assert.match(html, /KataGo 官方下載頁/);
-  assert.match(html, /GitHub Pages 不能執行 KataGo/);
+  assert.match(html, /這個網站本身不能直接執行 KataGo/);
   assert.match(html, /其他網站使用者若未自行安裝並啟動 bridge/);
   assert.match(html, /沒有提供共用的託管 KataGo 服務/);
   assert.match(page, /https:\/\/your-katago-service\.example\/v1\/move/);
-  assert.match(html, /不提供、要求或保存 API key/);
+  assert.match(html, /不會要求或保存 API 金鑰/);
   assert.equal(/type="password"/.test(html), false);
   assert.equal(/id="api-key"|name="api-key"/i.test(html), false);
   assert.match(html, /id="test-provider-button"/);
