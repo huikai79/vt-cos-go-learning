@@ -128,7 +128,7 @@
   }
 
   function evidenceUnitKey(report) {
-    return report.evidenceChain+"||"+report.sourceDigest;
+    return report.evidenceChain;
   }
 
   function aggregatePersistableReports(reports) {
