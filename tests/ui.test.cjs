@@ -718,7 +718,7 @@ async function main() {
       };
       const beforeName = document.querySelector('#advanced-sequence-name').textContent;
       const beforeTarget = document.querySelector('#advanced-sequence-target').textContent;
-      const variantDisabledBefore = document.querySelector('#advanced-sequence-list [data-sequence-index="1"]').disabled;
+      const variantDisabledBefore = document.querySelector('#advanced-sequence-list [data-sequence-index="4"]').disabled;
       const termsHiddenBefore = document.querySelector('#advanced-sequence-terms').hidden;
       clickPoint(4, 4);
       const afterWrong = document.querySelector('#advanced-sequence-feedback').textContent;
@@ -726,7 +726,7 @@ async function main() {
       const afterFirstCorrect = document.querySelector('#advanced-sequence-feedback').textContent;
       const stepAfterOpponent = document.querySelector('#advanced-sequence-step').textContent;
       clickPoint(0, 2);
-      const raw = JSON.parse(localStorage.getItem('go-advanced-sequence-events-v2'));
+      const raw = JSON.parse(localStorage.getItem('go-advanced-sequence-events-v3'));
       return {
         sequenceTabs: document.querySelectorAll('#advanced-sequence-list [data-sequence-index]').length,
         beforeName,
@@ -739,7 +739,8 @@ async function main() {
         finalFeedback: document.querySelector('#advanced-sequence-feedback').textContent,
         takeawayHidden: document.querySelector('#advanced-sequence-takeaway').hidden,
         revealedName: document.querySelector('#advanced-sequence-name').textContent,
-        variantDisabledAfter: document.querySelector('#advanced-sequence-list [data-sequence-index="1"]').disabled,
+        variantDisabledAfter: document.querySelector('#advanced-sequence-list [data-sequence-index="4"]').disabled,
+        nextSeedDisabledAfter: document.querySelector('#advanced-sequence-list [data-sequence-index="1"]').disabled,
         termsHiddenAfter: document.querySelector('#advanced-sequence-terms').hidden,
         eventTypes: raw.events.map((event) => event.type),
         learnerMoves: raw.events.filter((event) => event.type === 'move_first' || event.type === 'move_retry').map((event) => ({type:event.type, step:event.stepIndex, correct:event.correct, firstResponse:event.firstResponse})),
@@ -757,7 +758,8 @@ async function main() {
     assert.match(advancedFlow.finalFeedback, /這條多手變化已走完/);
     assert.equal(advancedFlow.takeawayHidden, false);
     assert.equal(advancedFlow.revealedName, "倒撲實走：送一子後重新數氣");
-    assert.equal(advancedFlow.variantDisabledAfter, false);
+    assert.equal(advancedFlow.variantDisabledAfter, true);
+    assert.equal(advancedFlow.nextSeedDisabledAfter, false);
     assert.equal(advancedFlow.termsHiddenAfter, false);
     assert.deepEqual(advancedFlow.eventTypes, ["presented", "decision_presented", "move_first", "move_retry", "opponent_move", "decision_presented", "move_first", "completed"]);
     assert.deepEqual(advancedFlow.learnerMoves, [
