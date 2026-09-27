@@ -237,7 +237,7 @@
 
     if (!correct) {
       $("advanced-sequence-feedback").className = "feedback answer-result error";
-      $("advanced-sequence-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">這手合法，但不是本題 contract 的下一手</strong><span class="answer-explanation">盤面維持在作答前局面。請重新比較氣、出口與對手應手；首答已保存。</span>';
+      $("advanced-sequence-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">這手合法，但不是本題預期的下一手</strong><span class="answer-explanation">盤面維持在作答前局面。請重新比較氣、出口與對手應手；首答已保存。</span>';
       return;
     }
 
@@ -343,7 +343,7 @@
       renderSequenceList();
       $("advanced-sequence-feedback").className = "feedback";
       $("advanced-sequence-feedback").textContent = stage.complete
-        ? "這個固定交錯階段已完成。可重看教學重點，但不把重做當成新的 family transition 證據。"
+        ? "這一輪交錯練習已完成。你可以重看教學重點，但重做同一題不會被當成新的學習表現。"
         : "固定交錯狀態不可讀；已停止自動前進。";
       return;
     }
@@ -354,10 +354,10 @@
   if (!policyValidation.ok || !validation.ok) {
     $("advanced-sequence-list").innerHTML = "";
     $("advanced-sequence-name").textContent = "多手讀棋暫停";
-    $("advanced-sequence-target").textContent = "內容 contract 未通過規則驗證。";
+    $("advanced-sequence-target").textContent = "題目內容沒有通過規則檢查。";
     $("advanced-sequence-prompt").textContent = "";
     $("advanced-sequence-board").innerHTML = "";
-    setBlocked("進階多手題內容與 rules-backed contract 不一致；已 fail closed。");
+    setBlocked("進階多手題內容和規則檢查結果不一致，因此這組題目已暫停開放。");
     console.error("Advanced sequence validation failed", policyValidation.errors.concat(validation.errors));
     return;
   }
