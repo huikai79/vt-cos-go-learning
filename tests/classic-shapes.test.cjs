@@ -42,7 +42,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
   assert.match(html, /刀把五、梅花五與花六各有 bounded nakade practice/);
-  assert.match(html, /金雞獨立另走 rules-backed tesuji mechanism contract/);
+  assert.match(html, /金雞獨立走 rules-backed tesuji mechanism contract/);
   assert.match(html, /名稱仍在作答後才揭示|名稱放到第一手之後/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
