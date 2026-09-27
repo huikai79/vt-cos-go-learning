@@ -850,6 +850,45 @@ async function main() {
     assert.equal(correctFeedback.name, "直三");
     assert.equal(correctFeedback.nextDisabled, false);
 
+    const pyramidFourState = await evaluate(socket, `(() => ({
+      points: document.querySelectorAll('#pyramid-four-board [data-pyramid-four-x][data-pyramid-four-y]').length,
+      prompt: document.querySelector('#pyramid-four-prompt').textContent,
+      revealHidden: document.querySelector('#pyramid-four-reveal').hidden,
+      nextDisabled: document.querySelector('#pyramid-four-next').disabled
+    }))()`);
+    assert.equal(pyramidFourState.points, 4);
+    assert.match(pyramidFourState.prompt, /輪到黑棋守/);
+    assert.equal(pyramidFourState.revealHidden, true);
+    assert.equal(pyramidFourState.nextDisabled, true);
+
+    const pyramidFourWrong = await evaluate(socket, `(() => {
+      const point = document.querySelector('#pyramid-four-board [data-pyramid-four-x="3"][data-pyramid-four-y="2"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#pyramid-four-feedback').textContent,
+        revealHidden: document.querySelector('#pyramid-four-reveal').hidden,
+        nextDisabled: document.querySelector('#pyramid-four-next').disabled
+      };
+    })()`);
+    assert.match(pyramidFourWrong.feedback, /不是 T 形 geometry/);
+    assert.equal(pyramidFourWrong.revealHidden, true);
+    assert.equal(pyramidFourWrong.nextDisabled, true);
+
+    const pyramidFourCorrect = await evaluate(socket, `(() => {
+      const point = document.querySelector('#pyramid-four-board [data-pyramid-four-x="3"][data-pyramid-four-y="3"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#pyramid-four-feedback').textContent,
+        revealHidden: document.querySelector('#pyramid-four-reveal').hidden,
+        name: document.querySelector('#pyramid-four-name').textContent,
+        nextDisabled: document.querySelector('#pyramid-four-next').disabled
+      };
+    })()`);
+    assert.match(pyramidFourCorrect.feedback, /共同急所|T 形中心/);
+    assert.equal(pyramidFourCorrect.revealHidden, false);
+    assert.equal(pyramidFourCorrect.name, "丁四／Pyramid Four");
+    assert.equal(pyramidFourCorrect.nextDisabled, false);
+
     const flowerSixState = await evaluate(socket, `(() => {
       const board = document.querySelector('#flower-six-board');
       const points = [...board.querySelectorAll('[data-flower-six-x][data-flower-six-y]')];
