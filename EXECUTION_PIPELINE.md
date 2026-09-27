@@ -252,3 +252,4 @@
 - **Negative oracle：** 小曲尺舊術語、BadukWorld L Group 文字敘述、Carpenter Diagram 2.1 在未保存座標前都必須回 `INSUFFICIENT_GEOMETRY_EVIDENCE`；不得由名稱或生死結論補 geometry。
 - **Authority boundary：** fingerprint 只能回答『這兩份已結構化 geometry 是否等價』；不能決定死活答案、family taxonomy、regional name、scoring、KC 或 mastery。
 - **下一步：** 尋找可合法保存／人工轉錄且具 provenance 的 L Group／Carpenter geometry source，先完成座標提取 protocol，再嘗試解除小曲尺 ambiguity。
+- **Validation：** PR #33 verify run #465 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
