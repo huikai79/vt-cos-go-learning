@@ -212,6 +212,10 @@ Reference -> Oracle -> Dependency -> Fork
 
 每題在交付前需驗證：初始棋形無重疊；指定答案為合法手；提子題確實提掉指定棋串；救棋題確實增加氣；連接題確實成為同一串；斷點題確實佔住唯一共同空點；簡單劫不可立刻回到上一個棋形；選擇題有答案、提示與理由；題目文字與棋形一致；多解題不能只用單一座標評分。15 單元的機器檢查位於 `tests/go.test.cjs`，實際瀏覽器流程位於 `tests/ui.test.cjs`。
 
+## 19×19 Advanced practice boundary
+
+`live-game.js` 現支援 19×19 作為標準全盤 practice，沿用同一 rules engine、SGF round-trip、Pass／認輸與人工死子確認；`advanced.html` 的完整棋局 track 只路由到此 Experience，不另建平行棋盤 runtime。19×19 操作寫入 `live-practice-events-v2`，固定 `formalEligible=false`、`qualifiedOpportunity=false`；舊 `live-practice-events-v1` 保留 legacy reader。`live-eligibility-v1` 仍硬限定 9×9，因此 19×19 不取得 T3 authority。課程端 `sgf.js` 的單點重建仍只接受 9×9；19×19 SGF 可匯出供 KaTrain／其他工具，但不能被本站假裝已完成深度複盤。heuristic bot 只保證候選經 rules engine 合法，不代表 19 路合理棋力。
+
 ## 目前限制
 
 這是 15 單元的教材與資料原型。驗收畫面洩漏、首答被重試覆寫、固定應用分母缺漏，以及 storage／trial 版本責任已由測試驗證。Evidence Boundary 修正後，`personal-pilot-v3` 明確使用舊 R1 自我審查中已曝光的八題，`formalEligible=false`；v1／v2 保留為 legacy，一般匯出仍遮蔽公開保留組答案。R1a 已從學習者介面隔離，只供不同於學習者的外部審查者。擁有者已接受原始碼公開，因此 48 題均標記 `exposureStatus="public_source"`、`formalHoldoutEligible=false`，`formalHoldoutPoolStatus="retired_due_to_publication"`；`holdout` 只剩排程相容語意。正式評量必須建立從未公開的新題庫與角色分離流程。R1b 難度可比性未知。SCD 與再犯間隔的計算、介面和匯出已完成工程驗證，變形庫也已有非 holdout T2 流程題，但尚無真人延後資料。內容效度、完整死活課綱、固定應用與 SGF 可落子著手重建的任務效度、方案比較及實戰遷移仍未完成。完整狀態以 [完成矩陣](COMPLETION_MATRIX.md) 為準，正式成效判斷不得開始。
