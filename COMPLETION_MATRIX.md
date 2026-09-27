@@ -644,3 +644,8 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **反證：** test 會要求 handoff protocol/fingerprint 與 verifier 同步，且不得載入 Phase 2 答案模組或出現 answer/scoring 欄位；served-content gate 也會直接讀公開 handoff。
 - **真人模板修正：** `formal-teaching-evidence.example.json` 從 stale candidate `-a` 修到 current `-b` / `fnv1a32-js16-e9637bc0`，並新增同步測試。
 - **狀態：** R1a 執行條件 = **READY_FOR_EXTERNAL_REVIEW**；R1a 證據本身仍 **AWAITING_EXTERNAL_RECEIPT**。沒有外部回條前，不升格內容效度、正式教學或正式評量。
+
+
+### 2026-09-28 Bent Three bounded practice validation
+
+PR #43 verify run #499 全數 PASS：Node contracts、JavaScript syntax、deterministic R1 review bank、formal teaching candidate、teaching gate、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。此結果只支持曲三 geometry-derived first-move contract；不建立完整答案樹、內容效度、formal assessment 或 learning effect。
