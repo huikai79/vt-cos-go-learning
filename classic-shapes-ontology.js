@@ -92,6 +92,7 @@
     nihonkiinThreeNakade: source("nihonkiinThreeNakade","日本棋院：三目中手の活用","https://www.nihonkiin.or.jp/publishing/books/igo_drill4.html","official","nihonkiin-three-nakade"),
     playgoBentThree: source("playgoBentThree","PlayGo：Bent Three vital point","https://playgogame.org/blog/tsumego-trainer-launch","instructional_secondary","playgo-bent-three"),
     ntkrFlowerSix: source("ntkrFlowerSix","日本囲碁連盟：花六","https://www.ntkr.co.jp/igoyogo/yogo_801.html","publisher","ntkr-flower-six"),
+    ntkrRectangularSix: source("ntkrRectangularSix","日本囲碁連盟：板六","https://www.ntkr.co.jp/igoyogo/yogo_79.html","publisher","ntkr-rectangular-six"),
     cazenaveRabbitySix: source("cazenaveRabbitySix","Vilà & Cazenave：When One Eye is Sufficient","https://www.lamsade.dauphine.fr/~cazenave/papers/eyeLabelling.pdf","primary_research","cazenave-rabbity-six"),
     bgaTerms: source("bgaTerms","British Go Association：Japanese Go terms","https://www.britgo.org/general/definitions.html","association","bga-terms"),
     bgaRules: source("bgaRules","British Go Association：rules comparison","https://www.britgo.org/rules/compare.html","association","bga-rules"),
@@ -251,6 +252,20 @@
       taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
       sourceIds:["go4goChinese","yeefanChineseTerms","yeefanPyramidFour","bgaPyramidFour","ffgDictionary"],
       note:"canonical identity 是 T tetromino；答案由唯一 degree-3 center 即時計算。"
+    },
+    {
+      id:"rectangular-six-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
+      teachingLabel:"2×3 六目眼的兩個中心互為 miai", practiceStatus:"playable_bounded_miai_response_contract", reviewStatus:REVIEW.VERIFIED,
+      names:[
+        name("zh-Hant","板六",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.VERIFIED,["go4goChinese","yeefanChineseTerms"],{displayPreference:"project"}),
+        name("ja-JP","板六",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.VERIFIED,["ntkrRectangularSix"]),
+        name("en","Rectangular Six",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.ASSOCIATION,REVIEW.VERIFIED,["malaysiaWeiqiBulky","chenStaticLifeDeath"])
+      ],
+      nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-rectangular-six-miai-v1","2x3-rectangle-hexomino","center",{surroundingDefects:"sealed",boardContext:"non-corner"}),
+      taxonomyMemberships:[], rulesetBehavior:[],
+      negativeMappings:[{locale:"zh-Hant",name:"盤角板六",relation:"exact_alias",status:"blocked",reason:"盤角板六是 corner-specific family，死活可受外氣等條件影響；不得與一般板六自動合併",sourceIds:["go4goChinese"]}],
+      sourceIds:["go4goChinese","yeefanChineseTerms","ntkrRectangularSix","malaysiaWeiqiBulky","chenStaticLifeDeath"],
+      note:"外部來源支持無弱點一般板六為活形；本 practice 只評 2×3 geometry 中唯二 degree-3 中心的 miai 第一回應，不把完整無條件活 proof 寫成 scorer。"
     },
     {
       id:"flower-six-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",

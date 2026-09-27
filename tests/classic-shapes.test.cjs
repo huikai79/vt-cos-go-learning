@@ -22,6 +22,8 @@ const CurvedFourStatus = require("../classic-curved-four-status-practice.js");
 const CurvedFourStatusContract = require("../classic-curved-four-status-contract.js");
 const PyramidFour = require("../classic-pyramid-four-practice.js");
 const PyramidFourContract = require("../classic-pyramid-four-contract.js");
+const RectangularSix = require("../classic-rectangular-six-practice.js");
+const RectangularSixContract = require("../classic-rectangular-six-contract.js");
 const FlowerSix = require("../classic-flower-six-practice.js");
 const FlowerSixContract = require("../classic-flower-six-contract.js");
 const GoldenChicken = require("../classic-golden-chicken-practice.js");
@@ -222,7 +224,7 @@ test("catalog adapter 暴露 geometry evidence，但不由名稱補 geometry", (
 });
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v17");
+  assert.equal(Catalog.version, "world-classic-shapes-v18");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -272,7 +274,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["bent-three-v1", "big-pigs-mouth-candidate-v1", "curved-four-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "pyramid-four-v1", "square-four-v1", "straight-four-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["bent-three-v1", "big-pigs-mouth-candidate-v1", "curved-four-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "pyramid-four-v1", "rectangular-six-v1", "square-four-v1", "straight-four-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -590,6 +592,65 @@ test("四段探索明確只屬於直三，不冒充所有名型共用流程", ()
   assert.match(html, /aria-label="直三專用探索進度"/);
 });
 
+
+test("板六四個 variant 由 2×3 geometry 推導兩個 miai 中心與另一中心回應", () => {
+  assert.equal(RectangularSix.version,"rectangular-six-miai-practice-v1");
+  assert.equal(RectangularSix.scoringContractVersion,RectangularSixContract.CONTRACT_VERSION);
+  assert.equal(RectangularSix.items.length,4);
+  const deps={ Go, PracticeContract };
+  const all=RectangularSixContract.validateAll(RectangularSix.items,deps);
+  assert.equal(all.ok,true,all.errors.join("; "));
+  for (const item of RectangularSix.items) {
+    for (const field of ["answer","correctMove","responsePoint","vitalPoint"]) {
+      assert.equal(Object.prototype.hasOwnProperty.call(item,field),false,item.id+" "+field);
+    }
+    const v=RectangularSixContract.validateItem(item,deps);
+    assert.equal(v.ok,true,v.errors.join("; "));
+    assert.equal(v.centers.length,2,item.id);
+    assert.ok(v.centers.some((point)=>RectangularSixContract.samePoint(point,item.attackPoint)),item.id);
+    assert.ok(v.centers.some((point)=>RectangularSixContract.samePoint(point,v.expectedResponse)),item.id);
+    assert.equal(RectangularSixContract.samePoint(item.attackPoint,v.expectedResponse),false,item.id);
+    assert.equal(RectangularSixContract.score(item,v.expectedResponse,deps).correct,true,item.id);
+  }
+});
+
+test("板六 contract 對 wrong geometry、非中心 attack、偷塞 response 與 stale 座標 fail closed", () => {
+  const deps={ Go, PracticeContract };
+  const seed=RectangularSix.items[0];
+  const wrongGeometry={...seed,id:"rect-six-wrong-geometry",eyeSpace:[[2,2],[3,2],[2,3],[3,3],[1,2],[2,1]]};
+  assert.equal(RectangularSixContract.validateItem(wrongGeometry,deps).ok,false);
+
+  const cornerAttack={...seed,id:"rect-six-corner-attack",attackPoint:[2,3]};
+  assert.equal(RectangularSixContract.validateItem(cornerAttack,deps).ok,false);
+
+  const leaked={...seed,id:"rect-six-leaked",responsePoint:[3,4]};
+  assert.equal(RectangularSixContract.validateItem(leaked,deps).ok,false);
+
+  const vertical=RectangularSix.items.find((item)=>item.variantId==="vertical-white");
+  const seedResponse=RectangularSixContract.validateItem(seed,deps).expectedResponse;
+  const verticalValidation=RectangularSixContract.validateItem(vertical,deps);
+  assert.notDeepEqual(verticalValidation.expectedResponse,seedResponse);
+  const stale=RectangularSixContract.score(vertical,seedResponse,deps);
+  assert.equal(stale.ok,true);
+  assert.equal(stale.correct,false);
+});
+
+test("板六 ontology/catalog 明確與盤角板六分離", () => {
+  const concept=Ontology.concepts.find((item)=>item.id==="rectangular-six-v1");
+  const entry=Catalog.entries.find((item)=>item.id==="rectangular-six-v1");
+  assert.ok(concept);
+  assert.equal(concept.geometryIdentity.contractVersion,"classic-rectangular-six-miai-v1");
+  assert.equal(concept.geometryIdentity.fingerprint,"2x3-rectangle-hexomino");
+  assert.equal(concept.geometryIdentity.conditions.surroundingDefects,"sealed");
+  assert.ok(concept.names.some((item)=>item.name==="板六"));
+  assert.ok(concept.names.some((item)=>item.name==="Rectangular Six"));
+  assert.ok(concept.negativeMappings.some((item)=>item.name==="盤角板六" && item.status==="blocked"));
+  assert.equal(entry.practiceStatus,"playable_bounded_miai_response_contract");
+  assert.ok(entry.geometryEvidence.some((item)=>item.id==="rectangular-six-contract-geometry-v1"));
+  assert.match(html,/板六／Rectangular Six：對方拿一個中心，就回另一個/);
+  assert.match(html,/classic-rectangular-six-contract\.js\?v=classic-rectangular-six-miai-v1/);
+  assert.match(js,/GoRectangularSixMiaiContract/);
+});
 
 test("花六四個 variant 通過 Rabbity Six geometry + rules bounded contract", () => {
   assert.equal(FlowerSix.version, "flower-six-practice-v1");

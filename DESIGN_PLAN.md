@@ -1,3 +1,6 @@
+2026-09-28 板六 / Rectangular Six bounded miai-response v1：曲四合併後，六目眼除了花六 unsettled family，還缺一個『兩個中心互為 miai』的活形對照。日本囲碁連盟明確把板六定義為無弱點活形；馬來西亞圍棋協會教材稱 rectangular six 為 living shape；Chen & Chen (1999) 將 perfect Rectangular-Six 列為 2-eye region。Go4Go／YeeFan 亦直接映射「板六 = rectangular six」。
+為避免把『一般板六無條件活』整段教材結論直接寫進 scorer，本輪只建立 `classic-rectangular-six-miai-v1`：2×3 rectangle 必須有恰好兩個 degree-3 中心；題目把攻方第一手限定為其中一中心，守方正解由 geometry 重算為另一中心。四個 variant 覆蓋攻方換中心、旋轉、換色與位移。Ontology 明確阻止 `盤角板六` 自動 alias 一般板六；corner-specific Rectangular Six 可受外氣等條件影響，需另一 contract。
+
 2026-09-28 曲四 / Curved Four status proof v1：方四／直四合併後，四目眼 status contrast 還缺『彎折但仍活』的 topology，否則學習者可能把 straightness 誤學成活形必要條件。Go4Go 將「彎四」對應 Bent Four；Chen & Chen (1999) 將 perfect four-point curved line 明確稱 Curved-Four，並列為 2-eye region。另有中文教材把曲四與直四並列為活形。
 新增獨立 `classic-curved-four-status-v1`，不修改已驗證的 `classic-four-space-status-v1`。曲四使用 L-tetromino geometry；對攻方四種第一手逐一重播，守方每一支都必須至少找到一手合法回應，使剩餘兩個眼點互不相鄰。兩個 variant 覆蓋換色、旋轉與位移。Ontology 明確加入 negative mapping：Curved Four／Bent Four 不得自動 alias `Bent Four in the Corner`，因後者是 corner/rules-sensitive concept。
 UI 將曲四追加到同一四目眼 status contrast 的第 5、6 題，前四題方四／直四順序與 contract 完全不變。此 proof 同樣只適用 sealed、無缺陷的局部 eye-space，不外推盤角曲四、外氣、斷點或全局連接。

@@ -14,6 +14,8 @@
   const CurvedFourStatusContract = window.GoCurvedFourStatusContract;
   const PyramidFour = window.GoPyramidFourPractice;
   const PyramidFourContract = window.GoPyramidFourContract;
+  const RectangularSix = window.GoRectangularSixMiaiPractice;
+  const RectangularSixContract = window.GoRectangularSixMiaiContract;
   const FlowerSix = window.GoFlowerSixPractice;
   const FlowerSixContract = window.GoFlowerSixContract;
   const GoldenChicken = window.GoGoldenChickenPractice;
@@ -28,7 +30,7 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !BentThree || !BentThreeContract || !FourSpaceStatus || !FourSpaceStatusContract || !CurvedFourStatus || !CurvedFourStatusContract || !PyramidFour || !PyramidFourContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !BentThree || !BentThreeContract || !FourSpaceStatus || !FourSpaceStatusContract || !CurvedFourStatus || !CurvedFourStatusContract || !PyramidFour || !PyramidFourContract || !RectangularSix || !RectangularSixContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
@@ -45,6 +47,8 @@
   ];
   const pyramidFourValidation = PyramidFourContract.validateAll(PyramidFour.items, { Go, PracticeContract });
   if (!pyramidFourValidation.ok) throw new Error("Pyramid Four practice contract invalid: " + pyramidFourValidation.errors.join("; "));
+  const rectangularSixValidation = RectangularSixContract.validateAll(RectangularSix.items, { Go, PracticeContract });
+  if (!rectangularSixValidation.ok) throw new Error("Rectangular Six miai contract invalid: " + rectangularSixValidation.errors.join("; "));
   const flowerSixValidation = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
   if (!flowerSixValidation.ok) throw new Error("Flower Six practice contract invalid: " + flowerSixValidation.errors.join("; "));
   const goldenChickenValidation = GoldenChickenContract.validateAll(GoldenChicken.items, Go);
@@ -98,6 +102,10 @@
   let pyramidFourSolved = false;
   let pyramidFourHintShown = false;
   let pyramidFourCursor = [3, 3];
+  let rectSixIndex = 0;
+  let rectSixSolved = false;
+  let rectSixHintShown = false;
+  let rectSixCursor = [2, 3];
   let flowerSixIndex = 0;
   let flowerSixSolved = false;
   let flowerSixHintShown = false;
@@ -720,6 +728,105 @@
     if(item.eyeSpace.some(([x,y])=>x===next[0]&&y===next[1])){
       pyramidFourCursor=next;
       renderPyramidFourBoard();
+    }
+  }
+
+  function initialRectSixCursor(item,validation) {
+    const candidate=item.eyeSpace.find((point) =>
+      !RectangularSixContract.samePoint(point,item.attackPoint)
+      && !RectangularSixContract.samePoint(point,validation.expectedResponse)
+    );
+    return (candidate || validation.expectedResponse).slice();
+  }
+
+  function renderRectSixBoard() {
+    const item=RectangularSix.items[rectSixIndex];
+    const validation=RectangularSixContract.validateItem(item,{ Go, PracticeContract });
+    if (!validation.ok) throw new Error("Rectangular Six item invalid: " + validation.errors.join("; "));
+    const size=item.boardSize;
+    const pad=7;
+    const span=86;
+    const step=span/(size-1);
+    const setup=new Map(validation.setupStones.map(([x,y,color])=>[pointKey(x,y),color]));
+    const eye=new Set(item.eyeSpace.map(([x,y])=>pointKey(x,y)));
+    const attacker=item.defenderColor===Go.BLACK ? Go.WHITE : Go.BLACK;
+    const lines=[];
+    const nodes=[];
+    for(let i=0;i<size;i+=1){
+      const p=pad+i*step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for(let y=0;y<size;y+=1) for(let x=0;x<size;x+=1){
+      const px=pad+x*step;
+      const py=pad+y*step;
+      const color=setup.get(pointKey(x,y));
+      if(color===Go.BLACK) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black"/>');
+      else if(color===Go.WHITE) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white"/>');
+      else if(RectangularSixContract.samePoint([x,y],item.attackPoint)) {
+        nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="' + (attacker===Go.BLACK ? 'stone-black' : 'stone-white') + '"/>');
+      } else if(eye.has(pointKey(x,y))) {
+        nodes.push('<circle data-rect-six-x="' + x + '" data-rect-six-y="' + y + '" cx="' + px + '" cy="' + py + '" r="6.2" class="classic-hit bulky-hit"/>');
+      }
+    }
+    const [cx0,cy0]=rectSixCursor;
+    nodes.push('<circle cx="' + (pad+cx0*step) + '" cy="' + (pad+cy0*step) + '" r="6.4" class="classic-cursor-ring"/>');
+    $("rect-six-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("rect-six-cursor-status").textContent="游標：第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderRectSix() {
+    const item=RectangularSix.items[rectSixIndex];
+    const validation=RectangularSixContract.validateItem(item,{ Go, PracticeContract });
+    if(!validation.ok) throw new Error("Rectangular Six item invalid: " + validation.errors.join("; "));
+    rectSixSolved=false;
+    rectSixHintShown=false;
+    rectSixCursor=initialRectSixCursor(item,validation);
+    $("rect-six-tag").textContent=(rectSixIndex+1) + " / " + RectangularSix.items.length + " · miai response";
+    $("rect-six-title").textContent=rectSixIndex===0 ? "對方拿一個中心，就回另一個" : "換方向／換色，再找另一中心";
+    $("rect-six-prompt").textContent=item.prompt;
+    $("rect-six-feedback").className="feedback";
+    $("rect-six-feedback").textContent="";
+    $("rect-six-reveal").hidden=true;
+    $("rect-six-hint").disabled=false;
+    $("rect-six-next").disabled=true;
+    $("rect-six-next").textContent=rectSixIndex===RectangularSix.items.length-1 ? "完成板六 miai 練習" : "下一題 →";
+    $("rect-six-board-size").textContent=item.boardSize + " × " + item.boardSize + " bounded practice";
+    $("rect-six-side").textContent=item.defenderColor===Go.BLACK ? "● 黑棋守" : "○ 白棋守";
+    renderRectSixBoard();
+  }
+
+  function attemptRectSix(x,y) {
+    if(rectSixSolved) return;
+    const item=RectangularSix.items[rectSixIndex];
+    const result=RectangularSixContract.score(item,[x,y],{ Go, PracticeContract });
+    if(!result.ok){
+      $("rect-six-feedback").className="feedback error";
+      $("rect-six-feedback").textContent="板六 miai contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if(result.correct){
+      rectSixSolved=true;
+      $("rect-six-feedback").className="feedback success";
+      $("rect-six-feedback").textContent=item.success;
+      $("rect-six-reveal").hidden=false;
+      $("rect-six-hint").disabled=true;
+      $("rect-six-next").disabled=false;
+    }else{
+      $("rect-six-feedback").className="feedback error";
+      $("rect-six-feedback").textContent=rectSixHintShown
+        ? "還不是。重新找 2×3 rectangle 唯二 degree-3 中心；已被攻方佔掉一個，所以只剩另一個。"
+        : "這手合法，但不是另一個 miai 中心。";
+    }
+  }
+
+  function moveRectSixCursor(dx,dy) {
+    const item=RectangularSix.items[rectSixIndex];
+    const next=[rectSixCursor[0]+dx,rectSixCursor[1]+dy];
+    if(item.eyeSpace.some(([x,y])=>x===next[0]&&y===next[1])
+      && !RectangularSixContract.samePoint(next,item.attackPoint)){
+      rectSixCursor=next;
+      renderRectSixBoard();
     }
   }
 
@@ -1613,6 +1720,43 @@
     }
   });
 
+  $("rect-six-board").addEventListener("click",(event) => {
+    const hit=event.target.closest("[data-rect-six-x][data-rect-six-y]");
+    if(!hit) return;
+    rectSixCursor=[Number(hit.dataset.rectSixX),Number(hit.dataset.rectSixY)];
+    renderRectSixBoard();
+    attemptRectSix(rectSixCursor[0],rectSixCursor[1]);
+  });
+
+  $("rect-six-board").addEventListener("keydown",(event) => {
+    if(event.key==="ArrowLeft"){ event.preventDefault(); moveRectSixCursor(-1,0); }
+    else if(event.key==="ArrowRight"){ event.preventDefault(); moveRectSixCursor(1,0); }
+    else if(event.key==="ArrowUp"){ event.preventDefault(); moveRectSixCursor(0,-1); }
+    else if(event.key==="ArrowDown"){ event.preventDefault(); moveRectSixCursor(0,1); }
+    else if(event.key==="Enter" || event.key===" "){
+      event.preventDefault();
+      attemptRectSix(rectSixCursor[0],rectSixCursor[1]);
+    }
+  });
+
+  $("rect-six-hint").addEventListener("click",() => {
+    rectSixHintShown=true;
+    $("rect-six-feedback").className="feedback";
+    $("rect-six-feedback").textContent=RectangularSix.items[rectSixIndex].hint;
+  });
+
+  $("rect-six-next").addEventListener("click",() => {
+    if(!rectSixSolved) return;
+    if(rectSixIndex<RectangularSix.items.length-1){
+      rectSixIndex+=1;
+      renderRectSix();
+    }else{
+      $("rect-six-feedback").className="feedback success";
+      $("rect-six-feedback").textContent="板六 miai 回應練習完成。這只證明你能由 2×3 geometry 找到另一中心，不代表已做完整板六生死 proof 或盤角板六判定。";
+      $("rect-six-next").disabled=true;
+    }
+  });
+
   $("flower-six-board").addEventListener("click",(event) => {
     const hit = event.target.closest("[data-flower-six-x][data-flower-six-y]");
     if (!hit) return;
@@ -1854,6 +1998,7 @@
   renderBentThree();
   renderFourStatus();
   renderPyramidFour();
+  renderRectSix();
   renderFlowerSix();
   renderGoldenChicken();
   renderBigPigsMouth();
