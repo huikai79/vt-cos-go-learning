@@ -6,6 +6,8 @@
   const PracticeContract = window.GoClassicShapePracticeContract;
   const CrossFive = window.GoCrossFivePractice;
   const CrossFiveContract = window.GoCrossFiveContract;
+  const PyramidFour = window.GoPyramidFourPractice;
+  const PyramidFourContract = window.GoPyramidFourContract;
   const FlowerSix = window.GoFlowerSixPractice;
   const FlowerSixContract = window.GoFlowerSixContract;
   const GoldenChicken = window.GoGoldenChickenPractice;
@@ -20,11 +22,13 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !PyramidFour || !PyramidFourContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
   if (!crossFiveValidation.ok) throw new Error("Cross Five practice contract invalid: " + crossFiveValidation.errors.join("; "));
+  const pyramidFourValidation = PyramidFourContract.validateAll(PyramidFour.items, { Go, PracticeContract });
+  if (!pyramidFourValidation.ok) throw new Error("Pyramid Four practice contract invalid: " + pyramidFourValidation.errors.join("; "));
   const flowerSixValidation = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
   if (!flowerSixValidation.ok) throw new Error("Flower Six practice contract invalid: " + flowerSixValidation.errors.join("; "));
   const goldenChickenValidation = GoldenChickenContract.validateAll(GoldenChicken.items, Go);
@@ -67,6 +71,10 @@
   let crossSolved = false;
   let crossHintShown = false;
   let crossCursor = [3, 3];
+  let pyramidFourIndex = 0;
+  let pyramidFourSolved = false;
+  let pyramidFourHintShown = false;
+  let pyramidFourCursor = [3, 3];
   let flowerSixIndex = 0;
   let flowerSixSolved = false;
   let flowerSixHintShown = false;
@@ -365,6 +373,95 @@
     if (item.eyeSpace.some(([x,y]) => x===next[0] && y===next[1])) {
       crossCursor = next;
       renderCrossBoard();
+    }
+  }
+
+  function renderPyramidFourBoard() {
+    const item=PyramidFour.items[pyramidFourIndex];
+    const validation=PyramidFourContract.validateItem(item,{ Go, PracticeContract });
+    if (!validation.ok) throw new Error("Pyramid Four item invalid: " + validation.errors.join("; "));
+    const size=item.boardSize;
+    const pad=7;
+    const span=86;
+    const step=span/(size-1);
+    const setup=new Map(validation.setupStones.map(([x,y,color])=>[pointKey(x,y),color]));
+    const eye=new Set(item.eyeSpace.map(([x,y])=>pointKey(x,y)));
+    const lines=[];
+    const nodes=[];
+    for(let i=0;i<size;i+=1){
+      const p=pad+i*step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for(let y=0;y<size;y+=1) for(let x=0;x<size;x+=1){
+      const px=pad+x*step;
+      const py=pad+y*step;
+      const color=setup.get(pointKey(x,y));
+      if(color===Go.BLACK) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black"/>');
+      if(color===Go.WHITE) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white"/>');
+      if(eye.has(pointKey(x,y))) nodes.push('<circle data-pyramid-four-x="' + x + '" data-pyramid-four-y="' + y + '" cx="' + px + '" cy="' + py + '" r="6.2" class="classic-hit bulky-hit"/>');
+    }
+    const [cx0,cy0]=pyramidFourCursor;
+    nodes.push('<circle cx="' + (pad+cx0*step) + '" cy="' + (pad+cy0*step) + '" r="6.4" class="classic-cursor-ring"/>');
+    $("pyramid-four-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("pyramid-four-cursor-status").textContent="游標：第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderPyramidFour() {
+    const item=PyramidFour.items[pyramidFourIndex];
+    const validation=PyramidFourContract.validateItem(item,{ Go, PracticeContract });
+    if(!validation.ok) throw new Error("Pyramid Four item invalid: " + validation.errors.join("; "));
+    pyramidFourSolved=false;
+    pyramidFourHintShown=false;
+    pyramidFourCursor=item.eyeSpace[0].slice();
+    $("pyramid-four-tag").textContent=(pyramidFourIndex+1) + " / " + PyramidFour.items.length + " · answer derived from geometry";
+    $("pyramid-four-title").textContent=pyramidFourIndex===0 ? "找 T 形唯一中心" : "換角色／方向，再找共同急所";
+    $("pyramid-four-prompt").textContent=item.prompt;
+    $("pyramid-four-feedback").className="feedback";
+    $("pyramid-four-feedback").textContent="";
+    $("pyramid-four-reveal").hidden=true;
+    $("pyramid-four-hint").disabled=false;
+    $("pyramid-four-next").disabled=true;
+    $("pyramid-four-next").textContent=pyramidFourIndex===PyramidFour.items.length-1 ? "完成丁四練習" : "下一題 →";
+    $("pyramid-four-side").textContent=item.playerColor===Go.BLACK ? "● 黑棋" : "○ 白棋";
+    renderPyramidFourBoard();
+  }
+
+  function attemptPyramidFour(x,y) {
+    if(pyramidFourSolved) return;
+    const item=PyramidFour.items[pyramidFourIndex];
+    if(!item.eyeSpace.some(([ex,ey])=>ex===x&&ey===y)){
+      $("pyramid-four-feedback").className="feedback error";
+      $("pyramid-four-feedback").textContent="這一區只比較四個眼空中的候選點。";
+      return;
+    }
+    const result=PyramidFourContract.score(item,[x,y],{ Go, PracticeContract });
+    if(!result.ok){
+      $("pyramid-four-feedback").className="feedback error";
+      $("pyramid-four-feedback").textContent="丁四 geometry contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if(result.correct){
+      pyramidFourSolved=true;
+      $("pyramid-four-feedback").className="feedback success";
+      $("pyramid-four-feedback").textContent=item.success;
+      $("pyramid-four-reveal").hidden=false;
+      $("pyramid-four-hint").disabled=true;
+      $("pyramid-four-next").disabled=false;
+    }else{
+      $("pyramid-four-feedback").className="feedback error";
+      $("pyramid-four-feedback").textContent=pyramidFourHintShown
+        ? "還不是。重新數四個眼空的直接鄰點；只有一點會同時碰到另外三點。"
+        : "這手合法，但不是 T 形 geometry 推導出的共同急所。";
+    }
+  }
+
+  function movePyramidFourCursor(dx,dy){
+    const item=PyramidFour.items[pyramidFourIndex];
+    const next=[pyramidFourCursor[0]+dx,pyramidFourCursor[1]+dy];
+    if(item.eyeSpace.some(([x,y])=>x===next[0]&&y===next[1])){
+      pyramidFourCursor=next;
+      renderPyramidFourBoard();
     }
   }
 
@@ -1163,6 +1260,43 @@
     }
   });
 
+  $("pyramid-four-board").addEventListener("click",(event) => {
+    const hit=event.target.closest("[data-pyramid-four-x][data-pyramid-four-y]");
+    if(!hit) return;
+    pyramidFourCursor=[Number(hit.dataset.pyramidFourX),Number(hit.dataset.pyramidFourY)];
+    renderPyramidFourBoard();
+    attemptPyramidFour(pyramidFourCursor[0],pyramidFourCursor[1]);
+  });
+
+  $("pyramid-four-board").addEventListener("keydown",(event) => {
+    if(event.key==="ArrowLeft"){ event.preventDefault(); movePyramidFourCursor(-1,0); }
+    else if(event.key==="ArrowRight"){ event.preventDefault(); movePyramidFourCursor(1,0); }
+    else if(event.key==="ArrowUp"){ event.preventDefault(); movePyramidFourCursor(0,-1); }
+    else if(event.key==="ArrowDown"){ event.preventDefault(); movePyramidFourCursor(0,1); }
+    else if(event.key==="Enter" || event.key===" "){
+      event.preventDefault();
+      attemptPyramidFour(pyramidFourCursor[0],pyramidFourCursor[1]);
+    }
+  });
+
+  $("pyramid-four-hint").addEventListener("click",() => {
+    pyramidFourHintShown=true;
+    $("pyramid-four-feedback").className="feedback";
+    $("pyramid-four-feedback").textContent=PyramidFour.items[pyramidFourIndex].hint;
+  });
+
+  $("pyramid-four-next").addEventListener("click",() => {
+    if(!pyramidFourSolved) return;
+    if(pyramidFourIndex<PyramidFour.items.length-1){
+      pyramidFourIndex+=1;
+      renderPyramidFour();
+    }else{
+      $("pyramid-four-feedback").className="feedback success";
+      $("pyramid-four-feedback").textContent="丁四／Pyramid Four 練習完成。這只表示完成四個 geometry-derived first-move variant，不代表完整吃淨答案樹、mastery 或 transfer。";
+      $("pyramid-four-next").disabled=true;
+    }
+  });
+
   $("flower-six-board").addEventListener("click",(event) => {
     const hit = event.target.closest("[data-flower-six-x][data-flower-six-y]");
     if (!hit) return;
@@ -1401,6 +1535,7 @@
   renderCatalog("all");
   renderContrast();
   renderCross();
+  renderPyramidFour();
   renderFlowerSix();
   renderGoldenChicken();
   renderBigPigsMouth();
