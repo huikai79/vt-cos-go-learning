@@ -10,11 +10,13 @@
   <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v11">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v9"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v10"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
   <script defer src="classic-cross-five-practice.js?v=cross-five-practice-v1"></script>
+  <script defer src="classic-pyramid-four-contract.js?v=classic-pyramid-four-vital-point-v1"></script>
+  <script defer src="classic-pyramid-four-practice.js?v=pyramid-four-practice-v1"></script>
   <script defer src="classic-flower-six-contract.js?v=classic-flower-six-vital-point-v1"></script>
   <script defer src="classic-flower-six-practice.js?v=flower-six-practice-v1"></script>
   <script defer src="classic-golden-chicken-contract.js?v=classic-golden-chicken-mechanism-v1"></script>
@@ -27,7 +29,7 @@
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v12"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v13"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -40,7 +42,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五、梅花五與花六各有 bounded nakade practice；金雞獨立走 rules-backed tesuji mechanism contract；大豬嘴目前只開放一個 MIT regression 的 exact source-case first-move practice，不能泛化成整個 J Group family；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；丁四、刀把五、梅花五與花六各有 bounded nakade practice；金雞獨立走 rules-backed tesuji mechanism contract；大豬嘴目前只開放一個 MIT regression 的 exact source-case first-move practice，不能泛化成整個 J Group family；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
@@ -120,6 +122,37 @@
           <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> degree-4 center</span></div>
           <div id="cross-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路梅花五練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="cross-cursor-status">方向鍵移動 · Enter 落子</span><span id="cross-side">● 黑棋</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="pyramid-four-practice" aria-labelledby="pyramid-four-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">四目中手 · geometry-derived</span>
+        <h2 id="pyramid-four-practice-title">丁四／Pyramid Four：T 形中心就是共同急所</h2>
+        <p>四個眼空必須是 T 形。這一區不在題目資料保存答案；contract 會從 geometry 重算唯一 degree-3 中心，再用它評分。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="pyramid-four-tag">1 / 4 · answer derived from geometry</span>
+          <h3 id="pyramid-four-title">找 T 形唯一中心</h3>
+          <p id="pyramid-four-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只接受與 T tetromino 同構的四點眼空，並把唯一 degree-3 點當共同急所。守方／攻方都只評第一手，不宣稱完整後續吃淨答案樹。</span></div>
+          <div id="pyramid-four-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="pyramid-four-reveal" class="classic-reveal" hidden>
+            <span>作答後揭名</span>
+            <strong id="pyramid-four-name">丁四／Pyramid Four</strong>
+            <p>「丁四」與 Pyramid Four 的跨語對照已有術語與教材來源；本題 identity 則由四點 T 形 geometry 決定。</p>
+          </div>
+          <div class="classic-actions">
+            <button id="pyramid-four-hint" class="subtle-button" type="button">給我幾何提示</button>
+            <button id="pyramid-four-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="丁四共同急所練習棋盤">
+          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> unique degree-3</span></div>
+          <div id="pyramid-four-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路丁四練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="pyramid-four-cursor-status">方向鍵移動 · Enter 落子</span><span id="pyramid-four-side">● 黑棋</span></div>
         </section>
       </div>
     </section>

@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v5 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v10 | `classic-shapes.html` 保留直三、刀把五、梅花五／Cross Five、花六／Rabbity Six、金雞獨立，新增大豬嘴／J Group exact source-case first-move practice。大豬嘴不是手寫「標準答案」：來源分成名稱／family provenance 與 executable source oracle；MIT `bood/go-test` 的 `j_group_live2` case 在第 52 手前輪白走時 expected move 為 R1，本館 canonical identity 只綁 exact 19×19 position，另做四向旋轉。上游 attribution 寫入 `THIRD_PARTY_NOTICES.md`。Tripod 仍因 GNU Go GPL／SGF public-domain 身分不明而 catalog-only；盤角曲四、斗方、Long L、小豬嘴、葡萄六等依各自 ruleset／variation／geometry gate 保持 reference | `classic-shapes.test.cjs`、Go rules legal-move check、source-position signature、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語與 source provenance | 條件通過僅限既有 bounded contracts 與大豬嘴 exact source-case。大豬嘴 source-case 不代表標準 J Group geometry、完整扳點死答案樹或 family generalization；正式教學仍 BLOCKED，內容效度、formal assessment、retention／transfer 與 learning effect 均未由此建立 |
+| 世界死活名型館 v11 | `classic-shapes.html` 現有直三、丁四／Pyramid Four、刀把五、梅花五／Cross Five、花六／Rabbity Six、金雞獨立，以及大豬嘴／J Group exact source-case。丁四新增 `classic-pyramid-four-vital-point-v1`：四點眼空必須同構於 T tetromino，唯一 degree-3 center 由 geometry 即時計算，item 不保存答案；四個 variant 涵蓋攻守、換色、旋轉與位移。J Group family geometry 升級因仍缺第二組可機讀／授權清楚的共享 oracle 而 BLOCKED，維持 source-case scope | `classic-shapes.test.cjs`、geometry canonical signature、Go legal-move check、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語 provenance | 條件通過僅限已建立 bounded contracts。丁四 wrong geometry、answer injection、stale coordinate 均有反證；正式教學仍 BLOCKED，完整答案樹、內容效度、formal assessment、retention／transfer 與 learning effect 均未由此建立 |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -537,3 +537,14 @@
 - **Negative oracle：** wrong geometry、legal wrong answer、stale seed coordinate、answer injection 全部 fail closed。
 - **Provenance／license：** `THIRD_PARTY_NOTICES.md` 記錄 `bood/go-test` commit、`config.yml`、`sgf/大猪嘴.sgf`、Copyright (c) 2018 Bood Qian 與 MIT License。
 - **未驗：** 尚未建立標準大豬嘴 geometry、扳→點→立→撲 variation tree、獨立內容審查、真人 usability、formal assessment 或 learning effect。正式 teaching gate 不變。
+
+
+## 2026-09-27 Change note｜丁四 / Pyramid Four bounded geometry practice v1
+
+- **來源一致性：** Go4Go／YeeFan 對「丁四 ↔ Pyramid Four」一致；YeeFan 明確描述 T-shaped four-space eye 與中央急所；BGA nakade 系列把 pyramid four 當既定結構。
+- **Canonical identity：** 四個空點的 T tetromino geometry，而非中文／英文名稱。跨語名稱只作 alias。
+- **Scoring：** contract 由 degree map 推導唯一 degree-3 center；item 禁止攜帶 `vitalPoint`／`answer`／`correctMove`，避免題目與 scorer 共享答案副本。
+- **變形：** 守／攻、黑／白、旋轉、位移；表面座標改變後必須重新依 geometry 找急所。
+- **反證：** 直四 geometry fail、偷塞答案 fail、shifted variant 使用 seed coordinate 判錯。
+- **未驗：** 完整吃淨 sequence、外部獨立審題、真人 usability、formal assessment、retention／transfer、learning effect。
+- **Validation：** PR #30 initial verify run #450 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持工程／geometry contract。

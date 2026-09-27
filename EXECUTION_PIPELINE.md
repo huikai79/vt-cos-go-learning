@@ -207,3 +207,13 @@
 - **反證：** 少一顆 source stone、合法但非 expected move、旋轉後沿用原 R1、item 偷塞 answer 都 fail closed。
 - **授權：** 上游為 MIT；`THIRD_PARTY_NOTICES.md` 保存 repository、commit、使用檔案、copyright 與 license。這和先前 GNU Go Tripod 的 GPL／public-domain 不明案例不同。
 - **停止線：** 此 PASS 不能推出「R1 是所有大豬嘴答案」、不能證明標準 family geometry、不能證明完整扳→點→立→撲 branch，也不產生 KC、mastery、transfer、formal evaluation 或 learning effect。
+
+
+## 2026-09-27 Decision note｜J Group family 升級 BLOCKED，改補丁四 / Pyramid Four geometry contract
+
+- **J Group 停止線：** 中文來源一致支持「大豬嘴，扳點死」及典型扳→點→立→撲；英語資料則另列 J Group with hane、Straight J、ko 等 family 變體。除已合併的 MIT exact source-case 外，本輪仍缺第二組可機讀、授權清楚且足以證明共享 geometry／branch 的 oracle，因此不得把 source-case 升格成整個 J Group。
+- **替代 bottleneck：** 基礎 nakade playable set 尚缺四目 T 型。Go4Go／YeeFan 明確把「丁四」對應 Pyramid Four；YeeFan 定義它為 T-shaped four-space eye，中央為共同急所；BGA 文章亦把 pyramid four 作為既定 nakade。
+- **Contract：** `classic-pyramid-four-vital-point-v1` 只接受 T tetromino canonical signature；答案由唯一 degree-3 center 推導，item 禁止保存 `vitalPoint`、`answer`、`correctMove`。
+- **反證：** 直四 geometry、偷偷塞 vitalPoint、位移後沿用 seed coordinate 都必須 fail。
+- **證據邊界：** 只支持丁四 bounded first-move Experience 的工程／geometry contract；完整 reduction sequence、內容效度、mastery、retention／transfer、formal evaluation 與 learning effect 均未建立。
+- **Validation：** PR #30 initial verify run #450 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。

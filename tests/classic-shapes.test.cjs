@@ -13,6 +13,8 @@ const Reduction = require("../classic-shape-reduction.js");
 const ReductionContract = require("../classic-shape-reduction-contract.js");
 const CrossFive = require("../classic-cross-five-practice.js");
 const CrossFiveContract = require("../classic-cross-five-contract.js");
+const PyramidFour = require("../classic-pyramid-four-practice.js");
+const PyramidFourContract = require("../classic-pyramid-four-contract.js");
 const FlowerSix = require("../classic-flower-six-practice.js");
 const FlowerSixContract = require("../classic-flower-six-contract.js");
 const GoldenChicken = require("../classic-golden-chicken-practice.js");
@@ -58,7 +60,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v9");
+  assert.equal(Catalog.version, "world-classic-shapes-v10");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -105,7 +107,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["big-pigs-mouth-candidate-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["big-pigs-mouth-candidate-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "pyramid-four-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -603,4 +605,54 @@ test("大豬嘴 source-case 有 MIT provenance notice，不把上游 SGF 當本�
   const contractSource = fs.readFileSync(path.join(root, "classic-big-pigs-mouth-contract.js"), "utf8");
   assert.match(contractSource, /SOURCE_LICENSE/);
   assert.match(contractSource, /source-case scoped/);
+});
+
+
+test("丁四四個 variant 由 T geometry 推導唯一 degree-3 急所", () => {
+  assert.equal(PyramidFour.version, "pyramid-four-practice-v1");
+  assert.equal(PyramidFour.scoringContractVersion, PyramidFourContract.CONTRACT_VERSION);
+  assert.equal(PyramidFour.items.length, 4);
+  const all = PyramidFourContract.validateAll(PyramidFour.items, { Go, PracticeContract });
+  assert.equal(all.ok, true, all.errors.join("; "));
+  for (const item of PyramidFour.items) {
+    assert.equal(Object.prototype.hasOwnProperty.call(item, "vitalPoint"), false, item.id);
+    const validation = PyramidFourContract.validateItem(item, { Go, PracticeContract });
+    assert.equal(validation.ok, true, validation.errors.join("; "));
+    const derived = PyramidFourContract.deriveCenter(item.eyeSpace, PracticeContract);
+    assert.deepEqual(validation.vitalPoint, derived, item.id);
+    const scored = PyramidFourContract.score(item, derived, { Go, PracticeContract });
+    assert.equal(scored.ok, true, item.id);
+    assert.equal(scored.correct, true, item.id);
+  }
+});
+
+test("丁四 contract 對錯 geometry、偷塞答案與位移後舊座標 fail closed", () => {
+  const seed = PyramidFour.items[0];
+  const wrongGeometry = { ...seed, id:"pyramid-wrong-geometry", eyeSpace:[[2,2],[3,2],[4,2],[5,2]] };
+  assert.equal(PyramidFourContract.validateItem(wrongGeometry, { Go, PracticeContract }).ok, false);
+
+  const leaked = { ...seed, id:"pyramid-leaked-answer", vitalPoint:[3,3] };
+  assert.equal(PyramidFourContract.validateItem(leaked, { Go, PracticeContract }).ok, false);
+
+  const shifted = PyramidFour.items.find((item) => item.variantId === "attack-shift");
+  const seedVital = PyramidFourContract.deriveCenter(seed.eyeSpace, PracticeContract);
+  const shiftedVital = PyramidFourContract.deriveCenter(shifted.eyeSpace, PracticeContract);
+  assert.notDeepEqual(shiftedVital, seedVital);
+  const stale = PyramidFourContract.score(shifted, seedVital, { Go, PracticeContract });
+  assert.equal(stale.ok, true);
+  assert.equal(stale.correct, false);
+});
+
+test("丁四 catalog/UI 維持 geometry identity 與 bounded first-move claim", () => {
+  const entry = Catalog.entries.find((item) => item.id === "pyramid-four-v1");
+  assert.equal(entry.preferredZhTW, "丁四");
+  assert.equal(entry.practiceStatus, "playable_bounded_geometry_derived_vital_point_contract");
+  assert.ok(entry.aliases.some((alias) => alias.name === "Pyramid Four" && alias.reviewStatus === Catalog.REVIEW.VERIFIED));
+  assert.ok(entry.sources.some((source) => source.label.includes("YeeFan")));
+  assert.match(entry.note, /item 不保存 vitalPoint/);
+  assert.match(html, /丁四／Pyramid Four：T 形中心就是共同急所/);
+  assert.match(html, /不在題目資料保存答案/);
+  assert.match(html, /唯一 degree-3 點/);
+  assert.match(js, /GoPyramidFourContract/);
+  assert.match(js, /不代表完整吃淨答案樹、mastery 或 transfer/);
 });
