@@ -297,3 +297,14 @@
 - **反證：** wrong geometry、錯 shapeKind、item 偷塞 expectedStatus、錯誤狀態回答均 fail closed。
 - **真人 gate：** R1a、三位初學者 usability、真人 accessibility 依使用者決定延後到最後階段；本步不修改 teaching gate。
 - **Validation：** PR #44 verify run #505 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
+
+## 2026-09-28 Decision note｜曲四加入四目眼 status contrast，與盤角曲四硬分離
+
+- **Bottleneck：** 方四／直四已涵蓋死形與直線活形，但尚未驗證『彎折 topology 也能無條件活』；若缺此反例，學習者可能把直線外觀誤當成活形必要條件。
+- **來源：** Chen & Chen (1999) 將 perfect Curved-Four 列為 2-eye region；中文教材亦把曲四與直四並列活形。Go4Go 的 `彎四 -> bent four` 僅作名稱鏈，不能與 `Bent Four in the Corner` 合併。
+- **Contract：** 新增獨立 `classic-curved-four-status-v1`，只接受 sealed L-tetromino 四點 eye-space；不修改 `classic-four-space-status-v1` 歷史語義。
+- **Proof：** 對攻方四種第一手逐一重播；每一支守方至少有一個合法回應，使剩餘兩個 eye points 互不相鄰。結果導出 `alive`。
+- **Negative mapping：** Curved Four / Bent Four ≠ Bent Four in the Corner；後者保留 `rules_sensitive_position` 與 ruleset/adjudication contract。
+- **UX：** 曲四作為既有 status contrast 第 5、6 題；前四題方四／直四不改。
+- **反證：** 方四 geometry、直四 geometry、偷塞 expectedStatus 均不得通過曲四 contract。
+- **真人 gate：** R1a、三位初學者 usability、真人 accessibility 延後到最後階段，不由本工程補成已驗。
