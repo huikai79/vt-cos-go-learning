@@ -19,7 +19,7 @@
     5: { title: "5×5 基礎練習棋盤", heading: "氣、提子、連斷與規則練習", description: "作為第一個可自由操作的練習棋盤，適合練氣、提子、連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "氣、提子、連斷、禁著、眼形" },
     7: { title: "7×7 過渡練習棋盤", heading: "局部攻防與小局過渡", description: "用來把局部手筋、死活與攻防放進較完整的局面，再銜接 9×9。它仍是過渡練習盤，不作正式棋力評量。", purpose: "局部攻防、死活、過渡" },
     9: { title: "9×9 完整實戰練習", heading: "完整 9×9 實戰棋盤", description: "兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。", purpose: "完整小棋盤對局" },
-    19: { title: "19×19 全盤實戰練習", heading: "完整 19×19 自由棋盤", description: "把 Core 與進階局部判斷放回標準全盤。支援 Pass、認輸、人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局；仍只作 practice。", purpose: "全盤方向、弱棋、戰鬥與官子整合" }
+    19: { title: "19×19 全盤實戰練習", heading: "完整 19×19 自由棋盤", description: "把核心課程與進階練習學到的判斷放回標準全盤。支援停一手（Pass）、認輸、人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局；目前只作練習。", purpose: "全盤方向、弱棋、戰鬥與官子整合" }
   };
   const $ = (id) => document.getElementById(id);
   let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "computer", humanColor = BLACK, providerEndpoint = "http://127.0.0.1:8765/v1/move", botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "", liveEvidenceFailure = "", activeAssessment = null, activeAssessmentResponseCount = 0;
@@ -272,10 +272,10 @@
     $("opponent-summary").textContent = isComputerMode() ? "練習電腦" : "雙人同機";
     $("opponent-detail").textContent = opponentMode === "katago" ? `進階 · KataGo · 你執${colorLabel(humanColor)}` : opponentMode === "remote" ? `進階 · 自訂 API · 你執${colorLabel(humanColor)}` : isComputerMode() ? `內建對手 · 你執${colorLabel(humanColor)}` : "兩人輪流操作這台裝置";
     $("footer-boundary").textContent = size === 19
-      ? "19×19 提供標準全盤尺寸的 practice 流程；使用 simple ko 與人工死子確認，不把勝負、電腦選手或本頁計分升格為棋力、T3 或正式評量。"
+      ? "19×19 是標準全盤練習；使用目前支援的劫爭規則與人工死子確認。這裡的勝負、電腦對局與計分只供練習，不會直接當成棋力或正式評量。"
       : size === 9
-        ? "9×9 提供目前已支援的完整小棋盤對局流程；使用 simple ko，不宣稱涵蓋各棋規的 superko、終局爭議或裁判規則。"
-        : `${size}×${size} 定位為規則與局部技能的微型練習盤；雖可走完整 Pass／計分流程，但不把其勝負當正式棋力、T3 或完整對局能力證據。`;
+        ? "9×9 提供完整小棋盤對局；目前支援一般劫爭規則，但還沒有涵蓋所有棋規中的重複局面、終局爭議或裁判規則。"
+        : `${size}×${size} 是規則與局部技巧的練習棋盤。雖然可以完成停一手與計分流程，但一盤勝負不會直接當成正式棋力或完整對局能力的證明。`;
     for (const link of document.querySelectorAll("[data-board-size-choice]")) {
       const active = Number(link.dataset.boardSizeChoice) === size;
       link.classList.toggle("active", active);
@@ -335,7 +335,7 @@
         save(); ensureLiveAssessment();
       } catch (error) {
         event("computer_provider_error", { actor: "computer", providerKind: opponentMode, reason: error.message || "unknown" });
-        showFeedback(`對手 provider 失敗：${error.message}。本回合已停止，不會 fallback 成猜測落子。`, "error");
+        showFeedback(`電腦對手目前無法取得下一手（${error.message}）。這回合已停止，系統不會隨便替它下一手。`, "error");
       } finally { botPending = false; render(); }
     }, 180);
   }
@@ -361,7 +361,7 @@
     if (!result.ok) { showFeedback(result.error || "操作失敗。", "error"); return false; }
     game = result.game; event(auditType, details); const saved = save(); render();
     if (liveEvidenceFailure) {
-    showFeedback(`棋局可以繼續，但 live evidence 儲存失敗（${liveEvidenceFailure}）；本次不會假裝已更新實戰進度。`, "error");
+    showFeedback(`棋局可以繼續，但這次的實戰學習紀錄沒有成功保存（${liveEvidenceFailure}）。本次不會顯示成已更新進度。`, "error");
     liveEvidenceFailure = "";
   } else if (practiceEventFailure) {
       showFeedback(`${details.successMessage || "操作完成。"} 但練習事件未保存（${practiceEventFailure}）；本次不會假裝已回流學習紀錄。`, "error");
@@ -510,7 +510,7 @@ ${previewText}
   });
   $("provider-endpoint").addEventListener("change", (event) => {
     providerEndpoint = String(event.target.value || "").trim(); saveOpponentSettings(); save();
-    showFeedback("Provider API 位址已保存；下一個電腦回合會使用此端點。", "success");
+    showFeedback("對手服務的 API 位址已保存；下一個電腦回合會使用這個連線位址。", "success");
   });
   $("human-color").addEventListener("change", (event) => {
     const nextColor = Number(event.target.value) === WHITE ? WHITE : BLACK;
@@ -527,7 +527,7 @@ ${previewText}
   });
   $("import-sgf-input").addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0]; if (!file) return;
-    if (file.size > Sgf.MAX_SGF_FILE_BYTES) { showFeedback(`SGF 無法匯入：檔案過大（上限 ${Sgf.MAX_SGF_FILE_BYTES} bytes）。`, "error"); e.target.value = ""; return; }
+    if (file.size > Sgf.MAX_SGF_FILE_BYTES) { showFeedback(`SGF 無法匯入：檔案太大（上限約 ${Math.round(Sgf.MAX_SGF_FILE_BYTES / 1024)} KB）。`, "error"); e.target.value = ""; return; }
     if (game.moves.length && !confirm("匯入棋譜會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定匯入？")) { e.target.value = ""; return; }
     const reader = new FileReader();
     reader.onload = () => {
@@ -546,7 +546,7 @@ ${previewText}
 
   loadOpponentSettings(); load(); save(); render(); ensureLiveAssessment(); scheduleComputerTurn();
   if (practiceEventFailure) {
-    showFeedback(`棋局可以繼續，但練習事件流目前失敗（${practiceEventFailure}）；本次不會假裝已回流學習紀錄。`, "error");
+    showFeedback(`棋局可以繼續，但這次的練習紀錄沒有成功保存（${practiceEventFailure}）。本次不會顯示成已更新學習紀錄。`, "error");
     practiceEventFailure = "";
   } else if (retiredThreeByThreeRequested) showFeedback("3×3 已退出學習者練習階段；已改開 5×5 基礎練習棋盤。舊 3×3 紀錄仍保留，不會被覆寫。", "success");
   else if (loadNotice) showFeedback(loadNotice, loadNotice.includes("損壞") || loadNotice.includes("無法") ? "error" : "success");
