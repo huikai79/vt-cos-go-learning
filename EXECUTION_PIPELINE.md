@@ -308,3 +308,4 @@
 - **UX：** 曲四作為既有 status contrast 第 5、6 題；前四題方四／直四不改。
 - **反證：** 方四 geometry、直四 geometry、偷塞 expectedStatus 均不得通過曲四 contract。
 - **真人 gate：** R1a、三位初學者 usability、真人 accessibility 延後到最後階段，不由本工程補成已驗。
+- **Validation：** PR #49 verify run #510 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
