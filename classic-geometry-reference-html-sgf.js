@@ -5,6 +5,7 @@ const Extraction = require("./classic-geometry-extraction.js");
 const Oracle = require("./classic-geometry-reference-oracle.js");
 
 const VERSION = "classic-reference-html-sgf-v1";
+const COMPARISON_CONTRACT_ID = "corner-defender-connected-group-v1";
 const MAX_HTML_BYTES = 2_000_000;
 const MAX_SGF_BYTES = 1_000_000;
 
@@ -248,7 +249,14 @@ function buildObservationFromHtml({
       role:"defender_group"
     }
   };
-  const metadata={sourceId,sourceLocator,sourceDigest,evidenceChain,candidateConceptId};
+  const metadata={
+    sourceId,
+    sourceLocator,
+    sourceDigest,
+    evidenceChain,
+    candidateConceptId,
+    comparisonContractId:COMPARISON_CONTRACT_ID
+  };
   const validation=Extraction.validateExtraction(observation);
   if (!validation.ok) return fail(validation.errors);
   return ok({observation,metadata,embeddedOccurrences:embedded.occurrences});
@@ -272,6 +280,7 @@ function runSanitizedReferenceOracle({candidate,requireContext=true,...input}={}
 
 module.exports=Object.freeze({
   version:VERSION,
+  COMPARISON_CONTRACT_ID,
   MAX_HTML_BYTES,
   MAX_SGF_BYTES,
   extractEmbeddedSgf,
