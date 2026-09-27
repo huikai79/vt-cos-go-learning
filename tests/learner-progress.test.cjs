@@ -36,9 +36,9 @@ test("延後 T2 與最近 live 應用都存在時只輸出證據狀態，不輸�
   assert.equal(summary.schedulerAuthority, false);
   assert.equal(summary.formalEvaluationAuthority, false);
   assert.equal(summary.skills[0].state, "delayed_t2_and_live_observed");
-  assert.match(summary.skills[0].label, /延後 T2 與 live/);
+  assert.match(summary.skills[0].label, /延後複習與實戰/);
   assert.equal("masteryPercent" in summary.skills[0], false);
-  assert.match(summary.interpretationBoundary, /不是校準後 mastery/);
+  assert.match(summary.interpretationBoundary, /不是熟練程度、棋力或學習成效分數/);
 });
 
 test("live 最近一致但延後 T2 尚未完成時維持 T2 待驗", () => {
@@ -47,7 +47,7 @@ test("live 最近一致但延後 T2 尚未完成時維持 T2 待驗", () => {
     liveEvidenceSummary: { skills: [liveSkill()] }
   });
   assert.equal(summary.skills[0].state, "live_observed_t2_pending");
-  assert.match(summary.skills[0].nextEvidenceNeed, /延後且無提示的 T2/);
+  assert.match(summary.skills[0].nextEvidenceNeed, /隔一段時間，用不同棋形、沒有提示/);
 });
 
 test("仍有 active correction cycle 時不能被漂亮的 live 結果覆蓋", () => {
