@@ -176,3 +176,23 @@ test("總表 usability candidate 與逐位 candidate 必須同時一致", () => 
   const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
   assert.equal(result.formalTeachingUse.status, "BLOCKED");
 });
+
+
+test("formal teaching evidence example 必須綁定目前 frozen candidate", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const example = JSON.parse(fs.readFileSync(path.resolve(__dirname, "..", "formal-teaching-evidence.example.json"), "utf8"));
+  const candidateId = gateDefinition.formalTeachingCandidateId;
+  const candidateFingerprint = gateDefinition.formalTeachingCandidateFingerprint;
+  assert.equal(example.candidateId, candidateId);
+  assert.equal(example.candidateFingerprint, candidateFingerprint);
+  assert.equal(example.usability.candidateId, candidateId);
+  assert.equal(example.usability.candidateFingerprint, candidateFingerprint);
+  assert.ok(example.usability.participants.length >= gateDefinition.criteria.formalTeachingUse.minimumNoviceParticipants);
+  for (const participant of example.usability.participants) {
+    assert.equal(participant.candidateId, candidateId);
+    assert.equal(participant.candidateFingerprint, candidateFingerprint);
+  }
+  assert.equal(example.accessibility.candidateId, candidateId);
+  assert.equal(example.accessibility.candidateFingerprint, candidateFingerprint);
+});
