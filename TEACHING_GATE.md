@@ -12,7 +12,7 @@
 | 正式評量 | 正式教學使用通過、另建未公開的新 holdout、R1b 實際難度可比性成立 | BLOCKED |
 | 學習成效 | 預先定義的 retention／transfer 研究與足夠資料 | NOT MEASURED；不屬 release verdict |
 
-三位初學者是正式教學發布前的最低 usability smoke gate，不是統計樣本，也不能證明教學有效。這三位正式證據應在 learner-facing 核心流程相對收斂、candidate 的 UI／content version 與 critical tasks 已凍結後收集；開發期間邊使用邊修改的 formative observation 只作產品診斷，不補入正式三位分母。任一參與者無法完成開始課程、棋盤作答、錯答後修正、重新載入續學或匯出資料，均須先記錄並處理阻擋問題；若因此修改會影響 critical task 的 learner-facing 行為，受影響的正式觀察須在新 candidate 重做。
+三位初學者是正式教學發布前的最低 usability smoke gate，不是統計樣本，也不能證明教學有效。這三位正式證據應在 learner-facing 核心流程相對收斂、candidate 的 UI／content version 與 critical tasks 已凍結後收集；目前凍結 candidate 由 `formal-teaching-candidate.json` 定義，verifier 每次會重新計算 critical learner surface fingerprint。開發期間邊使用邊修改的 formative observation 只作產品診斷，不補入正式三位分母。任一參與者無法完成開始課程、棋盤作答、錯答後修正、重新載入續學或匯出資料，均須先記錄並處理阻擋問題；若因此修改會影響 critical task 的 learner-facing 行為，受影響的正式觀察須在新 candidate 重做。
 
 ## R1a 外部棋理審查
 
@@ -23,7 +23,7 @@
 
 ## 真人證據與 gate 命令
 
-複製 `formal-teaching-evidence.example.json` 為被 `.gitignore` 排除的 `formal-teaching-evidence.json`，只保存匿名彙整與證據引用，不提交參與者個資。
+複製 `formal-teaching-evidence.example.json` 為被 `.gitignore` 排除的 `formal-teaching-evidence.json`，只保存匿名彙整與證據引用，不提交參與者個資。v2 證據必須在總表、每位 participant 與 accessibility spot check 都保存同一 `candidateId`／`candidateFingerprint`；不同 candidate 的觀察不得合併。
 
 - 檢視目前狀態：`node teaching-gate-verify.cjs --report-only`
 - 驗證正式教學閘門：`node teaching-gate-verify.cjs --r1 R1_獨立審題回條.json --human formal-teaching-evidence.json`
@@ -43,3 +43,13 @@
 ## 2026-09-26 Clarification｜formative observation 不等於正式三位 usability evidence
 
 開發期間可以持續由產品作者／目前使用者與零散使用者回饋發現卡點並修改，不要求先完成三次觀察。這些資料標記為 formative／development observation；正式教學 gate 仍要求 candidate 凍結後至少三位唯一 target novice 的逐位證據與真人 accessibility spot check。此澄清不改 verifier schema、不降低既有 gate，也不把歷史零散觀察回溯升格。
+
+
+## 2026-09-27 Change note｜formal usability candidate fingerprint v1
+
+- **問題：** 舊 gate 雖要求 learner-facing candidate 凍結，但 verifier 只把真人證據綁到 R1 內容指紋；理論上三位初學者可在不同 UI／runtime 版本完成，卻被彙總成同一份正式 usability PASS。
+- **修正：** 新增 `formal-teaching-candidate.json` 與 `formal-teaching-candidate.cjs`。candidate manifest 固定 critical asset 清單與 `candidateId`／`assetFingerprint`；gate v2 每次從工作樹動態重算 fingerprint，與 manifest／gate／human evidence 四方比對。
+- **證據 v2：** `go-formal-teaching-evidence-v2` 要求 evidence root、usability summary、每位 participant、accessibility spot check 都綁同一 candidate ID/fingerprint。
+- **反證：** 舊 v1 evidence、任一 participant fingerprint 不同、accessibility candidate 不同、manifest 與 critical surface 指紋失配，全部 fail closed。
+- **Migration：** 尚無正式真人證據，因此不做歷史推測 migration；舊 v1 evidence 必須重新依原始觀察確認是否確實在同一 frozen candidate 上完成，不能只改版本字串。
+- **證據邊界：** 本修改只提高正式 usability evidence integrity；不產生 R1a、真人 usability、accessibility、formal evaluation 或 learning-effect 證據。目前狀態仍為 BLOCKED／NOT_TESTED。
