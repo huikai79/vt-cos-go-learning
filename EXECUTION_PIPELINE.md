@@ -284,3 +284,15 @@
 - **Variation axes：** attack/defense、black/white、rotation、position shift；表面座標改變後仍須依 geometry 找彎點。
 - **證據邊界：** 只支持 bounded first-move geometry contract。完整 sequence、內容效度、真人 usability、retention／transfer、formal evaluation 與 learning effect 均未建立。
 - **Validation：** PR #43 verify run #499 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
+
+## 2026-09-28 Decision note｜方四 / 直四改用 status proof，不套 vital-point 模板
+
+- **Bottleneck：** playable families 增加後，若所有 UI 都是『找唯一急所』，會把不成立的策略教成固定規則。方四沒有做活急所；直四有兩個 miai 做眼點。
+- **來源衝突：** 部分近期英語網站把 Square Four 寫成 always alive，但 Board to Bits、中文教材與其他死活資料一致指出 sealed 2×2 Square Four 是死形。因來源衝突，本輪不採多數投票，回到 rules-backed proof。
+- **Contract：** `classic-four-space-status-v1` 支援 O-tetromino 方四與 I-tetromino 直四；item 禁止保存 `answer`／`expectedStatus`／`status`／`correctChoice`。
+- **方四 proof：** 守方四種第一手逐一重播；每一支剩餘三空都必須同構曲三，且攻方唯一彎點回應合法。結果導出 `dead`。
+- **直四 proof：** 攻方四種第一手逐一重播；每一支守方至少存在一手合法回應，使剩餘兩眼點互不相鄰。結果導出 `alive`。
+- **Context gate：** 只接受完全包圍、無缺陷的 sealed eye-space；不把這個局部 proof 外推到外氣、斷點、角邊特殊條件或全局連接。
+- **UX：** 此區使用『活／死』狀態判斷，棋盤只供觀察；正答後才揭名與 proof 摘要。
+- **反證：** wrong geometry、錯 shapeKind、item 偷塞 expectedStatus、錯誤狀態回答均 fail closed。
+- **真人 gate：** R1a、三位初學者 usability、真人 accessibility 依使用者決定延後到最後階段；本步不修改 teaching gate。
