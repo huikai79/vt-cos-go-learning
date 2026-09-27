@@ -7,8 +7,8 @@
   const SCHEMA_VERSION = 1;
   const RULES_VERSION = "cn-area-simple-ko-v1";
   const DEFAULT_SIZE = 9;
-  const SUPPORTED_SIZES = [3, 5, 7, 9];
-  const ACTIVE_PRACTICE_SIZES = [5, 7, 9];
+  const SUPPORTED_SIZES = [3, 5, 7, 9, 19];
+  const ACTIVE_PRACTICE_SIZES = [5, 7, 9, 19];
   const DEFAULT_KOMI = 7.5;
 
   function cloneBoard(board) { return board.map((row) => row.slice()); }
@@ -21,7 +21,7 @@
     if (!SUPPORTED_SIZES.includes(size)) throw new Error(`目前只支援 ${SUPPORTED_SIZES.join("、")} 路棋盤。`);
     return size;
   }
-  function defaultKomiForSize(size) { return normalizeBoardSize(size) === 9 ? DEFAULT_KOMI : 0; }
+  function defaultKomiForSize(size) { return [9, 19].includes(normalizeBoardSize(size)) ? DEFAULT_KOMI : 0; }
   function isBoard(board, expectedSize = null) {
     const size = typeof getBoardSize === "function" ? getBoardSize(board) : null;
     return Boolean(size && SUPPORTED_SIZES.includes(size) && (expectedSize === null || size === expectedSize));
