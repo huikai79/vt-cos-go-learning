@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v7 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v21 / Ontology v5 小曲尺 candidate | playable practice 不變；本輪只修正 research ontology：新增 `small-curved-ruler-candidate-v1`，把中文「小曲尺」先視為自身 candidate concept，而不是強迫等同 `L Group` 或 `Carpenter's Square`。Carpenter's Square 另補中文 `曲尺` 既有術語鏈；`小曲尺` ambiguity 改為三候選（中文 candidate / Carpenter / L Group）。新增中文曲尺型系列與「小曲尺長大」教學 taxonomy 訊號，但所有新增 geometry evidence 仍是 text-only/no coordinates | ontology negative tests、geometry evidence no-coordinate tests、catalog/UI version；完整 CI 以 PR workflow 為準 | 工程／research governance | 工程 PASS 只支持「名稱歧義不應被二選一壓平」；小曲尺 canonical geometry、與 L/Carpenter 的 exact relation、playable scoring、內容效度與 learning effect 仍 UNKNOWN/BLOCKED |
+| 世界死活名型館 v22 / reference-only HTML→SGF oracle adapter | playable practice、ontology v5 與 learner runtime 不變；新增 authoring-side `classic-reference-html-sgf-v1`：只從已取得的第三方 HTML 中解析 JSON string 形式的 embedded SGF，讀 root AB/AW/PL、選指定顏色的最近角部連通塊，產生 memory-only `reference_only` observation，再交給既有 oracle；最終只可輸出 sanitized report | hostile-JS 不 eval、multiple conflicting SGF fail closed、compressed coords fail、ambiguous group fail、context mismatch negative test、release-manifest/public boundary；完整 CI 以 PR workflow 為準 | 工程／research tooling | 此工具不授予外部內容再散布權，不自動抓網頁，不保存第三方 SGF/points/fingerprint，不取得 canonical promotion/scoring authority；小曲尺/L/Carpenter exact geometry 仍 UNKNOWN |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -708,3 +708,14 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Taxonomy ≠ identity：** `曲尺型系列` 與 `小曲尺延伸教學` 只作 source-specific taxonomy membership。『最小型』『長大的故事』不能自動證明 L Group variant 或 Carpenter subset。
 - **Rollback：** 回復 ontology v4／geometry evidence v3／catalog v18 與 asset query versions；無 learner data migration。
 - **Validation：** tests 必須證明小曲尺不含 L/Carpenter exact alias、三候選 ambiguity 存在、所有新增 evidence 無座標、沒有 scoring/mastery/formal authority。
+
+
+## 2026-09-28 Decision note｜reference-only HTML→SGF adapter v1
+
+- **Bottleneck：** v1 reference oracle 能安全比較 observation，但實際第三方題庫常把 SGF 以前端 JavaScript JSON string 內嵌在 HTML；手工複製座標會新增 transcription error，而直接保存 SGF 又可能跨過 rights boundary。
+- **外部查核：** Tsumego Hero 公開程式碼顯示題目頁會把 `sgf['Sgf']['sgf']` 直接嵌入 `options.sgf2` 與 Download SGF Blob；其網站 Legal Notice 只有責任／連結／資料保護聲明，未授予題目內容再散布權。因此把該類來源視為 deterministic reference observation，而不是可 shipping asset。
+- **實作：** 新增 `classic-geometry-reference-html-sgf.js`，只解析 JSON string literal，不 `eval` JavaScript；支援 root node `SZ/AB/AW/PL`，限定 square board、拒絕壓縮座標與重疊 setup，依指定 target color + corner 選唯一最近連通塊。
+- **Privacy/rights boundary：** adapter 本身不 fetch 網路、不寫檔；HTML/SGF 只在呼叫期間存在記憶體。observation 固定 `licenseStatus=reference_only`、`method=sgf_parse`、`canonicalPromotionAllowed=false`。輸出前再經既有 `validatePersistableReport`，禁止 points/stones/signature/fingerprint/raw observation。
+- **反證：** hostile JavaScript expression 不執行；兩份 embedded SGF 不同時拒絕猜測；角部候選 group 同距同大小時拒絕猜測；strict context 不同時只能回 `REFERENCE_DIFFERENT`。
+- **不變：** 不修改 ontology identity、scoring、learner events、KC、scheduler、formal candidate 或 evaluation。這只是 authoring/research adapter。
+- **下一步：** 對一份實際 L Group reference page 取得固定 HTML capture，使用 adapter 產生 sanitized oracle report；再找第二條獨立 evidence chain。只有兩條獨立 decisive reference 支持一致，才把它當 research prioritization；仍不得 canonical promote。
