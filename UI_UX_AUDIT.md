@@ -221,5 +221,6 @@
 - 初版 `history.html` 雖有 static contract，但未被 `tests/ui.test.cjs` 實際載入；主站 Windows UI 全綠不能證明歷史頁在真實瀏覽器無 overflow。
 - 審核發現四組小字對比不足一般文字 4.5:1：品牌副標約 3.87、題號約 4.06、比較表頭約 4.41、頁尾約 3.78。
 - v2 將上述文字改為較深綠色，並加入 browser regression：桌面 1280px 與 mobile 375px 都要求 `scrollWidth <= innerWidth + 1`，mobile 的來源、研究前沿改為單欄，CTA 改 column。
+- `prefers-reduced-motion: reduce` 時取消 smooth scrolling；static contract 直接驗證此 fallback，避免把捲動動畫強加給要求減少動效的使用者。
 - 歷史頁維持零 JavaScript runtime；browser test 同時檢查四個 question block、六種 evidence label 與來源最後查核日期。
 - 這些自動檢查只能證明指定 reflow／contrast contract；screen reader 實際閱讀順序、認知負荷與歷史標籤是否易懂仍需真人 observation。
