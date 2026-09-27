@@ -8,7 +8,7 @@
 - `as_of`: 2026-09-27
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
-- `r1_protocol`: `go-r1-independent-content-review-v4`
+- `r1_protocol`: `go-r1-independent-content-review-v5`
 - `ui_version`: `learner-flow-v46`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
@@ -41,7 +41,7 @@
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
 | 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：先以零基礎 Core 為主要路徑，再在首屏後直接提供核心課程與獨立進階訓練兩個入口；Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、進階入口與無橫向溢出反證 | 工程 | `learner-flow-v44` 條件通過；首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
-| R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v4 答案盲審流程條件通過；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
+| R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v5 答案盲審流程條件通過；fingerprint 同時綁定 reviewer-visible `prompt`／`focus` 與 family／skill／scoring identity；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
 | R1b 平行題可比性 | 基線與追蹤在已知結構特徵上配對 | 結構比對 | 真人難度資料 | 未建立；不得由 R1a 自動升格 |
 | 初學者使用順手 | 有導覽、鍵盤與窄版工程檢查；一般練習的正確／錯誤回饋以圖示、明確標題與不同背景 banner 區分，錯答仍留在原題重試，formal evaluation 仍不揭露正誤；開發期間可持續 formative observation | UI 測試＋開發期觀察僅作診斷 | 真人可用性 | 工程條件通過；正式 usability 仍 NOT_TESTED，待 candidate 凍結後三位 target novice 關鍵任務 |
@@ -495,3 +495,12 @@
 - **Migration：** 目前沒有正式真人證據，因此不做自動 migration；舊 evidence 必須回到原始觀察確認版本，不能只改 schema 字串。
 - **證據邊界：** 這只證明 gate 能辨識 candidate 一致性；沒有因此取得 R1a、真人 usability、accessibility、formal evaluation 或 learning-effect 證據。目前正式教學仍 BLOCKED，真人 usability／accessibility 仍 NOT_TESTED。
 - **Validation：** PR #25 verify run #433 全數 PASS：Node contracts、frozen formal teaching candidate 動態指紋、teaching gate v2、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。第一輪 negative test 曾抓到舊 v1 evidence 雖記錄 schema error 卻仍可能讓 usability/accessibility PASS 的 fail-open；verifier 已改為 evidence envelope 不合法即直接 fail closed。PR 已於 2026-09-27 squash merge 至 `main`（merge commit `8d9a3a4dbdcdc2e91fded8539ccc768165bc5d44`）。
+
+
+## 2026-09-27 Change note｜R1 reviewer-visible fingerprint v5
+
+- **Evidence-integrity bottleneck：** v4 fingerprint 綁定題號、版本、棋子、答案與 goal，但未包含 reviewer 實際看到的 `prompt`／`focus`，也未包含 `familyId`／`skillId`；若文字或圈選焦點改動但忘記 bump contentVersion，舊 receipt 仍可能被誤認為同一審查內容。
+- **v5 contract：** fingerprint 現在涵蓋 `id/familyId/skillId/contentVersion/itemVersion/boardSize/type/pool/prompt/focus/stones/answer/goal`。blinded browser bank 仍只暴露 `id/prompt/focus/stones`，不洩漏答案、goal 或 scoring identity。
+- **Protocol migration：** R1 protocol 升為 `go-r1-independent-content-review-v5`，目前 fingerprint 為 `fnv1a32-c34ef6a4`；review draft storage 隔離為 v5。舊 v4 receipt 必須 fail closed。
+- **反證：** 單獨修改 prompt、focus、familyId、skillId、answer 或 goal 都必須改變 fingerprint；generated blinded bank 必須與 builder byte-for-byte 一致。
+- **證據邊界：** 此修改只提高外部內容審查的版本可追溯性；R1a 仍待外部 reviewer 完成，R1b／真人 usability／learning effect 均沒有因此前進。

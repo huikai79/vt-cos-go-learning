@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "protocolId": "go-formal-teaching-gate-v2",
-  "r1ProtocolId": "go-r1-independent-content-review-v4",
-  "r1ContentFingerprint": "fnv1a32-1afc0a13",
+  "r1ProtocolId": "go-r1-independent-content-review-v5",
+  "r1ContentFingerprint": "fnv1a32-c34ef6a4",
   "criteria": {
     "formalTeachingUse": {
       "minimumNoviceParticipants": 3,

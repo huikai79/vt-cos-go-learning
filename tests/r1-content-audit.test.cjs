@@ -178,7 +178,7 @@ test("R1 審查回條綁定目前內容，任何異議或答案不一致都不�
   draft.draft = true;
   assert.ok(ReviewVerifier.verifyReceipt(draft).errors.some((error) => error.includes("草稿不能")));
   const oldProtocol = structuredClone(receipt);
-  oldProtocol.protocolId = "go-r1-independent-content-review-v3";
+  oldProtocol.protocolId = "go-r1-independent-content-review-v4";
   assert.ok(ReviewVerifier.verifyReceipt(oldProtocol).errors.some((error) => error.includes("protocolId")));
   const notBlind = structuredClone(receipt);
   notBlind.reviewer.answerBlindBeforeReview = false;
@@ -189,4 +189,35 @@ test("R1 審查回條綁定目前內容，任何異議或答案不一致都不�
   const malformed = structuredClone(receipt);
   malformed.reviews[0] = null;
   assert.ok(ReviewVerifier.verifyReceipt(malformed).errors.some((error) => error.includes("無效 review")));
+});
+
+
+test("R1 v5 fingerprint 綁定 reviewer 可見 prompt、focus 與 family/skill identity", () => {
+  const baseline = ReviewVerifier.fingerprint(ReviewVerifier.reviewItems);
+
+  const promptChanged = structuredClone(ReviewVerifier.reviewItems);
+  promptChanged[0].prompt += "（文字變更）";
+  assert.notEqual(ReviewVerifier.fingerprint(promptChanged), baseline);
+
+  const focusChanged = structuredClone(ReviewVerifier.reviewItems);
+  focusChanged[0].focus = [[0, 0]];
+  assert.notEqual(ReviewVerifier.fingerprint(focusChanged), baseline);
+
+  const familyChanged = structuredClone(ReviewVerifier.reviewItems);
+  familyChanged[0].familyId = "other-family";
+  assert.notEqual(ReviewVerifier.fingerprint(familyChanged), baseline);
+
+  const skillChanged = structuredClone(ReviewVerifier.reviewItems);
+  skillChanged[0].skillId = "other-skill";
+  assert.notEqual(ReviewVerifier.fingerprint(skillChanged), baseline);
+});
+
+test("R1 v5 fingerprint 仍涵蓋 scoring identity，不因加入 reviewer-visible 欄位而弱化", () => {
+  const baseline = ReviewVerifier.fingerprint(ReviewVerifier.reviewItems);
+  const answerChanged = structuredClone(ReviewVerifier.reviewItems);
+  answerChanged[0].answer = [0, 0];
+  assert.notEqual(ReviewVerifier.fingerprint(answerChanged), baseline);
+  const goalChanged = structuredClone(ReviewVerifier.reviewItems);
+  goalChanged[0].goal = { type: "exact", answer: [0, 0] };
+  assert.notEqual(ReviewVerifier.fingerprint(goalChanged), baseline);
 });

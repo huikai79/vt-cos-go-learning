@@ -53,3 +53,8 @@
 - **反證：** 舊 v1 evidence、任一 participant fingerprint 不同、accessibility candidate 不同、manifest 與 critical surface 指紋失配，全部 fail closed。
 - **Migration：** 尚無正式真人證據，因此不做歷史推測 migration；舊 v1 evidence 必須重新依原始觀察確認是否確實在同一 frozen candidate 上完成，不能只改版本字串。
 - **證據邊界：** 本修改只提高正式 usability evidence integrity；不產生 R1a、真人 usability、accessibility、formal evaluation 或 learning-effect 證據。目前狀態仍為 BLOCKED／NOT_TESTED。
+
+
+## 2026-09-27 Change note｜R1 receipt 綁定 reviewer-visible content v5
+
+R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerprint 為 `fnv1a32-c34ef6a4`。v5 fingerprint 不只涵蓋答案／goal／棋盤，也涵蓋審查者實際看到的 `prompt`、`focus` 與 family／skill identity。若任何 reviewer-visible semantics 改變，舊 receipt 不得沿用。由於目前尚無正式外部 R1a 回條，沒有可遷移的正式證據；v4 草稿／回條不能只改 protocol 或 fingerprint 字串來升級，必須以 v5 bank 重新完成審查。這不降低三位初學者 usability、accessibility 或正式評量 gate。
