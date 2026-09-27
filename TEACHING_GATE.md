@@ -64,5 +64,5 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 
 - 新增 `r1-review-start.html` 作為外部 reviewer 的唯一建議起點；頁面明示 v5 protocol、`fnv1a32-c34ef6a4`、77 題母體、answer-blind 條件與異議停止線。
 - handoff 不載入題庫答案／scoring modules，只連到去答案的 `r1-review.html`；CI 會檢查 handoff protocol/fingerprint 必須與 verifier 同步。
-- `formal-teaching-evidence.example.json` 已改綁 current candidate `formal-teaching-candidate-2026-09-27-b` / `fnv1a32-js16-e9637bc0`，避免未來真人證據從模板開始就失效。
+- `formal-teaching-evidence.example.json` 已改綁 current candidate `formal-teaching-candidate-2026-09-28-a` / `fnv1a32-js16-2d1aa93b`，避免未來真人證據從模板開始就失效。
 - 此 change 只代表 **READY_FOR_EXTERNAL_REVIEW**；目前仍沒有真人 R1a receipt，因此 `r1aExternalContentReview` 仍是 `awaiting_external_receipt`，正式教學仍 `BLOCKED`。
