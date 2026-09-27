@@ -68,7 +68,7 @@ test("ontology v3 是 canonical source，catalog entries 只由 adapter 衍生",
   assert.deepEqual(Catalog.entries.map((entry) => entry.id), Ontology.concepts.map((concept) => concept.id));
   assert.doesNotMatch(catalogSource, /const\s+entries\s*=\s*\[/);
   assert.match(catalogSource, /Ontology\.concepts\.map\(toLegacyEntry\)/);
-  assert.match(html, /classic-shapes-ontology\\.js\\?v=classic-shape-ontology-v3/);
+  assert.match(html, /classic-shapes-ontology\.js\?v=classic-shape-ontology-v3/);
   assert.ok(html.indexOf("classic-shapes-ontology.js") < html.indexOf("classic-shapes-catalog.js"));
 });
 
