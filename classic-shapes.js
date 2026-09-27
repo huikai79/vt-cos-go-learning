@@ -8,6 +8,8 @@
   const CrossFiveContract = window.GoCrossFiveContract;
   const FlowerSix = window.GoFlowerSixPractice;
   const FlowerSixContract = window.GoFlowerSixContract;
+  const Tripod = window.GoTripodPractice;
+  const TripodContract = window.GoTripodOracleContract;
   const Contrast = window.GoClassicContrastPractice;
   const ContrastContract = window.GoClassicContrastContract;
   const ShortRead = window.GoClassicShapeRead;
@@ -16,13 +18,15 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !FlowerSix || !FlowerSixContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !FlowerSix || !FlowerSixContract || !Tripod || !TripodContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
   if (!crossFiveValidation.ok) throw new Error("Cross Five practice contract invalid: " + crossFiveValidation.errors.join("; "));
   const flowerSixValidation = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
   if (!flowerSixValidation.ok) throw new Error("Flower Six practice contract invalid: " + flowerSixValidation.errors.join("; "));
+  const tripodValidation = TripodContract.validateAll(Tripod.items, Go);
+  if (!tripodValidation.ok) throw new Error("Tripod practice contract invalid: " + tripodValidation.errors.join("; "));
   const contrastValidation = ContrastContract.validateAll(Contrast.rounds, {
     Go,
     BulkyPractice: Practice,
@@ -63,6 +67,10 @@
   let flowerSixSolved = false;
   let flowerSixHintShown = false;
   let flowerSixCursor = [2, 2];
+  let tripodIndex = 0;
+  let tripodSolved = false;
+  let tripodHintShown = false;
+  let tripodCursor = [15, 18];
   let bulkyIndex = 0;
   let bulkySolved = false;
   let bulkyHintShown = false;
@@ -435,6 +443,112 @@
     if (item.eyeSpace.some(([x,y]) => x===next[0] && y===next[1])) {
       flowerSixCursor = next;
       renderFlowerSixBoard();
+    }
+  }
+
+  function initialTripodCursor(item,position) {
+    const board = Go.boardFromStones(position.setupStones,item.boardSize);
+    for (let y=position.viewport.minY; y<=position.viewport.maxY; y+=1) {
+      for (let x=position.viewport.minX; x<=position.viewport.maxX; x+=1) {
+        if (board[y][x] === Go.EMPTY && !TripodContract.samePoint([x,y],position.expectedMove)) return [x,y];
+      }
+    }
+    return position.expectedMove.slice();
+  }
+
+  function renderTripodBoard() {
+    const item=Tripod.items[tripodIndex];
+    const validation=TripodContract.validateItem(item,Go);
+    if (!validation.ok) throw new Error("Tripod item invalid: " + validation.errors.join("; "));
+    const position=validation.position;
+    const { minX,maxX,minY,maxY }=position.viewport;
+    const pad=7;
+    const span=86;
+    const width=maxX-minX;
+    const height=maxY-minY;
+    const step=span/Math.max(width,height);
+    const setup=new Map(position.setupStones.map(([x,y,color]) => [pointKey(x,y),color]));
+    const lines=[];
+    const nodes=[];
+    for (let y=minY; y<=maxY; y+=1) {
+      const py=pad+(y-minY)*step;
+      lines.push('<line x1="' + pad + '" y1="' + py + '" x2="' + (pad+width*step) + '" y2="' + py + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let x=minX; x<=maxX; x+=1) {
+      const px=pad+(x-minX)*step;
+      lines.push('<line x1="' + px + '" y1="' + pad + '" x2="' + px + '" y2="' + (pad+height*step) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let y=minY; y<=maxY; y+=1) for (let x=minX; x<=maxX; x+=1) {
+      const px=pad+(x-minX)*step;
+      const py=pad+(y-minY)*step;
+      const color=setup.get(pointKey(x,y));
+      if (color === Go.BLACK) nodes.push('<circle data-tripod-x="' + x + '" data-tripod-y="' + y + '" cx="' + px + '" cy="' + py + '" r="4.2" class="stone-black classic-occupied"/>');
+      else if (color === Go.WHITE) nodes.push('<circle data-tripod-x="' + x + '" data-tripod-y="' + y + '" cx="' + px + '" cy="' + py + '" r="4.2" class="stone-white classic-occupied"/>');
+      else nodes.push('<circle data-tripod-x="' + x + '" data-tripod-y="' + y + '" cx="' + px + '" cy="' + py + '" r="5.2" class="classic-hit"/>');
+    }
+    const [cx0,cy0]=tripodCursor;
+    nodes.push('<circle cx="' + (pad+(cx0-minX)*step) + '" cy="' + (pad+(cy0-minY)*step) + '" r="5.4" class="classic-cursor-ring"/>');
+    $("tripod-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("tripod-cursor-status").textContent="游標：全盤第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderTripod() {
+    const item=Tripod.items[tripodIndex];
+    const validation=TripodContract.validateItem(item,Go);
+    if (!validation.ok) throw new Error("Tripod item invalid: " + validation.errors.join("; "));
+    tripodSolved=false;
+    tripodHintShown=false;
+    tripodCursor=initialTripodCursor(item,validation.position);
+    $("tripod-tag").textContent=(tripodIndex+1) + " / " + Tripod.items.length + " · source case only";
+    $("tripod-title").textContent=tripodIndex < 2 ? "固定來源局面的第一手" : "旋轉後重新定位第一手";
+    $("tripod-prompt").textContent=item.prompt;
+    $("tripod-feedback").className="feedback";
+    $("tripod-feedback").textContent="";
+    $("tripod-reveal").hidden=true;
+    $("tripod-hint").disabled=false;
+    $("tripod-next").disabled=true;
+    $("tripod-next").textContent=tripodIndex===Tripod.items.length-1 ? "完成 Tripod 練習" : "下一題 →";
+    $("tripod-side").textContent=item.role==="attack" ? "○ 白棋攻" : "● 黑棋守";
+    renderTripodBoard();
+  }
+
+  function attemptTripod(x,y) {
+    if (tripodSolved) return;
+    const item=Tripod.items[tripodIndex];
+    const result=TripodContract.score(item,[x,y],Go);
+    if (!result.ok) {
+      $("tripod-feedback").className="feedback error";
+      $("tripod-feedback").textContent="Tripod source-case contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if (result.status==="ILLEGAL_MOVE") {
+      $("tripod-feedback").className="feedback error";
+      $("tripod-feedback").textContent="這裡已有棋子或不是目前規則下可落子的點。";
+      return;
+    }
+    if (result.correct) {
+      tripodSolved=true;
+      $("tripod-feedback").className="feedback success";
+      $("tripod-feedback").textContent=item.success;
+      $("tripod-reveal").hidden=false;
+      $("tripod-hint").disabled=true;
+      $("tripod-next").disabled=false;
+    } else {
+      $("tripod-feedback").className="feedback error";
+      $("tripod-feedback").textContent=tripodHintShown
+        ? "還不是。只針對這個 source case，重新檢查角上一線與二線的攻守第一手。"
+        : "這手合法，但不是本題外部 regression oracle 指定的第一手。";
+    }
+  }
+
+  function moveTripodCursor(dx,dy) {
+    const item=Tripod.items[tripodIndex];
+    const validation=TripodContract.validateItem(item,Go);
+    const v=validation.position.viewport;
+    const next=[tripodCursor[0]+dx,tripodCursor[1]+dy];
+    if (next[0] >= v.minX && next[0] <= v.maxX && next[1] >= v.minY && next[1] <= v.maxY) {
+      tripodCursor=next;
+      renderTripodBoard();
     }
   }
 
@@ -982,6 +1096,43 @@
     }
   });
 
+  $("tripod-board").addEventListener("click",(event) => {
+    const hit=event.target.closest("[data-tripod-x][data-tripod-y]");
+    if (!hit) return;
+    tripodCursor=[Number(hit.dataset.tripodX),Number(hit.dataset.tripodY)];
+    renderTripodBoard();
+    attemptTripod(tripodCursor[0],tripodCursor[1]);
+  });
+
+  $("tripod-board").addEventListener("keydown",(event) => {
+    if (event.key==="ArrowLeft") { event.preventDefault(); moveTripodCursor(-1,0); }
+    else if (event.key==="ArrowRight") { event.preventDefault(); moveTripodCursor(1,0); }
+    else if (event.key==="ArrowUp") { event.preventDefault(); moveTripodCursor(0,-1); }
+    else if (event.key==="ArrowDown") { event.preventDefault(); moveTripodCursor(0,1); }
+    else if (event.key==="Enter" || event.key===" ") {
+      event.preventDefault();
+      attemptTripod(tripodCursor[0],tripodCursor[1]);
+    }
+  });
+
+  $("tripod-hint").addEventListener("click",() => {
+    tripodHintShown=true;
+    $("tripod-feedback").className="feedback";
+    $("tripod-feedback").textContent=Tripod.items[tripodIndex].hint;
+  });
+
+  $("tripod-next").addEventListener("click",() => {
+    if (!tripodSolved) return;
+    if (tripodIndex < Tripod.items.length-1) {
+      tripodIndex+=1;
+      renderTripod();
+    } else {
+      $("tripod-feedback").className="feedback success";
+      $("tripod-feedback").textContent="Tripod 固定來源局面練習完成。這只支持 tripod2/R3 source case 的攻守第一手與旋轉等價點；其他 Tripod case 維持 UNKNOWN。";
+      $("tripod-next").disabled=true;
+    }
+  });
+
   $("bulky-board").addEventListener("click", (event) => {
     const hit = event.target.closest("[data-bulky-x][data-bulky-y]");
     if (!hit) return;
@@ -1110,6 +1261,7 @@
   renderContrast();
   renderCross();
   renderFlowerSix();
+  renderTripod();
   renderBulky();
   renderRead();
   renderReduction();
