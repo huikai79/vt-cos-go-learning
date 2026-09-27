@@ -139,3 +139,16 @@ test("歷史探索頁與樣式列入公開靜態入口，但不進 learner runti
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
+
+
+test("Pages deployment 完成後另有 served-content smoke，不把 deploy success 當成內容已更新", () => {
+  const workflowPath = path.join(root, ".github", "workflows", "pages-smoke.yml");
+  const workflow = fs.readFileSync(workflowPath, "utf8");
+  assert.ok(manifest.publicFiles.includes(".github/workflows/pages-smoke.yml"));
+  assert.match(workflow, /workflow_run:/);
+  assert.match(workflow, /pages build and deployment/);
+  assert.match(workflow, /history\.css\?v=history-explore-v3/);
+  assert.match(workflow, /兩個 72 不能當成同一條歷史因果證據/);
+  assert.match(workflow, /本頁來源最後查核：2026-09-27/);
+  assert.match(workflow, /href="advanced\.html">回進階訓練<\/a>/);
+});

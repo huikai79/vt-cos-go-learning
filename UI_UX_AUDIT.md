@@ -224,3 +224,12 @@
 - `prefers-reduced-motion: reduce` 時取消 smooth scrolling；static contract 直接驗證此 fallback，避免把捲動動畫強加給要求減少動效的使用者。
 - 歷史頁維持零 JavaScript runtime；browser test 同時檢查四個 question block、六種 evidence label 與來源最後查核日期。
 - 這些自動檢查只能證明指定 reflow／contrast contract；screen reader 實際閱讀順序、認知負荷與歷史標籤是否易懂仍需真人 observation。
+
+
+## 2026-09-27｜History Explore v3 Johari accessibility follow-up
+
+- v2「四組 contrast 修正」是必要但不充分：它只證明已知失敗點，沒有覆蓋其他小字與 evidence badge。v3 browser regression 會計算 computed color 與祖先背景合成後的實際 contrast，所有指定 helper／badge 均需 ≥ 4.5。
+- 接近門檻的 kicker／source helper 再提高 safety margin；static contract 同時覆蓋 19 組前景／背景組合。
+- 375px 除了 reflow／overflow，現在另外要求 History CTA 的 `advanced.html` 返回入口實際可見，避免 ≤420px header 隱藏 Advanced 後只剩間接回首頁。
+- `prefers-reduced-motion` 不只檢查 CSS 字串，browser 會模擬 reduce media feature 並驗 computed `scrollBehavior === "auto"`。
+- 這些仍不是 WCAG 全站合規聲明；focus order、screen reader 語意與認知負荷仍需真人 spot check。

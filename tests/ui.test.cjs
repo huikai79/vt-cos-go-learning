@@ -1055,20 +1055,85 @@ async function main() {
       await delay(100);
     }
     assert.equal(historyReady, true);
-    const historyDesktop = await evaluate(socket, `(() => ({
-      title: document.querySelector('#history-title').textContent,
-      questions: document.querySelectorAll('.question-block').length,
-      evidenceLabels: [...new Set([...document.querySelectorAll('.evidence-guide .evidence-badge')].map((node) => node.textContent.trim()))],
-      sourceAuditDate: document.querySelector('.source-audit-date')?.textContent.trim(),
-      scripts: document.querySelectorAll('script').length,
-      width: innerWidth,
-      scrollWidth: document.documentElement.scrollWidth
-    }))()`);
+    const historyDesktop = await evaluate(socket, `(() => {
+      const parseColor = (value) => {
+        const match = value.match(/rgba?\\(([^)]+)\\)/);
+        if (!match) return null;
+        const parts = match[1].split(',').map((part) => Number(part.trim()));
+        return {r: parts[0], g: parts[1], b: parts[2], a: parts.length > 3 ? parts[3] : 1};
+      };
+      const over = (fg, bg) => {
+        const alpha = fg.a + bg.a * (1 - fg.a);
+        if (alpha === 0) return {r:255,g:255,b:255,a:0};
+        return {
+          r: (fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / alpha,
+          g: (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / alpha,
+          b: (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / alpha,
+          a: alpha
+        };
+      };
+      const effectiveBackground = (node) => {
+        const layers = [];
+        for (let current = node; current; current = current.parentElement) {
+          const parsed = parseColor(getComputedStyle(current).backgroundColor);
+          if (parsed && parsed.a > 0) layers.push(parsed);
+        }
+        let result = {r:255,g:255,b:255,a:1};
+        for (let index = layers.length - 1; index >= 0; index -= 1) result = over(layers[index], result);
+        return result;
+      };
+      const channel = (value) => {
+        const normalized = value / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      };
+      const luminance = (color) => 0.2126 * channel(color.r) + 0.7152 * channel(color.g) + 0.0722 * channel(color.b);
+      const contrast = (foreground, background) => {
+        const values = [luminance(foreground), luminance(background)].sort((a,b) => b-a);
+        return (values[0] + 0.05) / (values[1] + 0.05);
+      };
+      const auditSelectors = [
+        '.history-brand small','.history-kicker','.section-head>span','.badge-grid p','.evidence-badge',
+        '.question-number','.detail-body','.evidence-timeline p','.compare-head','.story-grid p',
+        '.frontier-grid p','.source-audit-date','.source-list span','.history-cta>div>span','.history-cta p','footer'
+      ];
+      const explicitNodes = auditSelectors.flatMap((selector) => [...document.querySelectorAll(selector)]);
+      const visibleSmallTextNodes = [...document.querySelectorAll('body *')].filter((node) => {
+        const style = getComputedStyle(node);
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+        if (Number.parseFloat(style.fontSize) >= 16) return false;
+        if (node.getClientRects().length === 0) return false;
+        return [...node.childNodes].some((child) => child.nodeType === Node.TEXT_NODE && child.textContent.trim());
+      });
+      const audited = [...new Set([...explicitNodes, ...visibleSmallTextNodes])].map((node) => {
+        const foreground = parseColor(getComputedStyle(node).color);
+        const background = effectiveBackground(node);
+        return {
+          label: node.className || node.tagName,
+          text: node.textContent.trim().slice(0, 32),
+          ratio: contrast(foreground, background)
+        };
+      });
+      return {
+        title: document.querySelector('#history-title').textContent,
+        questions: document.querySelectorAll('.question-block').length,
+        evidenceLabels: [...new Set([...document.querySelectorAll('.evidence-guide .evidence-badge')].map((node) => node.textContent.trim()))],
+        sourceAuditDate: document.querySelector('.source-audit-date')?.textContent.trim(),
+        scripts: document.querySelectorAll('script').length,
+        historyVersion: document.querySelector('footer')?.textContent.includes('歷史探索 v3'),
+        minContrast: Math.min(...audited.map((item) => item.ratio)),
+        lowContrast: audited.filter((item) => item.ratio < 4.5),
+        width: innerWidth,
+        scrollWidth: document.documentElement.scrollWidth
+      };
+    })()`);
     assert.match(historyDesktop.title, /圍棋為什麼會長成今天這個樣子/);
     assert.equal(historyDesktop.questions, 4);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
     assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-27");
     assert.equal(historyDesktop.scripts, 0);
+    assert.equal(historyDesktop.historyVersion, true);
+    assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);
+    assert.ok(historyDesktop.minContrast >= 4.5, `history minimum contrast: ${historyDesktop.minContrast}`);
     assert.ok(historyDesktop.scrollWidth <= historyDesktop.width + 1, `history desktop horizontal overflow: ${JSON.stringify(historyDesktop)}`);
 
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
@@ -1077,12 +1142,18 @@ async function main() {
       scrollWidth: document.documentElement.scrollWidth,
       sourceColumns: getComputedStyle(document.querySelector('.source-list')).gridTemplateColumns,
       frontierColumns: getComputedStyle(document.querySelector('.frontier-grid')).gridTemplateColumns,
-      ctaDirection: getComputedStyle(document.querySelector('.history-cta')).flexDirection
+      ctaDirection: getComputedStyle(document.querySelector('.history-cta')).flexDirection,
+      advancedCtaVisible: (() => { const node = document.querySelector('.history-cta a[href="advanced.html"]'); return Boolean(node && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0); })()
     }))()`);
     assert.ok(historyMobile.scrollWidth <= historyMobile.width + 1, `history mobile horizontal overflow: ${JSON.stringify(historyMobile)}`);
     assert.equal(historyMobile.ctaDirection, "column");
+    assert.equal(historyMobile.advancedCtaVisible, true);
     assert.ok(historyMobile.sourceColumns.split(" ").length === 1);
     assert.ok(historyMobile.frontierColumns.split(" ").length === 1);
+    await command(socket, "Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+    const reducedMotionHistory = await evaluate(socket, "getComputedStyle(document.documentElement).scrollBehavior");
+    assert.equal(reducedMotionHistory, "auto");
+    await command(socket, "Emulation.setEmulatedMedia", { features: [] });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
 
     await command(socket, "Page.navigate", { url: reviewPage });

@@ -605,3 +605,14 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Browser regression：** Windows browser UI suite 現在直接導航 `history.html`，驗證四個主題、六種 evidence label、來源查核日期、零 runtime script，以及桌面／375px 行動版無水平溢出與單欄重排。
 - **Candidate boundary：** 本輪只改 `history.html`／`history.css` 與測試／文件；這些不在 `formal-teaching-candidate.json` 的 Core critical asset set，因此 `formal-teaching-candidate-2026-09-27-b` 不需重凍結。
 - **狀態：** 歷史內容工程、claim-near source fit、自動 accessibility contract 與 browser regression 為 **PASS**。PR #37 final verify run #487 全數 PASS；squash merge `afe2e39b855beb9bc680523ae34c1de20dac8e1c` 後 main verify run #488 亦全數 PASS，GitHub Pages deployment run #378 成功。外部歷史學術同行審查、正式 novice usability、真人 accessibility 與 learning effect 仍分別保持 NOT_REVIEWED／NOT_TESTED／NOT_TESTED／NOT_MEASURED。由於本執行環境對公開 Pages 網域 DNS／web fetch 不可達，部署後的獨立 HTTP 內容抽查標為 UNKNOWN；不以工具網路限制覆寫 GitHub Pages deployment PASS。
+
+
+## 2026-09-27 Change note｜History Explore v3 Johari blind-spot audit
+
+- **Johari 開放區：** v2 已正確把歷史閱讀層與 learner state／正式評量分離，也已把 17→19 路、典故與來源層級收斂到 claim-near evidence；formal teaching 仍維持 `BLOCKED`。
+- **Johari 盲點區：** v2 contrast regression 只抽查四個已知 selector，不能代表其餘小字／badge；≤420px header 會隱藏 Advanced 連結，而頁底原本也沒有 Advanced CTA；Pages workflow success 只能證明部署工作完成，不能證明公開 URL 已供應本次內容。
+- **Johari 隱藏區：** 來源清單仍有一個泛用 CText 首頁入口，和「只保留實際支撐 learner-facing claim 的來源」規則不完全一致；已改為《孟子》《博物志》傳說鏈與《世說新語》直達頁。
+- **實作：** History Explore 升 v3；helper text 增加 contrast safety margin；browser UI 直接以 computed style 掃描歷史頁小字與六類 evidence badge 的實際前景／背景，要求 contrast ratio ≥ 4.5；375px 驗證頁底 Advanced CTA 可見；`prefers-reduced-motion: reduce` 以 browser emulation 驗證 `scroll-behavior:auto`。
+- **部署驗證：** 新增 `.github/workflows/pages-smoke.yml`。Pages deployment 成功後，對 manifest 的正式 Pages URL 讀取 `index.html` 與 `history.html`，以 cache-bust＋retry 驗 History v3、72 因果修正、來源查核日期與 Advanced CTA。此 gate 只驗 served artifact，不升格為 usability、內容效度或學習成效。
+- **Candidate boundary：** `history.html`／`history.css`／release workflow 不在 formal candidate critical asset set，首頁 learner-facing critical assets 未變，因此 candidate `formal-teaching-candidate-2026-09-27-b` 不重凍結。
+- **未知區保留：** 外部歷史專業審查與真人鍵盤／螢幕閱讀器 accessibility 仍為 NOT_REVIEWED／NOT_TESTED；新增自動檢查不替代真人證據。

@@ -72,10 +72,10 @@ test("所有新分頁外部連結都使用 noreferrer，歷史頁沒有 runtime 
   assert.ok(externalTargets.length >= 10);
   assert.ok(externalTargets.every((tag) => /rel="[^"]*noreferrer[^"]*"/.test(tag)));
   assert.doesNotMatch(html, /<script\b/i);
-  assert.match(html, /history\.css\?v=history-explore-v2/);
+  assert.match(html, /history\.css\?v=history-explore-v3/);
 });
 
-test("歷史頁小字配色維持一般文字 AA 對比安全值", () => {
+test("歷史頁所有已知小字與 evidence badge 維持一般文字 AA 對比安全值", () => {
   const css = fs.readFileSync(path.join(root, "history.css"), "utf8");
   const channel = (value) => {
     const normalized = value / 255;
@@ -90,20 +90,32 @@ test("歷史頁小字配色維持一般文字 AA 對比安全值", () => {
     const values = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
     return (values[0] + 0.05) / (values[1] + 0.05);
   };
-  const colorOf = (pattern) => {
-    const match = css.match(pattern);
-    assert.ok(match, String(pattern));
-    return match[1];
-  };
   const checks = [
-    [colorOf(/\.history-brand small\{[^}]*color:(#[0-9a-f]{6})/i), "#fbfcf8", "brand small"],
-    [colorOf(/\.question-number\{[^}]*color:(#[0-9a-f]{6})/i), "#ffffff", "question number"],
-    [colorOf(/\.compare-head\{[^}]*color:(#[0-9a-f]{6})/i), "#eef3eb", "compare head"],
-    [colorOf(/footer\{[^}]*color:(#[0-9a-f]{6})/i), "#f4f6f0", "footer"]
+    ["brand small", "#53675a", "#fbfcf8"],
+    ["hero/section kicker", "#466c50", "#f4f6f0"],
+    ["section kicker on card", "#466c50", "#fbfcf8"],
+    ["badge grid helper", "#607364", "#ffffff"],
+    ["confirmed badge", "#275c38", "#dceee1"],
+    ["strong badge", "#426240", "#e6efe3"],
+    ["debated badge", "#765819", "#fff0cb"],
+    ["legend badge", "#775032", "#f2e4d7"],
+    ["hypothesis badge", "#4e527a", "#e5e7f4"],
+    ["unknown badge", "#5e625f", "#e8e9e8"],
+    ["question number", "#52685a", "#ffffff"],
+    ["detail text", "#566d5c", "#ffffff"],
+    ["timeline helper", "#5b705f", "#ffffff"],
+    ["compare head", "#52685a", "#eef3eb"],
+    ["story/frontier helper", "#5a705f", "#f9faf7"],
+    ["source helper", "#5f7162", "#ffffff"],
+    ["cta kicker", "#bcd0c0", "#21392d"],
+    ["cta helper", "#d3e0d5", "#21392d"],
+    ["footer", "#53675a", "#f4f6f0"]
   ];
-  for (const [foreground, background, label] of checks) {
+  for (const [label, foreground, background] of checks) {
     assert.ok(ratio(foreground, background) >= 4.5, `${label}: ${ratio(foreground, background).toFixed(2)}`);
   }
+  assert.match(css, /\.history-kicker,\.section-head>span\{[^}]*color:#466c50/);
+  assert.match(css, /\.source-list span\{[^}]*color:#5f7162/);
 });
 
 test("歷史頁尊重 prefers-reduced-motion", () => {
@@ -129,10 +141,10 @@ test("歷史 HTML 不得把 escaped newline 當可見文字帶進來源清單", 
 });
 
 
-test("History Explore learner-facing version metadata 一致為 v2", () => {
-  assert.match(html, /history\.css\?v=history-explore-v2/);
-  assert.match(html, /歷史探索 v2/);
-  assert.doesNotMatch(html, /歷史探索 v1/);
+test("History Explore learner-facing version metadata 一致為 v3", () => {
+  assert.match(html, /history\.css\?v=history-explore-v3/);
+  assert.match(html, /歷史探索 v3/);
+  assert.doesNotMatch(html, /歷史探索 v1|歷史探索 v2/);
 });
 
 
@@ -141,4 +153,16 @@ test("孫策呂範棋譜真實性以後世 attribution 與質疑呈現，不冒�
   assert.match(html, /「所下とされる」棋譜/);
   assert.ok(html.includes("https://ctext.org/wiki.pl?chapter=496456&amp;if=gb"));
   assert.match(html, /疑是後人假託/);
+});
+
+
+test("History Explore v3 不保留泛用來源入口，改用實際 claim-near source", () => {
+  assert.doesNotMatch(html, /href="https:\/\/ctext\.org\/"\s/);
+  assert.ok(html.includes("https://ctext.org/mengzi/gaozi-i"));
+  assert.ok(html.includes("chapter=578656"));
+  assert.ok(html.includes("node=91622"));
+});
+
+test("手機 header 即使隱藏進階導覽，頁面仍保留直接回進階訓練的 CTA", () => {
+  assert.match(html, /href="advanced\.html">回進階訓練<\/a>/);
 });
