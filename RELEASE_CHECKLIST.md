@@ -17,6 +17,7 @@
 - [x] 9×9 完整實戰候選已加入 manifest；GitHub Actions run #12 的 Node、Sabaki oracle、Windows file-URL UI、Edge smoke 與 repository boundary 全部 PASS。
 - [x] geometry extraction gate 已加入 release contract：外部 diagram／SGF 衍生 geometry 必須保存 immutable `sourceDigest` 與 rights status；只有 `project_generated`／`verified_reusable` 可進公開 registry，後者另要求 `rightsEvidence`。
 - [x] 人工 geometry transcription 的公開升格要求至少兩份不同 reviewKey、相同 sourceDigest 的獨立轉錄完全一致；任何 `CONFLICT` 都 BLOCKED release。目前 repo 沒有把 rights=unknown 的外部來源衍生座標提交公開 registry。
+- [x] reference-only／rights-unknown geometry 研究只允許 non-shipping oracle：可保存報告必須剝除 points、stones、shape/context signature 與 fingerprint，且固定 `canonicalPromotionAllowed=false`；同 evidenceChain 不因網址或 digest 數量重複計證據。
 
 ## 候選公開檔案
 
