@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { phase2Problems } = require("./phase2-content.js");
 
-const PROTOCOL_ID = "go-r1-independent-content-review-v4";
+const PROTOCOL_ID = "go-r1-independent-content-review-v5";
 const familyIds = [...new Set(phase2Problems.map((problem) => problem.familyId))];
 const reviewItems = [...new Map([
   ...familyIds.map((familyId) => phase2Problems.find((problem) => problem.familyId === familyId)),
@@ -17,7 +17,7 @@ const population = Object.freeze({
 });
 
 function fingerprint(items) {
-  const source = JSON.stringify(items.map((problem) => ({ id: problem.id, contentVersion: problem.contentVersion, itemVersion: problem.itemVersion, stones: problem.stones, answer: problem.answer, goal: problem.goal })));
+  const source = JSON.stringify(items.map((problem) => ({ id: problem.id, familyId: problem.familyId, skillId: problem.skillId, contentVersion: problem.contentVersion, itemVersion: problem.itemVersion, boardSize: problem.boardSize, type: problem.type, pool: problem.pool, prompt: problem.prompt, focus: problem.focus, stones: problem.stones, answer: problem.answer, goal: problem.goal })));
   let hash = 2166136261;
   for (let index = 0; index < source.length; index += 1) {
     hash ^= source.charCodeAt(index);
