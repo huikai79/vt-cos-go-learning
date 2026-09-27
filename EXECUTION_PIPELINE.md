@@ -17,7 +17,7 @@
 
 ## 新增 Experience 工作線｜Core 後續進階訓練
 
-進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。v5 將倒撲／枷／對殺／征子各做成兩個 multi-step practice variant；每題必須有唯一 `familyId/variantId` 與明示 `variationAxes`，第二題至少改一個非單純旋轉的作答條件。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。這些 family 只用於 practice 與後續診斷。learner-facing 棋盤題在完成前不得顯示 family ID、完整題名、術語或「這是前題變形」等關係 cue；同 family variant 需在 seed 完成後才開放。`advanced-sequence-events-v2` 會把當時的 family／variant／variation axes 與首答一起保存，v1 歷史事件不補寫新語義；只有 seed `presented` 早於 variant 且兩邊都有實際首答時，family transition 才可輸出 `DESCRIPTIVE_ONLY`，否則保持 `INSUFFICIENT_DATA`；任何情況都不產生 mastery 或 transfer claim。不得在缺少真人 first-response／難度資料時升格為 KC、transfer 證據或平行題等難。任何進階項目若要進 scheduler、T2/T3 或 formal evaluation，仍須回到 evidence-integrity 與內容效度 gate。
+進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。v5 將倒撲／枷／對殺／征子各做成兩個 multi-step practice variant；每題必須有唯一 `familyId/variantId` 與明示 `variationAxes`，第二題至少改一個非單純旋轉的作答條件。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。這些 family 只用於 practice 與後續診斷。learner-facing 棋盤題在完成前不得顯示 family ID、完整題名、術語或「這是前題變形」等關係 cue。現行 `advanced-fixed-interleave-v1` 是固定 baseline：先依序完成四個 family seed，再依序完成四個 variant，一次只開放下一個 policy position；不得把這個固定交錯寫成 adaptive scheduler。`advanced-sequence-events-v3` 保存當時的 family／variant／variation axes、`presentationPolicyVersion`、`policyPosition` 與首答；v1／v2 歷史事件各由 legacy reader 保留，不補寫新 policy 語義。family transition 除 seed 早於 variant 與兩邊首答外，還須由 policy gate 確認其他三個 family 已介入，否則保持 `INSUFFICIENT_DATA`；任何情況都不產生 mastery 或 transfer claim。不得在缺少真人 first-response／難度資料時升格為 KC、transfer 證據或平行題等難。任何進階項目若要進 scheduler、T2/T3 或 formal evaluation，仍須回到 evidence-integrity 與內容效度 gate。
 
 ## 優先順序與閘門
 
