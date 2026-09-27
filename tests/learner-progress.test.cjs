@@ -106,5 +106,5 @@ test("資料收集 readiness 分開未開始、掃描、未答、單局與跨局
   }).collectionReadiness;
   assert.equal(multi.stage, "collecting_multi_session");
   assert.equal(multi.distinctSessionsWithFirstResponse, 2);
-  assert.match(multi.interpretationBoundary, /不是樣本量充分性/);
+  assert.match(multi.interpretationBoundary, /不代表樣本已足夠/);
 });
