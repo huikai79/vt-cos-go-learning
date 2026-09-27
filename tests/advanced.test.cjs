@@ -6,6 +6,7 @@ const content = require("../advanced-content.js");
 const Events = require("../advanced-events.js");
 const SequenceEvents = require("../advanced-sequence-events.js");
 const SequenceContract = require("../advanced-sequence-contract.js");
+const SequencePolicy = require("../advanced-sequence-policy.js");
 const Go = require("../go.js");
 
 const root = path.join(__dirname, "..");
@@ -271,6 +272,86 @@ test("sequence contract 對捕獲數或內建手順漂移 fail closed", () => {
 });
 
 
+test("fixed interleave v1 先走四個 seed，再走四個 variant", () => {
+  assert.equal(SequencePolicy.VERSION, "advanced-fixed-interleave-v1");
+  const validation = SequencePolicy.validateCatalog(content.sequenceExperiences);
+  assert.equal(validation.ok, true, validation.errors.join("\n"));
+  assert.deepEqual(validation.ordered.map((item) => item.id), [
+    "adv-seq-snapback-01",
+    "adv-seq-net-01",
+    "adv-seq-semeai-01",
+    "adv-seq-ladder-01",
+    "adv-seq-snapback-02",
+    "adv-seq-net-02",
+    "adv-seq-semeai-02",
+    "adv-seq-ladder-02"
+  ]);
+});
+
+test("fixed interleave stage 只開放下一個固定位置，不讓 variant 緊跟 seed", () => {
+  const storage = memoryStorage();
+  const base = {
+    sessionId: "policy-s",
+    experienceVersion: 1,
+    trackId: "reading-tesuji",
+    occurredAt: "2026-09-28T00:00:00.000Z"
+  };
+  const ordered = SequencePolicy.orderedExperiences(content.sequenceExperiences);
+  const appendCompleted = (item, position) => {
+    const common = { ...base, presentationId: "p-" + position, experienceId: item.id, familyId: item.familyId, variantId: item.variantId, variationAxes: item.variationAxes, policyPosition: position };
+    assert.equal(SequenceEvents.append(storage, { ...common, eventId: "presented-" + position, type: "presented" }).ok, true);
+    assert.equal(SequenceEvents.append(storage, { ...common, eventId: "completed-" + position, type: "completed" }).ok, true);
+  };
+  let stage = SequencePolicy.stageState(ordered, SequenceEvents.read(storage).store);
+  assert.equal(stage.nextIndex, 0);
+  appendCompleted(ordered[0], 0);
+  stage = SequencePolicy.stageState(ordered, SequenceEvents.read(storage).store);
+  assert.equal(stage.nextIndex, 1);
+  assert.equal(stage.ordered[1].familyId, "net");
+  assert.notEqual(stage.ordered[1].familyId, stage.ordered[0].familyId);
+});
+
+test("family 描述資格要求其他三個 family 已介入，缺一個就 fail closed", () => {
+  const storage = memoryStorage();
+  const ordered = SequencePolicy.orderedExperiences(content.sequenceExperiences);
+  const addPresentationAndFirst = (item, position, suffix) => {
+    const common = {
+      sessionId: "gap-s", presentationId: "gap-" + suffix, experienceId: item.id, experienceVersion: 1,
+      trackId: item.trackId, familyId: item.familyId, variantId: item.variantId, variationAxes: item.variationAxes,
+      policyPosition: position, occurredAt: "2026-09-28T00:00:00.000Z"
+    };
+    assert.equal(SequenceEvents.append(storage, { ...common, eventId: "gp-" + suffix, type: "presented" }).ok, true);
+    assert.equal(SequenceEvents.append(storage, { ...common, eventId: "gm-" + suffix, type: "move_first", decisionId: item.decisions[0].id, stepIndex: 0, point: item.decisions[0].acceptedMoves[0], correct: true, legal: true, capturedCount: 0 }).ok, true);
+  };
+  addPresentationAndFirst(ordered[0], 0, "seed");
+  addPresentationAndFirst(ordered[1], 1, "net");
+  addPresentationAndFirst(ordered[2], 2, "semeai");
+  addPresentationAndFirst(ordered[4], 4, "variant");
+  const eligibility = SequencePolicy.transitionEligibility(ordered, SequenceEvents.read(storage).store, "snapback");
+  assert.equal(eligibility.status, "INSUFFICIENT_DATA");
+  assert.equal(eligibility.reason, "fixed_interleave_incomplete");
+  assert.deepEqual(eligibility.missingFamilies, ["ladder"]);
+});
+
+test("v2 sequence events 保留為 legacy，不被 v3 固定交錯分析偷換語義", () => {
+  const storage = memoryStorage();
+  const legacy = {
+    schemaVersion: 2,
+    eventStreamVersion: "advanced-sequence-events-v2",
+    events: [{
+      schemaVersion: 2, eventStreamVersion: "advanced-sequence-events-v2", eventId: "legacy-v2", sessionId: "s", presentationId: "p",
+      experienceId: "adv-seq-snapback-01", experienceVersion: 1, trackId: "reading-tesuji", type: "presented",
+      occurredAt: "2026-09-27T00:00:00.000Z", decisionId: null, stepIndex: null, point: null, correct: null, legal: null,
+      capturedCount: null, hintShown: false, firstResponse: false, formalEligible: false, qualifiedOpportunity: false,
+      evidenceUse: "advanced_practice_only", evaluationContext: "advanced_sequence_practice", scoringContractVersion: "advanced-sequence-v1",
+      transferLevel: null, skillId: null, familyId: "snapback", variantId: "seed", variationAxes: ["baseline"]
+    }]
+  };
+  storage.setItem(SequenceEvents.LEGACY_STORAGE_KEY, JSON.stringify(legacy));
+  assert.equal(SequenceEvents.readLegacy(storage).ok, true);
+  assert.equal(SequencePolicy.currentEvents(SequenceEvents.readLegacy(storage).store).length, 0);
+});
+
 test("多手 sequence event store v2 逐 decision 保留首答、retry 與 family metadata", () => {
   const storage = memoryStorage();
   const common = {
@@ -349,7 +430,7 @@ test("family transition 若 variant 先於 seed 呈現，保持 INSUFFICIENT_DAT
 test("棋盤 family cue 在完成前隱藏，variant 未完成 seed 時不可跳入", () => {
   assert.match(sequenceJs, /棋盤練習/);
   assert.match(sequenceJs, /完整名稱、術語與重點會在走完後揭露/);
-  assert.match(sequenceJs, /familyReady/);
+  assert.match(sequenceJs, /itemReady/);
   assert.match(sequenceJs, /disabled aria-disabled/);
   assert.match(sequenceJs, /advanced-sequence-terms"\)\.hidden = true/);
   assert.doesNotMatch(sequenceJs, /<strong>' \+ escapeHtml\(item\.title\)/);
@@ -425,8 +506,8 @@ test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Respon
   assert.equal(result.error, "advanced_sequence_store_malformed");
   assert.match(html, /棋盤 Response/);
   assert.match(html, /多手讀棋實走/);
-  assert.match(html, /advanced-sequence-events\.js\?v=advanced-sequence-v2/);
-  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v5/);
+  assert.match(html, /advanced-sequence-events\.js\?v=advanced-sequence-v3/);
+  assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v6/);
   assert.match(html, /advanced-sequence-contract\.js\?v=advanced-sequence-v1/);
   assert.match(html, /go\.js/);
 });
