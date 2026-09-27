@@ -152,6 +152,8 @@ v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個�
 `classic-geometry-extraction.js` 管理「來源 → 結構化座標 → 可否進公開 registry」的生命週期。人工轉錄、SGF parse、source-native coordinates 與 internal contract 分開標記；來源權利狀態分為 `project_generated`、`verified_reusable`、`reference_only`、`unknown`。
 
 - 單次人工轉錄不能 self-verify；至少需要兩個不同 `reviewKey` 的獨立轉錄，且 canonical payload 完全一致。
+- 所有可升格 extraction 必須綁 immutable `sourceDigest`；兩份人工覆核只有在 sourceId、sourceLocator、sourceDigest 都相同時才可比較。
+- `verified_reusable` 不能只靠狀態字串，必須保存非空 `rightsEvidence`。
 - 兩次轉錄不一致時回 `CONFLICT`，不得投票選一個。
 - deterministic SGF／source-native parse 只有在來源可重用權利已核實時，才可單筆升格公開 geometry evidence。
 - `reference_only`／`unknown` 可作非 shipping reference/oracle，但來源衍生座標不得提交公開 registry。
