@@ -7,8 +7,8 @@ const root = path.resolve(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "history.html"), "utf8");
 
 test("歷史探索頁維持獨立閱讀，不接 learner state 或評量管線", () => {
-  assert.match(html, /Explore Go · 圍棋歷史與典故/);
-  assert.match(html, /不影響核心課程進度、KC、排程或正式評量/);
+  assert.match(html, /探索圍棋 · 圍棋歷史與典故/);
+  assert.match(html, /不影響核心課程進度、能力紀錄、複習安排或正式評量/);
   assert.doesNotMatch(html, /src="app\.js/);
   assert.doesNotMatch(html, /src="scheduler\.js/);
   assert.doesNotMatch(html, /src="learner-progress\.js/);
