@@ -1,12 +1,13 @@
 (function (root) {
   "use strict";
 
-  const STORAGE_KEY = "go-advanced-sequence-events-v2";
-  const SCHEMA_VERSION = 2;
-  const EVENT_STREAM_VERSION = "advanced-sequence-events-v2";
-  const LEGACY_STORAGE_KEY = "go-advanced-sequence-events-v1";
-  const LEGACY_SCHEMA_VERSION = 1;
-  const LEGACY_EVENT_STREAM_VERSION = "advanced-sequence-events-v1";
+  const STORAGE_KEY = "go-advanced-sequence-events-v3";
+  const SCHEMA_VERSION = 3;
+  const EVENT_STREAM_VERSION = "advanced-sequence-events-v3";
+  const PRESENTATION_POLICY_VERSION = "advanced-fixed-interleave-v1";
+  const LEGACY_STORAGE_KEY = "go-advanced-sequence-events-v2";
+  const LEGACY_SCHEMA_VERSION = 2;
+  const LEGACY_EVENT_STREAM_VERSION = "advanced-sequence-events-v2";
   const SCORING_CONTRACT_VERSION = "advanced-sequence-v1";
   const EVENT_TYPES = ["presented", "decision_presented", "hint", "move_first", "move_retry", "opponent_move", "completed"];
 
@@ -41,7 +42,16 @@
       || event.evaluationContext !== "advanced_sequence_practice"
       || event.scoringContractVersion !== SCORING_CONTRACT_VERSION
       || event.transferLevel !== null
-      || event.skillId !== null) return false;
+      || event.skillId !== null
+      || event.presentationPolicyVersion !== PRESENTATION_POLICY_VERSION
+      || !Number.isInteger(event.policyPosition)
+      || event.policyPosition < 0
+      || typeof event.familyId !== "string"
+      || !event.familyId
+      || typeof event.variantId !== "string"
+      || !event.variantId
+      || !Array.isArray(event.variationAxes)
+      || !event.variationAxes.length) return false;
     const decisionType = ["decision_presented", "hint", "move_first", "move_retry", "opponent_move"].includes(event.type);
     if (decisionType && (!Number.isInteger(event.stepIndex) || event.stepIndex < 0 || typeof event.decisionId !== "string" || !event.decisionId)) return false;
     if (!decisionType && event.stepIndex !== null) return false;
@@ -133,6 +143,8 @@
       scoringContractVersion: SCORING_CONTRACT_VERSION,
       transferLevel: null,
       skillId: null,
+      presentationPolicyVersion: PRESENTATION_POLICY_VERSION,
+      policyPosition: Number.isInteger(input.policyPosition) ? input.policyPosition : -1,
       familyId: String(input.familyId || ""),
       variantId: String(input.variantId || ""),
       variationAxes: Array.isArray(input.variationAxes) ? input.variationAxes.map(String) : []
@@ -299,6 +311,7 @@
     STORAGE_KEY,
     LEGACY_STORAGE_KEY,
     SCHEMA_VERSION,
+    PRESENTATION_POLICY_VERSION,
     EVENT_STREAM_VERSION,
     SCORING_CONTRACT_VERSION,
     emptyStore,
