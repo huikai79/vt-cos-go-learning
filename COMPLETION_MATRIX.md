@@ -504,3 +504,4 @@
 - **Protocol migration：** R1 protocol 升為 `go-r1-independent-content-review-v5`，目前 fingerprint 為 `fnv1a32-c34ef6a4`；review draft storage 隔離為 v5。舊 v4 receipt 必須 fail closed。
 - **反證：** 單獨修改 prompt、focus、familyId、skillId、answer 或 goal 都必須改變 fingerprint；generated blinded bank 必須與 builder byte-for-byte 一致。
 - **證據邊界：** 此修改只提高外部內容審查的版本可追溯性；R1a 仍待外部 reviewer 完成，R1b／真人 usability／learning effect 均沒有因此前進。
+- **Validation：** PR #26 verify run #438 全數 PASS：Node contracts、deterministic R1 review bank rebuild、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；PR 已於 2026-09-27 squash merge 至 `main`（merge commit `5c5b9bced6b852d0051b234ba34e1b7fc6e6026e`）。
