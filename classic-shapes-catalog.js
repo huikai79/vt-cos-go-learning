@@ -46,6 +46,8 @@
     hzSchoolVitalShapes: { label: "浙江工大附校：死活棋要點", url: "https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml", sourceTier: "educational_secondary" },
     senseisGoldenChicken: { label: "Sensei's Library：Golden Chicken Standing on One Leg", url: "https://senseis.xmp.net/?GoldenChickenStandingOnOneLeg=", sourceTier: "community_secondary" },
     centralGoGoldenChicken: { label: "中央棋院：金雞獨立", url: "https://vocus.cc/article/6698ae7ffd89780001ee7a83", sourceTier: "instructional_secondary" },
+    yeefanPyramidFour: { label: "YeeFan：Multiple-Space Eyes / Pyramid Four", url: "https://yeefan.sg/weiqi/howtoplaygo/howtoplaygo06.htm", sourceTier: "instructional_secondary" },
+    bgaPyramidFour: { label: "British Go Journal：Nakade / Pyramid Four examples", url: "https://www.britgo.org/files/bgj/bgj123.pdf", sourceTier: "association" },
     boodBigPigsMouthConfig: { label: "bood/go-test：j_group_live2 regression config", url: "https://github.com/bood/go-test/blob/2f3db241dc26a5ab59c86cf1293b3b005283c288/config.yml", sourceTier: "oss_regression" },
     boodBigPigsMouthSgf: { label: "bood/go-test：大猪嘴.sgf", url: "https://github.com/bood/go-test/blob/2f3db241dc26a5ab59c86cf1293b3b005283c288/sgf/%E5%A4%A7%E7%8C%AA%E5%98%B4.sgf", sourceTier: "oss_regression" },
     tchanLifeDeathMonth: { label: "圍棋死活一月通目錄：大豬嘴型 / J-Group Pattern", url: "https://tchan001.wordpress.com/2010/05/05/weiqi-one-month-to-understand-series-7-books/", sourceTier: "bibliographic_secondary" }
@@ -89,6 +91,29 @@
       note: "這是分類層級，不等於任何單一中文俗稱。刀把五、梅花五等候選必須先以幾何逐一對照，不能直接全併成同義詞。",
       rulesetSensitive: false,
       sources: [sources.nihonkiinFive]
+    },
+    {
+      id: "pyramid-four-v1",
+      category: "nakade",
+      preferredZhTW: "丁四",
+      zhAliases: [
+        { name: "草帽四", reviewStatus: REVIEW.PARTIAL, relationType: "established-alias" }
+      ],
+      teachingTranslation: null,
+      literalTranslation: null,
+      zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
+      zhNameNote: "Go4Go／YeeFan 將「丁四」對應 farmer's hat / pyramid four；華語教材也使用「丁四／草帽四」描述 T 形四點眼空。",
+      teachingLabel: "T 形四點眼空的唯一共同急所",
+      practiceStatus: "playable_bounded_geometry_derived_vital_point_contract",
+      reviewStatus: REVIEW.VERIFIED,
+      aliases: [
+        { locale: "en", name: "Pyramid Four", relationType: "geometry-equivalent", reviewStatus: REVIEW.VERIFIED },
+        { locale: "en", name: "Farmer's Hat", relationType: "terminology-table-equivalent", reviewStatus: REVIEW.PARTIAL },
+        { locale: "ko-KR", name: "삿갓4궁", relationType: "terminology-table-equivalent", reviewStatus: REVIEW.PARTIAL }
+      ],
+      note: "已建立 bounded geometry contract：四點眼空必須同構於 T tetromino，急所完全由 geometry 推導為唯一 degree-3 中心；item 不保存 vitalPoint。守方與攻方都只評共同第一手，不宣稱完整吃淨答案樹。",
+      rulesetSensitive: false,
+      sources: [sources.go4goChinese, sources.yeefanPyramidFour, sources.bgaPyramidFour]
     },
     {
       id: "flower-six-v1",
@@ -377,7 +402,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v9",
+    version: "world-classic-shapes-v10",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
