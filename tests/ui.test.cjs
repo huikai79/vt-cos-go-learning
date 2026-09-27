@@ -1028,7 +1028,7 @@ async function main() {
     })()`);
     assert.match(curvedFourCorrect.feedback, /曲四是無條件活形|兩個分離眼點/);
     assert.equal(curvedFourCorrect.name, "曲四／Curved Four");
-    assert.match(curvedFourCorrect.proof, /曲四仍活/);
+    assert.match(curvedFourCorrect.proof, /曲四仍然是活棋/);
     assert.equal(curvedFourCorrect.nextDisabled, false);
 
     const curvedFourShiftState = await evaluate(socket, `(() => {
