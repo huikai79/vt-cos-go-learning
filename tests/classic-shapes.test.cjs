@@ -730,7 +730,8 @@ test("丁四 catalog/UI 維持 geometry identity 與 bounded first-move claim", 
   assert.equal(entry.practiceStatus, "playable_bounded_geometry_derived_vital_point_contract");
   assert.ok(entry.aliases.some((alias) => alias.name === "Pyramid Four" && alias.reviewStatus === Catalog.REVIEW.VERIFIED));
   assert.ok(entry.sources.some((source) => source.label.includes("YeeFan")));
-  assert.match(entry.note, /item 不保存 vitalPoint/);
+  assert.equal(entry.geometryIdentity.contractVersion, "classic-pyramid-four-vital-point-v1");
+  assert.equal(entry.geometryIdentity.fingerprint, "T-tetromino");
   assert.match(html, /丁四／Pyramid Four：T 形中心就是共同急所/);
   assert.match(html, /不在題目資料保存答案/);
   assert.match(html, /唯一 degree-3 點/);
