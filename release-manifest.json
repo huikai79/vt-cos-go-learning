@@ -32,6 +32,7 @@
       "classic-shapes.html",
       "history.html",
       "live-game.html",
+      "r1-review-start.html",
       "r1-review.html"
     ]
   },
@@ -117,6 +118,7 @@
     "R1_CONTENT_AUDIT.md",
     "r1-review-bank.js",
     "r1-review-verify.cjs",
+    "r1-review-start.html",
     "r1-review.html",
     "r1-review.js",
     "README.md",

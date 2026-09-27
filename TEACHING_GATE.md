@@ -17,7 +17,7 @@
 ## R1a 外部棋理審查
 
 1. 審查者必須未參與編題、不是目前學習者，並在判斷前未查看既定答案、題庫原始碼或機器稽核結果。
-2. 使用 [R1 審查頁](https://huikai.com.kg/vt-cos-go-learning/r1-review.html)。該頁只載入 `r1-review-bank.js` 的去答案資料；repository 本身仍公開，因此獨立性最終依審查者三項分開聲明與流程紀律成立。
+2. 先把外部審查者送到 [R1a 審查交接頁](https://huikai.com.kg/vt-cos-go-learning/r1-review-start.html)，由該頁確認 current protocol／fingerprint、獨立性條件與停止線，再進入 77 題審查頁。審查者在完成判斷前不得瀏覽 repository、題庫原始碼、答案或機器稽核結果。審查頁只載入 `r1-review-bank.js` 的去答案資料；repository 本身仍公開，因此 answer-blind 最終仍依審查者聲明與流程紀律成立。
 3. 完成 77 題後匯出 `R1_獨立審題回條.json`，在專案根目錄執行 `node r1-review-verify.cjs R1_獨立審題回條.json`。
 4. 回條只要有需修、歧義、多解或建議落子不同，就不能通過。先修內容、升版並重新審查，不得把異議平均掉。
 
@@ -58,3 +58,11 @@
 ## 2026-09-27 Change note｜R1 receipt 綁定 reviewer-visible content v5
 
 R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerprint 為 `fnv1a32-c34ef6a4`。v5 fingerprint 不只涵蓋答案／goal／棋盤，也涵蓋審查者實際看到的 `prompt`、`focus` 與 family／skill identity。若任何 reviewer-visible semantics 改變，舊 receipt 不得沿用。由於目前尚無正式外部 R1a 回條，沒有可遷移的正式證據；v4 草稿／回條不能只改 protocol 或 fingerprint 字串來升級，必須以 v5 bank 重新完成審查。這不降低三位初學者 usability、accessibility 或正式評量 gate。
+
+
+## 2026-09-27 Change note｜R1a reviewer handoff ready
+
+- 新增 `r1-review-start.html` 作為外部 reviewer 的唯一建議起點；頁面明示 v5 protocol、`fnv1a32-c34ef6a4`、77 題母體、answer-blind 條件與異議停止線。
+- handoff 不載入題庫答案／scoring modules，只連到去答案的 `r1-review.html`；CI 會檢查 handoff protocol/fingerprint 必須與 verifier 同步。
+- `formal-teaching-evidence.example.json` 已改綁 current candidate `formal-teaching-candidate-2026-09-27-b` / `fnv1a32-js16-e9637bc0`，避免未來真人證據從模板開始就失效。
+- 此 change 只代表 **READY_FOR_EXTERNAL_REVIEW**；目前仍沒有真人 R1a receipt，因此 `r1aExternalContentReview` 仍是 `awaiting_external_receipt`，正式教學仍 `BLOCKED`。

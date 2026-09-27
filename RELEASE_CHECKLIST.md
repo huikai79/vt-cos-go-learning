@@ -25,6 +25,7 @@
 
 ```text
 .github/workflows/verify.yml
+r1-review-start.html
 .nojekyll
 .gitignore
 .gitattributes
@@ -158,3 +159,12 @@ git status --short --untracked-files=all
 - verify run #494：含 `served-pages-content` 全數 PASS。
 - Pages deployment #381：PASS。
 - served-content 日誌確認正式 custom-domain URL 已回傳當次 History v3 HTML；此證據只支持部署內容一致性，不代表歷史學術效度、真人 usability 或 learning effect。
+
+
+## 2026-09-27 補充｜R1a 外部審查交接
+
+- [x] 公開 `r1-review-start.html` 作為 reviewer-only handoff；明示 current v5 protocol/fingerprint 與 answer-blind 停止線。
+- [x] handoff 與 `r1-review.html` 都是公開 reviewer surfaces，但不進 learner navigation／learner state。
+- [x] release contract 與 served-content smoke 都覆蓋 handoff。
+- [x] 真人 evidence example 已綁 current candidate `-b`；CI 防止模板再次漂移。
+- [ ] 外部 reviewer 尚未完成並交回正式 77 題回條；因此 R1a 仍不得標 PASS。

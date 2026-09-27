@@ -266,3 +266,11 @@
 - **衝突結果：** MATCH／DIFFERENT 跨獨立 chain 衝突時回 `CONFLICTING_REFERENCE_ORACLES`，不得選邊。
 - **下一步：** 用此 workflow 研究 L Group／Carpenter／Comb／Notcher 候選來源；只有取得可重用權利或 project-generated independent geometry 後才進 public geometry registry。
 - **Validation：** PR #35 verify run #473 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
+
+
+## 2026-09-27 Step 4 execution note｜R1a 已具可交付審查入口
+
+- Step 4 的 machine contract 原本已存在，但外部 reviewer 缺一個不必先進 repository 的乾淨起點。現在以 `r1-review-start.html` 固定 reviewer-facing protocol/fingerprint、77 題母體、answer-blind 規則與停止線。
+- handoff → `r1-review.html` → `R1_獨立審題回條.json` → `r1-review-verify.cjs` 構成完整可執行交接鏈。
+- 本步目前狀態：**READY_FOR_EXTERNAL_REVIEW / BLOCKED_ON_HUMAN_RECEIPT**。自動測試與 handoff 完整性不能替代真人內容審查。
+- 下一個真正的狀態轉換只接受外部 reviewer 回條；若任一題為需修／歧義／多解或建議落子不同，先修內容與升版，不能直接進 4c。

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="application-name" content="VT-COS｜悟之一手">
+  <title>VT-COS｜悟之一手｜R1a 外部審查交接</title>
+  <style>
+    :root{color-scheme:light;font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;color:#24211c;background:#f5f1e8}
+    body{margin:0}
+    main{max-width:760px;margin:auto;padding:40px 20px 72px}
+    .brand{margin:0 0 8px;color:#315b44;font-size:13px;font-weight:750;letter-spacing:.08em}
+    h1{font-size:32px;line-height:1.25;margin:0 0 14px}
+    h2{font-size:21px;margin:30px 0 10px}
+    p,li{line-height:1.75}
+    .notice,.contract{background:#fffdf7;border:1px solid #d8cfbd;border-radius:14px;padding:18px 20px}
+    .notice strong{color:#6f311f}
+    .contract{margin-top:18px}
+    dl{display:grid;grid-template-columns:max-content 1fr;gap:9px 16px;margin:0}
+    dt{font-weight:750}
+    dd{margin:0;overflow-wrap:anywhere}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+    a.button{display:inline-block;padding:12px 18px;border-radius:9px;text-decoration:none;font-weight:750}
+    a.primary{color:white;background:#315b44}
+    a.secondary{color:#315b44;background:#e3ecdf;border:1px solid #315b44}
+    code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92em}
+    .stop{border-left:4px solid #8f3c2b;padding-left:14px}
+    @media(max-width:560px){h1{font-size:27px}dl{grid-template-columns:1fr;gap:4px}dd{margin-bottom:10px}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="brand">VT-COS｜悟之一手</p>
+  <h1>R1a 外部獨立內容審查交接</h1>
+
+  <div class="notice">
+    <strong>請先不要瀏覽本專案 repository、題庫原始碼、答案、測試或機器稽核結果。</strong>
+    <p>這個步驟只適合未參與本批題目／答案／技能邊界編寫，而且不是目前學習者的外部圍棋審查者。若你已先看過答案或機器驗證結果，本次就不能勾選 answer-blind 聲明；不要以猜測補填。</p>
+  </div>
+
+  <section class="contract" aria-labelledby="contract-title">
+    <h2 id="contract-title">本次固定審查契約</h2>
+    <dl>
+      <dt>Protocol</dt><dd><code>go-r1-independent-content-review-v5</code></dd>
+      <dt>Content fingerprint</dt><dd><code>fnv1a32-c34ef6a4</code></dd>
+      <dt>題庫母體</dt><dd>148 題公開題庫</dd>
+      <dt>審查母體</dt><dd>43 個 family 代表題 + 全部 48 題公開保留組；去重後 77 題</dd>
+      <dt>證據層級</dt><dd>單一外部內容審查證據；不證明平行題等難、完整內容效度或學習成效</dd>
+    </dl>
+  </section>
+
+  <h2>審查順序</h2>
+  <ol>
+    <li>先確認你符合獨立性條件，並保持 answer-blind。</li>
+    <li>進入審查頁，對每題自行找成功手，再標記「一致／需修／歧義／多解」。</li>
+    <li>若選「需修、歧義、多解」，必須寫明理由；不得因為想讓整批通過而改成「一致」。</li>
+    <li>完成 77 題與三項獨立聲明後，匯出 <code>R1_獨立審題回條.json</code>。</li>
+    <li>把回條交回專案維護者；由 verifier 對 protocol、fingerprint、母體、重複題號、落子與 finding fail closed 驗證。</li>
+  </ol>
+
+  <p class="stop"><strong>停止線：</strong>只要你發現任何需修、歧義、多解，或你認為建議落子與頁面後續既定答案可能不同，就照實保存。R1a 不採多數決，也不允許把異議平均掉。</p>
+
+  <div class="actions">
+    <a class="button primary" href="r1-review.html">開始 77 題外部審查</a>
+    <a class="button secondary" href="index.html">離開審查流程</a>
+  </div>
+</main>
+</body>
+</html>
