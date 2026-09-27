@@ -15,6 +15,8 @@
 - [x] GitHub Pages 已由 `main`／`/` 發布；`https://huikai79.github.io/vt-cos-go-learning/` 轉向 `https://huikai.com.kg/vt-cos-go-learning/`，正式網址完整 UI suite 通過。
 - [x] R1a 已升為 v4 去答案審查頁，並加入可執行的正式教學／正式評量 gate。
 - [x] 9×9 完整實戰候選已加入 manifest；GitHub Actions run #12 的 Node、Sabaki oracle、Windows file-URL UI、Edge smoke 與 repository boundary 全部 PASS。
+- [ ] 每次新增外部 diagram／SGF 衍生 geometry 前，核對 extraction record 的 rights status。只有 `project_generated`／`verified_reusable` 可把來源衍生座標納入公開 registry；`reference_only`／`unknown` 只能作 non-shipping reference/oracle。
+- [ ] 人工 geometry transcription 若要進公開 registry，至少兩份不同 reviewKey 的獨立轉錄必須完全一致；任何 `CONFLICT` 都 BLOCKED release。
 
 ## 候選公開檔案
 
