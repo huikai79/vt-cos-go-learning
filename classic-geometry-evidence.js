@@ -18,6 +18,17 @@
 
   const records = Object.freeze([
     Object.freeze({
+      id:"bent-three-contract-geometry-v1",
+      conceptId:"bent-three-v1",
+      sourceType:"internal_contract",
+      sourceId:"classic-bent-three-vital-point-v1",
+      evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
+      points:Object.freeze([[0,0],[1,0],[0,1]]),
+      context:Object.freeze({boardContext:"center",boundary:[],role:"shape",toPlay:"unspecified"})
+    }),
+    Object.freeze({
       id:"pyramid-four-contract-geometry-v1",
       conceptId:"pyramid-four-v1",
       sourceType:"internal_contract",
