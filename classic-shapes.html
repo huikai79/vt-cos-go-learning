@@ -49,16 +49,16 @@
         <a class="subtle-button" href="index.html#core">← 核心課程</a>
         <a class="subtle-button" href="advanced.html">進階訓練</a>
       </div>
-      <span class="question-tag">世界名型 · practice / reference</span>
+      <span class="question-tag">世界經典棋形</span>
       <h1>世界死活名型館</h1>
-      <p>同一棋形、family、手筋或規則敏感局面可能在不同語言使用不同名稱；名稱對應、概念類型、geometry 與規則條件分開記錄。本頁以繁中解釋，但不把翻譯詞自動當成跨語 canonical 等價。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；曲三、丁四、刀把五、梅花五與花六有 bounded vital-point practice；方四／直四／曲四另用 rules-backed status proof；金雞獨立走 rules-backed tesuji mechanism contract；大豬嘴目前只開放一個 MIT regression 的 exact source-case first-move practice，不能泛化成整個 J Group family；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <p>同一個經典棋形，在不同語言裡可能有不同名稱。本頁以繁體中文說明，必要時保留常見外文名稱，讓你能對照其他教材。</p>
+      <div class="classic-boundary"><strong>這一頁怎麼算</strong><span>這裡主要用來認識經典棋形與練習第一手判斷，不會直接用來判定你的棋力。部分棋形目前只檢查第一手是否合理，還不是完整的死活答案樹；尚未完成規則核對的棋形則不評分。這些練習也不會影響核心課程進度、複習安排或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
       <span class="question-tag">直三專用 · 4 段探索</span>
       <h2 id="straight-three-track-title">先練直三，再看世界名型</h2>
-      <p>下面四格只屬於直三：先找急所，再做方向、攻守與相似反例變化。其他名型依各自 geometry／scoring contract 安排，不固定套用這四步。</p>
+      <p>下面四格只用來練直三：先找急所，再換方向、換攻守，最後看相似但答案不同的棋形。其他名型會依自己的棋形特點安排，不一定照這四步。</p>
     </section>
 
     <section class="classic-progress" aria-label="直三專用探索進度">
@@ -107,7 +107,7 @@
 
     <section class="cross-practice" aria-labelledby="cross-practice-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">第二個可玩 family · cross-family transfer</span>
+        <span class="question-tag">換一種棋形再試試看</span>
         <h2 id="cross-practice-title">梅花五：不要找棋盤中央，要找棋形中央</h2>
         <p>五個眼空呈十字形時，唯一同時接觸上下左右四個眼空的中心就是共同急所。四題會交換攻守、棋色與整體位置。</p>
       </div>
@@ -116,12 +116,12 @@
           <span class="question-tag" id="cross-tag">1 / 4 · 名稱不提示答案</span>
           <h3 id="cross-title">找十字形共同急所</h3>
           <p id="cross-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只判第一手是否落在十字五點 geometry 唯一的 degree-4 中心；不宣稱完整五目中手答案樹。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>只看第一手有沒有下在十字形唯一的中心點；目前不判斷完整後續變化。</span></div>
           <div id="cross-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="cross-reveal" class="classic-reveal" hidden>
             <span>作答後揭名</span>
             <strong id="cross-name">梅花五／Cross Five</strong>
-            <p>這次要學的是「棋形中央」，不是棋盤中央。位置與棋色改變後，唯一 degree-4 點仍是共同急所。</p>
+            <p>這次要學的是「棋形中央」，不是棋盤中央。即使位置或棋色改變，真正的急所仍然在這個十字形的中心。</p>
           </div>
           <div class="classic-actions">
             <button id="cross-hint" class="subtle-button" type="button">給我幾何提示</button>
@@ -129,7 +129,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="梅花五共同急所練習棋盤">
-          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> degree-4 center</span></div>
+          <div class="card-top"><span>7 × 7 限定練習</span><span class="board-status"><i></i> 找棋形中心</span></div>
           <div id="cross-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路梅花五練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="cross-cursor-status">方向鍵移動 · Enter 落子</span><span id="cross-side">● 黑棋</span></div>
         </section>
@@ -138,21 +138,21 @@
 
     <section class="bent-three-practice" aria-labelledby="bent-three-practice-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">三目中手 · geometry-derived</span>
-        <h2 id="bent-three-practice-title">曲三／Bent Three：L 形彎點就是共同急所</h2>
-        <p>三個眼空彎成 L 形時，唯一同時接觸另外兩點的 degree-2 彎點就是共同急所。contract 由 geometry 即時計算答案，不在 item 保存 vitalPoint。</p>
+        <span class="question-tag">三目眼形 · 找共同急所</span>
+        <h2 id="bent-three-practice-title">曲三（Bent Three）：L 形的彎角就是共同急所</h2>
+        <p>三個眼位排成 L 形時，先找轉彎的位置。這個點同時連著另外兩個眼位，是攻守雙方都要注意的急所。</p>
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
-          <span class="question-tag" id="bent-three-tag">1 / 4 · answer derived from geometry</span>
+          <span class="question-tag" id="bent-three-tag">1 / 4 · 先看棋形再下</span>
           <h3 id="bent-three-title">找 L 形唯一彎點</h3>
           <p id="bent-three-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只接受與 L triomino 同構的三點眼空，並把唯一 degree-2 彎點當共同急所。守方／攻方只評第一手，不宣稱完整後續答案樹。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>只處理三個眼位排成 L 形的情況，並把唯一的彎角當作共同急所。無論攻守，目前都只評第一手，不判斷完整後續變化。</span></div>
           <div id="bent-three-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="bent-three-reveal" class="classic-reveal" hidden>
             <span>作答後揭名</span>
             <strong id="bent-three-name">曲三／Bent Three</strong>
-            <p>名稱與教材來源支持「曲三／Bent Three」；真正評分 identity 仍是三點 L 形 geometry。</p>
+            <p>「曲三／Bent Three」是常見名稱；這裡真正要你辨認的是三個眼位排成 L 形時的共同急所。</p>
           </div>
           <div class="classic-actions">
             <button id="bent-three-hint" class="subtle-button" type="button">給我幾何提示</button>
@@ -160,7 +160,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="曲三共同急所練習棋盤">
-          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> unique degree-2</span></div>
+          <div class="card-top"><span>7 × 7 限定練習</span><span class="board-status"><i></i> 找唯一彎角</span></div>
           <div id="bent-three-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路曲三練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="bent-three-cursor-status">方向鍵移動 · Enter 落子</span><span id="bent-three-side">● 黑棋</span></div>
         </section>
@@ -169,16 +169,16 @@
 
     <section class="four-space-status-practice" aria-labelledby="four-space-status-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">四目眼 · status proof</span>
+        <span class="question-tag">四目眼形 · 判斷活死</span>
         <h2 id="four-space-status-title">方四 vs 直四 vs 曲四：不是每個眼形都有「唯一急所」</h2>
-        <p>方四沒有做活急所；直四與曲四都有兩個互為 miai 的做眼回應。本區不要求落子，而是先判斷完整包圍、無缺陷的局部眼空最後是活還是死。</p>
+        <p>方四沒有能做活的急所；直四與曲四則各有兩個可以互相照應的做眼位置。這一區先不落子，直接判斷完整包圍、沒有缺陷的局部眼形最後是活還是死。</p>
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
           <span class="question-tag" id="four-status-tag">1 / 6 · rules-backed status</span>
-          <h3 id="four-status-question">先看 topology，再判斷活死</h3>
+          <h3 id="four-status-question">先看眼形，再判斷活死</h3>
           <p id="four-status-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只處理完全包圍、無缺陷的四點內部眼空。方四會驗證所有守方第一手都留下曲三；直四與曲四會驗證所有攻方第一手後，守方仍有回應留下兩個分離眼點。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>只處理完全包圍、沒有缺口的四點眼形。方四會檢查守方怎麼下都會留下可被攻擊的曲三；直四與曲四則檢查守方是否仍能做出兩個分開的眼。</span></div>
           <div class="classic-actions four-status-actions" role="group" aria-label="判斷局部狀態">
             <button id="four-status-alive" class="subtle-button" type="button">活</button>
             <button id="four-status-dead" class="subtle-button" type="button">死</button>
@@ -412,9 +412,9 @@
 
     <section class="contrast-practice" aria-labelledby="contrast-practice-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">Interleaved contrast · 名稱先隱藏</span>
+        <span class="question-tag">混合辨形 · 名稱先隱藏</span>
         <h2 id="contrast-practice-title">刀把五 vs 梅花五：混合辨形</h2>
-        <p>六題會交錯呈現兩個五點 family。作答前不顯示名稱；先找急所，答完才揭示是哪一型與幾何依據。</p>
+        <p>六題會交錯出現兩種五點棋形。作答前不顯示名稱；先自己找急所，答完才揭示是哪一型，以及為什麼這個點重要。</p>
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
