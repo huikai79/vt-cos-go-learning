@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v11">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v8"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v9"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
@@ -19,13 +19,15 @@
   <script defer src="classic-flower-six-practice.js?v=flower-six-practice-v1"></script>
   <script defer src="classic-golden-chicken-contract.js?v=classic-golden-chicken-mechanism-v1"></script>
   <script defer src="classic-golden-chicken-practice.js?v=golden-chicken-practice-v1"></script>
+  <script defer src="classic-big-pigs-mouth-contract.js?v=classic-big-pigs-mouth-source-case-v1"></script>
+  <script defer src="classic-big-pigs-mouth-practice.js?v=big-pigs-mouth-source-practice-v1"></script>
   <script defer src="classic-contrast-contract.js?v=classic-contrast-vital-point-v1"></script>
   <script defer src="classic-contrast-practice.js?v=classic-contrast-practice-v1"></script>
   <script defer src="classic-shape-read-contract.js?v=classic-bulky-five-short-read-v1"></script>
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v11"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v12"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -38,7 +40,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五、梅花五與花六各有 bounded nakade practice；金雞獨立另走 rules-backed tesuji mechanism contract；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五、梅花五與花六各有 bounded nakade practice；金雞獨立走 rules-backed tesuji mechanism contract；大豬嘴目前只開放一個 MIT regression 的 exact source-case first-move practice，不能泛化成整個 J Group family；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
@@ -180,6 +182,37 @@
           <div class="card-top"><span>7 × 7 original practice</span><span class="board-status"><i></i> double shortage of liberties</span></div>
           <div id="golden-chicken-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路金雞獨立機制練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="golden-chicken-cursor-status">方向鍵移動 · Enter 落子</span><span id="golden-chicken-side">● 黑棋</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="big-pigs-mouth-practice" aria-labelledby="big-pigs-mouth-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">角部死活 · exact source-case oracle</span>
+        <h2 id="big-pigs-mouth-practice-title">大豬嘴／J Group：先限定在一個可追溯實戰 case</h2>
+        <p>中文資料支持「大豬嘴，扳點死」作為經典角部死活口訣；但本站目前不把它改寫成整個 family 的固定答案。這四題只重播同一個 MIT regression：<code>j_group_live2</code> 在第 52 手前輪白走，expected move 為 R1，另外做三個旋轉版本防止只背座標。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="big-pigs-mouth-tag">1 / 4 · exact source case</span>
+          <h3 id="big-pigs-mouth-title">固定實戰局面的第一手</h3>
+          <p id="big-pigs-mouth-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>完整 19×19 source position 才是本 contract 的 canonical identity；畫面只裁角部 viewport。只判 upstream regression 指定的第一手與其旋轉等價點，不宣稱 R1 是所有大豬嘴／J Group 的共同答案，也不宣稱標準 geometry 或 variation tree 已完成。</span></div>
+          <div id="big-pigs-mouth-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="big-pigs-mouth-reveal" class="classic-reveal" hidden>
+            <span>作答後揭名</span>
+            <strong id="big-pigs-mouth-name">大豬嘴／J Group</strong>
+            <p>名稱對照有華語術語表與書目來源；本題的棋盤與 expected move 則綁定 MIT regression。兩者用途分開，不用一個 source-case 反推整個 family。</p>
+          </div>
+          <div class="classic-actions">
+            <button id="big-pigs-mouth-hint" class="subtle-button" type="button">給我 source-case 提示</button>
+            <button id="big-pigs-mouth-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="大豬嘴 source-case 練習棋盤">
+          <div class="card-top"><span>19 × 19 source · cropped viewport</span><span class="board-status"><i></i> exact first-move oracle</span></div>
+          <div id="big-pigs-mouth-board" class="board classic-board" tabindex="0" role="application" aria-label="大豬嘴固定來源局面；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="big-pigs-mouth-cursor-status">方向鍵移動 · Enter 落子</span><span id="big-pigs-mouth-side">○ 白棋</span></div>
         </section>
       </div>
     </section>
