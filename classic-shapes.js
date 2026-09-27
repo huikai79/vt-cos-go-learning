@@ -169,7 +169,7 @@
       const sources = entry.sources.length
         ? '<div class="catalog-sources"><span>來源</span>' + entry.sources.map((source) => '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label) + '</a>').join("") + '</div>'
         : '<div class="catalog-sources pending"><span>來源</span><em>待補可靠來源與幾何核對</em></div>';
-      return '<article class="classic-catalog-card" data-review="' + escapeHtml(entry.reviewStatus) + '">' +
+      return '<article class="classic-catalog-card" data-concept-id="' + escapeHtml(entry.id) + '" data-review="' + escapeHtml(entry.reviewStatus) + '">' +
         '<div class="catalog-card-top"><span>' + escapeHtml(Catalog.categories[entry.category]) + '</span><strong>' + reviewLabel(entry.reviewStatus) + '</strong></div>' +
         '<h3>' + escapeHtml(displayZh(entry)) + '</h3>' +
         '<p class="catalog-ontology-meta"><strong>' + escapeHtml(entityTypeLabel(entry.entityType)) + '</strong><span>' + escapeHtml(geometryReviewLabel(entry.geometryIdentity.reviewStatus)) + '</span></p>' +
