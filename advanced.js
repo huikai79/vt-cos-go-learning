@@ -51,6 +51,7 @@
       const count = Content.experiences.filter((item) => item.trackId === track.id).length;
       const active = track.id === trackId;
       const disabled = track.status !== "active";
+      if (track.href) return '<a class="advanced-track-button advanced-track-link" href="' + escapeHtml(track.href) + '"><strong>' + escapeHtml(track.title) + '</strong><span>' + escapeHtml(track.summary) + '</span><small>19×19 全盤 practice →</small></a>';
       return '<button class="advanced-track-button' + (active ? ' active' : '') + '" type="button" data-track="' + escapeHtml(track.id) + '"' + (disabled ? ' disabled' : '') + '><strong>' + escapeHtml(track.title) + '</strong><span>' + escapeHtml(track.summary) + '</span><small>' + (disabled ? '下一階段' : count + ' 題 · 可自由切換') + '</small></button>';
     }).join("");
   }
