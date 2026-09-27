@@ -71,3 +71,8 @@
 .catalog-ambiguity,.catalog-taxonomy,.catalog-geometry-rel{display:grid;gap:5px;margin:10px 0;padding:10px 12px;border-radius:9px;background:#f8f7f1;line-height:1.55}
 .catalog-ambiguity strong,.catalog-taxonomy strong,.catalog-geometry-rel strong{font-size:.78rem;color:#5f5435}
 .catalog-ambiguity span,.catalog-taxonomy span,.catalog-geometry-rel span{font-size:.84rem;color:#655f52}
+
+.catalog-geometry-evidence{display:grid;gap:5px;margin:10px 0;padding:10px 12px;border-radius:9px;background:#f3f6f2;line-height:1.55}
+.catalog-geometry-evidence strong{font-size:.78rem;color:#4d6653}
+.catalog-geometry-evidence span{font-size:.84rem;color:#58665b}
+.catalog-geometry-evidence.pending{background:#f8f6f2}
