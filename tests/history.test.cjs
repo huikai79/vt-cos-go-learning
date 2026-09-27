@@ -77,10 +77,38 @@ test("所有新分頁外部連結都使用 noreferrer，歷史頁沒有 runtime 
 
 test("歷史頁小字配色維持一般文字 AA 對比安全值", () => {
   const css = fs.readFileSync(path.join(root, "history.css"), "utf8");
-  assert.match(css, /\.history-brand small\{font-size:\.75rem;color:#53675a\}/);
-  assert.match(css, /\.question-number\{font-size:\.82rem;font-weight:900;color:#52685a\}/);
-  assert.match(css, /\.compare-head\{font-size:\.82rem;font-weight:850;color:#52685a;background:#eef3eb\}/);
-  assert.match(css, /footer\{padding:24px;color:#53675a/);
+  const channel = (value) => {
+    const normalized = value / 255;
+    return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+  const luminance = (hex) => {
+    const raw = hex.replace("#", "");
+    const [r, g, b] = [0, 2, 4].map((offset) => parseInt(raw.slice(offset, offset + 2), 16));
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+  };
+  const ratio = (foreground, background) => {
+    const values = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+    return (values[0] + 0.05) / (values[1] + 0.05);
+  };
+  const colorOf = (pattern) => {
+    const match = css.match(pattern);
+    assert.ok(match, String(pattern));
+    return match[1];
+  };
+  const checks = [
+    [colorOf(/\.history-brand small\{[^}]*color:(#[0-9a-f]{6})/i), "#fbfcf8", "brand small"],
+    [colorOf(/\.question-number\{[^}]*color:(#[0-9a-f]{6})/i), "#ffffff", "question number"],
+    [colorOf(/\.compare-head\{[^}]*color:(#[0-9a-f]{6})/i), "#eef3eb", "compare head"],
+    [colorOf(/footer\{[^}]*color:(#[0-9a-f]{6})/i), "#f4f6f0", "footer"]
+  ];
+  for (const [foreground, background, label] of checks) {
+    assert.ok(ratio(foreground, background) >= 4.5, `${label}: ${ratio(foreground, background).toFixed(2)}`);
+  }
+});
+
+test("歷史頁尊重 prefers-reduced-motion", () => {
+  const css = fs.readFileSync(path.join(root, "history.css"), "utf8");
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{html\{scroll-behavior:auto\}\}/);
 });
 
 
