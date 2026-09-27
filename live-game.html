@@ -34,7 +34,7 @@
         <h1 id="live-title">棋盤練習</h1>
         <p id="live-description">依目前學習階段選擇 5×5、7×7、9×9 或 19×19 棋盤。</p>
       </div>
-      <p class="live-boundary"><strong>證據邊界：</strong>5×5／7×7 是基礎與過渡練習盤；9×9 是完整小棋盤；19×19 是 Core 後的全盤 practice。這裡全部屬 practice；只有既有 9×9 bounded live contract 的合格機會可能另列 T3，19×19 不自動成為 T3 或棋力評量。</p>
+      <p class="live-boundary"><strong>這一頁怎麼用：</strong>5×5／7×7 適合練規則與局部判斷，9×9 是完整小棋盤，19×19 是完整棋盤練習。這裡的對局主要用來練習與保存棋譜，不會只靠一盤勝負就判定你的棋力。</p>
     </section>
 
     <nav class="board-size-switcher" aria-label="選擇練習棋盤尺寸">
@@ -48,20 +48,20 @@
       <div class="opponent-summary-card"><span>對手</span><strong id="opponent-summary">練習電腦</strong><small id="opponent-detail">適合直接開始練習</small></div>
       <label><span>跟誰下</span><select id="opponent-mode"><option value="computer">練習電腦</option><option value="local">雙人同機</option></select></label>
       <label id="human-color-field"><span>你執</span><select id="human-color"><option value="1">黑棋</option><option value="2">白棋</option></select></label>
-      <p id="bot-boundary">第一次使用不需要安裝 AI、申請 API key 或理解 KataGo；選「練習電腦」即可開始。</p>
+      <p id="bot-boundary">第一次使用不需要安裝其他程式，也不需要申請 API 金鑰；選「練習電腦」即可開始。</p>
       <details class="advanced-opponent" id="advanced-opponent">
         <summary>進階：更換電腦引擎</summary>
         <div class="advanced-opponent-body">
           <p class="advanced-intro">這裡是進階設定，不影響一般初學練習。無法連線時會停止電腦回合，不會偷偷改用另一個引擎。</p>
-          <label><span>電腦引擎</span><select id="advanced-provider-mode"><option value="computer">內建練習電腦</option><option value="katago">本機 KataGo（需本機 bridge）</option><option value="remote">遠端對弈 API（需另有服務）</option></select></label>
+          <label><span>電腦引擎</span><select id="advanced-provider-mode"><option value="computer">內建練習電腦</option><option value="katago">本機 KataGo（需連接程式）</option><option value="remote">遠端對弈 API（需另有服務）</option></select></label>
           <div class="provider-help" id="katago-help" hidden>
             <strong>KataGo 是什麼？</strong>
-            <p>它是獨立的圍棋 AI 引擎，不是使用本頁的必要條件。GitHub Pages 不能執行 KataGo；此模式只連你目前裝置上已啟動的悟之一手 localhost bridge。其他網站使用者若未自行安裝並啟動 bridge，就不能使用這個「本機 KataGo」模式。</p>
+            <p>它是獨立的圍棋 AI 引擎，不是使用本頁的必要條件。這個網站本身不能直接執行 KataGo；此模式只會連到你目前裝置上已啟動的本機連接程式。其他使用者如果沒有自行安裝並啟動，就不能使用「本機 KataGo」模式。</p>
             <a href="https://github.com/lightvector/KataGo/releases" target="_blank" rel="noopener noreferrer">前往 KataGo 官方下載頁 ↗</a>
           </div>
           <div class="provider-help" id="remote-help" hidden>
             <strong>遠端對弈 API（跨裝置／網站訪客）</strong>
-            <p>GitHub Pages 只提供靜態前端；若要讓所有訪客共用 KataGo，需要另行部署 HTTPS KataGo API，再把端點填在這裡。目前專案<strong>沒有提供共用的託管 KataGo 服務</strong>。本頁只保存 endpoint，不提供、要求或保存 API key；需要密鑰時應由你控制的 server／Cloudflare Worker 保存 secret。</p>
+            <p>如果要讓不同裝置或網站訪客共用 KataGo，需要另外架設可連線的 HTTPS KataGo API，再把連線位址填在這裡。目前專案<strong>沒有提供共用的 KataGo 服務</strong>。本頁只保存連線位址，不會要求或保存 API 金鑰；如果服務需要密鑰，應由你自己控制的伺服器或 Cloudflare Worker 保存。</p>
           </div>
           <label id="provider-endpoint-field" hidden><span>API 連線位址</span><input id="provider-endpoint" type="url" value="http://127.0.0.1:8765/v1/move" spellcheck="false" autocomplete="off"></label>
           <div class="provider-test-row" id="provider-test-row" hidden>
@@ -140,7 +140,7 @@
         </section>
       </aside>
     </div>
-    <p class="footer-note" id="footer-boundary">棋盤練習使用目前已支援的 simple ko 與人工終局確認範圍。</p>
+    <p class="footer-note" id="footer-boundary">棋盤練習目前支援一般劫爭規則，終局死子由使用者自行確認。</p>
   </main>
 </body>
 </html>
