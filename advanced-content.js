@@ -395,9 +395,9 @@
     },
     {
       id: "adv-seq-semeai-01",
-      version: 1,
+      version: 2,
       familyId: "semeai",
-      variantId: "black-to-move",
+      variantId: "seed",
       variationAxes: ["baseline"],
       trackId: "reading-tesuji",
       title: "對殺實走：先壓一口氣，再重算雙方最後一氣",
@@ -485,9 +485,9 @@
     },
     {
       id: "adv-seq-ladder-01",
-      version: 1,
+      version: 2,
       familyId: "ladder",
-      variantId: "seven-by-seven",
+      variantId: "seed",
       variationAxes: ["baseline"],
       trackId: "reading-tesuji",
       title: "征子實走：每次都把逃棋壓回一口氣",
