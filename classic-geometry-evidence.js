@@ -141,6 +141,30 @@
       points:null,
       context:Object.freeze({boardContext:"corner",boundary:["top","left"],role:"defender_group",toPlay:"unspecified"}),
       note:"來源直接說 L Group is dead，但未在可檢索文字中提供 canonical coordinates。"
+    }),
+    Object.freeze({
+      id:"three-space-notcher-text-only-v1",
+      conceptId:"three-space-notcher-v1",
+      sourceType:"external_text",
+      sourceId:"bgaThreeSpaceNotcher",
+      licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
+      publicGeometryPromotion:"reference_only_no_geometry",
+      evidenceStatus:EVIDENCE_STATUS.TEXT_ONLY_GEOMETRY_UNAVAILABLE,
+      points:null,
+      context:Object.freeze({boardContext:"local",boundary:[],role:"life_death_family",toPlay:"unspecified"}),
+      note:"BGA 文字確認 Three-space notcher family 與實例，但本 registry 尚未保存經 rights/extraction gate 驗證的 canonical coordinates。"
+    }),
+    Object.freeze({
+      id:"comb-formation-text-only-v1",
+      conceptId:"comb-formation-v1",
+      sourceType:"external_text",
+      sourceId:"lifeIn19x19DaviesNotes",
+      licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
+      publicGeometryPromotion:"reference_only_no_geometry",
+      evidenceStatus:EVIDENCE_STATUS.TEXT_ONLY_GEOMETRY_UNAVAILABLE,
+      points:null,
+      context:Object.freeze({boardContext:"local",boundary:[],role:"life_death_family",toPlay:"unspecified"}),
+      note:"二手筆記描述 Comb Formation 與 Three-space Notcher 的關係，但未提供可直接進 public registry 的已驗證座標；只保留 textual/reference evidence。"
     })
   ]);
 
@@ -158,7 +182,7 @@
   }
 
   return Object.freeze({
-    version:"classic-geometry-evidence-v2",
+    version:"classic-geometry-evidence-v3",
     EVIDENCE_STATUS,
     records,
     recordsForConcept,

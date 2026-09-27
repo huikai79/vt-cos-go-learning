@@ -169,6 +169,7 @@
     if (type === T.NAKADE_SHAPE) return "中手棋形";
     if (type === T.NAKADE_CATEGORY) return "中手分類";
     if (type === T.CORNER_LIFE_DEATH_FAMILY) return "角部死活 family";
+    if (type === T.LIFE_DEATH_FAMILY) return "死活 family";
     if (type === T.TESUJI_MECHANISM) return "手筋機制";
     if (type === T.RULES_SENSITIVE_POSITION) return "規則敏感局面";
     return type;

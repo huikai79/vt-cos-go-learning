@@ -69,16 +69,16 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("ontology v3 是 canonical source，catalog entries 只由 adapter 衍生", () => {
-  assert.equal(Ontology.version, "classic-shape-ontology-v3");
+  assert.equal(Ontology.version, "classic-shape-ontology-v4");
   assert.equal(Catalog.ontologyVersion, Ontology.version);
   assert.ok(Ontology.concepts.every(Ontology.validateConcept));
   assert.deepEqual(Catalog.entries.map((entry) => entry.id), Ontology.concepts.map((concept) => concept.id));
   assert.doesNotMatch(catalogSource, /const\s+entries\s*=\s*\[/);
   assert.match(catalogSource, /Ontology\.concepts\.map\(toLegacyEntry\)/);
-  assert.match(html, /classic-shapes-ontology\.js\?v=classic-shape-ontology-v3/);
+  assert.match(html, /classic-shapes-ontology\.js\?v=classic-shape-ontology-v4/);
   assert.match(html, /classic-geometry-fingerprint\.js\?v=classic-geometry-fingerprint-v1/);
   assert.match(html, /classic-geometry-extraction\.js\?v=classic-geometry-extraction-v1/);
-  assert.match(html, /classic-geometry-evidence\.js\?v=classic-geometry-evidence-v2/);
+  assert.match(html, /classic-geometry-evidence\.js\?v=classic-geometry-evidence-v3/);
   assert.ok(html.indexOf("classic-geometry-extraction.js") < html.indexOf("classic-geometry-evidence.js"));
   assert.ok(html.indexOf("classic-geometry-evidence.js") < html.indexOf("classic-shapes-catalog.js"));
   assert.ok(html.indexOf("classic-shapes-ontology.js") < html.indexOf("classic-shapes-catalog.js"));
@@ -190,7 +190,72 @@ test("不同教材 taxonomy 可並存，不被強制壓成唯一 parent tree", (
   assert.equal(jRelation.relation, Ontology.TAXONOMY_RELATION.RELATED_SERIES_MEMBER);
 });
 
-test("compatibility catalog 顯示 ontology v3 relation metadata，但不取得 scoring authority", () => {
+test("Comb Formation 多語名稱與 Three-Space Notcher 保持不同 identity", () => {
+  const comb = Ontology.concepts.find((item) => item.id === "comb-formation-v1");
+  const notcher = Ontology.concepts.find((item) => item.id === "three-space-notcher-v1");
+  assert.ok(comb);
+  assert.ok(notcher);
+  assert.equal(comb.entityType, Ontology.ENTITY_TYPE.LIFE_DEATH_FAMILY);
+  assert.equal(notcher.entityType, Ontology.ENTITY_TYPE.LIFE_DEATH_FAMILY);
+  assert.ok(comb.names.some((item) => item.locale === "zh-Hant" && item.name === "梳形" && item.relationToCanonical === Ontology.RELATION.EXACT));
+  assert.ok(comb.names.some((item) => item.locale === "ja-JP" && item.name === "櫛形" && item.relationToCanonical === Ontology.RELATION.EXACT));
+  assert.ok(comb.names.some((item) => item.locale === "ko-KR" && item.name === "빗형"));
+  assert.ok(comb.names.some((item) => item.locale === "ko-KR" && item.name === "판륙"));
+  assert.equal(notcher.names.some((item) => item.name === "梳形"), false);
+  assert.equal(comb.names.some((item) => item.name === "Three-Space Notcher"), false);
+});
+
+test("Comb → Notcher 只保存 source-specific taxonomy relation，不升格 geometry alias", () => {
+  const relation = Ontology.taxonomyRelations.find((item) => item.id === "davies-comb-related-notcher-v1");
+  assert.ok(relation);
+  assert.equal(relation.subjectConceptId, "comb-formation-v1");
+  assert.equal(relation.objectConceptId, "three-space-notcher-v1");
+  assert.equal(relation.relation, Ontology.TAXONOMY_RELATION.SPECIALIZED_RELATED_SHAPE);
+  assert.equal(relation.reviewStatus, Ontology.REVIEW.PARTIAL);
+  assert.match(relation.note, /source-specific taxonomy relation/);
+  assert.match(relation.note, /not geometry alias|geometry alias/i);
+
+  const forbiddenGeometry = Ontology.geometryRelations.find((item) =>
+    [item.subjectConceptId,item.objectConceptId].includes("comb-formation-v1")
+    && [item.subjectConceptId,item.objectConceptId].includes("three-space-notcher-v1")
+  );
+  assert.equal(forbiddenGeometry, undefined);
+});
+
+test("鎖型不得因 Notcher 名稱相似而成為 exact alias", () => {
+  const notcher = Ontology.concepts.find((item) => item.id === "three-space-notcher-v1");
+  assert.equal(notcher.names.some((item) => item.name === "鎖型"), false);
+  const blocked = notcher.negativeMappings.find((item) => item.name === "鎖型");
+  assert.ok(blocked);
+  assert.equal(blocked.relation, "exact_alias");
+  assert.equal(blocked.status, "blocked_pending_direct_or_geometry_evidence");
+  assert.match(blocked.reason, /尚未找到|未找到/);
+});
+
+test("Comb / Notcher geometry evidence 保持 text-only，不由 taxonomy 補座標", () => {
+  const comb = Catalog.entries.find((item) => item.id === "comb-formation-v1");
+  const notcher = Catalog.entries.find((item) => item.id === "three-space-notcher-v1");
+  for (const entry of [comb,notcher]) {
+    assert.ok(entry);
+    assert.equal(entry.practiceStatus, "catalog_only");
+    assert.equal(entry.geometryIdentity.reviewStatus, Ontology.REVIEW.NEEDS_REVIEW);
+    assert.ok(entry.geometryEvidence.length >= 1);
+    assert.ok(entry.geometryEvidence.every((item) => item.evidenceStatus === "text_only_geometry_unavailable"));
+    assert.ok(entry.geometryEvidence.every((item) => item.points === null));
+    assert.ok(entry.geometryEvidence.every((item) => item.publicGeometryPromotion === "reference_only_no_geometry"));
+  }
+});
+
+test("Comb 韓文來源保留不同術語，且 YeeFan 鏡像不灌成獨立 Evidence Chain", () => {
+  const comb = Ontology.concepts.find((item) => item.id === "comb-formation-v1");
+  const koNames = comb.names.filter((item) => item.locale === "ko-KR").map((item) => item.name);
+  assert.ok(koNames.includes("빗형"));
+  assert.ok(koNames.includes("판륙"));
+  assert.equal(Ontology.sources.badukworldYeeFanTerms.evidenceChain, Ontology.sources.yeefanChineseTerms.evidenceChain);
+  assert.notEqual(Ontology.sources.koreanWikibooksLifeDeath.evidenceChain, Ontology.sources.badukworldYeeFanTerms.evidenceChain);
+});
+
+test("compatibility catalog 顯示 ontology v4 relation metadata，但不取得 scoring authority", () => {
   const carpenter = Catalog.entries.find((item) => item.id === "carpenters-square-v1");
   const lGroup = Catalog.entries.find((item) => item.id === "l-group-v1");
   assert.ok(carpenter.nameAmbiguities.some((item) => item.name === "小曲尺"));
@@ -198,14 +263,14 @@ test("compatibility catalog 顯示 ontology v3 relation metadata，但不取得 
   assert.ok(lGroup.taxonomyMemberships.length >= 1);
   assert.ok(lGroup.geometryRelations.some((item) => item.relation === Ontology.GEOMETRY_RELATION.RELATED_UNRESOLVED));
   assert.equal(lGroup.practiceStatus, "catalog_only");
-  assert.match(html, /classic-shape-ontology-v3/);
+  assert.match(html, /classic-shape-ontology-v4/);
   assert.match(js, /名稱歧義/);
   assert.match(js, /Taxonomy/);
   assert.doesNotMatch(ontologySource, /correctMove|formalEligible\s*:\s*true|mastery/);
 });
 
 test("catalog adapter 暴露 geometry evidence，但不由名稱補 geometry", () => {
-  assert.equal(Catalog.geometryEvidenceVersion, "classic-geometry-evidence-v2");
+  assert.equal(Catalog.geometryEvidenceVersion, "classic-geometry-evidence-v3");
   const carpenter = Catalog.entries.find((item) => item.id === "carpenters-square-v1");
   const lGroup = Catalog.entries.find((item) => item.id === "l-group-v1");
   const pyramid = Catalog.entries.find((item) => item.id === "pyramid-four-v1");
@@ -222,7 +287,7 @@ test("catalog adapter 暴露 geometry evidence，但不由名稱補 geometry", (
 });
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v17");
+  assert.equal(Catalog.version, "world-classic-shapes-v18");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);

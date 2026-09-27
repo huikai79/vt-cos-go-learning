@@ -1,11 +1,11 @@
 # 完成矩陣：悟之一手
 
-更新日期：2026-09-27  
+更新日期：2026-09-28  
 用途：將產品承諾、現有實作、自動驗證與證據邊界分開記錄。此表的「工程通過」只表示指定程式行為可運作，不表示內容正確、初學者可理解或學習有效。
 
 ## Current Status
 
-- `as_of`: 2026-09-27
+- `as_of`: 2026-09-28
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v5`
@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v7 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v19 / 四目眼 status contrast + 曲四 | playable practice 現有直三、曲三、丁四、方四、直四、曲四／Curved Four、刀把五、梅花五、花六、金雞獨立與大豬嘴 exact source-case。新增獨立 `classic-curved-four-status-v1`：sealed L-tetromino 曲四對攻方四種第一手逐一驗證，守方均有回應留下兩個分離 eye points，因此導出 alive；兩個 variant 覆蓋換色、旋轉與位移。既有方四／直四 v1 contract 不修改；ontology 加入 Curved Four ≠ Bent Four in the Corner negative mapping | Curved Four proof/negative tests、browser 第 5/6 題、geometry evidence、release manifest；既有 four-space status 與 research-governance tests 不變；完整 CI 以 PR workflow 為準 | 工程／rules-backed local status proof | 工程 PASS 只支持 sealed interior Curved Four，不代表盤角曲四、含缺陷／外氣局面或全局死活；內容效度、formal assessment、retention／transfer、learning effect 未由此建立。真人 R1a/usability/accessibility 延後到最後階段 |
+| 世界死活名型館 v20 / Ontology v4 Comb–Notcher 分離 | playable practice 維持直三、曲三、丁四、方四、直四、曲四、刀把五、梅花五、花六、金雞獨立與大豬嘴 exact source-case；本輪只擴充 catalog-only research ontology：新增 `Comb Formation / 梳形 / 櫛形 / 빗형 / 판륙` 與獨立 `Three-Space Notcher` concept。`Comb → Three-Space Notcher` 只保存為 source-specific taxonomy relation；`鎖型 = Notcher` 維持 blocked/unverified；兩者 geometry evidence 皆為 text-only，不取得 scoring authority | ontology/catalog negative tests、text-only geometry evidence、來源 Evidence Chain 去重、browser asset version；完整 CI 以 PR workflow 為準 | 工程／research governance | 工程 PASS 只支持名稱與 taxonomy/geometry authority 分離；Comb/Notcher canonical geometry、鎖型映射、playable scoring、內容效度、formal assessment、retention／transfer、learning effect 均未由此建立。正式 teaching gate 不變 |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -683,3 +683,16 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Synthesis：** 主線改成「先秦成熟弈文化 → 132 年 17 路實物 → 5～6 世紀品評／編纂＋文獻亡佚 → 595 年 19 路實物 → 盤制逐漸收斂但其他規則未同步統一 → 若干棋形判定／技術術語後世再現」。此排列是 Claim Ladder 的 evidence sequence，不是單一因果鏈。
 - **Authority／candidate：** History Explore 仍是 read-only Explore surface，不接 learner state、KC、scheduler、T0–T3 或 formal evaluation；未修改首頁與 Core critical asset set，因此 `formal-teaching-candidate-2026-09-28-a` 不重凍結。正式教學維持 `BLOCKED`、formal evaluation unavailable、learning effect `NOT_MEASURED`。
 - **Validation target：** `tests/history.test.cjs` 新增望都、制度化措辭、Lost Corpus、角曲四 continuity、scoped negative 與《讀曲歌》斷代反證；browser UI 與 served Pages marker 同步到 History v4／2026-09-28。工程測試通過只支持內容契約與部署一致性，不等於外部歷史學術同行審查。
+
+
+## 2026-09-28 Decision note｜Comb Formation / Notcher 分離建模
+
+- **Bottleneck：** Ontology v3 已能保存名稱歧義與多套 taxonomy，但 `Comb Formation / 梳形 / 櫛形` 與 `Three-Space Notcher` 尚未成為可機讀的獨立 concept；若只把它們塞進 aliases，會把名稱映射、教材 taxonomy 與 geometry 關係混成同一件事。
+- **本輪改動：** ontology 升為 `classic-shape-ontology-v4`，新增 `comb-formation-v1` 與 `three-space-notcher-v1`。Comb 保存繁中「梳形」、日文「櫛形」、韓文 `빗형` 與詞典型 `판륙`；韓文不同術語並存，不用單一 canonical 翻譯覆蓋來源差異。
+- **Taxonomy 邊界：** `Comb → Three-Space Notcher` 只以二手 Davies 讀書筆記保存為 `SPECIALIZED_RELATED_SHAPE` 的 source-specific relation；不新增 geometry relation，不宣稱 global parent/variant。
+- **負面映射：** `鎖型 = Three-Space Notcher` 目前缺直接跨語或 geometry evidence，因此列為 blocked pending evidence；不得由名稱直覺自動 alias。
+- **Geometry stop line：** Comb 與 Notcher 只新增 `text_only_geometry_unavailable` evidence。未經 rights/extraction/fingerprint gate 前，不保存來源衍生座標、不開 playable scoring。
+- **Evidence independence：** BadukWorld 的 YeeFan 術語鏡像與 YeeFan 本體共用同一 `evidenceChain`，不得因不同 URL 灌成兩份獨立支持。
+- **不可破壞 invariant：** learner events、first response、KC、scheduler、storage schema、T0–T3、formal evaluation 與既有 scoring contracts 全部不變。
+- **Rollback：** 回復 ontology v3／geometry evidence v2／catalog v17 與對應 cache version 即可；不需 learner data migration。
+- **驗收：** 反證測試必須證明 Comb/Notcher 不互為 alias、`鎖型` 不進 Notcher names、taxonomy relation 不產生 geometry relation、text-only evidence 沒有座標；正式 teaching/evaluation 狀態不得因此升格。

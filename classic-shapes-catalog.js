@@ -29,6 +29,7 @@
     corner_life_death: "角部死活",
     rules_corner: "規則敏感型",
     complex_corner: "經典複雜型",
+    complex_life_death: "經典死活 family",
     tesuji: "死活手筋"
   });
 
@@ -201,7 +202,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog compatibility entry.");
 
   return Object.freeze({
-    version:"world-classic-shapes-v17",
+    version:"world-classic-shapes-v18",
     ontologyVersion:Ontology.version,
     REVIEW,
     ZH_NAME_STATUS,

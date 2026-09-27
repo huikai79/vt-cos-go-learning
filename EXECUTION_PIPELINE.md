@@ -309,3 +309,13 @@
 - **反證：** 方四 geometry、直四 geometry、偷塞 expectedStatus 均不得通過曲四 contract。
 - **真人 gate：** R1a、三位初學者 usability、真人 accessibility 延後到最後階段，不由本工程補成已驗。
 - **Validation：** PR #49 verify run #510 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
+
+
+## 2026-09-28 Decision note｜Comb Formation / Notcher 只先完成 nomenclature + taxonomy gate
+
+- **目前步驟：** 仍屬世界死活名型館的 catalog/reference 工作線，沒有跳到 scoring 或正式教學。Ontology v4 把 `Comb Formation` 與 `Three-Space Notcher` 建成兩個獨立 concept。
+- **名稱 gate：** `梳形 ↔ Comb Formation`、`櫛形 ↔ Comb Formation` 可保存直接來源支持；韓文 `빗형` 與 `판륙` 同時保留其來源差異，不用翻譯投票消歧。
+- **Taxonomy gate：** Comb 與 Three-Space Notcher 的相關性只保存為 source-specific、partial relation；不得因此生成 `SAME/VARIANT_OF` geometry relation。
+- **停止線：** `鎖型 = Notcher` 保持未確認；Comb/Notcher 沒有通過 geometry extraction/fingerprint 前只可 catalog-only。任何後續 playable 工作都必須重新走 geometry identity → conditions/ruleset → scoring/variation contract → negative oracle。
+- **下一個可推進條件：** 取得 rights/provenance 清楚的 geometry source，或建立可在 reference-only oracle 中比較、但不持久化來源座標的獨立 observation；否則不靠更多文字來源強行解除 geometry unknown。
+- **不變：** 這一輪不影響 R0、R1a/R1b、正式 usability gate、learner state、scheduler、T2/T3 或 formal evaluation。
