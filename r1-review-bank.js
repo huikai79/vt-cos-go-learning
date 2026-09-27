@@ -2,8 +2,8 @@
   "use strict";
   const bank = {
   "schemaVersion": 1,
-  "protocolId": "go-r1-independent-content-review-v4",
-  "contentFingerprint": "fnv1a32-1afc0a13",
+  "protocolId": "go-r1-independent-content-review-v5",
+  "contentFingerprint": "fnv1a32-c34ef6a4",
   "population": {
     "catalogCount": 148,
     "familyCount": 43,
