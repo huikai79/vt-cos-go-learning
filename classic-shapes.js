@@ -191,15 +191,13 @@
         ? '<div class="catalog-zh-aliases"><span>中文別名候選</span>' + entry.zhAliases.map((alias) => '<small>' + escapeHtml(alias.name) + ' · ' + reviewLabel(alias.reviewStatus) + '</small>').join("") + '</div>'
         : "";
       const ambiguities = entry.nameAmbiguities.length
-        ? '<div class="catalog-ambiguity"><strong>名稱還有不同解讀</strong>' + entry.nameAmbiguities.map((item) => '<span>' + escapeHtml(item.name) + '：' + escapeHtml(item.note) + '</span>').join("") + '</div>'
+        ? '<div class="catalog-ambiguity"><strong>名稱還有不同解讀</strong>' + entry.nameAmbiguities.map((item) => '<span>' + escapeHtml(item.name) + '：這個名稱可能指不同棋形，需要對照棋形與來源才能確認。</span>').join("") + '</div>'
         : '';
       const taxonomy = entry.taxonomyMemberships.length || entry.taxonomyRelations.length
         ? '<div class="catalog-taxonomy"><strong>分類資料</strong><span>已整理 ' + (entry.taxonomyMemberships.length + entry.taxonomyRelations.length) + ' 項內部分類關係；這些只用來整理資料，不影響練習評分。</span></div>'
         : '';
       const geometryRelations = entry.geometryRelations.length
-        ? '<div class="catalog-geometry-rel"><strong>棋形關係</strong><span>' +
-            escapeHtml(entry.geometryRelations.map((item) => item.note).join('；')) +
-          '</span></div>'
+        ? '<div class="catalog-geometry-rel"><strong>棋形關係</strong><span>有 ' + entry.geometryRelations.length + ' 項相關棋形關係仍在整理；不能只靠名稱判定兩者相同。</span></div>'
         : '';
       const geometryEvidence = entry.geometryEvidence.length
         ? '<div class="catalog-geometry-evidence"><strong>棋形核對</strong><span>' + escapeHtml(geometryReviewLabel(entry.geometryIdentity.reviewStatus)) + '。詳細依據請看下方來源。</span></div>'
@@ -220,7 +218,7 @@
         taxonomy +
         geometryRelations +
         geometryEvidence +
-        (entry.negativeMappings.length ? '<p class="catalog-warning">禁止自動合併：' + escapeHtml(entry.negativeMappings.map((item) => item.name + ' · ' + item.reason).join('；')) + '</p>' : '') +
+        (entry.negativeMappings.length ? '<p class="catalog-warning">不要直接視為同一棋形：' + escapeHtml(entry.negativeMappings.map((item) => item.name).join('、')) + '。名稱相近不代表棋形與規則條件完全相同。</p>' : '') +
         (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：不同規則下可能出現不同結果；沒有指定使用哪套規則前，不會硬給單一答案。</p>' : '') +
         sources +
         '</article>';
