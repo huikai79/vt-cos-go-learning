@@ -15,6 +15,7 @@ const page = baseUrl ? new URL("index.html", baseUrl).href : pathToFileURL(path.
 const reviewPage = baseUrl ? new URL("r1-review.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../r1-review.html")).href;
 const advancedPage = baseUrl ? new URL("advanced.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../advanced.html")).href;
 const classicPage = baseUrl ? new URL("classic-shapes.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../classic-shapes.html")).href;
+const historyPage = baseUrl ? new URL("history.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../history.html")).href;
 
 function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
@@ -1045,6 +1046,44 @@ async function main() {
     assert.equal(bigPigsMouthCorrect.revealHidden, false);
     assert.equal(bigPigsMouthCorrect.name, "大豬嘴／J Group");
     assert.equal(bigPigsMouthCorrect.nextDisabled, false);
+
+    await command(socket, "Page.navigate", { url: historyPage });
+    let historyReady = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      historyReady = await evaluate(socket, "Boolean(document.querySelector('#history-title')?.textContent && document.querySelectorAll('.question-block').length === 4)");
+      if (historyReady) break;
+      await delay(100);
+    }
+    assert.equal(historyReady, true);
+    const historyDesktop = await evaluate(socket, `(() => ({
+      title: document.querySelector('#history-title').textContent,
+      questions: document.querySelectorAll('.question-block').length,
+      evidenceLabels: [...new Set([...document.querySelectorAll('.evidence-guide .evidence-badge')].map((node) => node.textContent.trim()))],
+      sourceAuditDate: document.querySelector('.source-audit-date')?.textContent.trim(),
+      scripts: document.querySelectorAll('script').length,
+      width: innerWidth,
+      scrollWidth: document.documentElement.scrollWidth
+    }))()`);
+    assert.match(historyDesktop.title, /圍棋為什麼會長成今天這個樣子/);
+    assert.equal(historyDesktop.questions, 4);
+    assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
+    assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-27");
+    assert.equal(historyDesktop.scripts, 0);
+    assert.ok(historyDesktop.scrollWidth <= historyDesktop.width + 1, `history desktop horizontal overflow: ${JSON.stringify(historyDesktop)}`);
+
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
+    const historyMobile = await evaluate(socket, `(() => ({
+      width: innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      sourceColumns: getComputedStyle(document.querySelector('.source-list')).gridTemplateColumns,
+      frontierColumns: getComputedStyle(document.querySelector('.frontier-grid')).gridTemplateColumns,
+      ctaDirection: getComputedStyle(document.querySelector('.history-cta')).flexDirection
+    }))()`);
+    assert.ok(historyMobile.scrollWidth <= historyMobile.width + 1, `history mobile horizontal overflow: ${JSON.stringify(historyMobile)}`);
+    assert.equal(historyMobile.ctaDirection, "column");
+    assert.ok(historyMobile.sourceColumns.split(" ").length === 1);
+    assert.ok(historyMobile.frontierColumns.split(" ").length === 1);
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
 
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;

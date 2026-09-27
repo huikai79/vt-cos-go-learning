@@ -594,3 +594,14 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Formal usability candidate：** 因首頁 `index.html` 新增 History Explore 低優先級入口，舊 `formal-teaching-candidate-2026-09-27-a` fingerprint 不再適用；已重新凍結為 `formal-teaching-candidate-2026-09-27-b`。目前尚無正式三位 usability 證據，因此沒有舊證據可遷移或沿用。
 - **反證／測試：** `tests/history.test.cjs` 驗證傳說與未知不被升格、孫策—呂範棋譜不被寫成三國 19 路硬證據、首頁仍只有兩張 Core／Advanced 主入口卡、歷史頁不接 learner runtime。release manifest 另把 `history.html` 列為靜態 entrypoint。
 - **證據邊界：** 這是內容架構與歷史敘事工程 PASS 候選；不代表歷史內容已完成獨立學術同行審查，也不改正式教學 `BLOCKED`、formal evaluation unavailable、learning outcome `NOT_MEASURED`。
+
+
+## 2026-09-27 Change note｜History Explore v2 內容證據與 accessibility 獨立審核
+
+- **內容修正：** 將「19²−17²=72」與《棋經十三篇》的「外周七十二路」明確拆開；後者是 19 路外周交叉點數的宇宙論式解釋，前者只是現代算術差值，不得用來推論 17→19 路改盤原因。
+- **claim-near evidence：** 17 路改接到《文選》李善注所引邯鄲淳《藝經》；規則史加入《敦煌棋經》公開轉錄的「子多為勝」並與 IDP 手稿身份分工；巡將棋以 KCI 制度史＋British Go Association 起始配置分開支撐；孫策／呂範改用《太平御覽》所引《江表傳》支撐對弈敘事；原爆棋改用日本棋院 100 週年專頁支撐再開與終局時間。
+- **來源邊界：** 古籍 URL 只證明現存傳世文本／引文如何記載，不自動證明故事是事件同期紀錄；手稿目錄、現代轉錄、制度史與實際規則復現各自只在其 evidence scope 內使用。移除未實質支撐頁面主張的唐代棋子材料來源。
+- **Accessibility：** 修正品牌副標、題號、比較表頭、頁尾四組小字低對比配色；新的配色在其實際背景上均高於一般文字 4.5:1 門檻。
+- **Browser regression：** Windows browser UI suite 現在直接導航 `history.html`，驗證四個主題、六種 evidence label、來源查核日期、零 runtime script，以及桌面／375px 行動版無水平溢出與單欄重排。
+- **Candidate boundary：** 本輪只改 `history.html`／`history.css` 與測試／文件；這些不在 `formal-teaching-candidate.json` 的 Core critical asset set，因此 `formal-teaching-candidate-2026-09-27-b` 不需重凍結。
+- **狀態：** 歷史內容工程與來源對位為 PASS 候選；外部歷史學術同行審查、正式 novice usability、真人 accessibility 與 learning effect 仍分別保持 NOT_REVIEWED／NOT_TESTED／NOT_TESTED／NOT_MEASURED。

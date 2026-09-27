@@ -214,3 +214,13 @@
 ### 2026-09-24 CJK 互動介面補充
 
 本輪將長文設計規範拆成「可直接採用」與「需轉譯」兩類。直接採用：繁中語系與字型 fallback、visible keyboard focus、20px 手機內容留白、44px 常用控制、清楚連結樣式、安全換行。需轉譯：長文 680px／17px 模型不直接覆蓋棋盤＋題目介面，而是把教學說明限制在約 42em，保留桌面棋盤與題目並排、手機單欄重排。Dark Mode、TOC、Hero、Newsletter 等內容網站元件目前沒有已觀察 learning-loop bottleneck，因此不加入。
+
+
+## 2026-09-27｜History Explore v2 accessibility / browser audit
+
+- 初版 `history.html` 雖有 static contract，但未被 `tests/ui.test.cjs` 實際載入；主站 Windows UI 全綠不能證明歷史頁在真實瀏覽器無 overflow。
+- 審核發現四組小字對比不足一般文字 4.5:1：品牌副標約 3.87、題號約 4.06、比較表頭約 4.41、頁尾約 3.78。
+- v2 將上述文字改為較深綠色，並加入 browser regression：桌面 1280px 與 mobile 375px 都要求 `scrollWidth <= innerWidth + 1`，mobile 的來源、研究前沿改為單欄，CTA 改 column。
+- `prefers-reduced-motion: reduce` 時取消 smooth scrolling；static contract 直接驗證此 fallback，避免把捲動動畫強加給要求減少動效的使用者。
+- 歷史頁維持零 JavaScript runtime；browser test 同時檢查四個 question block、六種 evidence label 與來源最後查核日期。
+- 這些自動檢查只能證明指定 reflow／contrast contract；screen reader 實際閱讀順序、認知負荷與歷史標籤是否易懂仍需真人 observation。

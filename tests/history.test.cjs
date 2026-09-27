@@ -20,12 +20,12 @@ test("歷史探索頁明示六種證據狀態並保留未知", () => {
     assert.ok(html.includes(">" + label + "<"), label);
   }
   assert.match(html, /誰最先創造 19 路、是否因棋理平衡或曆法宇宙觀而改盤，目前仍未知/);
-  assert.match(html, /數字吻合.*不能證明/s);
+  assert.match(html, /兩個 72 不能當成同一條歷史因果證據/);
 });
 
 test("歷史探索頁不把堯傳說或孫策棋譜升格為硬史實", () => {
   assert.match(html, /堯造圍棋是重要的起源傳說/);
-  assert.match(html, /現存宋代傳下的 19 路棋譜不能直接等同三國原局/);
+  assert.match(html, /《忘憂清樂集》所收 19 路棋譜則是後世傳本.*不能直接等同三國原局/s);
   assert.doesNotMatch(html, /堯帝發明圍棋已有四千年/);
 });
 
@@ -50,5 +50,95 @@ test("首頁以低優先級入口連到歷史探索，不改 Core／Advanced 兩
 test("巡將圍棋、關羽刮骨與原爆棋都有 claim-near source", () => {
   assert.ok(html.includes("ART001844106"), "Sunjang institutional-history source");
   assert.ok(html.includes("https://ctext.org/sanguozhi/36"), "Guan Yu primary text");
-  assert.ok(html.includes("https://www.nihonkiin.or.jp/teach/history/history03.html"), "atomic-bomb game official history");
+  assert.ok(html.includes("https://www.nihonkiin.or.jp/special/100anniversary/kishi_select/17.html"), "atomic-bomb game official history");
+});
+
+
+test("17→19 路與七十二的敘述不把數字巧合升格為改盤因果", () => {
+  assert.match(html, /傳世注疏保存「棋局縱橫各十七道」的 17 路記載/);
+  assert.match(html, /19² − 17² = 72.*今天做的算術比較/s);
+  assert.match(html, /古籍的「七十二」指 19 路棋盤的外周交叉點數/);
+  assert.match(html, /兩個 72 不能當成同一條歷史因果證據/);
+});
+
+test("歷史來源頁明示傳世文本限制、查核日期，且不保留未實質支撐頁面敘述的裝飾性來源", () => {
+  assert.match(html, /古籍連結證明的是「現存傳世文本／引文如何記載」/);
+  assert.match(html, /本頁來源最後查核：2026-09-27/);
+  assert.doesNotMatch(html, /唐代圍棋子材料分析/);
+});
+
+test("所有新分頁外部連結都使用 noreferrer，歷史頁沒有 runtime script", () => {
+  const externalTargets = [...html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)].map((match) => match[0]);
+  assert.ok(externalTargets.length >= 10);
+  assert.ok(externalTargets.every((tag) => /rel="[^"]*noreferrer[^"]*"/.test(tag)));
+  assert.doesNotMatch(html, /<script\b/i);
+  assert.match(html, /history\.css\?v=history-explore-v2/);
+});
+
+test("歷史頁小字配色維持一般文字 AA 對比安全值", () => {
+  const css = fs.readFileSync(path.join(root, "history.css"), "utf8");
+  const channel = (value) => {
+    const normalized = value / 255;
+    return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+  const luminance = (hex) => {
+    const raw = hex.replace("#", "");
+    const [r, g, b] = [0, 2, 4].map((offset) => parseInt(raw.slice(offset, offset + 2), 16));
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+  };
+  const ratio = (foreground, background) => {
+    const values = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+    return (values[0] + 0.05) / (values[1] + 0.05);
+  };
+  const colorOf = (pattern) => {
+    const match = css.match(pattern);
+    assert.ok(match, String(pattern));
+    return match[1];
+  };
+  const checks = [
+    [colorOf(/\.history-brand small\{[^}]*color:(#[0-9a-f]{6})/i), "#fbfcf8", "brand small"],
+    [colorOf(/\.question-number\{[^}]*color:(#[0-9a-f]{6})/i), "#ffffff", "question number"],
+    [colorOf(/\.compare-head\{[^}]*color:(#[0-9a-f]{6})/i), "#eef3eb", "compare head"],
+    [colorOf(/footer\{[^}]*color:(#[0-9a-f]{6})/i), "#f4f6f0", "footer"]
+  ];
+  for (const [foreground, background, label] of checks) {
+    assert.ok(ratio(foreground, background) >= 4.5, `${label}: ${ratio(foreground, background).toFixed(2)}`);
+  }
+});
+
+test("歷史頁尊重 prefers-reduced-motion", () => {
+  const css = fs.readFileSync(path.join(root, "history.css"), "utf8");
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{html\{scroll-behavior:auto\}\}/);
+});
+
+
+test("孫策呂範的對弈傳文與後世十九路棋譜分開處理", () => {
+  assert.ok(html.includes("https://ctext.org/taiping-yulan/753/zh"));
+  assert.match(html, /只支持對弈敘事，不直接驗證後世 19 路棋譜/);
+  assert.match(html, /《忘憂清樂集》所收 19 路棋譜則是後世傳本.*不能直接等同三國原局/s);
+});
+
+test("原爆棋使用可直接支撐再開與終局時間的日本棋院官方頁", () => {
+  assert.ok(html.includes("https://www.nihonkiin.or.jp/special/100anniversary/kishi_select/17.html"));
+  assert.match(html, /約 10:30 再開、約 16:00 終局/);
+});
+
+
+test("歷史 HTML 不得把 escaped newline 當可見文字帶進來源清單", () => {
+  assert.equal(html.includes("\\n"), false);
+});
+
+
+test("History Explore learner-facing version metadata 一致為 v2", () => {
+  assert.match(html, /history\.css\?v=history-explore-v2/);
+  assert.match(html, /歷史探索 v2/);
+  assert.doesNotMatch(html, /歷史探索 v1/);
+});
+
+
+test("孫策呂範棋譜真實性以後世 attribution 與質疑呈現，不冒充三國同期棋譜", () => {
+  assert.match(html, /《江表傳》的對弈傳文今可見《太平御覽》轉引/);
+  assert.match(html, /「所下とされる」棋譜/);
+  assert.ok(html.includes("https://ctext.org/wiki.pl?chapter=496456&amp;if=gb"));
+  assert.match(html, /疑是後人假託/);
 });
