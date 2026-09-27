@@ -241,3 +241,4 @@
 - **Geometry stop line：** L Group ↔ Carpenter's Square 只記 `related_unresolved`；taxonomy distinction／名稱相似都不能決定 parent／variant。
 - **不可破壞 invariant：** practice/scoring contracts、first response、learner events、KC、scheduler、storage、T2/T3、formal evaluation 全部不變。
 - **下一個研究方法：** 文字搜尋只繼續服務 names／taxonomy provenance；若要解除 `geometry_required`，必須轉成 geometry-first retrieval、座標 normalize 與獨立 fingerprint review。
+- **Validation：** PR #32 verify run #459 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。
