@@ -305,7 +305,7 @@ test("課程端只讀 practice stream 摘要與備份，不餵入 Metrics 或 sc
   assert.match(appJs, /PracticeEvents\.read\(localStorage\)/);
   assert.match(appJs, /livePracticeEvents:/);
   assert.match(appJs, /learningDiagnostics: Metrics\.summarize\(\{ events: state\.events/);
-  assert.match(appJs, /practice observation only/);
+  assert.match(appJs, /只作練習紀錄/);
 });
 
 
