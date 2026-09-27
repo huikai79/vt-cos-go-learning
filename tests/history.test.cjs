@@ -33,7 +33,7 @@ test("歷史探索頁至少連回主要學習入口與主要來源", () => {
   for (const href of ["index.html", "index.html#core", "advanced.html", "classic-shapes.html"]) {
     assert.ok(html.includes('href="' + href + '"'), href);
   }
-  for (const host of ["ctext.org", "chnmus.net", "idp.bl.uk", "kci.go.kr", "nihonkiin.or.jp", "mpiwg-berlin.mpg.de"]) {
+  for (const host of ["wenwu.hebei.gov.cn", "ctext.org", "chnmus.net", "idp.bl.uk", "kci.go.kr", "nihonkiin.or.jp", "mpiwg-berlin.mpg.de"]) {
     assert.ok(html.includes(host), host);
   }
 });
@@ -55,7 +55,8 @@ test("巡將圍棋、關羽刮骨與原爆棋都有 claim-near source", () => {
 
 
 test("17→19 路與七十二的敘述不把數字巧合升格為改盤因果", () => {
-  assert.match(html, /傳世注疏保存「棋局縱橫各十七道」的 17 路記載/);
+  assert.match(html, /東漢陽嘉元年（132）.*石棋盤.*17 道/s);
+  assert.match(html, /《文選》李善注保存邯鄲淳《藝經》「棋局縱橫，各十七道」/);
   assert.match(html, /19² − 17² = 72.*今天做的算術比較/s);
   assert.match(html, /古籍的「七十二」指 19 路棋盤的外周交叉點數/);
   assert.match(html, /兩個 72 不能當成同一條歷史因果證據/);
@@ -63,7 +64,7 @@ test("17→19 路與七十二的敘述不把數字巧合升格為改盤因果", 
 
 test("歷史來源頁明示傳世文本限制、查核日期，且不保留未實質支撐頁面敘述的裝飾性來源", () => {
   assert.match(html, /古籍連結證明的是「現存傳世文本／引文如何記載」/);
-  assert.match(html, /本頁來源最後查核：2026-09-27/);
+  assert.match(html, /本頁來源最後查核：2026-09-28/);
   assert.doesNotMatch(html, /唐代圍棋子材料分析/);
 });
 
@@ -72,7 +73,7 @@ test("所有新分頁外部連結都使用 noreferrer，歷史頁沒有 runtime 
   assert.ok(externalTargets.length >= 10);
   assert.ok(externalTargets.every((tag) => /rel="[^"]*noreferrer[^"]*"/.test(tag)));
   assert.doesNotMatch(html, /<script\b/i);
-  assert.match(html, /history\.css\?v=history-explore-v3/);
+  assert.match(html, /history\.css\?v=history-explore-v4/);
 });
 
 test("歷史頁所有已知小字與 evidence badge 維持一般文字 AA 對比安全值", () => {
@@ -141,10 +142,10 @@ test("歷史 HTML 不得把 escaped newline 當可見文字帶進來源清單", 
 });
 
 
-test("History Explore learner-facing version metadata 一致為 v3", () => {
-  assert.match(html, /history\.css\?v=history-explore-v3/);
-  assert.match(html, /歷史探索 v3/);
-  assert.doesNotMatch(html, /歷史探索 v1|歷史探索 v2/);
+test("History Explore learner-facing version metadata 一致為 v4", () => {
+  assert.match(html, /history\.css\?v=history-explore-v4/);
+  assert.match(html, /歷史探索 v4/);
+  assert.doesNotMatch(html, /歷史探索 v1|歷史探索 v2|歷史探索 v3/);
 });
 
 
@@ -156,7 +157,7 @@ test("孫策呂範棋譜真實性以後世 attribution 與質疑呈現，不冒�
 });
 
 
-test("History Explore v3 不保留泛用來源入口，改用實際 claim-near source", () => {
+test("History Explore v4 不保留泛用來源入口，改用實際 claim-near source", () => {
   assert.doesNotMatch(html, /href="https:\/\/ctext\.org\/"\s/);
   assert.ok(html.includes("https://ctext.org/mengzi/gaozi-i"));
   assert.ok(html.includes("chapter=578656"));
@@ -165,4 +166,40 @@ test("History Explore v3 不保留泛用來源入口，改用實際 claim-near s
 
 test("手機 header 即使隱藏進階導覽，頁面仍保留直接回進階訓練的 CTA", () => {
   assert.match(html, /href="advanced\.html">回進階訓練<\/a>/);
+});
+
+test("History Explore v4 以望都 132 年作 17 路主要物質錨點，且不誇大為原位或最早", () => {
+  assert.ok(html.includes("https://wenwu.hebei.gov.cn/system/2023/10/16/030257948.shtml"));
+  assert.match(html, /132｜東漢望都/);
+  assert.match(html, /墓中出土石棋盤，盤面縱橫各 17 道/);
+  assert.doesNotMatch(html, /原位考古出土/);
+  assert.doesNotMatch(html, /已知最早的 17 路棋盤/);
+});
+
+test("History Explore v4 將南朝棋學寫成品評與編纂活動，不升格為現代制度化教育", () => {
+  assert.match(html, /圍棋州邑/);
+  assert.match(html, /登格 278 人/);
+  assert.match(html, /宮廷棋手品評與棋書編纂活動相當成熟/);
+  assert.doesNotMatch(html, /棋學高度制度化/);
+  assert.match(html, /《棋勢》《棋圖勢》《棋九品序錄》《圍棋品》《棋法》/);
+  assert.match(html, /不能據此假定 17→19 的答案一定就在失傳書中/);
+});
+
+test("History Explore v4 用角曲四呈現技術知識再現，但拒絕完整傳承鏈", () => {
+  assert.match(html, /角旁曲四，局竟乃亡/);
+  assert.match(html, /角盤曲四，局終乃亡/);
+  assert.match(html, /征、劫、持/);
+  assert.match(html, /不足以證明一條不中斷的完整傳承鏈/);
+});
+
+test("History Explore v4 的 17 路古局缺口維持 scoped negative claim", () => {
+  assert.match(html, /目前查核範圍內，尚未確認可可靠重建的早期 17 路實戰局面/);
+  assert.match(html, /本頁目前查核的主要考古、棋史與傳世棋譜來源中/);
+  assert.match(html, /不代表這類證據不存在/);
+});
+
+test("《讀曲歌》只作南朝歌辭傳統的 17 路補充，不綁定 440 年", () => {
+  assert.match(html, /南朝《讀曲歌》傳統中另保存「方局十七道」/);
+  assert.match(html, /不能因此把含「方局十七道」的那一首精確定年為 440 年/);
+  assert.doesNotMatch(html, /440 年仍確定使用17路/);
 });
