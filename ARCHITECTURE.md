@@ -252,3 +252,14 @@ SGF 局部功能的 authority 現在分成三層：
 3. **人工／external analysis：** 才能另行確認原著或其他候選是否可接受；KataGo／KaTrain 輸出仍是 bounded search estimate。
 
 因此「原著一致」與「棋理正確／最佳」是兩個不同資料欄位與主張層級。連續棋譜重建若日後實作，必須沿用相同 authority boundary 與 first-response／retry 分離，不得把連續命中率升格為棋力。
+
+
+## 2026-09-27｜History Explore surface authority boundary
+
+`history.html` 是 repository-root 靜態、read-only 的文化／歷史閱讀入口，與 Core learner runtime 分離：
+
+- 不載入 `app.js`、`scheduler.js`、`learner-progress.js` 或 evidence state modules。
+- 不讀寫 learner localStorage，不產生 first-response、practice、T0–T3 或 formal-evaluation event。
+- 「確證／高度可信／有爭議／傳說／研究假說／未知」是 historical claim presentation metadata，不是 `evidence-taxonomy.js` 的 learner evidence classification。
+- 外部古籍、博物館、學術論文與研究機構只提供歷史主張 evidence；它們不取得 rules engine、item scoring、KC 或 scheduler authority。
+- 若未來要把某段歷史材料轉成教學題或正式評量，必須另走 content/scoring/TEACHING_GATE 流程，不得由 Explore 頁直接升格。
