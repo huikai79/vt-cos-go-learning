@@ -265,3 +265,4 @@
 - **一致結果：** 兩條以上獨立 decisive oracle 同方向可標 `CONSISTENT_REFERENCE_SUPPORT`，只作 research prioritization，不升格 canonical geometry。
 - **衝突結果：** MATCH／DIFFERENT 跨獨立 chain 衝突時回 `CONFLICTING_REFERENCE_ORACLES`，不得選邊。
 - **下一步：** 用此 workflow 研究 L Group／Carpenter／Comb／Notcher 候選來源；只有取得可重用權利或 project-generated independent geometry 後才進 public geometry registry。
+- **Validation：** PR #35 verify run #473 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
