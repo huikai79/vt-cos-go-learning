@@ -18,6 +18,17 @@
 
   const records = Object.freeze([
     Object.freeze({
+      id:"curved-four-contract-geometry-v1",
+      conceptId:"curved-four-v1",
+      sourceType:"internal_contract",
+      sourceId:"classic-curved-four-status-v1",
+      evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
+      points:Object.freeze([[0,0],[1,0],[2,0],[2,1]]),
+      context:Object.freeze({boardContext:"center",boundary:[],role:"sealed-eye-space",toPlay:"unspecified"})
+    }),
+    Object.freeze({
       id:"square-four-contract-geometry-v1",
       conceptId:"square-four-v1",
       sourceType:"internal_contract",
