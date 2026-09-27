@@ -559,3 +559,4 @@
 - **Evidence Chain：** Go4Go 明示 Chinese Go Terms copy 自 YeeFan；兩者共用 evidence chain，不因兩個 URL 當成兩份獨立驗證。
 - **Rollback：** 回復 ontology 前 catalog + HTML script ordering；無 learner/storage migration。
 - **未驗：** regional usage、未完成 geometry、完整 ruleset scoring、外部內容審查、真人 usability、formal assessment、retention／transfer、learning effect。
+- **Validation：** PR #31 initial verify run #454 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持 ontology migration／compatibility 工程契約。
