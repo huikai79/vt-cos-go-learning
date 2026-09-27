@@ -860,7 +860,7 @@ async function main() {
     assert.equal(reviewReady, true);
     const reviewPageState = await evaluate(socket, `(() => { const card = document.querySelector('.card'); card.querySelector('.hit').dispatchEvent(new MouseEvent('click', {bubbles:true})); card.querySelector('.status').value = 'consistent'; card.querySelector('.status').dispatchEvent(new Event('change', {bubbles:true})); document.querySelector('#export-final').click(); return {items: window.GoR1Review.reviewItems.length, fingerprint: window.GoR1Review.fingerprint, fullBankAbsent: typeof window.GoPhase2Content === 'undefined', declarations: document.querySelectorAll('.declaration input[type="checkbox"]').length, selected: card.querySelectorAll('.selected').length, progress: document.querySelector('#progress').textContent, message: document.querySelector('#message').textContent, notice: document.querySelector('.notice').textContent, width: innerWidth, scrollWidth: document.documentElement.scrollWidth}; })()`);
     assert.equal(reviewPageState.items, 77);
-    assert.equal(reviewPageState.fingerprint, "fnv1a32-1afc0a13");
+    assert.equal(reviewPageState.fingerprint, "fnv1a32-c34ef6a4");
     assert.equal(reviewPageState.fullBankAbsent, true);
     assert.equal(reviewPageState.declarations, 3);
     assert.equal(reviewPageState.selected, 1);
