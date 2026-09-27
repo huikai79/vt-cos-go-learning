@@ -1096,7 +1096,15 @@ async function main() {
         '.question-number','.detail-body','.evidence-timeline p','.compare-head','.story-grid p',
         '.frontier-grid p','.source-audit-date','.source-list span','.history-cta>div>span','.history-cta p','footer'
       ];
-      const audited = [...new Set(auditSelectors.flatMap((selector) => [...document.querySelectorAll(selector)]))].map((node) => {
+      const explicitNodes = auditSelectors.flatMap((selector) => [...document.querySelectorAll(selector)]);
+      const visibleSmallTextNodes = [...document.querySelectorAll('body *')].filter((node) => {
+        const style = getComputedStyle(node);
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+        if (Number.parseFloat(style.fontSize) >= 16) return false;
+        if (node.getClientRects().length === 0) return false;
+        return [...node.childNodes].some((child) => child.nodeType === Node.TEXT_NODE && child.textContent.trim());
+      });
+      const audited = [...new Set([...explicitNodes, ...visibleSmallTextNodes])].map((node) => {
         const foreground = parseColor(getComputedStyle(node).color);
         const background = effectiveBackground(node);
         return {
