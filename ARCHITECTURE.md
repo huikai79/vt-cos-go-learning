@@ -147,6 +147,18 @@ v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個�
 
 目前正向 oracle 只來自既有已驗證 practice contracts：丁四、刀把五、梅花五、花六。`小曲尺`、L Group 與 Carpenter's Square 尚未有可重算 canonical coordinates，因此 fingerprint resolver 必須回傳 `INSUFFICIENT_GEOMETRY_EVIDENCE`。
 
+### Geometry extraction gate
+
+`classic-geometry-extraction.js` 管理「來源 → 結構化座標 → 可否進公開 registry」的生命週期。人工轉錄、SGF parse、source-native coordinates 與 internal contract 分開標記；來源權利狀態分為 `project_generated`、`verified_reusable`、`reference_only`、`unknown`。
+
+- 單次人工轉錄不能 self-verify；至少需要兩個不同 `reviewKey` 的獨立轉錄，且 canonical payload 完全一致。
+- 兩次轉錄不一致時回 `CONFLICT`，不得投票選一個。
+- deterministic SGF／source-native parse 只有在來源可重用權利已核實時，才可單筆升格公開 geometry evidence。
+- `reference_only`／`unknown` 可作非 shipping reference/oracle，但來源衍生座標不得提交公開 registry。
+- corner／side geometry 必須保存 board boundary；缺 boundary 不得進 strict comparison。
+- extraction gate 不取得棋理、死活答案或 scoring authority。
+
+
 Migration invariant：
 
 1. practice/scoring contract ID 與答案語義不變；
