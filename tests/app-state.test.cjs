@@ -388,8 +388,8 @@ test("候選自適應將先錯後對保存為一次機會，下一題優先同�
 test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且可匯出反思提示", async () => {
   const { elements, storage, downloads } = createApp();
   elements["application-button"].listeners.click();
-  assert.match(elements["question-number"].textContent, /固定應用探測/);
-  assert.equal(elements["question-tag"].textContent, "固定應用探測");
+  assert.match(elements["question-number"].textContent, /局面應用練習/);
+  assert.equal(elements["question-tag"].textContent, "局面應用練習");
   assert.match(elements["learning-why"].textContent, /固定局面應用練習/);
   elements.board.listeners.click({ target: pointTarget({ x: "4", y: "5" }, "[data-x]") });
   let saved = JSON.parse(storage.get(STORAGE_KEY));
@@ -477,8 +477,8 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   elements["evaluation-button"].listeners.click();
   assert.equal(elements["evaluation-dialog"].open, true);
   elements["evaluation-confirm-button"].listeners.click();
-  assert.match(elements["question-number"].textContent, /個人 pilot.*基線/);
-  assert.equal(elements["question-tag"].textContent, "無提示個人試行");
+  assert.match(elements["question-number"].textContent, /個人流程試行.*第一次/);
+  assert.equal(elements["question-tag"].textContent, "無提示流程試行");
   assert.equal(elements["hint-button"].disabled, true);
   elements.board.listeners.click({ target: pointTarget({ x: "8", y: "8" }, "[data-x]") });
   assert.match(elements.feedback.textContent, /完成整批前不顯示正誤/);
