@@ -51,7 +51,7 @@
       const count = Content.experiences.filter((item) => item.trackId === track.id).length;
       const active = track.id === trackId;
       const disabled = track.status !== "active";
-      if (track.href) return '<a class="advanced-track-button advanced-track-link" href="' + escapeHtml(track.href) + '"><strong>' + escapeHtml(track.title) + '</strong><span>' + escapeHtml(track.summary) + '</span><small>19×19 全盤 practice →</small></a>';
+      if (track.href) return '<a class="advanced-track-button advanced-track-link" href="' + escapeHtml(track.href) + '"><strong>' + escapeHtml(track.title) + '</strong><span>' + escapeHtml(track.summary) + '</span><small>19×19 全盤練習 →</small></a>';
       return '<button class="advanced-track-button' + (active ? ' active' : '') + '" type="button" data-track="' + escapeHtml(track.id) + '"' + (disabled ? ' disabled' : '') + '><strong>' + escapeHtml(track.title) + '</strong><span>' + escapeHtml(track.summary) + '</span><small>' + (disabled ? '下一階段' : count + ' 題 · 可自由切換') + '</small></button>';
     }).join("");
   }
@@ -164,7 +164,7 @@
     }
 
     $("advanced-feedback").className = "feedback answer-result error";
-    $("advanced-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">還沒抓到判斷重點</strong><span class="answer-explanation">先回到 Target 與逐步圖，換一個候選再試。首答已保留，不會被重試覆寫。</span>';
+    $("advanced-feedback").innerHTML = '<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">還沒抓到判斷重點</strong><span class="answer-explanation">先回到本題目標與逐步圖，換一個可能的答案再試。第一次作答已保留，不會被重試覆寫。</span>';
   }
 
   $("advanced-track-list").addEventListener("click", (event) => {
@@ -199,7 +199,7 @@
       return;
     }
     $("advanced-feedback").className = "feedback success";
-    $("advanced-feedback").textContent = "這條訓練線已完成一次。這只代表完成本輪 practice，不代表掌握；可切到另一條線，或稍後回來做新局面。";
+    $("advanced-feedback").textContent = "這條訓練線已完成一次。這只代表你完成了本輪練習，不表示已經完全掌握；可以換另一條路線，或之後再回來做新的局面。";
     $("advanced-next").disabled = true;
   });
 
