@@ -580,3 +580,7 @@ PR #33 verify run #465 全數 PASS：Node contracts、JavaScript syntax、determ
 ### 2026-09-27 Geometry extraction gate v1 validation
 
 PR #34 verify run #469 全數 PASS：Node contracts、JavaScript syntax、deterministic R1 review bank、formal teaching candidate、teaching gate、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。此結果只支持 extraction／rights／provenance gate 的工程契約；沒有因此取得任何外部 diagram／SGF 的重用權，也沒有解除小曲尺 geometry ambiguity。
+
+### 2026-09-27 Reference-only geometry oracle v1 validation
+
+PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、deterministic R1 review bank、formal teaching candidate、teaching gate、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。此結果只支持 non-shipping oracle／report sanitization／evidence-chain aggregation 契約；不代表任何 reference source 已成為 canonical geometry 或取得重用授權。
