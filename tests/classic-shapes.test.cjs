@@ -15,6 +15,8 @@ const CrossFive = require("../classic-cross-five-practice.js");
 const CrossFiveContract = require("../classic-cross-five-contract.js");
 const FlowerSix = require("../classic-flower-six-practice.js");
 const FlowerSixContract = require("../classic-flower-six-contract.js");
+const GoldenChicken = require("../classic-golden-chicken-practice.js");
+const GoldenChickenContract = require("../classic-golden-chicken-contract.js");
 const Contrast = require("../classic-contrast-practice.js");
 const ContrastContract = require("../classic-contrast-contract.js");
 
@@ -37,7 +39,8 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /刀把五、梅花五與花六各有 bounded practice，另有不揭名的 interleaved contrast practice/);
+  assert.match(html, /刀把五、梅花五與花六各有 bounded nakade practice/);
+  assert.match(html, /金雞獨立另走 rules-backed tesuji mechanism contract/);
   assert.match(html, /名稱仍在作答後才揭示|名稱放到第一手之後/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
@@ -53,7 +56,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v7");
+  assert.equal(Catalog.version, "world-classic-shapes-v8");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -100,7 +103,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["flower-six-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -468,4 +471,68 @@ test("花六 catalog 與 UI 區分 Rabbity Six geometry 和仍待核對的葡萄
   assert.match(html, /不宣稱完整六目中手長變化或 12 手吃淨答案樹/);
   assert.match(js, /GoFlowerSixContract/);
   assert.match(js, /不代表完整六目中手長變化、mastery 或 transfer/);
+});
+
+
+test("金雞獨立四個 variant 通過 rules-backed 雙重氣緊機制", () => {
+  assert.equal(GoldenChicken.version, "golden-chicken-practice-v1");
+  assert.equal(GoldenChicken.scoringContractVersion, GoldenChickenContract.CONTRACT_VERSION);
+  assert.equal(GoldenChicken.items.length, 4);
+  const all = GoldenChickenContract.validateAll(GoldenChicken.items, Go);
+  assert.equal(all.ok, true, all.errors.join("; "));
+
+  for (const item of GoldenChicken.items) {
+    const validation = GoldenChickenContract.validateItem(item, Go);
+    assert.equal(validation.ok, true, validation.errors.join("; "));
+    const { position, mechanism } = validation;
+    const before = Go.groupAt(mechanism.boardBefore, position.anchor[0], position.anchor[1]);
+    const after = Go.groupAt(mechanism.boardAfterDescent, position.descent[0], position.descent[1]);
+    assert.deepEqual(before.liberties, [position.descent]);
+    assert.equal(after.liberties.length, 2);
+    assert.equal(mechanism.noEntryChecks.length, 2);
+    assert.ok(mechanism.noEntryChecks.every((check) => check.opponentLegal === false));
+    assert.ok(mechanism.noEntryChecks.every((check) => check.playerCaptureLegal && check.capturedByPlayer === 2));
+    assert.equal(GoldenChickenContract.score(item, position.descent, Go).correct, true);
+  }
+});
+
+test("金雞獨立 contract 對錯棋形、錯答案與舊座標 fail closed", () => {
+  const seed = GoldenChicken.items[0];
+  const seedValidation = GoldenChickenContract.validateItem(seed, Go);
+  const wrongSetup = seedValidation.position.setupStones.filter((_, index) => index !== 2);
+  const wrongPosition = { ...seedValidation.position, setupStones: wrongSetup };
+  const wrongGeometry = GoldenChickenContract.validateMechanism(wrongPosition, Go);
+  assert.equal(wrongGeometry.ok, false);
+
+  let legalWrong = null;
+  const board = Go.boardFromStones(seedValidation.position.setupStones, seed.boardSize);
+  for (let y=0; y<seed.boardSize && !legalWrong; y+=1) for (let x=0; x<seed.boardSize && !legalWrong; x+=1) {
+    if (x === seedValidation.position.descent[0] && y === seedValidation.position.descent[1]) continue;
+    const result = Go.playMove(board, x, y, seedValidation.position.playerColor);
+    if (result.legal) legalWrong = [x,y];
+  }
+  assert.ok(legalWrong);
+  assert.equal(GoldenChickenContract.score(seed, legalWrong, Go).correct, false);
+
+  const rotated = GoldenChicken.items.find((item) => item.variantId === "black-right");
+  const rotatedPosition = GoldenChickenContract.materializeItem(rotated);
+  assert.notDeepEqual(rotatedPosition.descent, GoldenChickenContract.BASE_DESCENT);
+  const stale = GoldenChickenContract.score(rotated, GoldenChickenContract.BASE_DESCENT, Go);
+  assert.equal(stale.correct, false);
+
+  const leaked = { ...seed, id:"golden-leaked-answer", answer:GoldenChickenContract.BASE_DESCENT };
+  assert.equal(GoldenChickenContract.validateItem(leaked, Go).ok, false);
+});
+
+test("金雞獨立 catalog 與 UI 保留 tesuji/nakade authority boundary", () => {
+  const entry = Catalog.entries.find((item) => item.id === "golden-chicken-candidate-v1");
+  assert.equal(entry.practiceStatus, "playable_rules_backed_tesuji_mechanism_contract");
+  assert.equal(entry.category, "tesuji");
+  assert.ok(entry.sources.some((source) => source.label.includes("中央棋院")));
+  assert.ok(entry.sources.some((source) => source.label.includes("Sensei")));
+  assert.match(entry.note, /自行編製/);
+  assert.match(html, /不是大眼中手，是雙重氣緊手筋/);
+  assert.match(html, /不和刀把五、梅花五、花六共用 nakade geometry contract/);
+  assert.match(js, /GoGoldenChickenContract/);
+  assert.doesNotMatch(require("node:fs").readFileSync(require("node:path").join(root,"classic-golden-chicken-contract.js"),"utf8"), /https?:\/\/.*\.(png|jpg|jpeg|sgf)/i);
 });

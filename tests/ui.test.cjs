@@ -893,6 +893,45 @@ async function main() {
     assert.equal(flowerSixCorrect.name, "花六／Rabbity Six");
     assert.equal(flowerSixCorrect.nextDisabled, false);
 
+    const goldenChickenState = await evaluate(socket, `(() => ({
+      points: document.querySelectorAll('#golden-chicken-board [data-golden-x][data-golden-y]').length,
+      prompt: document.querySelector('#golden-chicken-prompt').textContent,
+      revealHidden: document.querySelector('#golden-chicken-reveal').hidden,
+      nextDisabled: document.querySelector('#golden-chicken-next').disabled
+    }))()`);
+    assert.equal(goldenChickenState.points, 49);
+    assert.match(goldenChickenState.prompt, /輪到黑棋/);
+    assert.equal(goldenChickenState.revealHidden, true);
+    assert.equal(goldenChickenState.nextDisabled, true);
+
+    const goldenChickenWrong = await evaluate(socket, `(() => {
+      const point = document.querySelector('#golden-chicken-board [data-golden-x="0"][data-golden-y="1"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#golden-chicken-feedback').textContent,
+        revealHidden: document.querySelector('#golden-chicken-reveal').hidden,
+        nextDisabled: document.querySelector('#golden-chicken-next').disabled
+      };
+    })()`);
+    assert.match(goldenChickenWrong.feedback, /沒有完成本題/);
+    assert.equal(goldenChickenWrong.revealHidden, true);
+    assert.equal(goldenChickenWrong.nextDisabled, true);
+
+    const goldenChickenCorrect = await evaluate(socket, `(() => {
+      const point = document.querySelector('#golden-chicken-board [data-golden-x="3"][data-golden-y="0"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#golden-chicken-feedback').textContent,
+        revealHidden: document.querySelector('#golden-chicken-reveal').hidden,
+        name: document.querySelector('#golden-chicken-name').textContent,
+        nextDisabled: document.querySelector('#golden-chicken-next').disabled
+      };
+    })()`);
+    assert.match(goldenChickenCorrect.feedback, /1 氣變成 2 氣/);
+    assert.equal(goldenChickenCorrect.revealHidden, false);
+    assert.equal(goldenChickenCorrect.name, "金雞獨立");
+    assert.equal(goldenChickenCorrect.nextDisabled, false);
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {

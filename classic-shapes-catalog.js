@@ -43,7 +43,9 @@
     boardToBitsBulkyReduction: { label: "Board to Bits Go：Big Eyes / Bulky Five reduction", url: "https://boardtobitsgo.wordpress.com/2020/09/02/lesson-6-big-eyes/", sourceTier: "instructional_secondary" },
     meaningfulStonesCrossFive: { label: "Meaningful Stones：Cross Five", url: "https://jimseibert.github.io/Meaningful-Stones/sec-shapes.html", sourceTier: "instructional_secondary" },
     yikePlumFive: { label: "弈客圍棋：大眼（5）梅花五", url: "https://www.sohu.com/a/475377109_533159", sourceTier: "publisher_secondary" },
-    hzSchoolVitalShapes: { label: "浙江工大附校：死活棋要點", url: "https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml", sourceTier: "educational_secondary" }
+    hzSchoolVitalShapes: { label: "浙江工大附校：死活棋要點", url: "https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml", sourceTier: "educational_secondary" },
+    senseisGoldenChicken: { label: "Sensei's Library：Golden Chicken Standing on One Leg", url: "https://senseis.xmp.net/?GoldenChickenStandingOnOneLeg=", sourceTier: "community_secondary" },
+    centralGoGoldenChicken: { label: "中央棋院：金雞獨立", url: "https://vocus.cc/article/6698ae7ffd89780001ee7a83", sourceTier: "instructional_secondary" }
   });
 
   const entries = [
@@ -251,14 +253,15 @@
       zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
       zhNameNote: "華語術語表已有此手筋名稱；英文來源常以 double shortage of liberties 描述機制，名稱與機制說法須分開。",
       teachingLabel: "死活／攻殺手筋候選",
-      practiceStatus: "catalog_candidate_only",
+      practiceStatus: "playable_rules_backed_tesuji_mechanism_contract",
       reviewStatus: REVIEW.PARTIAL,
       aliases: [
+        { locale: "en", name: "Golden Chicken Standing on One Leg", relationType: "teaching-name-equivalent", reviewStatus: REVIEW.PARTIAL },
         { locale: "en", name: "double shortage of liberties", relationType: "concept-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
-      note: "這是手筋型，不應與大眼中手共用同一 KC。跨語別名需繼續核對，不以字面直譯當既定術語。",
+      note: "已建立原創、rules-backed bounded practice：只驗「邊線立使己方由一氣變兩氣，對手兩側因氣緊都不能入子，而己方可從任一側反提」這個機制。棋形由本專案依機制定義自行編製，不複製外部題圖；外部來源只支持術語與機制。這是 tesuji contract，不與大眼中手 geometry 共用 scoring。",
       rulesetSensitive: false,
-      sources: [sources.go4goChinese]
+      sources: [sources.go4goChinese, sources.senseisGoldenChicken, sources.centralGoGoldenChicken]
     },
     {
       id: "l-group-v1",
@@ -371,7 +374,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v7",
+    version: "world-classic-shapes-v8",
     REVIEW,
     ZH_NAME_STATUS,
     categories,

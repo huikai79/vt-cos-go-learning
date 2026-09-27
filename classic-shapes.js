@@ -8,6 +8,8 @@
   const CrossFiveContract = window.GoCrossFiveContract;
   const FlowerSix = window.GoFlowerSixPractice;
   const FlowerSixContract = window.GoFlowerSixContract;
+  const GoldenChicken = window.GoGoldenChickenPractice;
+  const GoldenChickenContract = window.GoGoldenChickenContract;
   const Contrast = window.GoClassicContrastPractice;
   const ContrastContract = window.GoClassicContrastContract;
   const ShortRead = window.GoClassicShapeRead;
@@ -16,13 +18,15 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !FlowerSix || !FlowerSixContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
   if (!crossFiveValidation.ok) throw new Error("Cross Five practice contract invalid: " + crossFiveValidation.errors.join("; "));
   const flowerSixValidation = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
   if (!flowerSixValidation.ok) throw new Error("Flower Six practice contract invalid: " + flowerSixValidation.errors.join("; "));
+  const goldenChickenValidation = GoldenChickenContract.validateAll(GoldenChicken.items, Go);
+  if (!goldenChickenValidation.ok) throw new Error("Golden Chicken practice contract invalid: " + goldenChickenValidation.errors.join("; "));
   const contrastValidation = ContrastContract.validateAll(Contrast.rounds, {
     Go,
     BulkyPractice: Practice,
@@ -63,6 +67,10 @@
   let flowerSixSolved = false;
   let flowerSixHintShown = false;
   let flowerSixCursor = [2, 2];
+  let goldenChickenIndex = 0;
+  let goldenChickenSolved = false;
+  let goldenChickenHintShown = false;
+  let goldenChickenCursor = [3, 0];
   let bulkyIndex = 0;
   let bulkySolved = false;
   let bulkyHintShown = false;
@@ -435,6 +443,103 @@
     if (item.eyeSpace.some(([x,y]) => x===next[0] && y===next[1])) {
       flowerSixCursor = next;
       renderFlowerSixBoard();
+    }
+  }
+
+  function initialGoldenChickenCursor(item,position) {
+    const occupied=new Set(position.setupStones.map(([x,y]) => pointKey(x,y)));
+    for (let y=0; y<item.boardSize; y+=1) for (let x=0; x<item.boardSize; x+=1) {
+      if (!occupied.has(pointKey(x,y)) && !GoldenChickenContract.samePoint([x,y],position.descent)) return [x,y];
+    }
+    return position.descent.slice();
+  }
+
+  function renderGoldenChickenBoard() {
+    const item=GoldenChicken.items[goldenChickenIndex];
+    const validation=GoldenChickenContract.validateItem(item,Go);
+    if (!validation.ok) throw new Error("Golden Chicken item invalid: " + validation.errors.join("; "));
+    const position=validation.position;
+    const size=item.boardSize;
+    const pad=7;
+    const span=86;
+    const step=span/(size-1);
+    const setup=new Map(position.setupStones.map(([x,y,color]) => [pointKey(x,y),color]));
+    const lines=[];
+    const nodes=[];
+    for (let i=0;i<size;i+=1) {
+      const p=pad+i*step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let y=0;y<size;y+=1) for (let x=0;x<size;x+=1) {
+      const px=pad+x*step;
+      const py=pad+y*step;
+      const color=setup.get(pointKey(x,y));
+      if (color===Go.BLACK) nodes.push('<circle data-golden-x="' + x + '" data-golden-y="' + y + '" cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black classic-occupied"/>');
+      else if (color===Go.WHITE) nodes.push('<circle data-golden-x="' + x + '" data-golden-y="' + y + '" cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white classic-occupied"/>');
+      else nodes.push('<circle data-golden-x="' + x + '" data-golden-y="' + y + '" cx="' + px + '" cy="' + py + '" r="6.2" class="classic-hit"/>');
+    }
+    const [cx0,cy0]=goldenChickenCursor;
+    nodes.push('<circle cx="' + (pad+cx0*step) + '" cy="' + (pad+cy0*step) + '" r="6.4" class="classic-cursor-ring"/>');
+    $("golden-chicken-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("golden-chicken-cursor-status").textContent="游標：第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderGoldenChicken() {
+    const item=GoldenChicken.items[goldenChickenIndex];
+    const validation=GoldenChickenContract.validateItem(item,Go);
+    if (!validation.ok) throw new Error("Golden Chicken item invalid: " + validation.errors.join("; "));
+    goldenChickenSolved=false;
+    goldenChickenHintShown=false;
+    goldenChickenCursor=initialGoldenChickenCursor(item,validation.position);
+    $("golden-chicken-tag").textContent=(goldenChickenIndex+1) + " / " + GoldenChicken.items.length + " · tesuji mechanism";
+    $("golden-chicken-title").textContent=goldenChickenIndex===0 ? "找讓 1 氣變 2 氣的一路立" : "換方向／棋色，再找同一機制";
+    $("golden-chicken-prompt").textContent=item.prompt;
+    $("golden-chicken-feedback").className="feedback";
+    $("golden-chicken-feedback").textContent="";
+    $("golden-chicken-reveal").hidden=true;
+    $("golden-chicken-hint").disabled=false;
+    $("golden-chicken-next").disabled=true;
+    $("golden-chicken-next").textContent=goldenChickenIndex===GoldenChicken.items.length-1 ? "完成金雞獨立練習" : "下一題 →";
+    $("golden-chicken-side").textContent=validation.position.playerColor===Go.BLACK ? "● 黑棋" : "○ 白棋";
+    renderGoldenChickenBoard();
+  }
+
+  function attemptGoldenChicken(x,y) {
+    if (goldenChickenSolved) return;
+    const item=GoldenChicken.items[goldenChickenIndex];
+    const result=GoldenChickenContract.score(item,[x,y],Go);
+    if (!result.ok) {
+      $("golden-chicken-feedback").className="feedback error";
+      $("golden-chicken-feedback").textContent="金雞獨立 mechanism contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if (result.status==="ILLEGAL_MOVE") {
+      $("golden-chicken-feedback").className="feedback error";
+      $("golden-chicken-feedback").textContent="這裡不是目前可合法落子的空點。";
+      return;
+    }
+    if (result.correct) {
+      goldenChickenSolved=true;
+      $("golden-chicken-feedback").className="feedback success";
+      $("golden-chicken-feedback").textContent=item.success;
+      $("golden-chicken-reveal").hidden=false;
+      $("golden-chicken-hint").disabled=true;
+      $("golden-chicken-next").disabled=false;
+    } else {
+      $("golden-chicken-feedback").className="feedback error";
+      $("golden-chicken-feedback").textContent=goldenChickenHintShown
+        ? "還不是。先找己方只剩的一口氣；正解走完後，這一串必須恰好變成兩口氣。"
+        : "這手合法，但沒有完成本題的「一路立 → 1 氣變 2 氣 → 對手兩側不入」機制。";
+    }
+  }
+
+  function moveGoldenChickenCursor(dx,dy) {
+    const item=GoldenChicken.items[goldenChickenIndex];
+    const next=[goldenChickenCursor[0]+dx,goldenChickenCursor[1]+dy];
+    if (next[0]>=0 && next[0]<item.boardSize && next[1]>=0 && next[1]<item.boardSize) {
+      goldenChickenCursor=next;
+      renderGoldenChickenBoard();
     }
   }
 
@@ -982,6 +1087,43 @@
     }
   });
 
+  $("golden-chicken-board").addEventListener("click",(event) => {
+    const hit=event.target.closest("[data-golden-x][data-golden-y]");
+    if (!hit) return;
+    goldenChickenCursor=[Number(hit.dataset.goldenX),Number(hit.dataset.goldenY)];
+    renderGoldenChickenBoard();
+    attemptGoldenChicken(goldenChickenCursor[0],goldenChickenCursor[1]);
+  });
+
+  $("golden-chicken-board").addEventListener("keydown",(event) => {
+    if (event.key==="ArrowLeft") { event.preventDefault(); moveGoldenChickenCursor(-1,0); }
+    else if (event.key==="ArrowRight") { event.preventDefault(); moveGoldenChickenCursor(1,0); }
+    else if (event.key==="ArrowUp") { event.preventDefault(); moveGoldenChickenCursor(0,-1); }
+    else if (event.key==="ArrowDown") { event.preventDefault(); moveGoldenChickenCursor(0,1); }
+    else if (event.key==="Enter" || event.key===" ") {
+      event.preventDefault();
+      attemptGoldenChicken(goldenChickenCursor[0],goldenChickenCursor[1]);
+    }
+  });
+
+  $("golden-chicken-hint").addEventListener("click",() => {
+    goldenChickenHintShown=true;
+    $("golden-chicken-feedback").className="feedback";
+    $("golden-chicken-feedback").textContent=GoldenChicken.items[goldenChickenIndex].hint;
+  });
+
+  $("golden-chicken-next").addEventListener("click",() => {
+    if (!goldenChickenSolved) return;
+    if (goldenChickenIndex < GoldenChicken.items.length-1) {
+      goldenChickenIndex+=1;
+      renderGoldenChicken();
+    } else {
+      $("golden-chicken-feedback").className="feedback success";
+      $("golden-chicken-feedback").textContent="金雞獨立 mechanism practice 完成。這只表示四個原創變形都完成了同一 rules-backed 手筋機制，不代表所有實戰金雞獨立、mastery、transfer 或 formal evaluation 已驗證。";
+      $("golden-chicken-next").disabled=true;
+    }
+  });
+
   $("bulky-board").addEventListener("click", (event) => {
     const hit = event.target.closest("[data-bulky-x][data-bulky-y]");
     if (!hit) return;
@@ -1110,6 +1252,7 @@
   renderContrast();
   renderCross();
   renderFlowerSix();
+  renderGoldenChicken();
   renderBulky();
   renderRead();
   renderReduction();
