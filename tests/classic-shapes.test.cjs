@@ -15,6 +15,8 @@ const CrossFive = require("../classic-cross-five-practice.js");
 const CrossFiveContract = require("../classic-cross-five-contract.js");
 const FlowerSix = require("../classic-flower-six-practice.js");
 const FlowerSixContract = require("../classic-flower-six-contract.js");
+const Tripod = require("../classic-tripod-practice.js");
+const TripodContract = require("../classic-tripod-contract.js");
 const Contrast = require("../classic-contrast-practice.js");
 const ContrastContract = require("../classic-contrast-contract.js");
 
@@ -53,7 +55,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v7");
+  assert.equal(Catalog.version, "world-classic-shapes-v8");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -100,7 +102,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["flower-six-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["flower-six-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1", "tripod-group-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -468,4 +470,54 @@ test("花六 catalog 與 UI 區分 Rabbity Six geometry 和仍待核對的葡萄
   assert.match(html, /不宣稱完整六目中手長變化或 12 手吃淨答案樹/);
   assert.match(js, /GoFlowerSixContract/);
   assert.match(js, /不代表完整六目中手長變化、mastery 或 transfer/);
+});
+
+
+test("Tripod 四題只綁 GNU Go tripod2/R3 source-case 第一手 oracle", () => {
+  assert.equal(Tripod.version, "tripod-practice-v1");
+  assert.equal(Tripod.scoringContractVersion, TripodContract.CONTRACT_VERSION);
+  assert.equal(Tripod.items.length, 4);
+  const all = TripodContract.validateAll(Tripod.items, Go);
+  assert.equal(all.ok, true, all.errors.join("; "));
+
+  const attack = Tripod.items.find((item) => item.variantId === "attack-seed");
+  const defend = Tripod.items.find((item) => item.variantId === "defend-seed");
+  const attackPosition = TripodContract.materializeItem(attack);
+  const defendPosition = TripodContract.materializeItem(defend);
+  assert.deepEqual(attackPosition.targetPoint, [16,16]);
+  assert.deepEqual(attackPosition.expectedMove, [15,18]);
+  assert.deepEqual(defendPosition.expectedMove, [18,18]);
+  assert.equal(TripodContract.score(attack, attackPosition.expectedMove, Go).correct, true);
+  assert.equal(TripodContract.score(defend, defendPosition.expectedMove, Go).correct, true);
+});
+
+test("Tripod contract 對錯棋形、錯答案與旋轉後舊座標 fail closed", () => {
+  const wrongGeometry = TripodContract.BASE_SETUP.slice(1).map((stone) => stone.slice());
+  assert.equal(TripodContract.validatePosition(wrongGeometry).ok, false);
+
+  const seed = Tripod.items.find((item) => item.variantId === "attack-seed");
+  const wrongAnswer = TripodContract.score(seed, [16,17], Go);
+  assert.equal(wrongAnswer.ok, true);
+  assert.equal(wrongAnswer.correct, false);
+
+  const rotated = Tripod.items.find((item) => item.variantId === "attack-rot180");
+  const rotatedPosition = TripodContract.materializeItem(rotated);
+  assert.notDeepEqual(rotatedPosition.expectedMove, TripodContract.BASE_MOVES.attack);
+  const staleCoordinate = TripodContract.score(rotated, TripodContract.BASE_MOVES.attack, Go);
+  assert.equal(staleCoordinate.ok, true);
+  assert.equal(staleCoordinate.correct, false);
+
+  const leakedGeometry = { ...seed, id:"tripod-leaked-geometry", setupStones:TripodContract.BASE_SETUP };
+  assert.equal(TripodContract.validateItem(leakedGeometry, Go).ok, false);
+});
+
+test("Tripod catalog/UI 明示 source-case scope，不升格完整 family 答案樹", () => {
+  const tripod = Catalog.entries.find((entry) => entry.id === "tripod-group-v1");
+  assert.equal(tripod.practiceStatus, "playable_source_oracle_first_move_contract");
+  assert.ok(tripod.sources.some((source) => source.sourceTier === "oss_regression"));
+  assert.match(html, /Tripod Group：只解一個可追溯的固定局面/);
+  assert.match(html, /tripod2 regression 對 R3 case 的第一手/);
+  assert.match(html, /這不是整個 Tripod Group 的完整答案樹/);
+  assert.match(js, /GoTripodOracleContract/);
+  assert.match(js, /其他 Tripod case 維持 UNKNOWN/);
 });
