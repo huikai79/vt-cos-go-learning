@@ -209,7 +209,7 @@
       target.textContent = "尚無人機實戰紀錄。";
       return;
     }
-    target.textContent = `人機練習 ${summary.computerSessions} 局；你的可觀察決策 ${summary.humanDecisions} 次。這些只作 practice observation，不更新技能或排程。`;
+    target.textContent = `人機練習 ${summary.computerSessions} 局；你的可觀察決策 ${summary.humanDecisions} 次。這些只作練習紀錄，不會直接改變能力紀錄或複習安排。`;
   }
 
   function readLiveEvidence() {
@@ -236,14 +236,14 @@
     }
     const summary = result.summary;
     if (!summary || !summary.assessedHumanTurns) {
-      target.textContent = "尚無 9×9 人機回合被 live eligibility contract 掃描。";
+      target.textContent = "目前還沒有可用來觀察能力的 9×9 人機實戰機會。";
       return;
     }
     const skillText = summary.skills
       .filter((skill) => skill.eligibleOpportunities > 0)
       .map((skill) => `${skill.label}：${skill.satisfiedFirstResponses}/${skill.firstResponses} 首答完成；${liveEvidenceStateLabel(skill.evidenceState)}`)
       .join("；");
-    target.textContent = `已掃描 ${summary.assessedHumanTurns} 個人類回合；合格 live 機會 ${summary.eligibleOpportunities}，其餘 ${summary.unscoredHumanTurns} 回合不評分。${skillText ? " " + skillText + "。" : " 目前沒有符合安全 scoring contract 的局面。"}`;
+    target.textContent = `已查看 ${summary.assessedHumanTurns} 個你的回合；其中 ${summary.eligibleOpportunities} 個符合目前的觀察條件，其餘 ${summary.unscoredHumanTurns} 個回合不評分。${skillText ? " " + skillText + "。" : " 目前還沒有符合客觀評分條件的局面。"}`;
   }
 
   function computeIntegratedProgress(diagnostics = null, liveSummary = null) {
@@ -261,7 +261,7 @@
     if (!target) return;
     const liveResult = readLiveEvidence();
     if (!liveResult.ok) {
-      target.textContent = `整合證據無法更新：live evidence 讀取失敗（${liveResult.error}）。`;
+      target.textContent = `整合學習紀錄暫時無法更新：實戰紀錄讀取失敗（${liveResult.error}）。`;
       return;
     }
     const summary = computeIntegratedProgress(diagnostics, liveResult.summary);
@@ -299,7 +299,7 @@
   function currentLesson() {
     if (current().lesson !== undefined) return lessons[current().lesson];
     if (state.externalMode === "application") return { unit: 0, title: "固定應用探測", subtitle: "減少技能線索的固定局面", badge: "局部應用檢核", text: "先找能由局部規則直接判定的手；這類固定局面只檢查局部技能的自行發現，與完整全局判斷及自然實戰分開。", demo: "先在沒有技能名稱提示下，說出你觀察到的棋形，再決定是否落子。", takeaway: "局部沒有明確強制手時，保留判斷並回到全局。" };
-    if (state.externalMode === "evaluation") return { unit: 0, title: "個人流程試行", subtitle: "已曝光題的無提示首答批次", badge: "pilot · 不作正式驗收", text: "每題只記第一次作答；整批完成前不顯示正誤。這些題目已在舊 R1 自我審查中看過，只用來檢查操作流程、資料完整性、七天返回與負擔。", demo: "先完成自己的第一個答案；本批不提供逐題講解。", takeaway: "兩批結果只作個人描述，不代表未見保留、遷移或學習成效。" };
+    if (state.externalMode === "evaluation") return { unit: 0, title: "個人流程試行", subtitle: "已看過題目的無提示作答", badge: "流程試行 · 不作正式驗收", text: "每題只記第一次作答；整批完成前不顯示正誤。這些題目以前已經看過，只用來檢查操作流程、資料是否完整、七天後返回是否順利，以及使用負擔。", demo: "先完成自己的第一個答案；這一批不提供逐題講解。", takeaway: "兩批結果只用來描述個人使用情況，不代表正式的學習成效。" };
     if (state.externalMode === "local_sgf") return { unit: 0, title: "棋譜單點復盤", subtitle: "單手原著重建", badge: "記憶重建", text: "選一手棋，先回想候選手，再重建棋譜中實際出現的原著。與原著一致只代表記憶重建一致，不代表唯一最佳手。", demo: "先說出你當時最想下的一手與理由，再下出你記得的原著。", takeaway: "原著是歷史事實；可接受答案仍需人工或外部分析確認。" };
     return { unit: 0, title: "基礎題庫｜間隔練習", subtitle: "固定間隔或候選自適應", badge: "間隔練習", text: "依目前選題政策完成一題；保留驗收題不會自動混入。", demo: "先在沒有答案提示下完成這題，之後再比較具體理由。", takeaway: "先自己找答案；回饋後再安排下一次間隔。" };
   }
@@ -892,7 +892,7 @@
         why = "這是固定局面應用練習，用來檢查能否辨識技巧；結果會與課內題分開保存。";
       }
       next = state.externalMode === "local_sgf"
-        ? "把與原著一致／不同和人工確認分開保存；這筆復盤不更新 T2／T3、KC 或排程。"
+        ? "把與原著一致／不同和人工確認分開保存；這筆復盤不會直接改變能力紀錄、複習安排或正式評量。"
         : "把局面結果與課內題分開保存；局部答對不等於完整棋力。";
     } else if (state.solved || state.answersThisTurn > 0 || state.hintShown) {
       activeStep = 2;
@@ -1107,7 +1107,7 @@
     const lessonQuestionIndex = lessonProblems.findIndex((item) => item.id === problem.id);
     const lessonQuestionLabel = lessonQuestionIndex >= 0 ? `本課第 ${lessonQuestionIndex + 1} / ${lessonProblems.length} 題` : "目前題目";
     $("lesson-kicker").textContent = problem.lesson === undefined ? "外部題庫 · 本機資料" : `第 ${courseUnitIndex + 1} 單元 · ${units[courseUnitIndex]?.level || "課程"}`;
-    $("question-number").textContent = state.externalMode === "scheduled" ? `間隔練習 · ${state.schedulerPolicy === "fixed-spacing-v1" ? "固定方案" : "候選自適應"}` : state.externalMode === "application" ? "固定應用探測 · 局部局面" : state.externalMode === "evaluation" ? `個人 pilot · ${state.evaluationBatch && state.evaluationBatch.role === "baseline" ? "基線" : "追蹤"}批次` : state.externalMode === "local_sgf" ? "棋譜單點復盤 · 原著重建" : state.reviewMode ? `錯題複習 · ${lessonQuestionLabel}` : lessonQuestionLabel;
+    $("question-number").textContent = state.externalMode === "scheduled" ? `間隔練習 · ${state.schedulerPolicy === "fixed-spacing-v1" ? "固定方案" : "自適應試行"}` : state.externalMode === "application" ? "局面應用練習 · 局部棋形" : state.externalMode === "evaluation" ? `個人流程試行 · ${state.evaluationBatch && state.evaluationBatch.role === "baseline" ? "第一次" : "七天後"}批次` : state.externalMode === "local_sgf" ? "棋譜單點復盤 · 原著重建" : state.reviewMode ? `錯題複習 · ${lessonQuestionLabel}` : lessonQuestionLabel;
     $("lesson-title").textContent = lesson.title;
     $("lesson-subtitle").textContent = lesson.subtitle;
     $("lesson-badge").textContent = lesson.badge || "概念練習";
@@ -1138,7 +1138,7 @@
     $("lesson-intro-button").textContent = state.externalMode ? "查看本題說明" : "查看本課短講";
     renderDemoBoards(lesson);
     const skill = currentSkill();
-    $("question-tag").textContent = state.externalMode === "application" ? "固定應用探測" : state.externalMode === "evaluation" ? "無提示個人試行" : state.externalMode === "local_sgf" ? "棋譜單點復盤" : skill ? `練習技能 · ${skill.learnerLabel || skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
+    $("question-tag").textContent = state.externalMode === "application" ? "局面應用練習" : state.externalMode === "evaluation" ? "無提示流程試行" : state.externalMode === "local_sgf" ? "棋譜單點復盤" : skill ? `練習技能 · ${skill.learnerLabel || skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
     $("question-title").textContent = problem.title;
     $("question-prompt").textContent = problem.prompt;
     $("takeaway-text").textContent = lesson.takeaway;
@@ -1203,7 +1203,7 @@
     const skillText = diagnostics.skills.map((skill) => {
       if (!skill.observedErrors) return `${skill.errorTypeLabel}：${skill.qualifiedOpportunities} 次機會，尚無首答錯誤。`;
       const scd = skill.scd.active
-        ? `最近一次錯誤後已累積 ${skill.scd.active.relevantOpportunityCount} 次機會，${skill.scd.active.firstDelayedProbeAt ? "待第二次延後 T2" : "待第一次延後 T2"}`
+        ? `最近一次錯誤後已累積 ${skill.scd.active.relevantOpportunityCount} 次可比較機會，${skill.scd.active.firstDelayedProbeAt ? "等待第二次延後複習" : "等待第一次延後複習"}`
         : skill.scd.completed.length
           ? `已有 ${skill.scd.completed.length} 次完成的穩定修正距離樣本`
           : "尚無可完成的穩定修正距離樣本";
@@ -1398,30 +1398,30 @@
       }
     }
     if (livePractice.ok && livePractice.summary && livePractice.summary.totalEvents) {
-      lines.push("", "## 人機實戰練習", "", `- 練習局數：${livePractice.summary.computerSessions}`, `- 你的可觀察決策：${livePractice.summary.humanDecisions} 次`, "- 證據邊界：practice observation only；未經 scoring contract，不更新 KC、scheduler、T2/T3 或 mastery。");
+      lines.push("", "## 人機實戰練習", "", `- 練習局數：${livePractice.summary.computerSessions}`, `- 你的可觀察決策：${livePractice.summary.humanDecisions} 次`, "- 這些只作練習紀錄，不會直接改變能力紀錄、複習安排或正式評量。");
     } else if (!livePractice.ok) {
       lines.push("", "## 人機實戰練習", "", `- 事件流讀取失敗：${livePractice.error}；未以推測資料補值。`);
     }
     if (liveEvidence.ok && liveEvidence.summary && liveEvidence.summary.assessedHumanTurns) {
       const summary = liveEvidence.summary;
-      lines.push("", "## 9×9 人機實戰證據", "", `- 已掃描人類回合：${summary.assessedHumanTurns}`, `- 合格 live T3 局部機會：${summary.eligibleOpportunities}`, `- 不評分回合：${summary.unscoredHumanTurns}`, `- Contract：${summary.eligibilityContractVersion} / ${summary.scoringContractVersion} / ${summary.progressPolicyVersion}`, `- 邊界：${summary.interpretationBoundary}`, "");
+      lines.push("", "## 9×9 人機實戰紀錄", "", `- 已查看你的回合：${summary.assessedHumanTurns}`, `- 符合目前觀察條件的局部機會：${summary.eligibleOpportunities}`, `- 不評分回合：${summary.unscoredHumanTurns}`, `- 使用中的判定版本：${summary.eligibilityContractVersion} / ${summary.scoringContractVersion} / ${summary.progressPolicyVersion}`, `- 使用限制：${summary.interpretationBoundary}`, "");
       for (const skill of summary.skills) {
-        lines.push(`- ${skill.label}：eligible ${skill.eligibleOpportunities}；首答 ${skill.firstResponses}；完成 ${skill.satisfiedFirstResponses}；未完成 ${skill.notSatisfiedFirstResponses}；未作答 ${skill.unansweredOpportunities}；狀態「${liveEvidenceStateLabel(skill.evidenceState)}」。`);
+        lines.push(`- ${skill.label}：符合條件 ${skill.eligibleOpportunities} 次；第一次作答 ${skill.firstResponses} 次；完成 ${skill.satisfiedFirstResponses} 次；未完成 ${skill.notSatisfiedFirstResponses} 次；未作答 ${skill.unansweredOpportunities} 次；目前狀態「${liveEvidenceStateLabel(skill.evidenceState)}」。`);
       }
     } else if (!liveEvidence.ok) {
-      lines.push("", "## 9×9 人機實戰證據", "", `- live evidence 讀取失敗：${liveEvidence.error}；未以推測資料補值。`);
+      lines.push("", "## 9×9 人機實戰紀錄", "", `- 實戰紀錄讀取失敗：${liveEvidence.error}；沒有用推測資料補值。`);
     }
     if (liveEvidence.ok) {
       const integrated = computeIntegratedProgress(diagnostics, liveEvidence.summary || { skills: [] });
       if (integrated) {
-        lines.push("", "## 整合學習證據狀態", "", `- Policy：${integrated.progressPolicyVersion}`, `- 邊界：${integrated.interpretationBoundary}`, "");
+        lines.push("", "## 整合學習紀錄", "", `- 判定版本：${integrated.progressPolicyVersion}`, `- 使用限制：${integrated.interpretationBoundary}`, "");
         if (integrated.collectionReadiness) {
           const readiness = integrated.collectionReadiness;
-          lines.push(`- Live 資料收集：${readiness.label}；已掃描 ${readiness.assessedHumanTurns} 回合；eligible ${readiness.eligibleOpportunities}；首答 ${readiness.firstResponses}；未答 ${readiness.unansweredOpportunities}；跨局 session ${readiness.distinctSessionsWithFirstResponse}。`, `- 收集狀態邊界：${readiness.interpretationBoundary}`);
+          lines.push(`- 實戰資料收集：${readiness.label}；已查看 ${readiness.assessedHumanTurns} 回合；符合條件 ${readiness.eligibleOpportunities} 次；第一次作答 ${readiness.firstResponses} 次；未作答 ${readiness.unansweredOpportunities} 次；有作答紀錄的不同棋局 ${readiness.distinctSessionsWithFirstResponse} 局。`, `- 使用限制：${readiness.interpretationBoundary}`);
         }
         for (const skill of integrated.skills) {
           const name = (skills.find((item) => item.id === skill.skillId) || { name: skill.skillId }).name;
-          lines.push(`- ${name}：${skill.label}；課程可比較機會 ${skill.practiceQualifiedOpportunities}；延後 T2 完成週期 ${skill.completedDelayedT2Cycles}；live eligible ${skill.liveEligibleOpportunities}；live 首答完成 ${skill.liveSatisfiedFirstResponses}/${skill.liveFirstResponses}；下一個證據需求：${skill.nextEvidenceNeed}`);
+          lines.push(`- ${name}：${skill.label}；課程可比較機會 ${skill.practiceQualifiedOpportunities} 次；完成延後複習 ${skill.completedDelayedT2Cycles} 輪；符合條件的實戰機會 ${skill.liveEligibleOpportunities} 次；實戰第一次作答完成 ${skill.liveSatisfiedFirstResponses}/${skill.liveFirstResponses}；接下來需要：${skill.nextEvidenceNeed}`);
         }
       }
     }

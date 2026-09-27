@@ -7,8 +7,8 @@ const root = path.resolve(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "history.html"), "utf8");
 
 test("歷史探索頁維持獨立閱讀，不接 learner state 或評量管線", () => {
-  assert.match(html, /Explore Go · 圍棋歷史與典故/);
-  assert.match(html, /不影響核心課程進度、KC、排程或正式評量/);
+  assert.match(html, /探索圍棋 · 圍棋歷史與典故/);
+  assert.match(html, /不影響核心課程進度、能力紀錄、複習安排或正式評量/);
   assert.doesNotMatch(html, /src="app\.js/);
   assert.doesNotMatch(html, /src="scheduler\.js/);
   assert.doesNotMatch(html, /src="learner-progress\.js/);
@@ -204,9 +204,9 @@ test("《讀曲歌》只作南朝歌辭傳統的 17 路補充，不綁定 440 �
   assert.doesNotMatch(html, /440 年仍確定使用17路/);
 });
 
-test("History Explore v5 加入宋代棋譜 corpus，但不替個別古局 attribution 背書", () => {
+test("History Explore v5 加入宋代棋譜資料，但不替個別古局人物歸屬背書", () => {
   assert.match(html, /北宋｜《忘憂清樂集》讓證據進入可研究棋譜/);
-  assert.match(html, /開始能直接面對具體局面與棋譜 attribution/);
+  assert.match(html, /開始能直接面對具體局面，以及棋譜所標示的人物歸屬/);
   assert.match(html, /不代表書中每一盤所標示的古代人物與年代都已獲得同期證據確認/);
   assert.ok(html.includes("https://www.ndl.go.jp/kaleido/entry/22/3.html"));
 });

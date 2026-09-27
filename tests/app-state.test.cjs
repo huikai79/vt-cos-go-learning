@@ -388,8 +388,8 @@ test("候選自適應將先錯後對保存為一次機會，下一題優先同�
 test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且可匯出反思提示", async () => {
   const { elements, storage, downloads } = createApp();
   elements["application-button"].listeners.click();
-  assert.match(elements["question-number"].textContent, /固定應用探測/);
-  assert.equal(elements["question-tag"].textContent, "固定應用探測");
+  assert.match(elements["question-number"].textContent, /局面應用練習/);
+  assert.equal(elements["question-tag"].textContent, "局面應用練習");
   assert.match(elements["learning-why"].textContent, /固定局面應用練習/);
   elements.board.listeners.click({ target: pointTarget({ x: "4", y: "5" }, "[data-x]") });
   let saved = JSON.parse(storage.get(STORAGE_KEY));
@@ -477,8 +477,8 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   elements["evaluation-button"].listeners.click();
   assert.equal(elements["evaluation-dialog"].open, true);
   elements["evaluation-confirm-button"].listeners.click();
-  assert.match(elements["question-number"].textContent, /個人 pilot.*基線/);
-  assert.equal(elements["question-tag"].textContent, "無提示個人試行");
+  assert.match(elements["question-number"].textContent, /個人流程試行.*第一次/);
+  assert.equal(elements["question-tag"].textContent, "無提示流程試行");
   assert.equal(elements["hint-button"].disabled, true);
   elements.board.listeners.click({ target: pointTarget({ x: "8", y: "8" }, "[data-x]") });
   assert.match(elements.feedback.textContent, /完成整批前不顯示正誤/);
@@ -549,8 +549,8 @@ test("live eligibility/scoring contract 的資料只進 live evidence，不污�
     ]
   };
   const { elements, storage, downloads } = createApp({}, { rawStorage: { [GoLiveEvidence.STORAGE_KEY]: JSON.stringify(store) } });
-  assert.match(elements["live-evidence-summary"].textContent, /已掃描 1 個人類回合/);
-  assert.match(elements["live-evidence-summary"].textContent, /合格 live 機會 1/);
+  assert.match(elements["live-evidence-summary"].textContent, /已查看 1 個你的回合/);
+  assert.match(elements["live-evidence-summary"].textContent, /其中 1 個符合目前的觀察條件/);
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.deepEqual(saved.events, []);
   assert.equal(saved.scheduler.responses.length, 0);
@@ -562,7 +562,7 @@ test("live eligibility/scoring contract 的資料只進 live evidence，不污�
   assert.equal(exported.liveEvidenceSummary.eligibleOpportunities, 1);
   assert.equal(exported.learnerProgressSummary.progressPolicyVersion, "learner-evidence-progress-v2");
   assert.equal(exported.learnerProgressSummary.schedulerAuthority, false);
-  assert.match(elements["integrated-progress-summary"].textContent, /live 應用|live 證據|資料不足|正在累積/);
+  assert.match(elements["integrated-progress-summary"].textContent, /實戰紀錄累積中|資料不足|延後複習|實戰已有紀錄/);
   assert.equal(exported.learningDiagnostics.skills.length, 0);
 });
 

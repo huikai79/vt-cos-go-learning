@@ -168,54 +168,40 @@
     const T = Catalog.ENTITY_TYPE;
     if (type === T.NAKADE_SHAPE) return "中手棋形";
     if (type === T.NAKADE_CATEGORY) return "中手分類";
-    if (type === T.CORNER_LIFE_DEATH_FAMILY) return "角部死活 family";
-    if (type === T.LIFE_DEATH_FAMILY) return "死活 family";
+    if (type === T.CORNER_LIFE_DEATH_FAMILY) return "角部死活類型";
+    if (type === T.LIFE_DEATH_FAMILY) return "死活類型";
     if (type === T.TESUJI_MECHANISM) return "手筋機制";
     if (type === T.RULES_SENSITIVE_POSITION) return "規則敏感局面";
     return type;
   }
 
   function geometryReviewLabel(status) {
-    if (status === Catalog.REVIEW.VERIFIED) return "geometry 已驗";
-    if (status === Catalog.REVIEW.PARTIAL) return "geometry 部分驗證";
-    return "geometry 待核對";
+    if (status === Catalog.REVIEW.VERIFIED) return "棋形已核對";
+    if (status === Catalog.REVIEW.PARTIAL) return "棋形部分核對";
+    return "棋形待核對";
   }
 
   function renderCatalog(filter) {
     const entries = Catalog.entries.filter((entry) => !filter || filter === "all" || entry.category === filter);
     $("classic-atlas-grid").innerHTML = entries.map((entry) => {
       const aliases = entry.aliases.length
-        ? entry.aliases.map((alias) => '<li><strong>' + escapeHtml(alias.locale) + '</strong><span>' + escapeHtml(alias.name) + '</span><small>' + escapeHtml(alias.relationType) + ' · ' + reviewLabel(alias.reviewStatus) + '</small></li>').join("")
+        ? entry.aliases.map((alias) => '<li><strong>' + escapeHtml(alias.locale) + '</strong><span>' + escapeHtml(alias.name) + '</span><small>' + reviewLabel(alias.reviewStatus) + '</small></li>').join("")
         : '<li class="alias-empty">其他語言名稱尚未完成可靠的一對一核對。</li>';
       const zhAliases = entry.zhAliases.length
         ? '<div class="catalog-zh-aliases"><span>中文別名候選</span>' + entry.zhAliases.map((alias) => '<small>' + escapeHtml(alias.name) + ' · ' + reviewLabel(alias.reviewStatus) + '</small>').join("") + '</div>'
         : "";
       const ambiguities = entry.nameAmbiguities.length
-        ? '<div class="catalog-ambiguity"><strong>名稱歧義</strong>' + entry.nameAmbiguities.map((item) => '<span>' + escapeHtml(item.name) + ' · ' + escapeHtml(item.status) + ' · ' + escapeHtml(item.note) + '</span>').join("") + '</div>'
+        ? '<div class="catalog-ambiguity"><strong>名稱還有不同解讀</strong>' + entry.nameAmbiguities.map((item) => '<span>' + escapeHtml(item.name) + '：這個名稱可能指不同棋形，需要對照棋形與來源才能確認。</span>').join("") + '</div>'
         : '';
       const taxonomy = entry.taxonomyMemberships.length || entry.taxonomyRelations.length
-        ? '<div class="catalog-taxonomy"><strong>Taxonomy</strong><span>' +
-            escapeHtml([
-              ...entry.taxonomyMemberships.map((item) => item.taxonomyId + ' / ' + item.familyId + ' / ' + item.role),
-              ...entry.taxonomyRelations.map((item) => item.taxonomyId + ' / ' + item.relation)
-            ].join('；')) +
-          '</span></div>'
+        ? '<div class="catalog-taxonomy"><strong>分類資料</strong><span>已整理 ' + (entry.taxonomyMemberships.length + entry.taxonomyRelations.length) + ' 項內部分類關係；這些只用來整理資料，不影響練習評分。</span></div>'
         : '';
       const geometryRelations = entry.geometryRelations.length
-        ? '<div class="catalog-geometry-rel"><strong>Geometry relation</strong><span>' +
-            escapeHtml(entry.geometryRelations.map((item) => item.relation + ' · ' + item.note).join('；')) +
-          '</span></div>'
+        ? '<div class="catalog-geometry-rel"><strong>棋形關係</strong><span>有 ' + entry.geometryRelations.length + ' 項相關棋形關係仍在整理；不能只靠名稱判定兩者相同。</span></div>'
         : '';
       const geometryEvidence = entry.geometryEvidence.length
-        ? '<div class="catalog-geometry-evidence"><strong>Geometry evidence</strong><span>' +
-            escapeHtml(entry.geometryEvidence.map((item) =>
-              item.evidenceStatus +
-              (item.licenseStatus ? ' · rights=' + item.licenseStatus : '') +
-              (item.publicGeometryPromotion ? ' · public=' + item.publicGeometryPromotion : '') +
-              (item.note ? ' · ' + item.note : '')
-            ).join('；')) +
-          '</span></div>'
-        : '<div class="catalog-geometry-evidence pending"><strong>Geometry evidence</strong><span>尚無可重算幾何證據。</span></div>';
+        ? '<div class="catalog-geometry-evidence"><strong>棋形核對</strong><span>' + escapeHtml(geometryReviewLabel(entry.geometryIdentity.reviewStatus)) + '。詳細依據請看下方來源。</span></div>'
+        : '<div class="catalog-geometry-evidence pending"><strong>棋形核對</strong><span>目前還沒有足夠資料完成棋形核對。</span></div>';
       const sources = entry.sources.length
         ? '<div class="catalog-sources"><span>來源</span>' + entry.sources.map((source) => '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label) + '</a>').join("") + '</div>'
         : '<div class="catalog-sources pending"><span>來源</span><em>待補可靠來源與幾何核對</em></div>';
@@ -232,8 +218,8 @@
         taxonomy +
         geometryRelations +
         geometryEvidence +
-        (entry.negativeMappings.length ? '<p class="catalog-warning">禁止自動合併：' + escapeHtml(entry.negativeMappings.map((item) => item.name + ' · ' + item.reason).join('；')) + '</p>' : '') +
-        (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：已記錄 ' + entry.rulesetBehavior.length + ' 個 ruleset behavior；未指定規則與程序階段前不建立單一評分答案。</p>' : '') +
+        (entry.negativeMappings.length ? '<p class="catalog-warning">不要直接視為同一棋形：' + escapeHtml(entry.negativeMappings.map((item) => item.name).join('、')) + '。名稱相近不代表棋形與規則條件完全相同。</p>' : '') +
+        (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：不同規則下可能出現不同結果；沒有指定使用哪套規則前，不會硬給單一答案。</p>' : '') +
         sources +
         '</article>';
     }).join("");
@@ -305,7 +291,7 @@
     contrastSolved=false;
     contrastHintShown=false;
     contrastCursor=item.eyeSpace[0].slice();
-    $("contrast-tag").textContent=(contrastIndex+1)+" / "+Contrast.rounds.length+" · family hidden";
+    $("contrast-tag").textContent=(contrastIndex+1)+" / "+Contrast.rounds.length+" · 名稱先隱藏";
     $("contrast-title").textContent="先看幾何，再找第一手";
     $("contrast-prompt").textContent=round.prompt;
     $("contrast-feedback").className="feedback";
@@ -331,13 +317,13 @@
     const result=ContrastContract.score(round,[x,y],contrastDeps());
     if(!result.ok){
       $("contrast-feedback").className="feedback error";
-      $("contrast-feedback").textContent="contrast contract 驗證失敗；本題停止評分。";
+      $("contrast-feedback").textContent="這題沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if(result.correct){
       contrastSolved=true;
       $("contrast-feedback").className="feedback success";
-      $("contrast-feedback").textContent="第一手正確。現在才揭示 family 與結構依據。";
+      $("contrast-feedback").textContent="第一手正確。現在才揭示這是哪一種棋形，以及判斷的理由。";
       $("contrast-reveal").hidden=false;
       $("contrast-name").textContent=result.familyLabel;
       $("contrast-note").textContent=round.revealNote;
@@ -346,8 +332,8 @@
     } else {
       $("contrast-feedback").className="feedback error";
       $("contrast-feedback").textContent=contrastHintShown
-        ? "還不是。請先判斷這題是 degree-3 急所結構，還是 degree-4 十字中心。"
-        : "這一點不是該 family 的共同急所。不要猜名稱，先比較眼空 adjacency。";
+        ? "還不是。先比較這個棋形的重要連接點，看看是 T 形中心，還是十字形中心。"
+        : "這一點不是這類棋形的共同急所。先別猜名稱，看看各個眼位彼此怎麼連接。";
     }
   }
 
@@ -419,7 +405,7 @@
     const result = CrossFiveContract.score(item,[x,y],{ Go, PracticeContract });
     if (!result.ok) {
       $("cross-feedback").className = "feedback error";
-      $("cross-feedback").textContent = "梅花五 contract 驗證失敗；本題停止評分。";
+      $("cross-feedback").textContent = "梅花五這題沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if (result.correct) {
@@ -433,7 +419,7 @@
       $("cross-feedback").className = "feedback error";
       $("cross-feedback").textContent = crossHintShown
         ? "還不是。重新數每個眼空直接相鄰的眼空；只有一點會同時接觸四個。"
-        : "這一點不是十字形中心。不要找棋盤中心，請找棋形裡唯一的 degree-4 點。";
+        : "這一點不是十字形中心。不要找棋盤中央，請找同時連著上下左右四個眼位的那一點。";
     }
   }
 
@@ -484,7 +470,7 @@
     bentThreeSolved=false;
     bentThreeHintShown=false;
     bentThreeCursor=item.eyeSpace[0].slice();
-    $("bent-three-tag").textContent=(bentThreeIndex+1) + " / " + BentThree.items.length + " · answer derived from geometry";
+    $("bent-three-tag").textContent=(bentThreeIndex+1) + " / " + BentThree.items.length + " · 先看棋形再下";
     $("bent-three-title").textContent=bentThreeIndex===0 ? "找 L 形唯一彎點" : "換角色／方向，再找共同急所";
     $("bent-three-prompt").textContent=item.prompt;
     $("bent-three-feedback").className="feedback";
@@ -508,7 +494,7 @@
     const result=BentThreeContract.score(item,[x,y],{ Go, PracticeContract });
     if(!result.ok){
       $("bent-three-feedback").className="feedback error";
-      $("bent-three-feedback").textContent="曲三 geometry contract 驗證失敗；本題停止評分。";
+      $("bent-three-feedback").textContent="曲三這題沒有通過棋形規則檢查，因此暫停評分。";
       return;
     }
     if(result.correct){
@@ -522,7 +508,7 @@
       $("bent-three-feedback").className="feedback error";
       $("bent-three-feedback").textContent=bentThreeHintShown
         ? "還不是。重新數三個眼空的直接鄰點；只有彎點會同時碰到另外兩點。"
-        : "這手合法，但不是 L 形 geometry 推導出的共同急所。";
+        : "這手合法，但不是 L 形棋形的共同急所。";
     }
   }
 
@@ -573,12 +559,12 @@
 
   function fourStatusProofText(item,validation,contract) {
     if (contract==="curved-four") {
-      return "proof：攻方四種第一手逐一檢查後，守方每一支都至少有一手回應，使剩餘兩個分離眼點互不相鄰。因此在本 contract 的 sealed eye-space 前提下曲四仍活。";
+      return "檢查結果：攻方四種第一手都試過後，守方每一種情況都至少有一手能留下兩個分開的眼，因此在這個完全包圍的局部條件下，曲四仍然是活棋。";
     }
     if (validation.shapeKind==="square-four") {
-      return "proof：守方四種第一手全部留下曲三；每一支都有合法的攻方彎點回應。因此在本 contract 的 sealed eye-space 前提下仍死。";
+      return "檢查結果：守方四種第一手都會留下可被攻擊的曲三，而且攻方都有合法的彎點回應，因此在這個完全包圍的局部條件下仍然是死棋。";
     }
-    return "proof：攻方四種第一手逐一檢查後，守方每一支都至少有一手回應，使剩餘兩個分離眼點互不相鄰。因此在本 contract 的 sealed eye-space 前提下仍活。";
+    return "檢查結果：攻方四種第一手都試過後，守方每一種情況都至少有一手能留下兩個分開的眼，因此在這個完全包圍的局部條件下仍然是活棋。";
   }
 
   function renderFourStatus() {
@@ -601,7 +587,7 @@
     $("four-status-alive").disabled=false;
     $("four-status-dead").disabled=false;
     $("four-status-next").textContent=fourStatusIndex===fourStatusRounds.length-1 ? "完成四目眼比較" : "下一題 →";
-    $("four-status-board-size").textContent=item.boardSize + " × " + item.boardSize + " bounded proof";
+    $("four-status-board-size").textContent=item.boardSize + " × " + item.boardSize + " 局部判斷";
     $("four-status-side").textContent=item.defenderColor===Go.BLACK ? "● 黑棋守" : "○ 白棋守";
     renderFourStatusBoard();
   }
@@ -614,7 +600,7 @@
       : FourSpaceStatusContract.score(item,response,{ Go, PracticeContract, BentThreeContract });
     if(!result.ok){
       $("four-status-feedback").className="feedback error";
-      $("four-status-feedback").textContent="四目眼 status contract 驗證失敗；本題停止評分。";
+      $("four-status-feedback").textContent="這個四目眼形沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if(result.correct){
@@ -631,7 +617,7 @@
       $("four-status-feedback").className="feedback error";
       $("four-status-feedback").textContent=fourStatusHintShown
         ? item.hint
-        : "這個判斷不符合 rules-backed proof。不要假設所有四目眼都一樣。";
+        : "這個判斷和規則檢查結果不一致。不要把所有四目眼形都當成同一種情況。";
     }
   }
 
@@ -673,7 +659,7 @@
     pyramidFourSolved=false;
     pyramidFourHintShown=false;
     pyramidFourCursor=item.eyeSpace[0].slice();
-    $("pyramid-four-tag").textContent=(pyramidFourIndex+1) + " / " + PyramidFour.items.length + " · answer derived from geometry";
+    $("pyramid-four-tag").textContent=(pyramidFourIndex+1) + " / " + PyramidFour.items.length + " · 先看棋形再下";
     $("pyramid-four-title").textContent=pyramidFourIndex===0 ? "找 T 形唯一中心" : "換角色／方向，再找共同急所";
     $("pyramid-four-prompt").textContent=item.prompt;
     $("pyramid-four-feedback").className="feedback";
@@ -697,7 +683,7 @@
     const result=PyramidFourContract.score(item,[x,y],{ Go, PracticeContract });
     if(!result.ok){
       $("pyramid-four-feedback").className="feedback error";
-      $("pyramid-four-feedback").textContent="丁四 geometry contract 驗證失敗；本題停止評分。";
+      $("pyramid-four-feedback").textContent="丁四這題沒有通過棋形規則檢查，因此暫停評分。";
       return;
     }
     if(result.correct){
@@ -711,7 +697,7 @@
       $("pyramid-four-feedback").className="feedback error";
       $("pyramid-four-feedback").textContent=pyramidFourHintShown
         ? "還不是。重新數四個眼空的直接鄰點；只有一點會同時碰到另外三點。"
-        : "這手合法，但不是 T 形 geometry 推導出的共同急所。";
+        : "這手合法，但不是 T 形棋形的共同急所。";
     }
   }
 
@@ -783,7 +769,7 @@
     const result = FlowerSixContract.score(item,[x,y],{ Go, PracticeContract });
     if (!result.ok) {
       $("flower-six-feedback").className = "feedback error";
-      $("flower-six-feedback").textContent = "花六 contract 驗證失敗；本題停止評分。";
+      $("flower-six-feedback").textContent = "花六這題沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if (result.correct) {
@@ -796,7 +782,7 @@
     } else {
       $("flower-six-feedback").className = "feedback error";
       $("flower-six-feedback").textContent = flowerSixHintShown
-        ? "還不是。重新數每個眼空直接相鄰的眼空；只有一點是 degree-4。"
+        ? "還不是。重新看看每個眼位直接連著幾個眼位；只有一個點同時連著四個眼位。"
         : "這一點不是兩個突出點的根部。不要記座標，請重新看六點 adjacency。";
     }
   }
@@ -875,7 +861,7 @@
     const result=GoldenChickenContract.score(item,[x,y],Go);
     if (!result.ok) {
       $("golden-chicken-feedback").className="feedback error";
-      $("golden-chicken-feedback").textContent="金雞獨立 mechanism contract 驗證失敗；本題停止評分。";
+      $("golden-chicken-feedback").textContent="金雞獨立這題沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if (result.status==="ILLEGAL_MOVE") {
@@ -968,7 +954,7 @@
     $("big-pigs-mouth-reveal").hidden=true;
     $("big-pigs-mouth-hint").disabled=false;
     $("big-pigs-mouth-next").disabled=true;
-    $("big-pigs-mouth-next").textContent=bigPigsMouthIndex===BigPigsMouth.items.length-1 ? "完成大豬嘴 source-case" : "下一題 →";
+    $("big-pigs-mouth-next").textContent=bigPigsMouthIndex===BigPigsMouth.items.length-1 ? "完成大豬嘴這組練習" : "下一題 →";
     renderBigPigsMouthBoard();
   }
 
@@ -978,7 +964,7 @@
     const result=BigPigsMouthContract.score(item,[x,y],Go);
     if (!result.ok) {
       $("big-pigs-mouth-feedback").className="feedback error";
-      $("big-pigs-mouth-feedback").textContent="大豬嘴 source-case contract 驗證失敗；本題停止評分。";
+      $("big-pigs-mouth-feedback").textContent="大豬嘴這題沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if (result.status==="ILLEGAL_MOVE") {
@@ -1050,7 +1036,7 @@
     bulkyHintShown = false;
     bulkyCursor = item.eyeSpace[0].slice();
     $("bulky-tag").textContent = (bulkyIndex + 1) + " / " + Practice.items.length + " · 名稱不提示答案";
-    $("bulky-title").textContent = bulkyIndex === 0 ? "找共同急所" : "同一 family，換條件再找";
+    $("bulky-title").textContent = bulkyIndex === 0 ? "找共同急所" : "同一類棋形，換條件再找";
     $("bulky-prompt").textContent = item.prompt;
     $("bulky-feedback").className = "feedback";
     $("bulky-feedback").textContent = "";
@@ -1073,7 +1059,7 @@
     const result = PracticeContract.score(item, [x,y], Go);
     if (!result.ok) {
       $("bulky-feedback").className = "feedback error";
-      $("bulky-feedback").textContent = "題目 contract 驗證失敗；本題停止評分。";
+      $("bulky-feedback").textContent = "這題沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if (result.correct) {
@@ -1179,7 +1165,7 @@
     const result = ShortReadContract.scoreFollowup(item,[x,y],{ Go, PracticeContract });
     if (!result.ok) {
       $("read-feedback").className = "feedback error";
-      $("read-feedback").textContent = "短讀 contract 驗證失敗；本題停止評分。";
+      $("read-feedback").textContent = "這組短讀題沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if (result.correct) {
@@ -1288,7 +1274,7 @@
     const result=ReductionContract.scoreNext(item,reductionMoves,[x,y],{ Go, PracticeContract });
     if (!result.ok) {
       $("reduction-feedback").className="feedback error";
-      $("reduction-feedback").textContent="sealed reduction contract 驗證失敗；本題停止評分。";
+      $("reduction-feedback").textContent="這組縮眼題沒有通過規則檢查，因此暫停評分。";
       return;
     }
     if (!result.correct) {
@@ -1311,7 +1297,7 @@
     const finalResult=ReductionContract.finalize(item,reductionMoves,{ Go, PracticeContract });
     if (!finalResult.ok || !finalResult.complete) {
       $("reduction-feedback").className="feedback error";
-      $("reduction-feedback").textContent="終局 contract 未能證明提四子後形成方四；本題停止。";
+      $("reduction-feedback").textContent="規則檢查無法確認提四子後一定形成方四，因此這題暫停。";
       return;
     }
     reductionSolved=true;
@@ -1467,7 +1453,7 @@
   $("contrast-hint").addEventListener("click",() => {
     contrastHintShown=true;
     $("contrast-feedback").className="feedback";
-    $("contrast-feedback").textContent="只比較兩種結構：刀把五急所是唯一 degree-3 點；梅花五急所是唯一 degree-4 中心。";
+    $("contrast-feedback").textContent="這裡只比較兩種棋形：刀把五要找 T 形的中心，梅花五要找十字形的中心。";
   });
 
   $("contrast-next").addEventListener("click",() => {
@@ -1477,7 +1463,7 @@
       renderContrast();
     } else {
       $("contrast-feedback").className="feedback success";
-      $("contrast-feedback").textContent="六題混合辨形完成。這只代表完成 interleaved practice，不代表已證明跨 family transfer。";
+      $("contrast-feedback").textContent="六題混合辨形完成。這只表示你完成了交錯練習，還不能因此判定你已能在所有新棋形中穩定運用。";
       $("contrast-next").disabled=true;
     }
   });
@@ -1514,7 +1500,7 @@
       renderCross();
     } else {
       $("cross-feedback").className = "feedback success";
-      $("cross-feedback").textContent = "梅花五中央急所練習完成。這只表示完成四個 bounded variant，不代表完整五目中手答案樹或 mastery。";
+      $("cross-feedback").textContent = "梅花五中央急所練習完成。這只表示你完成了四個變化題，還不代表已掌握完整的五目中手變化。";
       $("cross-next").disabled = true;
     }
   });
@@ -1551,7 +1537,7 @@
       renderBentThree();
     }else{
       $("bent-three-feedback").className="feedback success";
-      $("bent-three-feedback").textContent="曲三／Bent Three 練習完成。這只表示完成四個 geometry-derived first-move variant，不代表完整答案樹、mastery 或 transfer。";
+      $("bent-three-feedback").textContent="曲三（Bent Three）練習完成。這只表示你完成了四個第一手變化題，還不代表已掌握完整後續變化或能穩定運用到所有新局面。";
       $("bent-three-next").disabled=true;
     }
   });
@@ -1572,7 +1558,7 @@
       renderFourStatus();
     }else{
       $("four-status-feedback").className="feedback success";
-      $("four-status-feedback").textContent="四目眼狀態比較完成。這只支持 sealed eye-space 的局部 proof，不代表所有實戰四點空都可脫離外部條件直接判死活。";
+      $("four-status-feedback").textContent="四目眼形比較完成。這些結果只適用於完全包圍、沒有外部影響的局部情況；實戰中仍要看周圍棋子的條件。";
       $("four-status-next").disabled=true;
     }
   });
@@ -1609,7 +1595,7 @@
       renderPyramidFour();
     }else{
       $("pyramid-four-feedback").className="feedback success";
-      $("pyramid-four-feedback").textContent="丁四／Pyramid Four 練習完成。這只表示完成四個 geometry-derived first-move variant，不代表完整吃淨答案樹、mastery 或 transfer。";
+      $("pyramid-four-feedback").textContent="丁四（Pyramid Four）練習完成。這只表示你完成了四個第一手變化題，還不代表已掌握完整後續變化或能穩定運用到所有新局面。";
       $("pyramid-four-next").disabled=true;
     }
   });
@@ -1646,7 +1632,7 @@
       renderFlowerSix();
     } else {
       $("flower-six-feedback").className = "feedback success";
-      $("flower-six-feedback").textContent = "花六共同急所練習完成。這只表示完成四個 bounded variant，不代表完整六目中手長變化、mastery 或 transfer。";
+      $("flower-six-feedback").textContent = "花六共同急所練習完成。這只表示你完成了四個變化題，還不代表已掌握完整的長變化或能穩定運用到所有新局面。";
       $("flower-six-next").disabled = true;
     }
   });
@@ -1683,7 +1669,7 @@
       renderGoldenChicken();
     } else {
       $("golden-chicken-feedback").className="feedback success";
-      $("golden-chicken-feedback").textContent="金雞獨立 mechanism practice 完成。這只表示四個原創變形都完成了同一 rules-backed 手筋機制，不代表所有實戰金雞獨立、mastery、transfer 或 formal evaluation 已驗證。";
+      $("golden-chicken-feedback").textContent="金雞獨立練習完成。這四題都在練同一個手筋原理，但還不能因此判定所有實戰中的金雞獨立都會做，也不納入正式能力評量。";
       $("golden-chicken-next").disabled=true;
     }
   });
@@ -1720,7 +1706,7 @@
       renderBigPigsMouth();
     } else {
       $("big-pigs-mouth-feedback").className="feedback success";
-      $("big-pigs-mouth-feedback").textContent="大豬嘴 source-case 練習完成。這只支持同一 MIT regression 局面的四向 first-move oracle；標準 family geometry、主要 variation 與一般化仍是 UNKNOWN。";
+      $("big-pigs-mouth-feedback").textContent="大豬嘴這組練習完成。目前只確認同一個來源局面的四個旋轉版本；更一般的大豬嘴棋形與主要變化仍需要進一步核對。";
       $("big-pigs-mouth-next").disabled=true;
     }
   });
@@ -1757,7 +1743,7 @@
       renderBulky();
     } else {
       $("bulky-feedback").className = "feedback success";
-      $("bulky-feedback").textContent = "刀把五共同急所練習完成。這只表示你完成了四個 bounded practice variant，不代表 mastery 或完整死活已驗證。";
+      $("bulky-feedback").textContent = "刀把五共同急所練習完成。這只表示你完成了四個變化題，還不代表已掌握完整死活變化。";
       $("bulky-next").disabled = true;
     }
   });
@@ -1794,7 +1780,7 @@
       renderRead();
     } else {
       $("read-feedback").className = "feedback success";
-      $("read-feedback").textContent = "A/B 三手短讀完成。這只表示完成來源支持的主分支練習；未列分支仍是 UNKNOWN。";
+      $("read-feedback").textContent = "三手短讀完成。這只表示你完成了目前資料支持的主要變化；沒有列出的其他變化仍需要另外確認。";
       $("read-next").disabled = true;
     }
   });
@@ -1831,7 +1817,7 @@
       renderReduction();
     } else {
       $("reduction-feedback").className="feedback success";
-      $("reduction-feedback").textContent="sealed reduction 練習完成。這只支持零外氣＋局部手抜き條件下的縮眼分支；其他應手與有外氣局面仍是 UNKNOWN。";
+      $("reduction-feedback").textContent="縮眼練習完成。這個結果只適用於目前設定的局部條件；如果外面還有氣，或對手換其他應手，結果仍要重新判斷。";
       $("reduction-next").disabled=true;
     }
   });

@@ -50,10 +50,10 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 });
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
-  assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /曲三、丁四、刀把五、梅花五與花六有 bounded vital-point practice/);
-  assert.match(html, /方四／直四／曲四另用 rules-backed status proof/);
-  assert.match(html, /金雞獨立走 rules-backed tesuji mechanism contract/);
+  assert.match(html, /不會直接用來判定你的棋力/);
+  assert.match(html, /部分棋形目前只檢查第一手是否合理/);
+  assert.match(html, /尚未完成規則核對的棋形則不評分/);
+  assert.match(html, /不會影響核心課程進度、複習安排或正式評量/);
   assert.match(html, /名稱仍在作答後才揭示|名稱放到第一手之後/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
@@ -313,8 +313,8 @@ test("compatibility catalog 顯示 ontology v4 relation metadata，但不取得 
   assert.ok(lGroup.geometryRelations.some((item) => item.relation === Ontology.GEOMETRY_RELATION.RELATED_UNRESOLVED));
   assert.equal(lGroup.practiceStatus, "catalog_only");
   assert.match(html, /classic-shape-ontology-v5/);
-  assert.match(js, /名稱歧義/);
-  assert.match(js, /Taxonomy/);
+  assert.match(js, /名稱還有不同解讀/);
+  assert.match(js, /分類資料/);
   assert.doesNotMatch(ontologySource, /correctMove|formalEligible\s*:\s*true|mastery/);
 });
 
@@ -443,10 +443,10 @@ test("刀把五 contract 對錯誤 geometry、錯誤急所與非急所首答 fai
 
 test("刀把五 UI 明示 bounded vital-point 範圍，不把四題升格 mastery", () => {
   assert.match(html, /刀把五：找共同急所/);
-  assert.match(html, /只判第一手是否落在 geometry contract 推導出的唯一共同急所/);
-  assert.match(html, /不宣稱完整死活答案樹/);
+  assert.match(html, /只看第一手有沒有下在這個棋形唯一的共同急所/);
+  assert.match(html, /目前不判斷完整後續死活變化/);
   assert.match(js, /GoClassicShapePracticeContract/);
-  assert.match(js, /不代表 mastery 或完整死活已驗證/);
+  assert.match(js, /還不代表已掌握完整死活變化/);
 });
 
 
@@ -487,10 +487,10 @@ test("刀把五 short-read 對非 A/B 回應、錯誤 complement 與舊座標 fa
 
 test("刀把五 short-read UI 明示只覆蓋 A/B 主分支，未列分支保持 UNKNOWN", () => {
   assert.match(html, /刀把五：A\/B 互補短讀/);
-  assert.match(html, /只判來源支持的 A\/B 互補主分支/);
-  assert.match(html, /未列分支保持 UNKNOWN/);
+  assert.match(html, /只判目前資料支持的兩條主要變化/);
+  assert.match(html, /沒有列出的其他變化先保留未知/);
   assert.match(js, /GoClassicShapeReadContract/);
-  assert.match(js, /未列分支仍是 UNKNOWN/);
+  assert.match(js, /沒有列出的其他變化仍需要另外確認/);
 });
 
 
@@ -547,11 +547,11 @@ test("有外氣時 sealed reduction 不得錯報 forced capture 或 square-four 
 
 test("sealed reduction UI 明示零外氣前提與 square-four terminal", () => {
   assert.match(html, /刀把五：手抜き後如何縮成方四/);
-  assert.match(html, /守方整串無外氣/);
-  assert.match(html, /若有外氣，本 contract 直接判定不適用/);
+  assert.match(html, /守方整串沒有外氣/);
+  assert.match(html, /如果外面還有氣，這個局部判定就不適用/);
   assert.match(html, /提四子 → 方四/);
   assert.match(js, /GoClassicShapeReductionContract/);
-  assert.match(js, /其他應手與有外氣局面仍是 UNKNOWN/);
+  assert.match(js, /結果仍要重新判斷/);
 });
 
 
@@ -593,10 +593,10 @@ test("梅花五 contract 對非十字幾何、錯誤中心與平移後舊座標 
 
 test("梅花五 UI 明示棋形中央而非棋盤中央，且不升格完整答案樹", () => {
   assert.match(html, /梅花五：不要找棋盤中央，要找棋形中央/);
-  assert.match(html, /唯一的 degree-4 中心/);
-  assert.match(html, /不宣稱完整五目中手答案樹/);
+  assert.match(html, /十字形唯一的中心點/);
+  assert.match(html, /目前不判斷完整後續變化/);
   assert.match(js, /GoCrossFiveContract/);
-  assert.match(js, /不代表完整五目中手答案樹或 mastery/);
+  assert.match(js, /還不代表已掌握完整的五目中手變化/);
 });
 
 
@@ -668,10 +668,10 @@ test("contrast contract 對連續同 family、缺 source 與偷偷塞答案 fail
 test("contrast UI 首答前隱藏 family，答後才揭示，且不宣稱 transfer", () => {
   assert.match(html, /刀把五 vs 梅花五：混合辨形/);
   assert.match(html, /作答前不顯示名稱/);
-  assert.match(html, /contrast layer 不保存答案/);
-  assert.match(html, /答對只代表這一題第一手正確，不代表 transfer 或 mastery/);
+  assert.match(html, /混合練習本身不另外保存答案/);
+  assert.match(html, /答對只代表這一題第一手正確，不代表已經能穩定運用到其他棋形/);
   assert.match(js, /\$\("contrast-reveal"\)\.hidden=true/);
-  assert.match(js, /不代表已證明跨 family transfer/);
+  assert.match(js, /還不能因此判定你已能在所有新棋形中穩定運用/);
 });
 
 
@@ -695,8 +695,8 @@ test("直三棋盤已有棋子與游標圈不再造成無反應點擊", () => {
 
 test("四段探索明確只屬於直三，不冒充所有名型共用流程", () => {
   assert.match(html, /直三專用 · 4 段探索/);
-  assert.match(html, /下面四格只屬於直三/);
-  assert.match(html, /其他名型依各自 geometry／scoring contract 安排，不固定套用這四步/);
+  assert.match(html, /下面四格只用來練直三/);
+  assert.match(html, /其他名型會依自己的棋形特點安排，不一定照這四步/);
   assert.match(html, /1 直三 · 找急所/);
   assert.match(html, /2 直三 · 換方向/);
   assert.match(html, /3 直三 · 換攻方/);
@@ -751,9 +751,9 @@ test("花六 catalog 與 UI 區分 Rabbity Six geometry 和仍待核對的葡萄
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
   assert.match(html, /花六／Rabbity Six：找兩個「耳朵」的根部/);
   assert.match(html, /「葡萄六」仍保持待核對，不直接合併/);
-  assert.match(html, /不宣稱完整六目中手長變化或 12 手吃淨答案樹/);
+  assert.match(html, /目前不判斷完整的長變化或一路吃淨的所有手順/);
   assert.match(js, /GoFlowerSixContract/);
-  assert.match(js, /不代表完整六目中手長變化、mastery 或 transfer/);
+  assert.match(js, /還不代表已掌握完整的長變化或能穩定運用到所有新局面/);
 });
 
 
@@ -817,7 +817,7 @@ test("金雞獨立 catalog 與 UI 保留 tesuji/nakade authority boundary", () =
   assert.equal(entry.geometryIdentity.contractVersion, "classic-golden-chicken-mechanism-v1");
   assert.ok(entry.negativeMappings.some((item) => item.name === "static nakade shape"));
   assert.match(html, /不是大眼中手，是雙重氣緊手筋/);
-  assert.match(html, /不和刀把五、梅花五、花六共用 nakade geometry contract/);
+  assert.match(html, /不和刀把五、梅花五、花六使用同一種判定方式/);
   assert.match(js, /GoGoldenChickenContract/);
   assert.doesNotMatch(require("node:fs").readFileSync(require("node:path").join(root,"classic-golden-chicken-contract.js"),"utf8"), /https?:\/\/.*\.(png|jpg|jpeg|sgf)/i);
 });
@@ -871,11 +871,11 @@ test("大豬嘴 catalog/UI 明示 source-case 與 family generalization 分離",
   assert.ok(entry.sources.some((source) => source.sourceTier === "oss_regression"));
   assert.equal(entry.geometryIdentity.kind, "source_position_plus_unresolved_family");
   assert.equal(entry.geometryIdentity.conditions.familyGeometry, "pending");
-  assert.match(html, /大豬嘴／J Group：先限定在一個可追溯實戰 case/);
-  assert.match(html, /完整 19×19 source position 才是本 contract 的 canonical identity/);
-  assert.match(html, /不宣稱 R1 是所有大豬嘴／J Group 的共同答案/);
+  assert.match(html, /大豬嘴（J Group）：先從一個可追溯的實戰局面練起/);
+  assert.match(html, /判定仍以完整 19×19 來源局面為準/);
+  assert.match(html, /不表示 R1 是所有大豬嘴（J Group）的共同答案/);
   assert.match(js, /GoBigPigsMouthSourceCaseContract/);
-  assert.match(js, /標準 family geometry、主要 variation 與一般化仍是 UNKNOWN/);
+  assert.match(js, /更一般的大豬嘴棋形與主要變化仍需要進一步核對/);
 });
 
 test("大豬嘴 source-case 有 MIT provenance notice，不把上游 SGF 當本站自有題庫", () => {
@@ -1057,7 +1057,7 @@ test("曲三 ontology/catalog/evidence 對齊 geometry-derived contract", () => 
   assert.equal(entry.practiceStatus, "playable_bounded_geometry_derived_vital_point_contract");
   assert.ok(entry.aliases.some((alias) => alias.name === "Bent Three"));
   assert.ok(entry.geometryEvidence.some((item) => item.id === "bent-three-contract-geometry-v1" && item.evidenceStatus === "geometry_verified_from_contract"));
-  assert.match(html, /曲三／Bent Three：L 形彎點就是共同急所/);
+  assert.match(html, /曲三（Bent Three）：L 形的彎角就是共同急所/);
   assert.match(html, /classic-bent-three-contract\.js\?v=classic-bent-three-vital-point-v1/);
   assert.match(js, /GoBentThreeContract/);
 });
@@ -1105,9 +1105,9 @@ test("丁四 catalog/UI 維持 geometry identity 與 bounded first-move claim", 
   assert.ok(entry.sources.some((source) => source.label.includes("YeeFan")));
   assert.equal(entry.geometryIdentity.contractVersion, "classic-pyramid-four-vital-point-v1");
   assert.equal(entry.geometryIdentity.fingerprint, "T-tetromino");
-  assert.match(html, /丁四／Pyramid Four：T 形中心就是共同急所/);
-  assert.match(html, /不在題目資料保存答案/);
-  assert.match(html, /唯一 degree-3 點/);
+  assert.match(html, /丁四（Pyramid Four）：T 形中心就是共同急所/);
+  assert.match(html, /不直接把答案寫在題目資料裡/);
+  assert.match(html, /唯一的中心點當共同急所/);
   assert.match(js, /GoPyramidFourContract/);
-  assert.match(js, /不代表完整吃淨答案樹、mastery 或 transfer/);
+  assert.match(js, /還不代表已掌握完整後續變化或能穩定運用到所有新局面/);
 });
