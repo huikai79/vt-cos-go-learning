@@ -649,3 +649,12 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 ### 2026-09-28 Bent Three bounded practice validation
 
 PR #43 verify run #499 全數 PASS：Node contracts、JavaScript syntax、deterministic R1 review bank、formal teaching candidate、teaching gate、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。此結果只支持曲三 geometry-derived first-move contract；不建立完整答案樹、內容效度、formal assessment 或 learning effect。
+## 2026-09-28 Change note｜History Explore v4 精準證據升級
+
+- **Bottleneck：** v3 的 17→19 主線仍以後世文字錨點開場，漏掉河北望都一號漢墓 132 年 17 路石棋盤；南朝棋手品評、棋書編纂與 corpus loss 未進 learner-facing 主線；「找不到早期 17 路實戰局面」若寫成無限定負面主張會違反 open-world evidence 原則。
+- **實作：** `history.html` 升 v4。望都改作 P0 物質錨點，措辭固定為「有明確墓葬年代與考古出土脈絡」，不寫「原位」或「已知最早」；南朝改寫為「相當成熟的宮廷棋手品評與棋書編纂活動」，以《南齊書》圍棋州邑、柳惲品定 278 人與《隋書·經籍志》棋書／亡佚三點支撐；《讀曲歌》降為 details 補充，不將「方局十七道」精確綁定 440 年。
+- **Continuity：** 新增敦煌「角旁曲四，局竟乃亡」與後世《棋經十三篇》「角盤曲四，局終乃亡」對照，並保留征／劫／持術語再現；只支持技術分類／術語在後世再次出現，不建立不中斷 transmission chain。
+- **Unknown boundary：** 新卡固定寫「目前查核範圍內，尚未確認可可靠重建的早期 17 路實戰局面」，並明示這是資料缺口、不代表證據不存在；失傳棋書只支持 corpus loss，不補寫 17→19 因果答案。
+- **Synthesis：** 主線改成「先秦成熟弈文化 → 132 年 17 路實物 → 5～6 世紀品評／編纂＋文獻亡佚 → 595 年 19 路實物 → 盤制逐漸收斂但其他規則未同步統一 → 若干棋形判定／技術術語後世再現」。此排列是 Claim Ladder 的 evidence sequence，不是單一因果鏈。
+- **Authority／candidate：** History Explore 仍是 read-only Explore surface，不接 learner state、KC、scheduler、T0–T3 或 formal evaluation；未修改首頁與 Core critical asset set，因此 `formal-teaching-candidate-2026-09-27-b` 不重凍結。正式教學維持 `BLOCKED`、formal evaluation unavailable、learning effect `NOT_MEASURED`。
+- **Validation target：** `tests/history.test.cjs` 新增望都、制度化措辭、Lost Corpus、角曲四 continuity、scoped negative 與《讀曲歌》斷代反證；browser UI 與 served Pages marker 同步到 History v4／2026-09-28。工程測試通過只支持內容契約與部署一致性，不等於外部歷史學術同行審查。
