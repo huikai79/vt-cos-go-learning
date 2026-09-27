@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "protocolId": "go-formal-teaching-evidence-v1",
+  "schemaVersion": 2,
+  "protocolId": "go-formal-teaching-evidence-v2",
   "r1ContentFingerprint": "fnv1a32-1afc0a13",
   "usability": {
     "completedAt": null,
@@ -27,7 +27,9 @@
           "export_learning_data": false
         },
         "blockingIssues": [],
-        "evidenceReference": null
+        "evidenceReference": null,
+        "candidateId": "formal-teaching-candidate-2026-09-27-a",
+        "candidateFingerprint": "fnv1a32-js16-db5cff20"
       },
       {
         "participantCode": "novice-02",
@@ -40,7 +42,9 @@
           "export_learning_data": false
         },
         "blockingIssues": [],
-        "evidenceReference": null
+        "evidenceReference": null,
+        "candidateId": "formal-teaching-candidate-2026-09-27-a",
+        "candidateFingerprint": "fnv1a32-js16-db5cff20"
       },
       {
         "participantCode": "novice-03",
@@ -53,10 +57,14 @@
           "export_learning_data": false
         },
         "blockingIssues": [],
-        "evidenceReference": null
+        "evidenceReference": null,
+        "candidateId": "formal-teaching-candidate-2026-09-27-a",
+        "candidateFingerprint": "fnv1a32-js16-db5cff20"
       }
     ],
-    "observationProtocol": "Observe each participant separately. Mark a task true only after that participant completes it without the observer taking over. Keep failures/abandonment in the record."
+    "observationProtocol": "Observe each participant separately. Mark a task true only after that participant completes it without the observer taking over. Keep failures/abandonment in the record. All participants must use the exact same frozen formal teaching candidate ID/fingerprint.",
+    "candidateId": "formal-teaching-candidate-2026-09-27-a",
+    "candidateFingerprint": "fnv1a32-js16-db5cff20"
   },
   "accessibility": {
     "completedAt": null,
@@ -67,11 +75,15 @@
       "viewport_320": false
     },
     "openBlockingIssues": null,
-    "evidenceReference": null
+    "evidenceReference": null,
+    "candidateId": "formal-teaching-candidate-2026-09-27-a",
+    "candidateFingerprint": "fnv1a32-js16-db5cff20"
   },
   "formalEvaluation": {
     "privateUnexposedHoldoutEstablished": false,
     "r1bComparabilityEstablished": false,
     "evidenceReference": null
-  }
+  },
+  "candidateId": "formal-teaching-candidate-2026-09-27-a",
+  "candidateFingerprint": "fnv1a32-js16-db5cff20"
 }
