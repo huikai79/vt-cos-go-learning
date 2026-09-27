@@ -110,6 +110,7 @@
     yeefanBulkyAB: source("yeefanBulkyAB","YeeFan：Multiple-Space Eyes, Bulky Five A/B sequence","https://yeefan.sg/weiqi/howtoplaygo/howtoplaygo06.htm","instructional_secondary","yeefan-multiple-space-eyes"),
     malaysiaWeiqiBulky: source("malaysiaWeiqiBulky","Malaysia Weiqi Association：Multiple Eye Space","https://www.weiqi.org.my/wp-content/uploads/2013/05/moduleav21.pdf","association","mwa-multiple-eye-space"),
     boardToBitsBulkyReduction: source("boardToBitsBulkyReduction","Board to Bits Go：Big Eyes","https://boardtobitsgo.wordpress.com/2020/09/02/lesson-6-big-eyes/","instructional_secondary","board-to-bits-big-eyes"),
+    chenStaticLifeDeath: source("chenStaticLifeDeath","Chen & Chen (1999)：Static analysis of life and death in Go","https://www.sciencedirect.com/science/article/pii/S0020025599000833","primary_research","chen-chen-static-life-death"),
     meaningfulStonesCrossFive: source("meaningfulStonesCrossFive","Meaningful Stones：Cross Five","https://jimseibert.github.io/Meaningful-Stones/sec-shapes.html","instructional_secondary","meaningful-stones-cross-five"),
     yikePlumFive: source("yikePlumFive","弈客圍棋：大眼（5）梅花五","https://www.sohu.com/a/475377109_533159","publisher_secondary","yike-plum-five"),
     hzSchoolVitalShapes: source("hzSchoolVitalShapes","浙江工大附校：死活棋要點","https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml","educational_secondary","hz-school-vital-shapes"),
@@ -182,6 +183,21 @@
       taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"zh-Hant",name:"刀把五",relation:"unique_name_for_category",status:"blocked",reason:"五目中手是上位分類，不是刀把五的唯一專名",sourceIds:["nihonkiinFive"]}],
       sourceIds:["nihonkiinFive"], note:"分類層級不可自動等同任何單一五點名型。"
+    },
+    {
+      id:"curved-four-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
+      teachingLabel:"折線四目眼有兩個互為 miai 的做眼回應", practiceStatus:"playable_rules_backed_status_proof_contract", reviewStatus:REVIEW.VERIFIED,
+      names:[
+        name("zh-Hant","曲四",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.PARTIAL,["go4goChinese"],{displayPreference:"project"}),
+        name("zh-Hant","彎四",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["go4goChinese"]),
+        name("en","Curved Four",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.PROFESSIONAL_TEXTBOOK,REVIEW.VERIFIED,["chenStaticLifeDeath"]),
+        name("en","Bent Four",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["go4goChinese"])
+      ],
+      nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-curved-four-status-v1","L-tetromino","center",{surroundingDefects:"sealed"}),
+      taxonomyMemberships:[], rulesetBehavior:[],
+      negativeMappings:[{locale:"en",name:"Bent Four in the Corner",relation:"exact_alias",status:"blocked",reason:"盤角曲四是 corner/rules-sensitive concept，不等同 sealed interior Curved Four",sourceIds:["nihonkiinBentFour","bgaRules"]}],
+      sourceIds:["go4goChinese","chenStaticLifeDeath"],
+      note:"限定完全包圍、無缺陷的折線四點 eye-region；攻方任一第一手後，守方都有回應留下兩個分離眼點。不得與盤角曲四自動合併。"
     },
     {
       id:"square-four-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
