@@ -1398,30 +1398,30 @@
       }
     }
     if (livePractice.ok && livePractice.summary && livePractice.summary.totalEvents) {
-      lines.push("", "## 人機實戰練習", "", `- 練習局數：${livePractice.summary.computerSessions}`, `- 你的可觀察決策：${livePractice.summary.humanDecisions} 次`, "- 證據邊界：practice observation only；未經 scoring contract，不更新 KC、scheduler、T2/T3 或 mastery。");
+      lines.push("", "## 人機實戰練習", "", `- 練習局數：${livePractice.summary.computerSessions}`, `- 你的可觀察決策：${livePractice.summary.humanDecisions} 次`, "- 這些只作練習紀錄，不會直接改變能力紀錄、複習安排或正式評量。");
     } else if (!livePractice.ok) {
       lines.push("", "## 人機實戰練習", "", `- 事件流讀取失敗：${livePractice.error}；未以推測資料補值。`);
     }
     if (liveEvidence.ok && liveEvidence.summary && liveEvidence.summary.assessedHumanTurns) {
       const summary = liveEvidence.summary;
-      lines.push("", "## 9×9 人機實戰證據", "", `- 已掃描人類回合：${summary.assessedHumanTurns}`, `- 合格 live T3 局部機會：${summary.eligibleOpportunities}`, `- 不評分回合：${summary.unscoredHumanTurns}`, `- Contract：${summary.eligibilityContractVersion} / ${summary.scoringContractVersion} / ${summary.progressPolicyVersion}`, `- 邊界：${summary.interpretationBoundary}`, "");
+      lines.push("", "## 9×9 人機實戰紀錄", "", `- 已查看你的回合：${summary.assessedHumanTurns}`, `- 符合目前觀察條件的局部機會：${summary.eligibleOpportunities}`, `- 不評分回合：${summary.unscoredHumanTurns}`, `- 使用中的判定版本：${summary.eligibilityContractVersion} / ${summary.scoringContractVersion} / ${summary.progressPolicyVersion}`, `- 使用限制：${summary.interpretationBoundary}`, "");
       for (const skill of summary.skills) {
-        lines.push(`- ${skill.label}：eligible ${skill.eligibleOpportunities}；首答 ${skill.firstResponses}；完成 ${skill.satisfiedFirstResponses}；未完成 ${skill.notSatisfiedFirstResponses}；未作答 ${skill.unansweredOpportunities}；狀態「${liveEvidenceStateLabel(skill.evidenceState)}」。`);
+        lines.push(`- ${skill.label}：符合條件 ${skill.eligibleOpportunities} 次；第一次作答 ${skill.firstResponses} 次；完成 ${skill.satisfiedFirstResponses} 次；未完成 ${skill.notSatisfiedFirstResponses} 次；未作答 ${skill.unansweredOpportunities} 次；目前狀態「${liveEvidenceStateLabel(skill.evidenceState)}」。`);
       }
     } else if (!liveEvidence.ok) {
-      lines.push("", "## 9×9 人機實戰證據", "", `- live evidence 讀取失敗：${liveEvidence.error}；未以推測資料補值。`);
+      lines.push("", "## 9×9 人機實戰紀錄", "", `- 實戰紀錄讀取失敗：${liveEvidence.error}；沒有用推測資料補值。`);
     }
     if (liveEvidence.ok) {
       const integrated = computeIntegratedProgress(diagnostics, liveEvidence.summary || { skills: [] });
       if (integrated) {
-        lines.push("", "## 整合學習證據狀態", "", `- Policy：${integrated.progressPolicyVersion}`, `- 邊界：${integrated.interpretationBoundary}`, "");
+        lines.push("", "## 整合學習紀錄", "", `- 判定版本：${integrated.progressPolicyVersion}`, `- 使用限制：${integrated.interpretationBoundary}`, "");
         if (integrated.collectionReadiness) {
           const readiness = integrated.collectionReadiness;
-          lines.push(`- Live 資料收集：${readiness.label}；已掃描 ${readiness.assessedHumanTurns} 回合；eligible ${readiness.eligibleOpportunities}；首答 ${readiness.firstResponses}；未答 ${readiness.unansweredOpportunities}；跨局 session ${readiness.distinctSessionsWithFirstResponse}。`, `- 收集狀態邊界：${readiness.interpretationBoundary}`);
+          lines.push(`- 實戰資料收集：${readiness.label}；已查看 ${readiness.assessedHumanTurns} 回合；符合條件 ${readiness.eligibleOpportunities} 次；第一次作答 ${readiness.firstResponses} 次；未作答 ${readiness.unansweredOpportunities} 次；有作答紀錄的不同棋局 ${readiness.distinctSessionsWithFirstResponse} 局。`, `- 使用限制：${readiness.interpretationBoundary}`);
         }
         for (const skill of integrated.skills) {
           const name = (skills.find((item) => item.id === skill.skillId) || { name: skill.skillId }).name;
-          lines.push(`- ${name}：${skill.label}；課程可比較機會 ${skill.practiceQualifiedOpportunities}；延後 T2 完成週期 ${skill.completedDelayedT2Cycles}；live eligible ${skill.liveEligibleOpportunities}；live 首答完成 ${skill.liveSatisfiedFirstResponses}/${skill.liveFirstResponses}；下一個證據需求：${skill.nextEvidenceNeed}`);
+          lines.push(`- ${name}：${skill.label}；課程可比較機會 ${skill.practiceQualifiedOpportunities} 次；完成延後複習 ${skill.completedDelayedT2Cycles} 輪；符合條件的實戰機會 ${skill.liveEligibleOpportunities} 次；實戰第一次作答完成 ${skill.liveSatisfiedFirstResponses}/${skill.liveFirstResponses}；接下來需要：${skill.nextEvidenceNeed}`);
         }
       }
     }
