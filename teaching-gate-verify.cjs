@@ -13,8 +13,10 @@ function nonEmpty(value) { return typeof value === "string" && value.trim().leng
 function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate = CandidateVerifier.evaluateManifest(candidateManifest, __dirname)) {
   const errors = [];
   if (!evidence) return { usabilityPassed: false, accessibilityPassed: false, privateHoldoutPassed: false, r1bPassed: false, errors: ["尚未提供真人證據檔"] };
-  if (evidence.schemaVersion !== 2 || evidence.protocolId !== "go-formal-teaching-evidence-v2") errors.push("真人證據 schema 或 protocol 不符");
-  if (evidence.r1ContentFingerprint !== definition.r1ContentFingerprint) errors.push("真人證據未綁定目前 R1 內容指紋");
+  const schemaValid = evidence.schemaVersion === 2 && evidence.protocolId === "go-formal-teaching-evidence-v2";
+  const r1BindingValid = evidence.r1ContentFingerprint === definition.r1ContentFingerprint;
+  if (!schemaValid) errors.push("真人證據 schema 或 protocol 不符");
+  if (!r1BindingValid) errors.push("真人證據未綁定目前 R1 內容指紋");
   const expectedCandidateId = definition.formalTeachingCandidateId;
   const expectedCandidateFingerprint = definition.formalTeachingCandidateFingerprint;
   const candidateUsable = candidate
@@ -23,9 +25,12 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate 
     && candidate.assetFingerprint === expectedCandidateFingerprint
     && candidate.computedFingerprint === expectedCandidateFingerprint;
   if (!candidateUsable) errors.push("目前 formal teaching candidate manifest 未通過動態指紋驗證");
-  if (evidence.candidateId !== expectedCandidateId || evidence.candidateFingerprint !== expectedCandidateFingerprint) {
+  const rootCandidateBindingValid = evidence.candidateId === expectedCandidateId
+    && evidence.candidateFingerprint === expectedCandidateFingerprint;
+  if (!rootCandidateBindingValid) {
     errors.push("真人證據未綁定目前 formal teaching candidate");
   }
+  const evidenceEnvelopeValid = schemaValid && r1BindingValid && rootCandidateBindingValid;
 
   const teachingCriteria = definition.criteria.formalTeachingUse;
   const usability = evidence.usability || {};
@@ -44,7 +49,8 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate 
       && participant.blockingIssues.length === 0
       && nonEmpty(participant.evidenceReference)
     );
-  const usabilityPassed = candidateUsable
+  const usabilityPassed = evidenceEnvelopeValid
+    && candidateUsable
     && usability.candidateId === expectedCandidateId
     && usability.candidateFingerprint === expectedCandidateFingerprint
     && validTimestamp(usability.completedAt)
@@ -59,7 +65,8 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate 
   if (!usabilityPassed) errors.push("初學者關鍵任務觀察未達最低正式教學閘門（需逐位參與者完成全部關鍵任務並保留證據引用）");
 
   const accessibility = evidence.accessibility || {};
-  const accessibilityPassed = candidateUsable
+  const accessibilityPassed = evidenceEnvelopeValid
+    && candidateUsable
     && accessibility.candidateId === expectedCandidateId
     && accessibility.candidateFingerprint === expectedCandidateFingerprint
     && validTimestamp(accessibility.completedAt)
