@@ -334,7 +334,7 @@ test("棋盤頁在回合開始先建立 live assessment，首答與 retry 分離
   const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   assert.match(html, /live-evidence\.js\?v=live-evidence-v1/);
-  assert.match(html, /live-game-page\.js\?v=live-game-ui-v11/);
+  assert.match(html, /live-game-page\.js\?v=live-game-ui-v12/);
   assert.match(page, /ensureLiveAssessment\(\)/);
   assert.match(page, /recordLiveResponse\(/);
   assert.match(page, /existingResponseCount\(assessmentId\)/);
