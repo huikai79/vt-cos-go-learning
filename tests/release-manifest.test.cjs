@@ -106,6 +106,12 @@ test("學習入口載入完整題庫，R1 入口只載入去答案審查資料",
 });
 
 
+test("曲三 bounded practice 資產列入公開發佈清單", () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
+  assert.ok(manifest.publicFiles.includes("classic-bent-three-contract.js"));
+  assert.ok(manifest.publicFiles.includes("classic-bent-three-practice.js"));
+});
+
 test("丁四 bounded practice 資產列入公開發佈清單", () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
   assert.ok(manifest.publicFiles.includes("classic-pyramid-four-contract.js"));
