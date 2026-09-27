@@ -14,7 +14,8 @@ const baseUrl = requestedBaseUrl ? new URL(requestedBaseUrl.endsWith("/") ? requ
 const page = baseUrl ? new URL("index.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../index.html")).href;
 const reviewPage = baseUrl ? new URL("r1-review.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../r1-review.html")).href;
 const advancedPage = baseUrl ? new URL("advanced.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../advanced.html")).href;
-const classicPage = baseUrl ? new URL("classic-shapes.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../classic-shapes.html")).href;\nconst historyPage = baseUrl ? new URL("history.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../history.html")).href;
+const classicPage = baseUrl ? new URL("classic-shapes.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../classic-shapes.html")).href;
+const historyPage = baseUrl ? new URL("history.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../history.html")).href;
 
 function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
