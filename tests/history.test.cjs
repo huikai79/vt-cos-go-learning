@@ -52,3 +52,33 @@ test("巡將圍棋、關羽刮骨與原爆棋都有 claim-near source", () => {
   assert.ok(html.includes("https://ctext.org/sanguozhi/36"), "Guan Yu primary text");
   assert.ok(html.includes("https://www.nihonkiin.or.jp/teach/history/history03.html"), "atomic-bomb game official history");
 });
+
+
+test("17→19 路與七十二的敘述不把數字巧合升格為改盤因果", () => {
+  assert.match(html, /棋局縱橫，各十七道|棋局縱橫各十七道/);
+  assert.match(html, /19² − 17² = 72.*今天做的算術比較/s);
+  assert.match(html, /古籍的「七十二」指 19 路棋盤的外周交叉點數/);
+  assert.match(html, /兩個 72 不能當成同一條歷史因果證據/);
+});
+
+test("歷史來源頁明示傳世文本限制、查核日期，且不保留未實質支撐頁面敘述的裝飾性來源", () => {
+  assert.match(html, /古籍連結證明的是「現存傳世文本／引文如何記載」/);
+  assert.match(html, /本頁來源最後查核：2026-09-27/);
+  assert.doesNotMatch(html, /唐代圍棋子材料分析/);
+});
+
+test("所有新分頁外部連結都使用 noreferrer，歷史頁沒有 runtime script", () => {
+  const externalTargets = [...html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)].map((match) => match[0]);
+  assert.ok(externalTargets.length >= 10);
+  assert.ok(externalTargets.every((tag) => /rel="[^"]*noreferrer[^"]*"/.test(tag)));
+  assert.doesNotMatch(html, /<script\b/i);
+  assert.match(html, /history\.css\?v=history-explore-v2/);
+});
+
+test("歷史頁小字配色維持一般文字 AA 對比安全值", () => {
+  const css = fs.readFileSync(path.join(root, "history.css"), "utf8");
+  assert.match(css, /\.history-brand small\{font-size:\.75rem;color:#53675a\}/);
+  assert.match(css, /\.question-number\{font-size:\.82rem;font-weight:900;color:#52685a\}/);
+  assert.match(css, /\.compare-head\{font-size:\.82rem;font-weight:850;color:#52685a;background:#eef3eb\}/);
+  assert.match(css, /footer\{padding:24px;color:#53675a/);
+});
