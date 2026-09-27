@@ -296,3 +296,4 @@
 - **UX：** 此區使用『活／死』狀態判斷，棋盤只供觀察；正答後才揭名與 proof 摘要。
 - **反證：** wrong geometry、錯 shapeKind、item 偷塞 expectedStatus、錯誤狀態回答均 fail closed。
 - **真人 gate：** R1a、三位初學者 usability、真人 accessibility 依使用者決定延後到最後階段；本步不修改 teaching gate。
+- **Validation：** PR #44 verify run #505 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
