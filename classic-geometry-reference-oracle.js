@@ -44,7 +44,7 @@
   function validateMetadata(metadata) {
     const errors=[];
     if (!metadata || typeof metadata !== "object") return {ok:false,errors:["oracle metadata missing"]};
-    for (const field of ["sourceId","sourceLocator","sourceDigest","evidenceChain","candidateConceptId"]) {
+    for (const field of ["sourceId","sourceLocator","sourceDigest","evidenceChain","candidateConceptId","comparisonContractId"]) {
       if (!metadata[field] || typeof metadata[field] !== "string") errors.push(field+" missing");
     }
     return {ok:errors.length===0,errors};
@@ -88,6 +88,7 @@
       sourceDigest:metadata.sourceDigest,
       evidenceChain:metadata.evidenceChain,
       candidateConceptId:metadata.candidateConceptId,
+      comparisonContractId:metadata.comparisonContractId,
       requireContext:Boolean(requireContext),
       sameShape:comparison.sameShape === true,
       sameContext:comparison.sameContext === true,
@@ -120,7 +121,7 @@
     if (report.authority !== "reference_oracle_only") errors.push("authority invalid");
     if (report.canonicalPromotionAllowed !== false) errors.push("canonical promotion must remain false");
     if (![STATUS.REFERENCE_MATCH,STATUS.REFERENCE_DIFFERENT,STATUS.INSUFFICIENT,STATUS.INVALID].includes(report.status)) errors.push("status invalid");
-    for (const field of ["sourceId","sourceLocator","sourceDigest","evidenceChain","candidateConceptId"]) {
+    for (const field of ["sourceId","sourceLocator","sourceDigest","evidenceChain","candidateConceptId","comparisonContractId"]) {
       if (!report[field] || typeof report[field] !== "string") errors.push(field+" missing");
     }
     if (hasForbiddenKey(report)) errors.push("report contains source-derived geometry or fingerprint material");
@@ -141,6 +142,21 @@
       else valid.push(report);
     }
     if (errors.length) return {ok:false,status:STATUS.INVALID,errors,independentEvidenceUnits:0,canonicalPromotionAllowed:false};
+
+    const comparisonKeys=new Set(valid.map((report)=>[
+      report.candidateConceptId,
+      report.comparisonContractId,
+      String(Boolean(report.requireContext))
+    ].join("|")));
+    if (comparisonKeys.size>1) {
+      return {
+        ok:false,
+        status:STATUS.INVALID,
+        errors:["reference reports use incompatible candidate or comparison contracts"],
+        independentEvidenceUnits:0,
+        canonicalPromotionAllowed:false
+      };
+    }
 
     const unique=new Map();
     for (const report of valid) {
@@ -182,7 +198,7 @@
   }
 
   return Object.freeze({
-    version:"classic-geometry-reference-oracle-v1",
+    version:"classic-geometry-reference-oracle-v2",
     STATUS,
     FORBIDDEN_PERSISTED_KEYS,
     validateMetadata,
