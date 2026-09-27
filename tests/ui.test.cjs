@@ -850,6 +850,49 @@ async function main() {
     assert.equal(correctFeedback.name, "直三");
     assert.equal(correctFeedback.nextDisabled, false);
 
+    const flowerSixState = await evaluate(socket, `(() => {
+      const board = document.querySelector('#flower-six-board');
+      const points = [...board.querySelectorAll('[data-flower-six-x][data-flower-six-y]')];
+      return {
+        pointCount: points.length,
+        prompt: document.querySelector('#flower-six-prompt').textContent,
+        revealHidden: document.querySelector('#flower-six-reveal').hidden,
+        nextDisabled: document.querySelector('#flower-six-next').disabled
+      };
+    })()`);
+    assert.equal(flowerSixState.pointCount, 6);
+    assert.match(flowerSixState.prompt, /輪到黑棋守方/);
+    assert.equal(flowerSixState.revealHidden, true);
+    assert.equal(flowerSixState.nextDisabled, true);
+
+    const flowerSixWrong = await evaluate(socket, `(() => {
+      const point = document.querySelector('#flower-six-board [data-flower-six-x="3"][data-flower-six-y="3"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#flower-six-feedback').textContent,
+        revealHidden: document.querySelector('#flower-six-reveal').hidden,
+        nextDisabled: document.querySelector('#flower-six-next').disabled
+      };
+    })()`);
+    assert.match(flowerSixWrong.feedback, /不是兩個突出點的根部|不是.*急所/);
+    assert.equal(flowerSixWrong.revealHidden, true);
+    assert.equal(flowerSixWrong.nextDisabled, true);
+
+    const flowerSixCorrect = await evaluate(socket, `(() => {
+      const point = document.querySelector('#flower-six-board [data-flower-six-x="2"][data-flower-six-y="2"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#flower-six-feedback').textContent,
+        revealHidden: document.querySelector('#flower-six-reveal').hidden,
+        name: document.querySelector('#flower-six-name').textContent,
+        nextDisabled: document.querySelector('#flower-six-next').disabled
+      };
+    })()`);
+    assert.match(flowerSixCorrect.feedback, /共同急所|degree-4/);
+    assert.equal(flowerSixCorrect.revealHidden, false);
+    assert.equal(flowerSixCorrect.name, "花六／Rabbity Six");
+    assert.equal(flowerSixCorrect.nextDisabled, false);
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
