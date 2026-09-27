@@ -25,7 +25,7 @@ test("歷史探索頁明示六種證據狀態並保留未知", () => {
 
 test("歷史探索頁不把堯傳說或孫策棋譜升格為硬史實", () => {
   assert.match(html, /堯造圍棋是重要的起源傳說/);
-  assert.match(html, /《忘憂清樂集》所收 19 路棋譜則是後世傳本，不能直接等同三國原局/);
+  assert.match(html, /《忘憂清樂集》所收 19 路棋譜則是後世傳本.*不能直接等同三國原局/s);
   assert.doesNotMatch(html, /堯帝發明圍棋已有四千年/);
 });
 
@@ -87,7 +87,7 @@ test("歷史頁小字配色維持一般文字 AA 對比安全值", () => {
 test("孫策呂範的對弈傳文與後世十九路棋譜分開處理", () => {
   assert.ok(html.includes("https://ctext.org/taiping-yulan/753/zh"));
   assert.match(html, /只支持對弈敘事，不直接驗證後世 19 路棋譜/);
-  assert.match(html, /《忘憂清樂集》所收 19 路棋譜則是後世傳本，不能直接等同三國原局/);
+  assert.match(html, /《忘憂清樂集》所收 19 路棋譜則是後世傳本.*不能直接等同三國原局/s);
 });
 
 test("原爆棋使用可直接支撐再開與終局時間的日本棋院官方頁", () => {
@@ -105,4 +105,12 @@ test("History Explore learner-facing version metadata 一致為 v2", () => {
   assert.match(html, /history\.css\?v=history-explore-v2/);
   assert.match(html, /歷史探索 v2/);
   assert.doesNotMatch(html, /歷史探索 v1/);
+});
+
+
+test("孫策呂範棋譜真實性以後世 attribution 與質疑呈現，不冒充三國同期棋譜", () => {
+  assert.match(html, /《江表傳》的對弈傳文今可見《太平御覽》轉引/);
+  assert.match(html, /「所下とされる」棋譜/);
+  assert.ok(html.includes("https://ctext.org/wiki.pl?chapter=496456&amp;if=gb"));
+  assert.match(html, /疑是後人假託/);
 });
