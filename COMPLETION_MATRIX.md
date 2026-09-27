@@ -570,3 +570,4 @@
 - **Geometry boundary：** L Group ↔ Carpenter's Square = `related_unresolved`。名稱或 taxonomy relation 不取得 geometry/scoring authority。
 - **Migration／rollback：** practice/scoring/storage/evidence semantics 不變；回復 v2 ontology 檔與 asset version 即可，不需 learner data migration。
 - **未驗：** 小曲尺 canonical geometry、L+1 的多 geometry 細分、Notcher／鎖型、Comb／Notcher taxonomy 的原始教材關係、真人 usability、formal assessment、learning effect。
+- **Validation：** PR #32 verify run #459 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持 ontology v3 relation schema／compatibility UI 工程契約。
