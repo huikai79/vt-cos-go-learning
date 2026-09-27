@@ -62,7 +62,7 @@ test("Pages 採無 Jekyll 的 repository root 靜態發布", () => {
     defaultProjectUrl: "https://huikai79.github.io/vt-cos-go-learning/",
     accountCustomDomainInherited: true,
     jekyllDisabled: true,
-    entrypoints: ["index.html", "advanced.html", "classic-shapes.html", "live-game.html", "r1-review.html"]
+    entrypoints: ["index.html", "advanced.html", "classic-shapes.html", "history.html", "live-game.html", "r1-review.html"]
   });
   assert.equal(fs.statSync(path.join(root, ".nojekyll")).isFile(), true);
 });
@@ -130,4 +130,12 @@ test("世界名型 ontology、geometry registry 與 compatibility catalog 都列
   assert.ok(manifest.publicFiles.includes("tests/classic-geometry-reference-oracle.test.cjs"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
   assert.ok(manifest.hosting.entrypoints.includes("classic-shapes.html"));
+});
+
+
+test("歷史探索頁與樣式列入公開靜態入口，但不進 learner runtime", () => {
+  assert.ok(manifest.hosting.entrypoints.includes("history.html"));
+  for (const file of ["history.html", "history.css", "tests/history.test.cjs"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
 });
