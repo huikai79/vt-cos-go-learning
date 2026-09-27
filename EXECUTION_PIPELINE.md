@@ -319,3 +319,12 @@
 - **停止線：** `鎖型 = Notcher` 保持未確認；Comb/Notcher 沒有通過 geometry extraction/fingerprint 前只可 catalog-only。任何後續 playable 工作都必須重新走 geometry identity → conditions/ruleset → scoring/variation contract → negative oracle。
 - **下一個可推進條件：** 取得 rights/provenance 清楚的 geometry source，或建立可在 reference-only oracle 中比較、但不持久化來源座標的獨立 observation；否則不靠更多文字來源強行解除 geometry unknown。
 - **不變：** 這一輪不影響 R0、R1a/R1b、正式 usability gate、learner state、scheduler、T2/T3 或 formal evaluation。
+
+
+## 2026-09-28 Decision note｜小曲尺 geometry-first 研究的正確下一步改為『先獨立建模，再等 geometry』
+
+- **研究結果：** 文字搜尋沒有解除 geometry unknown，反而揭露原先二選一問題定義過窄：中文「小曲尺」有自身教學用法與曲尺型系列脈絡，因此先建立中文 candidate concept。
+- **目前 gate：** nomenclature/taxonomy 可更新；geometry/scoring 不更新。`小曲尺 ↔ L Group`、`小曲尺 ↔ Carpenter's Square` 都保持 `RELATED_UNRESOLVED`。
+- **下一個可解除 UNKNOWN 的條件：** 取得同一來源版本、provenance 清楚的實際圖形 observation；若 rights 只允許 reference use，就走 reference-only oracle 並只持久化 sanitized report；若 rights 可重用，再走 extraction independent review → fingerprint。
+- **停止線：** 不再用『都是死棋』『都像小曲尺』『名稱含 small』等語義線索代替 geometry。若未取得圖形，這一研究分支到此停止，不以更多同義搜尋灌高 confidence。
+- **Formal boundary：** 不改 learner state、KC、scheduler、T0–T3、R1、formal teaching candidate 或 formal evaluation。
