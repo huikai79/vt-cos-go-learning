@@ -1,9 +1,10 @@
 (function (root) {
   "use strict";
 
-  const STORAGE_KEY = "go-live-practice-events-v1";
-  const SCHEMA_VERSION = 1;
-  const EVENT_STREAM_VERSION = "live-practice-events-v1";
+  const STORAGE_KEY = "go-live-practice-events-v2";
+  const LEGACY_STORAGE_KEY = "go-live-practice-events-v1";
+  const SCHEMA_VERSION = 2;
+  const EVENT_STREAM_VERSION = "live-practice-events-v2";
   const DESCRIPTOR = {
     id: EVENT_STREAM_VERSION,
     evidenceUse: "practice_observation_only",
@@ -22,7 +23,7 @@
       && typeof event.sessionId === "string"
       && typeof event.type === "string"
       && typeof event.occurredAt === "string"
-      && [3, 5, 7, 9].includes(Number(event.boardSize))
+      && [3, 5, 7, 9, 19].includes(Number(event.boardSize))
       && event.formalEligible === false
       && event.qualifiedOpportunity === false);
   }
@@ -109,7 +110,20 @@
     };
   }
 
-  const api = { STORAGE_KEY, SCHEMA_VERSION, EVENT_STREAM_VERSION, DESCRIPTOR, read, append, summarize, normalizeEvent };
+  function readLegacy(storage) {
+    let raw;
+    try { raw = storage.getItem(LEGACY_STORAGE_KEY); }
+    catch (error) { return { ok: false, error: "practice_event_legacy_storage_unreadable", detail: error && error.message || "unknown", store: null }; }
+    if (raw === null) return { ok: true, error: null, store: { schemaVersion: 1, eventStreamVersion: "live-practice-events-v1", events: [] } };
+    try {
+      const value = JSON.parse(raw);
+      const ok = record(value) && value.schemaVersion === 1 && value.eventStreamVersion === "live-practice-events-v1" && Array.isArray(value.events)
+        && value.events.every((event) => record(event) && event.schemaVersion === 1 && event.eventStreamVersion === "live-practice-events-v1" && [3,5,7,9].includes(Number(event.boardSize)) && event.formalEligible === false && event.qualifiedOpportunity === false);
+      return ok ? { ok: true, error: null, store: value } : { ok: false, error: "practice_event_legacy_store_invalid", store: null, raw };
+    } catch (_) { return { ok: false, error: "practice_event_legacy_store_malformed", store: null, raw }; }
+  }
+
+  const api = { STORAGE_KEY, LEGACY_STORAGE_KEY, SCHEMA_VERSION, EVENT_STREAM_VERSION, DESCRIPTOR, readLegacy, read, append, summarize, normalizeEvent };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.GoPracticeEvents = api;
 })(typeof window !== "undefined" ? window : globalThis);
