@@ -128,6 +128,8 @@
     ondaCornerL: source("ondaCornerL","恩田烈彦：隅のL字型をマスターしよう","https://note.com/go_pro275_denen/n/n299c0c730c08","professional_instruction","onda-corner-l"),
     legacyEnglishChineseTerms: source("legacyEnglishChineseTerms","2007 臺灣網路流傳英文圍棋術語：Carpenter's Square → 小曲尺","https://www.ptt.cc/bbs/NCCUGO/M.1191493050.A.A65.html","historical_community","legacy-en-zh-terms-2007"),
     chineseSmallCarpenterDead: source("chineseSmallCarpenterDead","中文教學：小曲尺是死棋","https://read01.com/BngJNdM.html","instructional_secondary","chinese-small-carpenter-dead"),
+    renrendocCurvedSquareCourse: source("renrendocCurvedSquareCourse","人人文庫使用者上傳《圍棋死活基本功》：曲尺型系列","https://www.renrendoc.com/paper/109692304.html","user_uploaded_document_secondary","renrendoc-curved-square-course"),
+    sohuTeachingSystemSmallRuler: source("sohuTeachingSystemSmallRuler","搜狐教學文章：小曲尺長大的故事","https://www.sohu.com/a/196218349_689785","instructional_secondary","sohu-small-ruler-teaching-sequence"),
     badukworldYeeFanTerms: source("badukworldYeeFanTerms","BadukWorld：YeeFan 中韓英術語鏡像","https://badukworld.co.kr/biz/YeeFan.html","community_secondary","yeefan-chinese-terms"),
     koreanWikibooksLifeDeath: source("koreanWikibooksLifeDeath","韓文 Wikibooks：바둑 입문/사활（빗형）","https://ko.wikibooks.org/wiki/%EB%B0%94%EB%91%91_%EC%9E%85%EB%AC%B8/%EC%82%AC%ED%99%9C","community_secondary","korean-wikibooks-life-death"),
     lifeIn19x19DaviesNotes: source("lifeIn19x19DaviesNotes","LifeIn19x19：James Davies《Life and Death》讀書筆記","https://www.lifein19x19.com/viewtopic.php?t=4820","community_secondary","davies-life-death-community-notes")
@@ -296,6 +298,7 @@
         name("zh-CN","金柜角",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.FEDERATION_DICTIONARY,REVIEW.PARTIAL,["ffgDictionary"]),
         name("zh-Hant","金櫃角",NAME_STATUS.RARE_OR_LEXICOGRAPHIC,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.SCRIPT_CONVERSION,REVIEW.PARTIAL,["ffgDictionary"]),
         name("zh-CN","斗方",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["go4goChinese","yeefanChineseTerms"]),
+        name("zh-Hant","曲尺",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["go4goChinese","yeefanChineseTerms"]),
         name("zh-Hant","小曲尺",NAME_STATUS.NEEDS_REVIEW,SEMANTIC_ROLE.FAMILY_NAME,RELATION.UNKNOWN,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.NEEDS_REVIEW,["legacyEnglishChineseTerms"]),
         name("zh-Hant","木匠方",NAME_STATUS.DESCRIPTIVE_TRANSLATION,SEMANTIC_ROLE.DESCRIPTIVE_LABEL,RELATION.EXACT,USAGE_SCOPE.PROJECT_ONLY,REVIEW.PARTIAL,[])
       ],
@@ -303,6 +306,31 @@
       geometryIdentity:geometry("corner_family",REVIEW.PARTIAL,null,null,"corner",{}), taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"zh-TW",name:"金櫃角",relation:"regional_preferred_name",status:"blocked_pending_regional_usage",reason:"簡繁字形轉換不等於臺灣慣用名稱",sourceIds:["ffgDictionary"]}],
       sourceIds:["nihonkiinCarpenter","bgaTerms","ffgDictionary","go4goChinese","yeefanChineseTerms","legacyEnglishChineseTerms"], note:"日英 mapping 穩固；繁中首選名稱未判定；「小曲尺」存在歷史映射歧義，不得視為 exact alias。"
+    },
+    {
+      id:"small-curved-ruler-candidate-v1", entityType:ENTITY_TYPE.CORNER_LIFE_DEATH_FAMILY, catalogCategory:"complex_corner",
+      teachingLabel:"小曲尺（中文候選概念）", practiceStatus:"catalog_candidate_only", reviewStatus:REVIEW.PARTIAL,
+      names:[
+        name("zh-Hant","小曲尺",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.PARTIAL,["chineseSmallCarpenterDead","sohuTeachingSystemSmallRuler"],{displayPreference:"project"})
+      ],
+      nameResearch:[{
+        locale:"cross-language",
+        status:"canonical_mapping_unresolved",
+        reviewedAt:"2026-09-28",
+        searchScope:["zh-CN","zh-TW","en","ja-JP","ko-KR","小曲尺","曲尺型","L Group","Carpenter's Square"]
+      }],
+      geometryIdentity:geometry("corner_family_candidate",REVIEW.NEEDS_REVIEW,null,null,"corner",{sourceGeometry:"not_yet_structured"}),
+      taxonomyMemberships:[
+        {taxonomyId:"renrendoc-curved-square-course",familyId:"曲尺型系列",role:"smallest_member_candidate",reviewStatus:REVIEW.NEEDS_REVIEW,sourceIds:["renrendocCurvedSquareCourse"]},
+        {taxonomyId:"sohu-small-ruler-teaching-sequence",familyId:"小曲尺延伸教學",role:"teaching_root_candidate",reviewStatus:REVIEW.PARTIAL,sourceIds:["sohuTeachingSystemSmallRuler"]}
+      ],
+      rulesetBehavior:[],
+      negativeMappings:[
+        {locale:"en",name:"L Group",relation:"exact_alias",status:"blocked_pending_geometry",reason:"中文來源支持「小曲尺」是獨立教學名型，但目前沒有可重算 geometry 足以證明與 L Group exact。",sourceIds:["chineseSmallCarpenterDead","renrendocCurvedSquareCourse","sohuTeachingSystemSmallRuler"]},
+        {locale:"en",name:"Carpenter's Square",relation:"exact_alias",status:"blocked_pending_geometry",reason:"舊術語表直接翻譯為 Carpenter's Square，但現代中文教學把「小曲尺」當死形／延伸教學 root；需 geometry-first review，不能由詞表覆蓋概念邊界。",sourceIds:["legacyEnglishChineseTerms","chineseSmallCarpenterDead","sohuTeachingSystemSmallRuler"]}
+      ],
+      sourceIds:["chineseSmallCarpenterDead","renrendocCurvedSquareCourse","sohuTeachingSystemSmallRuler","legacyEnglishChineseTerms"],
+      note:"v5 將「小曲尺」先保存為中文自身的 candidate concept，而不是強迫掛到 L Group 或 Carpenter's Square。中文來源可支持它作為基本死活名稱與曲尺型教學序列中的最小／root 候選，但 source-extracted text 尚不足以重建 canonical coordinates。"
     },
     {
       id:"knife-five-candidate-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
@@ -477,15 +505,15 @@
 
   const nameAmbiguities = Object.freeze([
     Object.freeze({
-      id:"zh-small-carpenters-square-ambiguity-v1",
+      id:"zh-small-curved-ruler-ambiguity-v2",
       locale:"zh-Hant",
       name:"小曲尺",
       status:AMBIGUITY_STATUS.AMBIGUOUS_HISTORICAL_MAPPING,
       resolutionRequirement:AMBIGUITY_STATUS.GEOMETRY_REQUIRED,
-      candidateConceptIds:Object.freeze(["carpenters-square-v1","l-group-v1"]),
+      candidateConceptIds:Object.freeze(["small-curved-ruler-candidate-v1","carpenters-square-v1","l-group-v1"]),
       reviewStatus:REVIEW.NEEDS_REVIEW,
-      sourceIds:Object.freeze(["legacyEnglishChineseTerms","chineseSmallCarpenterDead","badukworldProverbs"]),
-      note:"舊英中術語鏈直接把 Carpenter's Square 寫成小曲尺；另一中文教學把小曲尺描述為死棋，而韓文教材明確區分 Carpenter's Square 為劫、L Group 為死。衝突只能靠 geometry-first retrieval 解決。"
+      sourceIds:Object.freeze(["legacyEnglishChineseTerms","chineseSmallCarpenterDead","renrendocCurvedSquareCourse","sohuTeachingSystemSmallRuler","badukworldProverbs"]),
+      note:"v5 不再把「小曲尺」強迫成 L Group / Carpenter's Square 二選一。中文教材本身把小曲尺當死活名型，另有「曲尺型」系列的最小型與「小曲尺長大的故事」教學脈絡；舊英中術語鏈又把 Carpenter's Square 翻成小曲尺，而韓文教材區分 Carpenter's Square 為劫、L Group 為死。先保留中文 candidate concept，跨語 exact identity 仍需 geometry-first retrieval。"
     })
   ]);
 
@@ -506,7 +534,9 @@
   ]);
 
   const geometryRelations = Object.freeze([
-    Object.freeze({id:"l-vs-carpenter-unresolved-v1",subjectConceptId:"l-group-v1",relation:GEOMETRY_RELATION.RELATED_UNRESOLVED,objectConceptId:"carpenters-square-v1",reviewStatus:REVIEW.NEEDS_REVIEW,sourceIds:Object.freeze(["badukworldProverbs","legacyEnglishChineseTerms"]),note:"韓文 taxonomy 明確區分兩者；中文小曲尺映射衝突。這只證明需要 geometry review，不證明 parent/variant。"})
+    Object.freeze({id:"l-vs-carpenter-unresolved-v1",subjectConceptId:"l-group-v1",relation:GEOMETRY_RELATION.RELATED_UNRESOLVED,objectConceptId:"carpenters-square-v1",reviewStatus:REVIEW.NEEDS_REVIEW,sourceIds:Object.freeze(["badukworldProverbs","legacyEnglishChineseTerms"]),note:"韓文 taxonomy 明確區分兩者；中文小曲尺映射衝突。這只證明需要 geometry review，不證明 parent/variant。"}),
+    Object.freeze({id:"small-ruler-vs-l-unresolved-v1",subjectConceptId:"small-curved-ruler-candidate-v1",relation:GEOMETRY_RELATION.RELATED_UNRESOLVED,objectConceptId:"l-group-v1",reviewStatus:REVIEW.NEEDS_REVIEW,sourceIds:Object.freeze(["chineseSmallCarpenterDead","renrendocCurvedSquareCourse","sohuTeachingSystemSmallRuler","badukworldProverbs"]),note:"兩邊都存在『最小／小型曲尺-like、死』的教學訊號，但目前缺 source-derived structured geometry；不得由結果或名稱類比推成 same/variant。"}),
+    Object.freeze({id:"small-ruler-vs-carpenter-unresolved-v1",subjectConceptId:"small-curved-ruler-candidate-v1",relation:GEOMETRY_RELATION.RELATED_UNRESOLVED,objectConceptId:"carpenters-square-v1",reviewStatus:REVIEW.NEEDS_REVIEW,sourceIds:Object.freeze(["legacyEnglishChineseTerms","chineseSmallCarpenterDead","renrendocCurvedSquareCourse"]),note:"舊詞表支持翻譯關係，但中文教學狀態與曲尺型系列顯示概念層級可能不同；未取得 geometry 前維持 unresolved。"})
   ]);
 
   const ENTITY_VALUES = new Set(Object.values(ENTITY_TYPE));
@@ -587,7 +617,7 @@
   if (!geometryRelations.every(validateGeometryRelation)) throw new Error("Invalid classic-shape geometry relation.");
 
   return Object.freeze({
-    version:"classic-shape-ontology-v4",
+    version:"classic-shape-ontology-v5",
     REVIEW,
     ENTITY_TYPE,
     NAME_STATUS,

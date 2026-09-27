@@ -202,7 +202,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog compatibility entry.");
 
   return Object.freeze({
-    version:"world-classic-shapes-v18",
+    version:"world-classic-shapes-v19",
     ontologyVersion:Ontology.version,
     REVIEW,
     ZH_NAME_STATUS,
