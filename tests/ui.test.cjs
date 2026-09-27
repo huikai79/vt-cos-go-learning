@@ -949,7 +949,7 @@ async function main() {
         nextDisabled: document.querySelector('#four-status-next').disabled
       };
     })()`);
-    assert.match(fourStatusWrong.feedback, /不符合 rules-backed proof/);
+    assert.match(fourStatusWrong.feedback, /和規則檢查結果不一致/);
     assert.equal(fourStatusWrong.revealHidden, true);
     assert.equal(fourStatusWrong.nextDisabled, true);
 
