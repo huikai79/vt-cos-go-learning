@@ -106,6 +106,12 @@ test("學習入口載入完整題庫，R1 入口只載入去答案審查資料",
 });
 
 
+test("曲四 status proof 資產列入公開發佈清單", () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
+  assert.ok(manifest.publicFiles.includes("classic-curved-four-status-contract.js"));
+  assert.ok(manifest.publicFiles.includes("classic-curved-four-status-practice.js"));
+});
+
 test("四目眼 status proof 資產列入公開發佈清單", () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
   assert.ok(manifest.publicFiles.includes("classic-four-space-status-contract.js"));

@@ -999,6 +999,46 @@ async function main() {
     assert.match(straightFourCorrect.proof, /兩個分離眼點/);
     assert.equal(straightFourCorrect.nextDisabled, false);
 
+    const curvedFourState = await evaluate(socket, `(() => {
+      document.querySelector('#four-status-next').click();
+      document.querySelector('#four-status-dead').click();
+      document.querySelector('#four-status-next').click();
+      document.querySelector('#four-status-alive').click();
+      document.querySelector('#four-status-next').click();
+      return {
+        prompt: document.querySelector('#four-status-prompt').textContent,
+        tag: document.querySelector('#four-status-tag').textContent,
+        revealHidden: document.querySelector('#four-status-reveal').hidden
+      };
+    })()`);
+    assert.match(curvedFourState.prompt, /折彎的四目眼/);
+    assert.match(curvedFourState.tag, /5 \/ 6/);
+    assert.equal(curvedFourState.revealHidden, true);
+
+    const curvedFourCorrect = await evaluate(socket, `(() => {
+      document.querySelector('#four-status-alive').click();
+      return {
+        feedback: document.querySelector('#four-status-feedback').textContent,
+        name: document.querySelector('#four-status-name').textContent,
+        proof: document.querySelector('#four-status-proof').textContent,
+        nextDisabled: document.querySelector('#four-status-next').disabled
+      };
+    })()`);
+    assert.match(curvedFourCorrect.feedback, /曲四是無條件活形|兩個分離眼點/);
+    assert.equal(curvedFourCorrect.name, "曲四／Curved Four");
+    assert.match(curvedFourCorrect.proof, /曲四仍活/);
+    assert.equal(curvedFourCorrect.nextDisabled, false);
+
+    const curvedFourShiftState = await evaluate(socket, `(() => {
+      document.querySelector('#four-status-next').click();
+      return {
+        prompt: document.querySelector('#four-status-prompt').textContent,
+        tag: document.querySelector('#four-status-tag').textContent
+      };
+    })()`);
+    assert.match(curvedFourShiftState.prompt, /旋轉、平移並換成白棋守/);
+    assert.match(curvedFourShiftState.tag, /6 \/ 6/);
+
     const pyramidFourState = await evaluate(socket, `(() => ({
       points: document.querySelectorAll('#pyramid-four-board [data-pyramid-four-x][data-pyramid-four-y]').length,
       prompt: document.querySelector('#pyramid-four-prompt').textContent,

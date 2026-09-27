@@ -1,3 +1,7 @@
+2026-09-28 曲四 / Curved Four status proof v1：方四／直四合併後，四目眼 status contrast 還缺『彎折但仍活』的 topology，否則學習者可能把 straightness 誤學成活形必要條件。Go4Go 將「彎四」對應 Bent Four；Chen & Chen (1999) 將 perfect four-point curved line 明確稱 Curved-Four，並列為 2-eye region。另有中文教材把曲四與直四並列為活形。
+新增獨立 `classic-curved-four-status-v1`，不修改已驗證的 `classic-four-space-status-v1`。曲四使用 L-tetromino geometry；對攻方四種第一手逐一重播，守方每一支都必須至少找到一手合法回應，使剩餘兩個眼點互不相鄰。兩個 variant 覆蓋換色、旋轉與位移。Ontology 明確加入 negative mapping：Curved Four／Bent Four 不得自動 alias `Bent Four in the Corner`，因後者是 corner/rules-sensitive concept。
+UI 將曲四追加到同一四目眼 status contrast 的第 5、6 題，前四題方四／直四順序與 contract 完全不變。此 proof 同樣只適用 sealed、無缺陷的局部 eye-space，不外推盤角曲四、外氣、斷點或全局連接。
+
 2026-09-28 方四／直四 status proof v1：曲三合併後，下一個 bottleneck 不是再加一個『找唯一急所』題，而是避免學習者形成『所有眼形都找中心』的錯誤規則。外部教學來源對 Square Four 甚至有明顯衝突：Board to Bits 與多份傳統教材指出完全包圍的 2×2 Square Four 即使守方先走仍死；另有近期網站反向寫成 always alive。因此本輪不做來源投票，而用 rules-backed finite proof 建立 `classic-four-space-status-v1`。
 方四 proof：逐一重播守方四種第一手，剩餘三空必須全部同構於曲三，且攻方彎點回應合法。直四 proof：逐一重播攻方四種第一手，守方每一支都必須至少有一手合法回應，使剩餘兩個眼點互不相鄰。題目不保存 expectedStatus／answer。前提限定 sealed、完全包圍、無缺陷的局部眼空；不外推全局含缺陷、外氣或連接的局面。
 
