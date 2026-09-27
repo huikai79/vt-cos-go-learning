@@ -27,12 +27,12 @@
         <a class="subtle-button" href="index.html#core">核心課程</a>
         <a class="subtle-button" href="live-game.html?size=9">9×9 實戰練習</a>
       </div>
-      <span class="question-tag">Core 後續 · practice only</span>
+      <span class="question-tag">核心課程後續 · 進階練習</span>
       <h1>進階訓練</h1>
       <p>這不是第 16 單元。完成核心課程後，改用多條訓練線反覆深化同一能力：先自己判斷，再看逐步圖、理由與反例。</p>
       <div class="advanced-boundary">
         <strong>證據邊界</strong>
-        <span>本頁保存首答、提示與重試，但只作進階練習紀錄；不更新 KC、scheduler、T2／T3、mastery 或正式評量。</span>
+        <span>本頁會保存第一次作答、提示與重試紀錄，但只用於進階練習，不影響核心課程的學習紀錄、複習安排或正式評量。</span>
       </div>
     </header>
 
@@ -54,7 +54,7 @@
           <span id="advanced-count"></span>
         </div>
         <h2 id="advanced-title" tabindex="-1"></h2>
-        <p class="advanced-target"><span>Target</span><strong id="advanced-target"></strong></p>
+        <p class="advanced-target"><span>本題目標</span><strong id="advanced-target"></strong></p>
         <p class="advanced-prompt" id="advanced-prompt"></p>
         <div id="advanced-choices" class="advanced-choices" role="group" aria-label="作答選項"></div>
         <p class="answer-policy">先作答再看完整理由；答錯可重試，但首答會和重試分開保存。</p>
@@ -102,7 +102,7 @@
     <section class="advanced-sequence-section" aria-labelledby="advanced-sequence-title">
       <div class="advanced-section-head">
         <div>
-          <span class="advanced-kicker">棋盤 Response</span>
+          <span class="advanced-kicker">棋盤作答</span>
           <h2 id="advanced-sequence-title">多手讀棋實走</h2>
         </div>
         <p id="advanced-sequence-summary">這一區不靠選項；每一步都重新用規則引擎驗證。</p>
@@ -110,11 +110,11 @@
       <div id="advanced-sequence-list" class="advanced-sequence-list" aria-label="多手讀棋題目"></div>
       <div class="advanced-sequence-card">
         <div class="advanced-sequence-copy">
-          <span class="question-tag">reading sequence · practice only</span>
+          <span class="question-tag">多手讀棋 · 僅作練習</span>
           <h3 id="advanced-sequence-name"></h3>
-          <p class="advanced-target"><span>Target</span><strong id="advanced-sequence-target"></strong></p>
+          <p class="advanced-target"><span>本題目標</span><strong id="advanced-sequence-target"></strong></p>
           <p class="advanced-prompt" id="advanced-sequence-prompt"></p>
-          <p class="answer-policy">點棋盤落子。合法但不符合本題 contract 的手會留在同一步重試；首答與 retry 分開保存。</p>
+          <p class="answer-policy">點棋盤落子。如果這一手合法，但不是本題預期的走法，可以留在同一步重試；第一次作答和重試會分開保存。</p>
           <div id="advanced-sequence-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div class="advanced-actions">
             <button class="subtle-button" id="advanced-sequence-hint" type="button">給我觀察提示</button>
@@ -142,9 +142,13 @@
     </section>
 
     <section class="advanced-roadmap" aria-labelledby="advanced-roadmap-title">
-      <span class="advanced-kicker">Next Experience</span>
+      <span class="advanced-kicker">接下來怎麼練</span>
       <h2 id="advanced-roadmap-title">進階不是一直往下排單元</h2>
-      <p>本頁已建立讀棋／手筋、中盤攻防、官子／全局判斷三條局部 practice 線，並新增 19×19 完整棋局 practice 入口；多手棋盤 Response 現在把四組讀棋能力各做成兩個 practice-only 局面；作答前只顯示中性「棋盤練習」編號，不顯示 family、術語、完整名稱或與前題的關係。棋盤題採固定兩輪交錯：先完成四個 family 的 seed，再進四個相關 variant，因此同 family 不會緊鄰；每次仍只開放固定順序的下一題，走完後才揭露名稱與教學重點。第二題至少改一個非單純旋轉的條件，例如提子數、出口幾何、學習者棋色或路線長度。所有變形仍須由規則引擎與 sequence contract 重播；這只是小型 family seed，不代表難度已可比或已證明遷移。19×19 對局本輪只保存自由 practice 操作與 SGF，不建立新的 T3／mastery；更深的棋譜重建與轉折點回流仍是後續獨立 Experience。</p>
+      <p>本頁目前提供「讀棋與手筋」、「中盤攻防」、「官子與全局判斷」三條練習路線，也可以進入 19×19 完整棋局練習。</p>
+      <p>多手棋盤練習目前包含四類讀棋題，每類各有兩題。作答前只顯示中性的「棋盤練習」編號，不預先告訴你題型名稱或它和前一題的關係，以減少提示。</p>
+      <p>題目會交錯出現：先各做一題，再做同類的變化題，避免相近題目連續出現。每次只開放下一題，完成後才揭示題型名稱與教學重點。變化題至少會改變一項實質條件，例如提子數、逃路形狀、執棋顏色或征子路線長度。</p>
+      <p>所有變化題都會重新經過棋盤規則與既定手順驗證。目前這些題目只作練習，因此不能據此判定不同題目的難度相同，也不能證明所學已能穩定運用到新的局面。</p>
+      <p>19×19 對局目前用於自由練習與保存棋譜，不納入正式能力評量。更完整的棋譜重建與關鍵轉折練習，會作為後續獨立的練習內容。</p>
     </section>
   </main>
 </body>
