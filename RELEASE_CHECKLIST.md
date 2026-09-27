@@ -24,7 +24,6 @@
 `release-manifest.json` 是唯一機器可讀公開清單；實際檔案數以 manifest 為準。下列清單供人工核對：
 
 ```text
-.github/workflows/pages-smoke.yml
 .github/workflows/verify.yml
 .nojekyll
 .gitignore
@@ -144,9 +143,10 @@ git status --short --untracked-files=all
 
 ## 2026-09-27 補充｜Pages served-content gate
 
-- [x] 新增 `.github/workflows/pages-smoke.yml`，只在 GitHub Pages deployment workflow 完成後執行。
+- [x] 首次嘗試以獨立 `workflow_run` 監聽動態 Pages workflow；deployment #380 後未觸發，判定該實作 FAIL 並移除，不以設定檔存在冒充可運作 gate。
+- [x] served-content gate 改併入 `verify.yml` 的 `main push` job；等 Node／Sabaki／Windows UI 全部成功後才輪詢公開站點。
 - [x] smoke 由 `release-manifest.json.hosting.pagesUrl` 取得正式網址，不建立第二份部署 URL source of truth。
-- [x] 對首頁與 `history.html` 使用 cache-bust query、redirect follow 與有限 retry；需看到當次 History Explore 版本與關鍵 learner-facing marker 才 PASS。
-- [ ] 只有 workflow 實際在 `main` post-deploy 執行成功後，才可把「公開 served content 已更新」由 UNKNOWN 改為 PASS。
+- [x] 對首頁與 `history.html` 使用 cache-bust query、redirect follow 與最多 12 次有限 retry；需看到當次 History Explore 版本與關鍵 learner-facing marker 才 PASS。
+- [ ] 只有新的 `served-pages-content` job 在 `main` 實際成功後，才可把「公開 served content 已更新」由 UNKNOWN 改為 PASS。
 
-新增停止線：Pages deployment 成功但 post-deploy served-content smoke 失敗時，不得把「部署工作完成」寫成「公開頁已供應正確版本」。
+停止線：Pages deployment 成功但 `served-pages-content` 失敗時，不得把「部署工作完成」寫成「公開頁已供應正確版本」。
