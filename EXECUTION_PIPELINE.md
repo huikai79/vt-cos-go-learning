@@ -328,3 +328,12 @@
 - **下一個可解除 UNKNOWN 的條件：** 取得同一來源版本、provenance 清楚的實際圖形 observation；若 rights 只允許 reference use，就走 reference-only oracle 並只持久化 sanitized report；若 rights 可重用，再走 extraction independent review → fingerprint。
 - **停止線：** 不再用『都是死棋』『都像小曲尺』『名稱含 small』等語義線索代替 geometry。若未取得圖形，這一研究分支到此停止，不以更多同義搜尋灌高 confidence。
 - **Formal boundary：** 不改 learner state、KC、scheduler、T0–T3、R1、formal teaching candidate 或 formal evaluation。
+
+
+## 2026-09-28 Decision note｜reference-only geometry source intake
+
+- **Authoring path：** external page capture → immutable source digest → embedded SGF JSON-string parse → root setup extraction → target-color corner-group selection → existing reference oracle → sanitized report。
+- **禁止：** runtime 自動抓第三方網站、`eval` 外部 script、把 SGF/points/fingerprint 寫入公開 evidence、因公開 GitHub 原始碼就假設題目內容有同等授權。
+- **Rights rule：** source code license 與 content license 分開。即使網站程式公開，題目 SGF 若沒有 reusable-rights 證據，仍固定 `reference_only`。
+- **Research threshold：** 單一 reference source 只能產生一條 oracle report；同 evidence chain 的鏡像不加權。至少兩條獨立 decisive reports 同方向才標 consistent reference support，而且 `canonicalPromotionAllowed=false`。
+- **後續解除 geometry UNKNOWN：** 仍需要 verified reusable source、public-domain/project-generated independent geometry，或其他能合法進 extraction promotion gate 的來源。
