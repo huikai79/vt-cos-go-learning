@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v7 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v22 / reference-only HTML→SGF oracle adapter | playable practice、ontology v5 與 learner runtime 不變；新增 authoring-side `classic-reference-html-sgf-v1`：只從已取得的第三方 HTML 中解析 JSON string 形式的 embedded SGF，讀 root AB/AW/PL、選指定顏色的最近角部連通塊，產生 memory-only `reference_only` observation，再交給既有 oracle；最終只可輸出 sanitized report | hostile-JS 不 eval、multiple conflicting SGF fail closed、compressed coords fail、ambiguous group fail、context mismatch negative test、release-manifest/public boundary；完整 CI 以 PR workflow 為準 | 工程／research tooling | 此工具不授予外部內容再散布權，不自動抓網頁，不保存第三方 SGF/points/fingerprint，不取得 canonical promotion/scoring authority；小曲尺/L/Carpenter exact geometry 仍 UNKNOWN |
+| 世界死活名型館 v23 / reference oracle comparison contract | playable practice、ontology v5 與 learner runtime 不變；新增 authoring-side `classic-reference-html-sgf-v1`，並將 reference oracle 升到 v2：第三方 HTML 只解析 JSON-string embedded SGF，產生 memory-only `reference_only` observation；每份 report 必須綁定 `comparisonContractId`，目前 adapter 固定 `corner-defender-connected-group-v1`，避免 defender stones／eye-space 等不同 representation 被錯誤聚合；最終只可輸出 sanitized report | hostile-JS 不 eval、multiple conflicting SGF fail closed、compressed coords fail、ambiguous group fail、context mismatch negative test、release-manifest/public boundary；完整 CI 以 PR workflow 為準 | 工程／research tooling | 此工具不授予外部內容再散布權，不自動抓網頁，不保存第三方 SGF/points/fingerprint，不取得 canonical promotion/scoring authority；小曲尺/L/Carpenter exact geometry 仍 UNKNOWN |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -719,3 +719,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **反證：** hostile JavaScript expression 不執行；兩份 embedded SGF 不同時拒絕猜測；角部候選 group 同距同大小時拒絕猜測；strict context 不同時只能回 `REFERENCE_DIFFERENT`。
 - **不變：** 不修改 ontology identity、scoring、learner events、KC、scheduler、formal candidate 或 evaluation。這只是 authoring/research adapter。
 - **下一步：** 對一份實際 L Group reference page 取得固定 HTML capture，使用 adapter 產生 sanitized oracle report；再找第二條獨立 evidence chain。只有兩條獨立 decisive reference 支持一致，才把它當 research prioritization；仍不得 canonical promote。
+
+
+## 2026-09-28 Decision note｜Reference oracle v2：comparison contract 成為聚合前提
+
+- **發現的盲點：** 同一名型可用 defender stones、eye-space、全局部 stones 等不同 representation 描述。若 report 只記 candidateConceptId，兩條來源即使比較不同 representation，也可能被 aggregation 錯算成一致。
+- **修正：** `classic-geometry-reference-oracle-v2` 要求 metadata/report 必含 `comparisonContractId`。聚合前必須同時一致：`candidateConceptId`、`comparisonContractId`、`requireContext`；任一不同直接 `INVALID`，不計 independent support。
+- **HTML→SGF adapter：** v1 明確固定 `corner-defender-connected-group-v1`；這只表示『比較角部 defender connected group』，不表示該 representation 已被證明是 L Group 的 canonical identity。
+- **停止線：** 若後續研究發現 L Group 更適合用 enclosed eye-space 作 identity，必須建立新的 comparison contract；不得把舊 defender-group reports 與新 eye-space reports 混合聚合。
+- **Authority：** report 仍 `reference_oracle_only`、`canonicalPromotionAllowed=false`，不改 ontology/scoring/learner state。
