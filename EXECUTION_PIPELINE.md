@@ -337,3 +337,10 @@
 - **Rights rule：** source code license 與 content license 分開。即使網站程式公開，題目 SGF 若沒有 reusable-rights 證據，仍固定 `reference_only`。
 - **Research threshold：** 單一 reference source 只能產生一條 oracle report；同 evidence chain 的鏡像不加權。至少兩條獨立 decisive reports 同方向才標 consistent reference support，而且 `canonicalPromotionAllowed=false`。
 - **後續解除 geometry UNKNOWN：** 仍需要 verified reusable source、public-domain/project-generated independent geometry，或其他能合法進 extraction promotion gate 的來源。
+
+
+## 2026-09-28 Decision note｜Reference evidence aggregation 先鎖 representation
+
+- 任兩份 reference reports 在聚合前必須同 candidate、同 `comparisonContractId`、同 context policy；否則 fail closed。
+- `corner-defender-connected-group-v1` 只回答角部 defender connected stones 是否同構且 context 相符；不能替代 `corner-eye-space-*`、full-position 或 mechanism comparison。
+- 這個分離是 evidence semantics，不是 UI metadata。後續新增 representation 必須升 comparison contract，不能沿用舊 id。
