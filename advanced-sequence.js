@@ -4,11 +4,14 @@
   const Content = window.GoAdvancedContent;
   const Events = window.GoAdvancedSequenceEvents;
   const Contract = window.GoAdvancedSequenceContract;
+  const Policy = window.GoAdvancedSequencePolicy;
   const Go = window.GoCore;
-  if (!Content || !Events || !Contract || !Go) throw new Error("Advanced sequence dependencies missing.");
+  if (!Content || !Events || !Contract || !Policy || !Go) throw new Error("Advanced sequence dependencies missing.");
 
   const $ = (id) => document.getElementById(id);
-  const experiences = Array.isArray(Content.sequenceExperiences) ? Content.sequenceExperiences : [];
+  const sourceExperiences = Array.isArray(Content.sequenceExperiences) ? Content.sequenceExperiences : [];
+  const policyValidation = Policy.validateCatalog(sourceExperiences);
+  const experiences = policyValidation.ordered;
   const validation = Contract.validateAll(experiences, Go);
   let experienceIndex = 0;
   let decisionIndex = 0;
@@ -66,6 +69,7 @@
       familyId: item.familyId,
       variantId: item.variantId,
       variationAxes: item.variationAxes,
+      policyPosition: experienceIndex,
       type,
       occurredAt: now(),
       decisionId: activeDecision ? activeDecision.id : null,
@@ -83,24 +87,27 @@
     return true;
   }
 
-  function familyOrdinal(item) {
-    const familyItems = experiences.filter((candidate) => candidate.familyId === item.familyId);
-    return familyItems.findIndex((candidate) => candidate.id === item.id) + 1;
+  function stageState() {
+    const result = Events.read(localStorage);
+    if (!result.ok) return { ok: false, ordered: experiences, completed: 0, nextIndex: -1, complete: false };
+    return Policy.stageState(experiences, result.store);
   }
 
-  function familyReady(item) {
-    if (item.variantId === "seed") return true;
-    const result = Events.read(localStorage);
-    if (!result.ok) return false;
-    return result.store.events.some((event) => event.familyId === item.familyId && event.variantId === "seed" && event.type === "completed");
+  function itemReady(index) {
+    const stage = stageState();
+    if (!stage.ok) return false;
+    if (stage.complete) return index === 0;
+    return index === stage.nextIndex;
   }
 
   function renderSequenceList() {
+    const stage = stageState();
     $("advanced-sequence-list").innerHTML = experiences.map((item, index) => {
-      const ordinal = familyOrdinal(item);
-      const ready = familyReady(item);
+      const completed = stage.ok && index < stage.nextIndex || stage.complete;
+      const ready = itemReady(index);
       const label = "棋盤練習 " + (index + 1);
-      const detail = ordinal === 1 ? "先完成這個局面" : ready ? "新局面 · 不提供前題名稱" : "完成前一個相關局面後開放";
+      const phase = item.variantId === "seed" ? "第一輪" : "第二輪";
+      const detail = completed ? "已完成" : ready ? phase + " · 現在進行" : phase + " · 依固定順序稍後開放";
       return '<button type="button" class="advanced-sequence-tab' + (index === experienceIndex ? ' active' : '') + '" data-sequence-index="' + index + '"' + (ready ? '' : ' disabled aria-disabled="true"') + '>' +
         '<strong>' + label + '</strong><small>' + detail + ' · ' + item.decisions.length + ' 段實走</small></button>';
     }).join("");
@@ -114,11 +121,12 @@
     }
     const summary = Events.summarize(result.store);
     const family = Events.classifyFamilyTransition(result.store, current().familyId);
-    const familyText = family.status === "DESCRIPTIVE_ONLY"
-      ? " · family 首答已有 seed／variant 描述資料"
-      : " · family 首答資料尚不足";
+    const eligibility = Policy.transitionEligibility(experiences, result.store, current().familyId);
+    const familyText = family.status === "DESCRIPTIVE_ONLY" && eligibility.status === "ELIGIBLE_DESCRIPTIVE"
+      ? " · 這組已有固定交錯後的描述資料"
+      : " · 相關新局面的描述資料尚不足";
     $("advanced-sequence-summary").textContent = "棋盤題 " + (experienceIndex + 1) + " / " + experiences.length +
-      " · 已保存 " + summary.firstMoves + " 次分段首答 · 完成 " + summary.completedExperiences + " 題" + familyText;
+      " · 固定交錯 " + Policy.VERSION + " · 已保存 " + summary.firstMoves + " 次分段首答 · 完成 " + summary.completedExperiences + " 題" + familyText;
   }
 
   function renderBoard() {
@@ -284,7 +292,7 @@
     if (!button || blocked) return;
     const index = Number(button.dataset.sequenceIndex);
     if (!Number.isInteger(index) || index < 0 || index >= experiences.length || index === experienceIndex) return;
-    if (!familyReady(experiences[index])) return;
+    if (!itemReady(index)) return;
     experienceIndex = index;
     beginPresentation();
   });
@@ -330,28 +338,36 @@
 
   $("advanced-sequence-next").addEventListener("click", () => {
     if (blocked || $("advanced-sequence-next").disabled) return;
-    const nextIndex = (experienceIndex + 1) % experiences.length;
-    if (!familyReady(experiences[nextIndex])) {
+    const stage = stageState();
+    if (!stage.ok || stage.complete) {
       renderSequenceList();
       $("advanced-sequence-feedback").className = "feedback";
-      $("advanced-sequence-feedback").textContent = "下一個相關局面尚未開放；先完成它的第一個局面，避免跳題造成 family 比較順序失真。";
+      $("advanced-sequence-feedback").textContent = stage.complete
+        ? "這個固定交錯階段已完成。可重看教學重點，但不把重做當成新的 family transition 證據。"
+        : "固定交錯狀態不可讀；已停止自動前進。";
       return;
     }
-    experienceIndex = nextIndex;
+    experienceIndex = stage.nextIndex;
     beginPresentation();
   });
 
-  if (!validation.ok) {
+  if (!policyValidation.ok || !validation.ok) {
     $("advanced-sequence-list").innerHTML = "";
     $("advanced-sequence-name").textContent = "多手讀棋暫停";
     $("advanced-sequence-target").textContent = "內容 contract 未通過規則驗證。";
     $("advanced-sequence-prompt").textContent = "";
     $("advanced-sequence-board").innerHTML = "";
     setBlocked("進階多手題內容與 rules-backed contract 不一致；已 fail closed。");
-    console.error("Advanced sequence validation failed", validation.errors);
+    console.error("Advanced sequence validation failed", policyValidation.errors.concat(validation.errors));
     return;
   }
 
   renderSequenceList();
-  beginPresentation();
+  const initialStage = stageState();
+  if (!initialStage.ok) {
+    setBlocked("固定交錯紀錄不可讀；已 fail closed，不會猜測下一題。");
+  } else {
+    experienceIndex = initialStage.complete ? 0 : initialStage.nextIndex;
+    beginPresentation();
+  }
 })();
