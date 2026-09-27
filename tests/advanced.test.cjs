@@ -493,7 +493,7 @@ test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Respon
   const result = SequenceEvents.read(storage);
   assert.equal(result.ok, false);
   assert.equal(result.error, "advanced_sequence_store_malformed");
-  assert.match(html, /棋盤 Response/);
+  assert.match(html, /棋盤作答/);
   assert.match(html, /多手讀棋實走/);
   assert.match(html, /advanced-sequence-events\.js\?v=advanced-sequence-v3/);
   assert.match(html, /advanced-sequence\.js\?v=advanced-sequence-v6/);
