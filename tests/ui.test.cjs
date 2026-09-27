@@ -968,7 +968,7 @@ async function main() {
     assert.match(fourStatusCorrect.feedback, /方四沒有做活急所|仍死/);
     assert.equal(fourStatusCorrect.revealHidden, false);
     assert.equal(fourStatusCorrect.name, "方四／Square Four");
-    assert.match(fourStatusCorrect.proof, /留下曲三/);
+    assert.match(fourStatusCorrect.proof, /留下可被攻擊的曲三/);
     assert.equal(fourStatusCorrect.nextDisabled, false);
     assert.equal(fourStatusCorrect.aliveDisabled, true);
     assert.equal(fourStatusCorrect.deadDisabled, true);
