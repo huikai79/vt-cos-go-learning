@@ -45,7 +45,10 @@
     yikePlumFive: { label: "弈客圍棋：大眼（5）梅花五", url: "https://www.sohu.com/a/475377109_533159", sourceTier: "publisher_secondary" },
     hzSchoolVitalShapes: { label: "浙江工大附校：死活棋要點", url: "https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml", sourceTier: "educational_secondary" },
     senseisGoldenChicken: { label: "Sensei's Library：Golden Chicken Standing on One Leg", url: "https://senseis.xmp.net/?GoldenChickenStandingOnOneLeg=", sourceTier: "community_secondary" },
-    centralGoGoldenChicken: { label: "中央棋院：金雞獨立", url: "https://vocus.cc/article/6698ae7ffd89780001ee7a83", sourceTier: "instructional_secondary" }
+    centralGoGoldenChicken: { label: "中央棋院：金雞獨立", url: "https://vocus.cc/article/6698ae7ffd89780001ee7a83", sourceTier: "instructional_secondary" },
+    boodBigPigsMouthConfig: { label: "bood/go-test：j_group_live2 regression config", url: "https://github.com/bood/go-test/blob/2f3db241dc26a5ab59c86cf1293b3b005283c288/config.yml", sourceTier: "oss_regression" },
+    boodBigPigsMouthSgf: { label: "bood/go-test：大猪嘴.sgf", url: "https://github.com/bood/go-test/blob/2f3db241dc26a5ab59c86cf1293b3b005283c288/sgf/%E5%A4%A7%E7%8C%AA%E5%98%B4.sgf", sourceTier: "oss_regression" },
+    tchanLifeDeathMonth: { label: "圍棋死活一月通目錄：大豬嘴型 / J-Group Pattern", url: "https://tchan001.wordpress.com/2010/05/05/weiqi-one-month-to-understand-series-7-books/", sourceTier: "bibliographic_secondary" }
   });
 
   const entries = [
@@ -217,14 +220,14 @@
       zhNameStatus: ZH_NAME_STATUS.ESTABLISHED_ALIAS,
       zhNameNote: "華語名稱已有術語表使用；英文 J Group 對照目前只作次級來源支持，仍未完成本專案幾何 contract。",
       teachingLabel: "角部經典死活候選",
-      practiceStatus: "catalog_candidate_only",
+      practiceStatus: "playable_source_case_first_move_contract",
       reviewStatus: REVIEW.PARTIAL,
       aliases: [
         { locale: "en", name: "J Group", relationType: "terminology-table-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
-      note: "先保留繁中名型入口；標準幾何、先後手與主要分支仍待獨立核對。",
+      note: "已新增 bounded source-case practice：bood/go-test 的 MIT regression 將大猪嘴.sgf 在 loadsgf 52 前的局面標成 j_group_live2，白棋 expected move 為 R1。本館以完整 source position 作 scoring identity，另做四向旋轉避免座標背誦；這不代表 R1 是所有大豬嘴／J Group 的共同答案，也不代表標準 geometry 或 variation tree 已完成。",
       rulesetSensitive: false,
-      sources: [sources.go4goChinese]
+      sources: [sources.go4goChinese, sources.tchanLifeDeathMonth, sources.boodBigPigsMouthConfig, sources.boodBigPigsMouthSgf]
     },
     {
       id: "small-pigs-mouth-candidate-v1",
@@ -374,7 +377,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v8",
+    version: "world-classic-shapes-v9",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
