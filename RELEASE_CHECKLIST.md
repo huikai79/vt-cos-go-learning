@@ -24,6 +24,7 @@
 `release-manifest.json` 是唯一機器可讀公開清單；實際檔案數以 manifest 為準。下列清單供人工核對：
 
 ```text
+.github/workflows/pages-smoke.yml
 .github/workflows/verify.yml
 .nojekyll
 .gitignore
@@ -139,3 +140,13 @@ git status --short --untracked-files=all
 - R1 審查頁載入完整題庫／答案資產、去答案資料無法重建，或回條 verifier 接受舊 protocol、重複題號及不完整聲明：停止 R1a。
 - 沒有合格 R1 回條與真人 evidence，或 `teaching-gate-verify.cjs` 回傳非零：停止宣稱正式教學使用可用。
 - 若把原型描述成已證明有效的正式教學系統：停止發布該宣稱。
+
+
+## 2026-09-27 補充｜Pages served-content gate
+
+- [x] 新增 `.github/workflows/pages-smoke.yml`，只在 GitHub Pages deployment workflow 完成後執行。
+- [x] smoke 由 `release-manifest.json.hosting.pagesUrl` 取得正式網址，不建立第二份部署 URL source of truth。
+- [x] 對首頁與 `history.html` 使用 cache-bust query、redirect follow 與有限 retry；需看到當次 History Explore 版本與關鍵 learner-facing marker 才 PASS。
+- [ ] 只有 workflow 實際在 `main` post-deploy 執行成功後，才可把「公開 served content 已更新」由 UNKNOWN 改為 PASS。
+
+新增停止線：Pages deployment 成功但 post-deploy served-content smoke 失敗時，不得把「部署工作完成」寫成「公開頁已供應正確版本」。
