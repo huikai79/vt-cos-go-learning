@@ -8,6 +8,8 @@
   const CrossFiveContract = window.GoCrossFiveContract;
   const BentThree = window.GoBentThreePractice;
   const BentThreeContract = window.GoBentThreeContract;
+  const FourSpaceStatus = window.GoFourSpaceStatusPractice;
+  const FourSpaceStatusContract = window.GoFourSpaceStatusContract;
   const PyramidFour = window.GoPyramidFourPractice;
   const PyramidFourContract = window.GoPyramidFourContract;
   const FlowerSix = window.GoFlowerSixPractice;
@@ -24,13 +26,15 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !BentThree || !BentThreeContract || !PyramidFour || !PyramidFourContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !BentThree || !BentThreeContract || !FourSpaceStatus || !FourSpaceStatusContract || !PyramidFour || !PyramidFourContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
   if (!crossFiveValidation.ok) throw new Error("Cross Five practice contract invalid: " + crossFiveValidation.errors.join("; "));
   const bentThreeValidation = BentThreeContract.validateAll(BentThree.items, { Go, PracticeContract });
   if (!bentThreeValidation.ok) throw new Error("Bent Three practice contract invalid: " + bentThreeValidation.errors.join("; "));
+  const fourSpaceStatusValidation = FourSpaceStatusContract.validateAll(FourSpaceStatus.items, { Go, PracticeContract, BentThreeContract });
+  if (!fourSpaceStatusValidation.ok) throw new Error("Four-space status contract invalid: " + fourSpaceStatusValidation.errors.join("; "));
   const pyramidFourValidation = PyramidFourContract.validateAll(PyramidFour.items, { Go, PracticeContract });
   if (!pyramidFourValidation.ok) throw new Error("Pyramid Four practice contract invalid: " + pyramidFourValidation.errors.join("; "));
   const flowerSixValidation = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
@@ -79,6 +83,9 @@
   let bentThreeSolved = false;
   let bentThreeHintShown = false;
   let bentThreeCursor = [3, 3];
+  let fourStatusIndex = 0;
+  let fourStatusSolved = false;
+  let fourStatusHintShown = false;
   let pyramidFourIndex = 0;
   let pyramidFourSolved = false;
   let pyramidFourHintShown = false;
@@ -516,6 +523,92 @@
     if(item.eyeSpace.some(([x,y])=>x===next[0]&&y===next[1])){
       bentThreeCursor=next;
       renderBentThreeBoard();
+    }
+  }
+
+  function renderFourStatusBoard() {
+    const item=FourSpaceStatus.items[fourStatusIndex];
+    const validation=FourSpaceStatusContract.validateItem(item,{ Go, PracticeContract, BentThreeContract });
+    if (!validation.ok) throw new Error("Four-space status item invalid: " + validation.errors.join("; "));
+    const size=item.boardSize;
+    const pad=7;
+    const span=86;
+    const step=span/(size-1);
+    const setup=new Map(validation.setupStones.map(([x,y,color])=>[pointKey(x,y),color]));
+    const eye=new Set(item.eyeSpace.map(([x,y])=>pointKey(x,y)));
+    const lines=[];
+    const nodes=[];
+    for(let i=0;i<size;i+=1){
+      const p=pad+i*step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for(let y=0;y<size;y+=1) for(let x=0;x<size;x+=1){
+      const px=pad+x*step;
+      const py=pad+y*step;
+      const color=setup.get(pointKey(x,y));
+      if(color===Go.BLACK) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black"/>');
+      if(color===Go.WHITE) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white"/>');
+      if(eye.has(pointKey(x,y))) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="4.0" class="classic-eye-marker"/>');
+    }
+    $("four-status-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+  }
+
+  function fourStatusProofText(item,validation) {
+    if (validation.shapeKind==="square-four") {
+      return "proof：守方四種第一手全部留下曲三；每一支都有合法的攻方彎點回應。因此在本 contract 的 sealed eye-space 前提下仍死。";
+    }
+    return "proof：攻方四種第一手逐一檢查後，守方每一支都至少有一手回應，使剩餘兩個眼點互不相鄰。因此在本 contract 的 sealed eye-space 前提下仍活。";
+  }
+
+  function renderFourStatus() {
+    const item=FourSpaceStatus.items[fourStatusIndex];
+    const validation=FourSpaceStatusContract.validateItem(item,{ Go, PracticeContract, BentThreeContract });
+    if(!validation.ok) throw new Error("Four-space status item invalid: " + validation.errors.join("; "));
+    fourStatusSolved=false;
+    fourStatusHintShown=false;
+    $("four-status-tag").textContent=(fourStatusIndex+1) + " / " + FourSpaceStatus.items.length + " · rules-backed status";
+    $("four-status-question").textContent=validation.shapeKind==="square-four" ? "守方先走，還救得活嗎？" : "攻方先走，殺得死嗎？";
+    $("four-status-prompt").textContent=item.prompt;
+    $("four-status-feedback").className="feedback";
+    $("four-status-feedback").textContent="";
+    $("four-status-reveal").hidden=true;
+    $("four-status-name").textContent=item.revealName;
+    $("four-status-proof").textContent="";
+    $("four-status-hint").disabled=false;
+    $("four-status-next").disabled=true;
+    $("four-status-alive").disabled=false;
+    $("four-status-dead").disabled=false;
+    $("four-status-next").textContent=fourStatusIndex===FourSpaceStatus.items.length-1 ? "完成四目眼比較" : "下一題 →";
+    $("four-status-board-size").textContent=item.boardSize + " × " + item.boardSize + " bounded proof";
+    $("four-status-side").textContent=item.defenderColor===Go.BLACK ? "● 黑棋守" : "○ 白棋守";
+    renderFourStatusBoard();
+  }
+
+  function attemptFourStatus(response) {
+    if(fourStatusSolved) return;
+    const item=FourSpaceStatus.items[fourStatusIndex];
+    const result=FourSpaceStatusContract.score(item,response,{ Go, PracticeContract, BentThreeContract });
+    if(!result.ok){
+      $("four-status-feedback").className="feedback error";
+      $("four-status-feedback").textContent="四目眼 status contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if(result.correct){
+      fourStatusSolved=true;
+      $("four-status-feedback").className="feedback success";
+      $("four-status-feedback").textContent=item.success;
+      $("four-status-reveal").hidden=false;
+      $("four-status-proof").textContent=fourStatusProofText(item,FourSpaceStatusContract.validateItem(item,{ Go, PracticeContract, BentThreeContract }));
+      $("four-status-hint").disabled=true;
+      $("four-status-next").disabled=false;
+      $("four-status-alive").disabled=true;
+      $("four-status-dead").disabled=true;
+    }else{
+      $("four-status-feedback").className="feedback error";
+      $("four-status-feedback").textContent=fourStatusHintShown
+        ? item.hint
+        : "這個判斷不符合 rules-backed proof。不要假設所有四目眼都一樣。";
     }
   }
 
@@ -1440,6 +1533,27 @@
     }
   });
 
+  $("four-status-alive").addEventListener("click",() => attemptFourStatus(FourSpaceStatusContract.STATUS.ALIVE));
+  $("four-status-dead").addEventListener("click",() => attemptFourStatus(FourSpaceStatusContract.STATUS.DEAD));
+
+  $("four-status-hint").addEventListener("click",() => {
+    fourStatusHintShown=true;
+    $("four-status-feedback").className="feedback";
+    $("four-status-feedback").textContent=FourSpaceStatus.items[fourStatusIndex].hint;
+  });
+
+  $("four-status-next").addEventListener("click",() => {
+    if(!fourStatusSolved) return;
+    if(fourStatusIndex<FourSpaceStatus.items.length-1){
+      fourStatusIndex+=1;
+      renderFourStatus();
+    }else{
+      $("four-status-feedback").className="feedback success";
+      $("four-status-feedback").textContent="四目眼狀態比較完成。這只支持 sealed eye-space 的局部 proof，不代表所有實戰四點空都可脫離外部條件直接判死活。";
+      $("four-status-next").disabled=true;
+    }
+  });
+
   $("pyramid-four-board").addEventListener("click",(event) => {
     const hit=event.target.closest("[data-pyramid-four-x][data-pyramid-four-y]");
     if(!hit) return;
@@ -1716,6 +1830,7 @@
   renderContrast();
   renderCross();
   renderBentThree();
+  renderFourStatus();
   renderPyramidFour();
   renderFlowerSix();
   renderGoldenChicken();
