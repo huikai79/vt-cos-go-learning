@@ -14,6 +14,7 @@
   const ENTITY_TYPE = Object.freeze({
     NAKADE_SHAPE: "nakade_shape",
     CORNER_LIFE_DEATH_FAMILY: "corner_life_death_family",
+    LIFE_DEATH_FAMILY: "life_death_family",
     TESUJI_MECHANISM: "tesuji_mechanism",
     RULES_SENSITIVE_POSITION: "rules_sensitive_position",
     NAKADE_CATEGORY: "nakade_category"
@@ -97,6 +98,7 @@
     bgaRules: source("bgaRules","British Go Association：rules comparison","https://www.britgo.org/rules/compare.html","association","bga-rules"),
     bgaIndex: source("bgaIndex","British Go Journal：Life & Death index","https://britgo.org/bgj/index/subj-inf.html","association","bga-ld-index"),
     bgaTripod: source("bgaTripod","British Go Journal：Tripod Group example","https://www.britgo.org/files/bgj/bgj135.pdf","association","bga-tripod"),
+    bgaThreeSpaceNotcher: source("bgaThreeSpaceNotcher","British Go Journal：Three-space notcher family","https://www.britgo.org/files/bgj/bgj123.pdf","association","bga-three-space-notcher"),
     go4goChinese: source("go4goChinese","Go4Go：Chinese Go Terms","https://www.go4go.net/go/chinese_go_terms","community_secondary","yeefan-chinese-terms"),
     yeefanChineseTerms: source("yeefanChineseTerms","YeeFan：Chinese Go Terms","https://yeefan.sg/weiqi/chinesegoterms/","instructional_secondary","yeefan-chinese-terms"),
     ffgDictionary: source("ffgDictionary","Fédération Française de Go：Dictionnaire multilingue","https://jeudego.org/_php/dico_grand_tableau.php","federation_dictionary","ffg-multilingual-dictionary"),
@@ -125,7 +127,10 @@
     badukworldCarpenterShape2: source("badukworldCarpenterShape2","BadukWorld：Carpenter's Square Diagram 2.1","https://www.badukworld.co.kr/biz/lesson2/csqare/csq2.html","instructional_secondary","badukworld-carpenter-series"),
     ondaCornerL: source("ondaCornerL","恩田烈彦：隅のL字型をマスターしよう","https://note.com/go_pro275_denen/n/n299c0c730c08","professional_instruction","onda-corner-l"),
     legacyEnglishChineseTerms: source("legacyEnglishChineseTerms","2007 臺灣網路流傳英文圍棋術語：Carpenter's Square → 小曲尺","https://www.ptt.cc/bbs/NCCUGO/M.1191493050.A.A65.html","historical_community","legacy-en-zh-terms-2007"),
-    chineseSmallCarpenterDead: source("chineseSmallCarpenterDead","中文教學：小曲尺是死棋","https://read01.com/BngJNdM.html","instructional_secondary","chinese-small-carpenter-dead")
+    chineseSmallCarpenterDead: source("chineseSmallCarpenterDead","中文教學：小曲尺是死棋","https://read01.com/BngJNdM.html","instructional_secondary","chinese-small-carpenter-dead"),
+    badukworldYeeFanTerms: source("badukworldYeeFanTerms","BadukWorld：YeeFan 中韓英術語鏡像","https://badukworld.co.kr/biz/YeeFan.html","community_secondary","yeefan-chinese-terms"),
+    koreanWikibooksLifeDeath: source("koreanWikibooksLifeDeath","韓文 Wikibooks：바둑 입문/사활（빗형）","https://ko.wikibooks.org/wiki/%EB%B0%94%EB%91%91_%EC%9E%85%EB%AC%B8/%EC%82%AC%ED%99%9C","community_secondary","korean-wikibooks-life-death"),
+    lifeIn19x19DaviesNotes: source("lifeIn19x19DaviesNotes","LifeIn19x19：James Davies《Life and Death》讀書筆記","https://www.lifein19x19.com/viewtopic.php?t=4820","community_secondary","davies-life-death-community-notes")
   });
 
   function name(locale, value, nameStatus, semanticRole, relationToCanonical, usageScope, reviewStatus, sourceIds, extra) {
@@ -379,6 +384,36 @@
       sourceIds:["centralGoGoldenChicken","senseisGoldenChicken","ffgDictionary","go4goChinese"], note:"跨語對應採 mechanism-equivalent，不假裝成同一靜態棋形名稱。"
     },
     {
+      id:"three-space-notcher-v1", entityType:ENTITY_TYPE.LIFE_DEATH_FAMILY, catalogCategory:"complex_life_death",
+      teachingLabel:"Three-Space Notcher", practiceStatus:"catalog_only", reviewStatus:REVIEW.PARTIAL,
+      names:[
+        name("en","Three-Space Notcher",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.ASSOCIATION,REVIEW.PARTIAL,["bgaThreeSpaceNotcher"])
+      ],
+      nameResearch:[{locale:"zh",status:"exact_mapping_unverified",reviewedAt:"2026-09-28",searchScope:["zh-CN","zh-TW","鎖型","Three-Space Notcher","Chinese Go terminology sources"]}],
+      geometryIdentity:geometry("life_death_family",REVIEW.NEEDS_REVIEW,null,null,"local",{}),
+      taxonomyMemberships:[], rulesetBehavior:[],
+      negativeMappings:[{locale:"zh-Hant",name:"鎖型",relation:"exact_alias",status:"blocked_pending_direct_or_geometry_evidence",reason:"截至 2026-09-28 尚未找到可直接支持「鎖型 = Three-Space Notcher」的跨語來源；目前只保留待 geometry/source review 的候選關係。",sourceIds:[]}],
+      sourceIds:["bgaThreeSpaceNotcher"],
+      note:"BGA 可確認 Three-space notcher 是既有死活 family；中文「鎖型」目前不得升格為 alias。geometry 尚未以可重算座標建立。"
+    },
+    {
+      id:"comb-formation-v1", entityType:ENTITY_TYPE.LIFE_DEATH_FAMILY, catalogCategory:"complex_life_death",
+      teachingLabel:"梳形／Comb Formation", practiceStatus:"catalog_only", reviewStatus:REVIEW.PARTIAL,
+      names:[
+        name("en","Comb Formation",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.ASSOCIATION,REVIEW.VERIFIED,["bgaIndex"]),
+        name("zh-Hant","梳形",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.FEDERATION_DICTIONARY,REVIEW.VERIFIED,["ffgDictionary","yeefanChineseTerms"],{displayPreference:"project"}),
+        name("zh-Hant","梳形板六",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.NARROWER,USAGE_SCOPE.LEXICOGRAPHIC,REVIEW.PARTIAL,["yeefanChineseTerms"],{condition:{eyeSpaceSize:6}}),
+        name("ja-JP","櫛形",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.FEDERATION_DICTIONARY,REVIEW.VERIFIED,["ffgDictionary"]),
+        name("ko-KR","빗형",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.PARTIAL,["badukworldYeeFanTerms","koreanWikibooksLifeDeath"]),
+        name("ko-KR","판륙",NAME_STATUS.RARE_OR_LEXICOGRAPHIC,SEMANTIC_ROLE.FAMILY_NAME,RELATION.EXACT,USAGE_SCOPE.FEDERATION_DICTIONARY,REVIEW.PARTIAL,["ffgDictionary"])
+      ],
+      nameResearch:[],
+      geometryIdentity:geometry("life_death_family",REVIEW.NEEDS_REVIEW,null,null,"local",{location:"variant_axis_required"}),
+      taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
+      sourceIds:["bgaIndex","ffgDictionary","yeefanChineseTerms","badukworldYeeFanTerms","koreanWikibooksLifeDeath","lifeIn19x19DaviesNotes"],
+      note:"梳形／櫛形／Comb Formation 的名稱鏈已有直接跨語來源；韓文同時保留 빗형 與詞典型 판륙。名稱成立不等於 geometry 已驗證；角部／邊部變化仍須 geometry-first extraction。"
+    },
+    {
       id:"l-group-v1", entityType:ENTITY_TYPE.CORNER_LIFE_DEATH_FAMILY, catalogCategory:"complex_corner",
       teachingLabel:"L Group", practiceStatus:"catalog_only", reviewStatus:REVIEW.PARTIAL,
       names:[
@@ -456,13 +491,18 @@
 
   const nameRelations = Object.freeze([
     Object.freeze({id:"l-group-en-ja-v1",subject:{conceptId:"l-group-v1",locale:"en",name:"L Group"},relation:"cross_language_mapping",object:{conceptId:"l-group-v1",locale:"ja-JP",name:"隅のL字型"},reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["ondaCornerL","bgaIndex"])}),
-    Object.freeze({id:"l-group-en-ko-v1",subject:{conceptId:"l-group-v1",locale:"en",name:"L Group"},relation:"cross_language_mapping",object:{conceptId:"l-group-v1",locale:"ko-KR",name:"작은 됫박형"},reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs","bgaIndex"])})
+    Object.freeze({id:"l-group-en-ko-v1",subject:{conceptId:"l-group-v1",locale:"en",name:"L Group"},relation:"cross_language_mapping",object:{conceptId:"l-group-v1",locale:"ko-KR",name:"작은 됫박형"},reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs","bgaIndex"])}),
+    Object.freeze({id:"comb-en-zh-v1",subject:{conceptId:"comb-formation-v1",locale:"en",name:"Comb Formation"},relation:"cross_language_mapping",object:{conceptId:"comb-formation-v1",locale:"zh-Hant",name:"梳形"},reviewStatus:REVIEW.VERIFIED,sourceIds:Object.freeze(["ffgDictionary","yeefanChineseTerms"])}),
+    Object.freeze({id:"comb-en-ja-v1",subject:{conceptId:"comb-formation-v1",locale:"en",name:"Comb Formation"},relation:"cross_language_mapping",object:{conceptId:"comb-formation-v1",locale:"ja-JP",name:"櫛形"},reviewStatus:REVIEW.VERIFIED,sourceIds:Object.freeze(["ffgDictionary"])}),
+    Object.freeze({id:"comb-en-ko-bit-v1",subject:{conceptId:"comb-formation-v1",locale:"en",name:"Comb Formation"},relation:"cross_language_mapping",object:{conceptId:"comb-formation-v1",locale:"ko-KR",name:"빗형"},reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldYeeFanTerms","koreanWikibooksLifeDeath"])}),
+    Object.freeze({id:"comb-en-ko-panryuk-v1",subject:{conceptId:"comb-formation-v1",locale:"en",name:"Comb Formation"},relation:"cross_language_mapping",object:{conceptId:"comb-formation-v1",locale:"ko-KR",name:"판륙"},reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["ffgDictionary"])})
   ]);
 
   const taxonomyRelations = Object.freeze([
     Object.freeze({id:"badukworld-l-plus-one-extension-v1",taxonomyId:"badukworld-life-death-proverbs",subjectConceptId:"l-plus-one-group-v1",relation:TAXONOMY_RELATION.EXTENSION_OF,objectConceptId:"l-group-v1",reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs"]),note:"教學系列關係；不是 geometry variant 的證明。"}),
     Object.freeze({id:"badukworld-long-l-extension-v1",taxonomyId:"badukworld-life-death-proverbs",subjectConceptId:"long-l-group-v1",relation:TAXONOMY_RELATION.RELATED_SERIES_MEMBER,objectConceptId:"l-group-v1",reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs"]),note:"同一韓文教學延伸系列。"}),
-    Object.freeze({id:"badukworld-j-extension-v1",taxonomyId:"badukworld-life-death-proverbs",subjectConceptId:"big-pigs-mouth-candidate-v1",relation:TAXONOMY_RELATION.RELATED_SERIES_MEMBER,objectConceptId:"l-group-v1",reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs"]),note:"J Group 被列在 L Group 延伸系列中；不改 J Group 自身 canonical family。"})
+    Object.freeze({id:"badukworld-j-extension-v1",taxonomyId:"badukworld-life-death-proverbs",subjectConceptId:"big-pigs-mouth-candidate-v1",relation:TAXONOMY_RELATION.RELATED_SERIES_MEMBER,objectConceptId:"l-group-v1",reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["badukworldProverbs"]),note:"J Group 被列在 L Group 延伸系列中；不改 J Group 自身 canonical family。"}),
+    Object.freeze({id:"davies-comb-related-notcher-v1",taxonomyId:"davies-life-death-secondary-notes",subjectConceptId:"comb-formation-v1",relation:TAXONOMY_RELATION.SPECIALIZED_RELATED_SHAPE,objectConceptId:"three-space-notcher-v1",reviewStatus:REVIEW.PARTIAL,sourceIds:Object.freeze(["lifeIn19x19DaviesNotes"]),note:"來源是對 James Davies《Life and Death》的二手讀書筆記；只保存 source-specific taxonomy relation，不升格為 geometry alias 或 canonical parent。"})
   ]);
 
   const geometryRelations = Object.freeze([
@@ -547,7 +587,7 @@
   if (!geometryRelations.every(validateGeometryRelation)) throw new Error("Invalid classic-shape geometry relation.");
 
   return Object.freeze({
-    version:"classic-shape-ontology-v3",
+    version:"classic-shape-ontology-v4",
     REVIEW,
     ENTITY_TYPE,
     NAME_STATUS,
