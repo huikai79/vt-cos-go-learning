@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-27-b",
-  "frozenAt": "2026-09-27T19:30:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-28-a",
+  "frozenAt": "2026-09-28T02:15:00+08:00",
   "assetSetVersion": 1,
-  "assetFingerprint": "fnv1a32-js16-e9637bc0",
+  "assetFingerprint": "fnv1a32-js16-2d1aa93b",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -31,5 +31,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "只凍結正式 usability 五項 critical tasks 與 accessibility spot check 所依賴的 Core learner-facing surface；本輪首頁新增低優先級 History Explore 入口後重新凍結。history/classic/advanced/reviewer-only 頁面本身不在此 candidate fingerprint。"
+  "scopeNote": "只凍結正式 usability 五項 critical tasks 與 accessibility spot check 所依賴的 Core learner-facing surface；本輪 live practice event schema 升 v2、加入 19×19 practice 後重新凍結；19×19／advanced 頁本身不在五項 Core critical task scope。history/classic/advanced/reviewer-only 頁面本身不在此 candidate fingerprint。"
 }
