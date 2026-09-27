@@ -217,3 +217,16 @@
 - **反證：** 直四 geometry、偷偷塞 vitalPoint、位移後沿用 seed coordinate 都必須 fail。
 - **證據邊界：** 只支持丁四 bounded first-move Experience 的工程／geometry contract；完整 reduction sequence、內容效度、mastery、retention／transfer、formal evaluation 與 learning effect 均未建立。
 - **Validation：** PR #30 initial verify run #450 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。
+
+
+## 2026-09-27 Decision note｜名型館從翻譯表升級為 versioned concept ontology
+
+- **Bottleneck：** `zhNameStatus` 能阻止部分錯譯，但無法表達所有語言的 established／rare／descriptive 差異，也把 name evidence、geometry、ruleset 與 regional preference 混在同一 entry。
+- **Source independence：** Go4Go 的 Chinese Go Terms 頁面明示其資料 copy 自 YeeFan；因此 `source URL != independent Evidence Unit`。Ontology source 增加 `evidenceChain`，同鏈來源不能因網址數量提升 evidence strength。
+- **Canonical schema：** 新 `classic-shapes-ontology-v2` 使用 `entityType + names[] + nameResearch[] + geometryIdentity + rulesetBehavior[] + negativeMappings[] + sourceIds`。舊 `preferredZhTW / zhNameStatus / aliases / rulesetSensitive` 只由 adapter 衍生。
+- **關鍵修正：** Carpenter's Square 的繁中 regional preference 保持 unresolved；小豬嘴 mapping 收斂到 Tripod Group with Extra Leg 並禁止自動 alias plain Tripod Group；金雞獨立固定為 `tesuji_mechanism`；Cross Five／Crossed Five 分開保存 provenance；Long L 的緊／寬帶鉤掛到 `outsideLiberties` condition。
+- **負面主張：** L Group／L+1／Tripod 的中文名狀態改成 dated search result；UI 必須寫「截至日期尚未找到」，不得寫「沒有固定中文名」。
+- **不可破壞 invariant：** 所有 existing practice/scoring contract、first response、learner events、KC、scheduler、T2/T3、formal evaluation 與 storage schema 不變。Ontology 不取得 board truth/scoring authority。
+- **反證：** tests 必須證明 catalog entries 不是手寫第二套 source、Carpenter preferredZhTW 為 null、小豬嘴 plain Tripod 有 negative mapping、Bent Four ruleset flag 從 rulesetBehavior 衍生、同 evidence chain 不得當成多份獨立來源。
+- **Rollback：** 恢復上一版 catalog 與移除 ontology script 即可，不需 learner data migration。
+- **Validation：** PR #31 initial verify run #454 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。

@@ -119,6 +119,30 @@ v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個�
 - provider／model version 隨 computer event 保存；KataGo 候選仍只是搜尋結果，不是 canonical 教學答案、learner diagnosis 或正式 T3 scoring authority。
 - `katago-bridge.cjs` 是本機 optional integration，不改 Pages 的離線核心。Remote API 模式明示會產生網路請求；只有使用者主動選擇才啟用。
 
+## 世界死活名型館 Ontology v2
+
+名型館的 canonical source 已由「中文欄位 + aliases」改為 `classic-shapes-ontology.js` 的 versioned concept ontology。這次只重構 terminology / identity / rules metadata，不改任何 practice item、scoring contract、learner event、KC、scheduler 或 formal evaluation。
+
+每個 concept 分離保存：
+
+- `entityType`：`nakade_shape`、`nakade_category`、`corner_life_death_family`、`tesuji_mechanism`、`rules_sensitive_position`。
+- `names[]`：locale、nameStatus、semanticRole、relationToCanonical、usageScope、reviewStatus 與 sourceIds。名稱證據只證明名稱層，不自動升格 geometry。
+- `geometryIdentity`：kind、reviewStatus、contractVersion、fingerprint、rotation/reflection normalization、boardContext 與 conditions。
+- `rulesetBehavior[]`：ruleset、version、phase、adjudication mode、result 與 sourceIds；舊 `rulesetSensitive` 只由此衍生。
+- `negativeMappings[]`：把「不得自動合併」作為一級知識，例如小豬嘴不得直接 alias 普通 Tripod Group、金雞獨立不得視為 static nakade。
+- `nameResearch[]`：負面查核必須有 `reviewedAt` 與 `searchScope`；UI 只能說「截至日期尚未找到」，不能宣稱名稱不存在。
+- `sources.*.evidenceChain`：網址數量不等於獨立證據數。Go4Go 明示其 Chinese Go Terms 為 YeeFan 資料的 copy，因此兩者在 ontology 中共用 evidence chain。
+
+`classic-shapes-catalog.js` 現在是 compatibility adapter：舊 UI 所需的 `preferredZhTW`、`zhNameStatus`、`aliases`、`rulesetSensitive` 與 `sources` 皆由 ontology 衍生。它不得再手寫第二套概念資料。新功能應優先讀 `Catalog.concepts`／ontology 欄位；舊欄位只為漸進 migration 保留。
+
+Migration invariant：
+
+1. practice/scoring contract ID 與答案語義不變；
+2. geometry contract 仍由各 family contract 負責，ontology 只引用其 version/fingerprint；
+3. 名稱／來源變更不得改 learner evidence；
+4. compatibility adapter 的輸出必須可由 canonical ontology 決定；
+5. rollback 可移除 ontology script 並恢復上一版 catalog，不需 learner/storage migration。
+
 ## External Adoption Policy
 
 外部 OSS 的採用順序預設為：

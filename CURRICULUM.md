@@ -103,3 +103,8 @@ choice-based Experience 仍保留 first response、hint、retry 與 completed ev
 ## 2026-09-27 補充｜世界名型館可玩 family 擴充
 
 世界名型館目前新增「花六／Rabbity Six」四題 bounded 第一手練習：守方、攻方、旋轉／換色、位移／換色。學習目標不是背名稱，而是從六點眼空 adjacency 找唯一 degree-4 共同急所。名稱在作答後才作 retrieval cue。這一區仍屬 practice-only；不納入 Core 正式單元、KC、mastery 或正式評量。`葡萄六` 仍是待幾何核對的中文候選名，不與花六自動合併。完整六目中手後續變化尚未列入課程完成範圍。
+
+
+### 世界死活名型館 ontology v2
+
+名型館的課程定位不變：名稱只作文化／記憶支架，真正可評分能力仍由各 family 的 geometry、rules 或 exact source-case contract 決定。資料層改以 language-agnostic `names[]` 保存多語名稱，並將 `entityType`、`geometryIdentity`、`rulesetBehavior`、`negativeMappings` 與 dated `nameResearch` 分開。這只改善教材 metadata 與證據邊界，不新增 KC、mastery、scheduler、formal evaluation 或 learning-effect claim。

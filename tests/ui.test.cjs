@@ -850,6 +850,26 @@ async function main() {
     assert.equal(correctFeedback.name, "直三");
     assert.equal(correctFeedback.nextDisabled, false);
 
+    const ontologyCatalogState = await evaluate(socket, `(() => {
+      const carpenter = document.querySelector('[data-concept-id="carpenters-square-v1"]');
+      const smallPig = document.querySelector('[data-concept-id="small-pigs-mouth-candidate-v1"]');
+      const bent = document.querySelector('[data-concept-id="bent-four-corner-v1"]');
+      return {
+        cardCount: document.querySelectorAll('.classic-catalog-card').length,
+        carpenterTitle: carpenter?.querySelector('h3')?.textContent || '',
+        carpenterStatus: carpenter?.querySelector('.catalog-zh-status')?.textContent || '',
+        smallPigWarning: smallPig?.querySelector('.catalog-warning')?.textContent || '',
+        bentWarning: bent?.querySelector('.catalog-warning')?.textContent || '',
+        ontologyMeta: Boolean(carpenter?.querySelector('.catalog-ontology-meta'))
+      };
+    })()`);
+    assert.ok(ontologyCatalogState.cardCount >= 16);
+    assert.equal(ontologyCatalogState.carpenterTitle, "一合マス／Carpenter's Square");
+    assert.match(ontologyCatalogState.carpenterStatus, /尚未判定臺灣繁中首選名稱/);
+    assert.match(ontologyCatalogState.smallPigWarning, /Tripod Group/);
+    assert.match(ontologyCatalogState.bentWarning, /ruleset behavior/);
+    assert.equal(ontologyCatalogState.ontologyMeta, true);
+
     const pyramidFourState = await evaluate(socket, `(() => ({
       points: document.querySelectorAll('#pyramid-four-board [data-pyramid-four-x][data-pyramid-four-y]').length,
       prompt: document.querySelector('#pyramid-four-prompt').textContent,

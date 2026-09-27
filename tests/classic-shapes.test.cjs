@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const { problems } = require("../content.js");
+const Ontology = require("../classic-shapes-ontology.js");
 const Catalog = require("../classic-shapes-catalog.js");
 const Go = require("../go.js");
 const Practice = require("../classic-shape-practice.js");
@@ -27,6 +28,7 @@ const ContrastContract = require("../classic-contrast-contract.js");
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "classic-shapes.html"), "utf8");
 const js = fs.readFileSync(path.join(root, "classic-shapes.js"), "utf8");
+const ontologySource = fs.readFileSync(path.join(root, "classic-shapes-ontology.js"), "utf8");
 const catalogSource = fs.readFileSync(path.join(root, "classic-shapes-catalog.js"), "utf8");
 const css = fs.readFileSync(path.join(root, "classic-shapes.css"), "utf8");
 
@@ -59,8 +61,81 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 });
 
 
+test("ontology v2 是 canonical source，catalog entries 只由 adapter 衍生", () => {
+  assert.equal(Ontology.version, "classic-shape-ontology-v2");
+  assert.equal(Catalog.ontologyVersion, Ontology.version);
+  assert.ok(Ontology.concepts.every(Ontology.validateConcept));
+  assert.deepEqual(Catalog.entries.map((entry) => entry.id), Ontology.concepts.map((concept) => concept.id));
+  assert.doesNotMatch(catalogSource, /const\s+entries\s*=\s*\[/);
+  assert.match(catalogSource, /Ontology\.concepts\.map\(toLegacyEntry\)/);
+  assert.match(html, /classic-shapes-ontology\.js\?v=classic-shape-ontology-v2/);
+  assert.ok(html.indexOf("classic-shapes-ontology.js") < html.indexOf("classic-shapes-catalog.js"));
+});
+
+test("來源網址不等於獨立 Evidence Chain", () => {
+  assert.equal(Ontology.sources.go4goChinese.evidenceChain, "yeefan-chinese-terms");
+  assert.equal(Ontology.sources.yeefanChineseTerms.evidenceChain, "yeefan-chinese-terms");
+  const grape = Ontology.concepts.find((concept) => concept.id === "grape-six-candidate-v1");
+  const negative = grape.negativeMappings.find((item) => item.name === "Rabbity Six");
+  assert.ok(negative);
+  assert.match(negative.reason, /同一術語 Evidence Chain/);
+});
+
+test("names ontology、entityType、geometryIdentity 與 legacy 中文 UI 欄位分離", () => {
+  const T = Ontology.ENTITY_TYPE;
+  const carpenter = Ontology.concepts.find((concept) => concept.id === "carpenters-square-v1");
+  const smallPig = Ontology.concepts.find((concept) => concept.id === "small-pigs-mouth-candidate-v1");
+  const golden = Ontology.concepts.find((concept) => concept.id === "golden-chicken-candidate-v1");
+  const bent = Ontology.concepts.find((concept) => concept.id === "bent-four-corner-v1");
+
+  assert.equal(carpenter.entityType, T.CORNER_LIFE_DEATH_FAMILY);
+  assert.ok(carpenter.names.some((item) => item.name === "金柜角"));
+  assert.ok(carpenter.names.some((item) => item.name === "斗方"));
+  assert.ok(carpenter.nameResearch.some((item) => item.locale === "zh-TW" && item.status === "regional_preference_unresolved"));
+
+  assert.ok(smallPig.names.some((item) => item.name === "Tripod Group with Extra Leg"));
+  assert.ok(smallPig.negativeMappings.some((item) => item.name === "Tripod Group" && item.status === "blocked_pending_geometry"));
+
+  assert.equal(golden.entityType, T.TESUJI_MECHANISM);
+  assert.ok(golden.names.some((item) => item.name === "double shortage of liberties" && item.relationToCanonical === Ontology.RELATION.MECHANISM_EQUIVALENT));
+  assert.ok(golden.negativeMappings.some((item) => item.name === "static nakade shape"));
+
+  assert.equal(bent.entityType, T.RULES_SENSITIVE_POSITION);
+  assert.ok(bent.rulesetBehavior.length >= 2);
+  const bentLegacy = Catalog.entries.find((entry) => entry.id === bent.id);
+  assert.equal(bentLegacy.rulesetSensitive, true);
+  assert.deepEqual(bentLegacy.rulesetBehavior, bent.rulesetBehavior);
+});
+
+test("未找到固定中文名是有日期與搜尋範圍的負面查核，不是不存在宣告", () => {
+  for (const id of ["l-group-v1","l-plus-one-group-v1","tripod-group-v1"]) {
+    const concept = Ontology.concepts.find((item) => item.id === id);
+    const research = concept.nameResearch.find((item) => item.locale === "zh");
+    assert.equal(research.status, Ontology.NAME_STATUS.NO_ESTABLISHED_NAME_FOUND, id);
+    assert.equal(research.reviewedAt, "2026-09-27", id);
+    assert.ok(research.searchScope.includes("zh-TW"), id);
+    const legacy = Catalog.entries.find((item) => item.id === id);
+    assert.equal(legacy.preferredZhTW, null, id);
+    assert.match(legacy.zhNameNote, /尚未找到可確認的固定中文名稱/);
+    assert.match(legacy.zhNameNote, /不是不存在的證明/);
+  }
+});
+
+test("梅花五英文異名與 Long L 外氣條件保留，不被正規化掉", () => {
+  const plum = Ontology.concepts.find((concept) => concept.id === "plum-five-candidate-v1");
+  assert.ok(plum.names.some((item) => item.name === "Cross Five"));
+  assert.ok(plum.names.some((item) => item.name === "Crossed Five"));
+
+  const longL = Ontology.concepts.find((concept) => concept.id === "long-l-group-v1");
+  const tight = longL.names.find((item) => item.name === "緊帶鉤");
+  const loose = longL.names.find((item) => item.name === "寬帶鉤");
+  assert.equal(tight.condition.outsideLiberties, "without");
+  assert.equal(loose.condition.outsideLiberties, "with");
+  assert.equal(longL.geometryIdentity.conditions.outsideLiberties, "variation_axis_required");
+});
+
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v10");
+  assert.equal(Catalog.version, "world-classic-shapes-v11");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -91,8 +166,11 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
   assert.equal(grape.zhNameStatus, S.NEEDS_REVIEW);
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
   assert.equal(carpenter.zhNameStatus, S.ESTABLISHED_ALIAS);
-  assert.equal(carpenter.preferredZhTW, "斗方");
+  assert.equal(carpenter.preferredZhTW, null);
+  assert.equal(carpenter.preferenceBasis, "unresolved");
+  assert.equal(carpenter.displayName, "一合マス／Carpenter's Square");
   assert.ok(carpenter.zhAliases.some((alias) => alias.name === "金櫃角"));
+  assert.ok(carpenter.zhAliases.some((alias) => alias.name === "斗方"));
   assert.equal(carpenter.teachingTranslation, "木匠方");
   for (const entry of [lGroup, lPlusOne, tripod]) {
     assert.equal(entry.zhNameStatus, S.NO_ESTABLISHED_NAME_FOUND, entry.id);
@@ -534,7 +612,9 @@ test("金雞獨立 catalog 與 UI 保留 tesuji/nakade authority boundary", () =
   assert.equal(entry.category, "tesuji");
   assert.ok(entry.sources.some((source) => source.label.includes("中央棋院")));
   assert.ok(entry.sources.some((source) => source.label.includes("Sensei")));
-  assert.match(entry.note, /自行編製/);
+  assert.equal(entry.entityType, Catalog.ENTITY_TYPE.TESUJI_MECHANISM);
+  assert.equal(entry.geometryIdentity.contractVersion, "classic-golden-chicken-mechanism-v1");
+  assert.ok(entry.negativeMappings.some((item) => item.name === "static nakade shape"));
   assert.match(html, /不是大眼中手，是雙重氣緊手筋/);
   assert.match(html, /不和刀把五、梅花五、花六共用 nakade geometry contract/);
   assert.match(js, /GoGoldenChickenContract/);
@@ -588,7 +668,8 @@ test("大豬嘴 catalog/UI 明示 source-case 與 family generalization 分離",
   assert.equal(entry.practiceStatus, "playable_source_case_first_move_contract");
   assert.ok(entry.aliases.some((alias) => alias.name === "J Group"));
   assert.ok(entry.sources.some((source) => source.sourceTier === "oss_regression"));
-  assert.match(entry.note, /不代表 R1 是所有大豬嘴／J Group 的共同答案/);
+  assert.equal(entry.geometryIdentity.kind, "source_position_plus_unresolved_family");
+  assert.equal(entry.geometryIdentity.conditions.familyGeometry, "pending");
   assert.match(html, /大豬嘴／J Group：先限定在一個可追溯實戰 case/);
   assert.match(html, /完整 19×19 source position 才是本 contract 的 canonical identity/);
   assert.match(html, /不宣稱 R1 是所有大豬嘴／J Group 的共同答案/);
@@ -649,7 +730,8 @@ test("丁四 catalog/UI 維持 geometry identity 與 bounded first-move claim", 
   assert.equal(entry.practiceStatus, "playable_bounded_geometry_derived_vital_point_contract");
   assert.ok(entry.aliases.some((alias) => alias.name === "Pyramid Four" && alias.reviewStatus === Catalog.REVIEW.VERIFIED));
   assert.ok(entry.sources.some((source) => source.label.includes("YeeFan")));
-  assert.match(entry.note, /item 不保存 vitalPoint/);
+  assert.equal(entry.geometryIdentity.contractVersion, "classic-pyramid-four-vital-point-v1");
+  assert.equal(entry.geometryIdentity.fingerprint, "T-tetromino");
   assert.match(html, /丁四／Pyramid Four：T 形中心就是共同急所/);
   assert.match(html, /不在題目資料保存答案/);
   assert.match(html, /唯一 degree-3 點/);

@@ -138,9 +138,23 @@
   }
 
   function displayZh(entry) {
-    if (entry.preferredZhTW) return entry.preferredZhTW;
-    if (entry.teachingTranslation) return entry.teachingTranslation;
-    return entry.teachingLabel;
+    return entry.displayName || entry.preferredZhTW || entry.teachingTranslation || entry.teachingLabel;
+  }
+
+  function entityTypeLabel(type) {
+    const T = Catalog.ENTITY_TYPE;
+    if (type === T.NAKADE_SHAPE) return "中手棋形";
+    if (type === T.NAKADE_CATEGORY) return "中手分類";
+    if (type === T.CORNER_LIFE_DEATH_FAMILY) return "角部死活 family";
+    if (type === T.TESUJI_MECHANISM) return "手筋機制";
+    if (type === T.RULES_SENSITIVE_POSITION) return "規則敏感局面";
+    return type;
+  }
+
+  function geometryReviewLabel(status) {
+    if (status === Catalog.REVIEW.VERIFIED) return "geometry 已驗";
+    if (status === Catalog.REVIEW.PARTIAL) return "geometry 部分驗證";
+    return "geometry 待核對";
   }
 
   function renderCatalog(filter) {
@@ -155,15 +169,17 @@
       const sources = entry.sources.length
         ? '<div class="catalog-sources"><span>來源</span>' + entry.sources.map((source) => '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label) + '</a>').join("") + '</div>'
         : '<div class="catalog-sources pending"><span>來源</span><em>待補可靠來源與幾何核對</em></div>';
-      return '<article class="classic-catalog-card" data-review="' + escapeHtml(entry.reviewStatus) + '">' +
+      return '<article class="classic-catalog-card" data-concept-id="' + escapeHtml(entry.id) + '" data-review="' + escapeHtml(entry.reviewStatus) + '">' +
         '<div class="catalog-card-top"><span>' + escapeHtml(Catalog.categories[entry.category]) + '</span><strong>' + reviewLabel(entry.reviewStatus) + '</strong></div>' +
         '<h3>' + escapeHtml(displayZh(entry)) + '</h3>' +
+        '<p class="catalog-ontology-meta"><strong>' + escapeHtml(entityTypeLabel(entry.entityType)) + '</strong><span>' + escapeHtml(geometryReviewLabel(entry.geometryIdentity.reviewStatus)) + '</span></p>' +
         '<div class="catalog-zh-status"><strong>' + zhNameStatusLabel(entry.zhNameStatus) + '</strong><span>' + escapeHtml(entry.zhNameNote) + '</span></div>' +
         zhAliases +
         '<p class="catalog-teaching-label">' + escapeHtml(entry.teachingLabel) + '</p>' +
         '<ul class="catalog-aliases">' + aliases + '</ul>' +
         '<p class="catalog-note">' + escapeHtml(entry.note) + '</p>' +
-        (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：未指定 ruleset 前不建立單一評分答案。</p>' : '') +
+        (entry.negativeMappings.length ? '<p class="catalog-warning">禁止自動合併：' + escapeHtml(entry.negativeMappings.map((item) => item.name + ' · ' + item.reason).join('；')) + '</p>' : '') +
+        (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：已記錄 ' + entry.rulesetBehavior.length + ' 個 ruleset behavior；未指定規則與程序階段前不建立單一評分答案。</p>' : '') +
         sources +
         '</article>';
     }).join("");
