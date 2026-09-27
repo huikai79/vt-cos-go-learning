@@ -8,6 +8,9 @@
   const LEGACY_STORAGE_KEY = "go-advanced-sequence-events-v2";
   const LEGACY_SCHEMA_VERSION = 2;
   const LEGACY_EVENT_STREAM_VERSION = "advanced-sequence-events-v2";
+  const V1_STORAGE_KEY = "go-advanced-sequence-events-v1";
+  const V1_SCHEMA_VERSION = 1;
+  const V1_EVENT_STREAM_VERSION = "advanced-sequence-events-v1";
   const SCORING_CONTRACT_VERSION = "advanced-sequence-v1";
   const EVENT_TYPES = ["presented", "decision_presented", "hint", "move_first", "move_retry", "opponent_move", "completed"];
 
@@ -21,6 +24,40 @@
 
   function emptyStore() {
     return { schemaVersion: SCHEMA_VERSION, eventStreamVersion: EVENT_STREAM_VERSION, events: [] };
+  }
+
+  function validV1Event(event) {
+    if (!record(event)
+      || event.schemaVersion !== V1_SCHEMA_VERSION
+      || event.eventStreamVersion !== V1_EVENT_STREAM_VERSION
+      || !EVENT_TYPES.includes(event.type)
+      || typeof event.eventId !== "string"
+      || typeof event.sessionId !== "string"
+      || typeof event.presentationId !== "string"
+      || typeof event.experienceId !== "string"
+      || typeof event.trackId !== "string"
+      || typeof event.occurredAt !== "string"
+      || !Number.isInteger(event.experienceVersion)
+      || event.experienceVersion < 1
+      || event.formalEligible !== false
+      || event.qualifiedOpportunity !== false
+      || event.evidenceUse !== "advanced_practice_only"
+      || event.evaluationContext !== "advanced_sequence_practice"
+      || event.scoringContractVersion !== SCORING_CONTRACT_VERSION
+      || event.transferLevel !== null
+      || event.skillId !== null) return false;
+    const decisionType = ["decision_presented", "hint", "move_first", "move_retry", "opponent_move"].includes(event.type);
+    if (decisionType && (!Number.isInteger(event.stepIndex) || event.stepIndex < 0 || typeof event.decisionId !== "string" || !event.decisionId)) return false;
+    if (!decisionType && event.stepIndex !== null) return false;
+    const moveType = ["move_first", "move_retry", "opponent_move"].includes(event.type);
+    if (moveType && !point(event.point)) return false;
+    if (!moveType && event.point !== null) return false;
+    if (["move_first", "move_retry"].includes(event.type)) {
+      if (typeof event.correct !== "boolean" || typeof event.legal !== "boolean") return false;
+    } else if (event.correct !== null || event.legal !== null) return false;
+    if (moveType && (!Number.isInteger(event.capturedCount) || event.capturedCount < 0)) return false;
+    if (!moveType && event.capturedCount !== null) return false;
+    return event.firstResponse === (event.type === "move_first");
   }
 
   function validLegacyEvent(event) {
@@ -153,6 +190,22 @@
     return event;
   }
 
+  function readV1(storage) {
+    let raw;
+    try { raw = storage.getItem(V1_STORAGE_KEY); }
+    catch (error) { return { ok: false, error: "advanced_sequence_v1_storage_unreadable", detail: error && error.message || "unknown", store: null }; }
+    if (raw === null) return { ok: true, error: null, store: { schemaVersion: V1_SCHEMA_VERSION, eventStreamVersion: V1_EVENT_STREAM_VERSION, events: [] } };
+    try {
+      const value = JSON.parse(raw);
+      if (!record(value) || value.schemaVersion !== V1_SCHEMA_VERSION || value.eventStreamVersion !== V1_EVENT_STREAM_VERSION || !Array.isArray(value.events) || !value.events.every(validV1Event)) {
+        return { ok: false, error: "advanced_sequence_v1_store_invalid", raw, store: null };
+      }
+      return { ok: true, error: null, store: value };
+    } catch (_) {
+      return { ok: false, error: "advanced_sequence_v1_store_malformed", raw, store: null };
+    }
+  }
+
   function readLegacy(storage) {
     let raw;
     try { raw = storage.getItem(LEGACY_STORAGE_KEY); }
@@ -215,7 +268,7 @@
     const events = Array.isArray(eventsOrStore)
       ? eventsOrStore
       : record(eventsOrStore) && Array.isArray(eventsOrStore.events) ? eventsOrStore.events : [];
-    const valid = events.filter((event) => validEvent(event) || validLegacyEvent(event));
+    const valid = events.filter((event) => validEvent(event) || validLegacyEvent(event) || validV1Event(event));
     const firstMoves = valid.filter((event) => event.type === "move_first");
     const retries = valid.filter((event) => event.type === "move_retry");
     const completed = new Set(valid.filter((event) => event.type === "completed").map((event) => event.experienceId));
@@ -310,14 +363,17 @@
   const api = {
     STORAGE_KEY,
     LEGACY_STORAGE_KEY,
+    V1_STORAGE_KEY,
     SCHEMA_VERSION,
     PRESENTATION_POLICY_VERSION,
     EVENT_STREAM_VERSION,
     SCORING_CONTRACT_VERSION,
     emptyStore,
+    validV1Event,
     validLegacyEvent,
     validEvent,
     normalizeEvent,
+    readV1,
     readLegacy,
     read,
     append,
