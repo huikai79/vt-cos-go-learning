@@ -26,8 +26,9 @@
     {
       id: "full-board-review",
       title: "完整棋局與複盤",
-      summary: "未來承接 19 路對局、棋譜重建與轉折點回流；目前先保留為後續 Experience。",
-      status: "planned"
+      summary: "進入 19 路全盤 practice，把局部讀棋、攻防與官子放回完整棋局；SGF 深度回流仍另行發展。",
+      status: "active",
+      href: "live-game.html?size=19"
     }
   ];
 
