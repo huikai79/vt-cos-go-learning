@@ -1,9 +1,14 @@
 (function (root, factory) {
-  const api = factory();
+  const extraction = typeof module === "object" && module.exports
+    ? require("./classic-geometry-extraction.js")
+    : root.GoClassicGeometryExtraction;
+  const api = factory(extraction);
   if (typeof module === "object" && module.exports) module.exports = api;
   if (root) root.GoClassicGeometryEvidence = api;
-})(typeof globalThis !== "undefined" ? globalThis : this, function () {
+})(typeof globalThis !== "undefined" ? globalThis : this, function (Extraction) {
   "use strict";
+
+  if (!Extraction) throw new Error("Classic geometry extraction runtime missing.");
 
   const EVIDENCE_STATUS = Object.freeze({
     GEOMETRY_VERIFIED_FROM_CONTRACT: "geometry_verified_from_contract",
@@ -18,6 +23,8 @@
       sourceType:"internal_contract",
       sourceId:"classic-pyramid-four-vital-point-v1",
       evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
       points:Object.freeze([[1,0],[0,1],[1,1],[2,1]]),
       context:Object.freeze({boardContext:"center",boundary:[],role:"shape",toPlay:"unspecified"})
     }),
@@ -27,6 +34,8 @@
       sourceType:"internal_contract",
       sourceId:"classic-vital-point-v1",
       evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
       points:Object.freeze([[0,0],[1,0],[0,1],[1,1],[2,1]]),
       context:Object.freeze({boardContext:"local",boundary:[],role:"shape",toPlay:"unspecified"})
     }),
@@ -36,6 +45,8 @@
       sourceType:"internal_contract",
       sourceId:"classic-cross-five-vital-point-v1",
       evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
       points:Object.freeze([[1,0],[0,1],[1,1],[2,1],[1,2]]),
       context:Object.freeze({boardContext:"center",boundary:[],role:"shape",toPlay:"unspecified"})
     }),
@@ -45,6 +56,8 @@
       sourceType:"internal_contract",
       sourceId:"classic-flower-six-vital-point-v1",
       evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
       points:Object.freeze([[1,1],[2,1],[1,2],[2,2],[0,1],[1,0]]),
       context:Object.freeze({boardContext:"center",boundary:[],role:"shape",toPlay:"unspecified"})
     }),
@@ -54,6 +67,8 @@
       ambiguityId:"zh-small-carpenters-square-ambiguity-v1",
       sourceType:"external_text",
       sourceId:"legacyEnglishChineseTerms",
+      licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
+      publicGeometryPromotion:"reference_only_no_geometry",
       evidenceStatus:EVIDENCE_STATUS.TEXT_ONLY_GEOMETRY_UNAVAILABLE,
       points:null,
       context:Object.freeze({boardContext:"corner",boundary:["top","left"],role:"unknown",toPlay:"unspecified"}),
@@ -64,6 +79,8 @@
       conceptId:"carpenters-square-v1",
       sourceType:"external_diagram",
       sourceId:"badukworldCarpenterShape2",
+      licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
+      publicGeometryPromotion:"blocked_pending_rights_and_extraction",
       evidenceStatus:EVIDENCE_STATUS.DIAGRAM_REQUIRES_EXTRACTION,
       points:null,
       context:Object.freeze({boardContext:"corner",boundary:["top","left"],role:"defender_group",toPlay:"white"}),
@@ -74,6 +91,8 @@
       conceptId:"l-group-v1",
       sourceType:"external_text",
       sourceId:"badukworldProverbs",
+      licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
+      publicGeometryPromotion:"reference_only_no_geometry",
       evidenceStatus:EVIDENCE_STATUS.TEXT_ONLY_GEOMETRY_UNAVAILABLE,
       points:null,
       context:Object.freeze({boardContext:"corner",boundary:["top","left"],role:"defender_group",toPlay:"unspecified"}),
@@ -89,11 +108,17 @@
     return records.filter((record) => record.ambiguityId === ambiguityId);
   }
 
+  function canStoreSourceDerivedGeometry(record) {
+    if (!record) return false;
+    return Extraction.licenseAllowsPublicEvidence(record.licenseStatus);
+  }
+
   return Object.freeze({
-    version:"classic-geometry-evidence-v1",
+    version:"classic-geometry-evidence-v2",
     EVIDENCE_STATUS,
     records,
     recordsForConcept,
-    recordsForAmbiguity
+    recordsForAmbiguity,
+    canStoreSourceDerivedGeometry
   });
 });
