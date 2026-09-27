@@ -494,3 +494,4 @@
 - **反證：** 舊 v1 evidence、任一 participant mismatch、accessibility mismatch、manifest stale fingerprint 均 fail closed；既有 participant denominator／critical-task negative tests 保留。
 - **Migration：** 目前沒有正式真人證據，因此不做自動 migration；舊 evidence 必須回到原始觀察確認版本，不能只改 schema 字串。
 - **證據邊界：** 這只證明 gate 能辨識 candidate 一致性；沒有因此取得 R1a、真人 usability、accessibility、formal evaluation 或 learning-effect 證據。目前正式教學仍 BLOCKED，真人 usability／accessibility 仍 NOT_TESTED。
+- **Validation：** PR #25 verify run #433 全數 PASS：Node contracts、frozen formal teaching candidate 動態指紋、teaching gate v2、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。第一輪 negative test 曾抓到舊 v1 evidence 雖記錄 schema error 卻仍可能讓 usability/accessibility PASS 的 fail-open；verifier 已改為 evidence envelope 不合法即直接 fail closed。PR 已於 2026-09-27 squash merge 至 `main`（merge commit `8d9a3a4dbdcdc2e91fded8539ccc768165bc5d44`）。
