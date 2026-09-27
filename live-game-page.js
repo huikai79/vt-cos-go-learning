@@ -7,18 +7,19 @@
   const requestedSize = (() => {
     try {
       const size = Live.normalizeBoardSize(requestedSizeParam, Live.DEFAULT_SIZE);
-      return (Live.ACTIVE_PRACTICE_SIZES || [5, 7, 9]).includes(size) ? size : 5;
+      return (Live.ACTIVE_PRACTICE_SIZES || [5, 7, 9, 19]).includes(size) ? size : 5;
     }
     catch (_) { return Live.DEFAULT_SIZE; }
   })();
   const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
   const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
-  const UI_VERSION = "live-game-ui-v11";
-  const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J"];
+  const UI_VERSION = "live-game-ui-v12";
+  const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"];
   const boardProfiles = {
     5: { title: "5×5 基礎練習棋盤", heading: "氣、提子、連斷與規則練習", description: "作為第一個可自由操作的練習棋盤，適合練氣、提子、連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "氣、提子、連斷、禁著、眼形" },
     7: { title: "7×7 過渡練習棋盤", heading: "局部攻防與小局過渡", description: "用來把局部手筋、死活與攻防放進較完整的局面，再銜接 9×9。它仍是過渡練習盤，不作正式棋力評量。", purpose: "局部攻防、死活、過渡" },
-    9: { title: "9×9 完整實戰練習", heading: "完整 9×9 實戰棋盤", description: "兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。", purpose: "完整小棋盤對局" }
+    9: { title: "9×9 完整實戰練習", heading: "完整 9×9 實戰棋盤", description: "兩人輪流操作同一棋盤；支援 Pass、認輸、終局人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局。", purpose: "完整小棋盤對局" },
+    19: { title: "19×19 全盤實戰練習", heading: "完整 19×19 自由棋盤", description: "把 Core 與進階局部判斷放回標準全盤。支援 Pass、認輸、人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局；仍只作 practice。", purpose: "全盤方向、弱棋、戰鬥與官子整合" }
   };
   const $ = (id) => document.getElementById(id);
   let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "computer", humanColor = BLACK, providerEndpoint = "http://127.0.0.1:8765/v1/move", botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "", liveEvidenceFailure = "", activeAssessment = null, activeAssessmentResponseCount = 0;
@@ -204,6 +205,7 @@
     return `${coordName(x, y)}，${state}`;
   }
   function starPoints(size) {
+    if (size === 19) return [[3,3],[9,3],[15,3],[3,9],[9,9],[15,9],[3,15],[9,15],[15,15]];
     if (size === 9) return [[2, 2], [6, 2], [4, 4], [2, 6], [6, 6]];
     const middle = Math.floor(size / 2);
     return [[middle, middle]];
@@ -233,7 +235,7 @@
     }
     parts.push("</svg>");
     $("live-board").innerHTML = parts.join("");
-    $("live-board").setAttribute("aria-label", `${size} 路${size === 9 ? "實戰" : "微型練習"}棋盤`);
+    $("live-board").setAttribute("aria-label", `${size} 路${size >= 9 ? "實戰" : "微型練習"}棋盤`);
     $("live-board").setAttribute("aria-disabled", game.status === "finished" ? "true" : "false");
   }
   function scoreLineHtml(score) {
@@ -255,7 +257,7 @@
     $("board-size-label").textContent = `${size} × ${size}`;
     $("board-heading").textContent = profile.heading;
     $("practice-purpose").textContent = profile.purpose;
-    $("rules-summary").textContent = size === 9 ? `中國式面積 · 貼 ${game.komi} · 簡單劫` : `微型練習盤 · ${game.komi ? `貼 ${game.komi}` : "無貼目"} · 簡單劫`;
+    $("rules-summary").textContent = size >= 9 ? `中國式面積 · 貼 ${game.komi} · 簡單劫` : `微型練習盤 · ${game.komi ? `貼 ${game.komi}` : "無貼目"} · 簡單劫`;
     $("import-label").textContent = `匯入 ${size} 路 SGF`;
     $("opponent-mode").value = opponentMode === "local" ? "local" : "computer";
     $("advanced-provider-mode").value = isComputerMode() ? opponentMode : "computer";
@@ -269,9 +271,11 @@
     $("provider-endpoint").placeholder = opponentMode === "katago" ? "http://127.0.0.1:8765/v1/move" : "https://your-katago-service.example/v1/move";
     $("opponent-summary").textContent = isComputerMode() ? "練習電腦" : "雙人同機";
     $("opponent-detail").textContent = opponentMode === "katago" ? `進階 · KataGo · 你執${colorLabel(humanColor)}` : opponentMode === "remote" ? `進階 · 自訂 API · 你執${colorLabel(humanColor)}` : isComputerMode() ? `內建對手 · 你執${colorLabel(humanColor)}` : "兩人輪流操作這台裝置";
-    $("footer-boundary").textContent = size === 9
-      ? "9×9 提供目前已支援的完整小棋盤對局流程；使用 simple ko，不宣稱涵蓋各棋規的 superko、終局爭議或裁判規則。"
-      : `${size}×${size} 定位為規則與局部技能的微型練習盤；雖可走完整 Pass／計分流程，但不把其勝負當正式棋力、T3 或完整對局能力證據。`;
+    $("footer-boundary").textContent = size === 19
+      ? "19×19 提供標準全盤尺寸的 practice 流程；使用 simple ko 與人工死子確認，不把勝負、電腦選手或本頁計分升格為棋力、T3 或正式評量。"
+      : size === 9
+        ? "9×9 提供目前已支援的完整小棋盤對局流程；使用 simple ko，不宣稱涵蓋各棋規的 superko、終局爭議或裁判規則。"
+        : `${size}×${size} 定位為規則與局部技能的微型練習盤；雖可走完整 Pass／計分流程，但不把其勝負當正式棋力、T3 或完整對局能力證據。`;
     for (const link of document.querySelectorAll("[data-board-size-choice]")) {
       const active = Number(link.dataset.boardSizeChoice) === size;
       link.classList.toggle("active", active);
@@ -291,7 +295,7 @@
     $("scoring-panel").hidden = game.status !== "scoring"; $("result-panel").hidden = game.status !== "finished";
     $("score-lines").innerHTML = game.status === "scoring" ? scoreLineHtml(Live.currentScore(game)) : "";
     $("result-text").textContent = game.status === "finished" ? Live.resultText(game) : "";
-    $("board-help").textContent = game.status === "playing" ? (isComputerTurn() ? "電腦正在選擇合法練習手；完成後會自動輪到你。" : `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／Space 落子。`) : game.status === "scoring" ? "兩次 Pass 後進入終局確認。點棋串切換死子標記；系統不自動判死活。" : game.boardSize === 9 ? "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。" : "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。";
+    $("board-help").textContent = game.status === "playing" ? (isComputerTurn() ? "電腦正在選擇合法練習手；完成後會自動輪到你。" : `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／Space 落子。`) : game.status === "scoring" ? "兩次 Pass 後進入終局確認。點棋串切換死子標記；系統不自動判死活。" : game.boardSize === 9 ? "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。" : game.boardSize === 19 ? "棋局已結束。可匯出 SGF 交給 KaTrain／其他棋譜工具複盤；本站課程端的單點重建目前仍只支援 9×9。" : "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。";
     const recentMoves = game.moves.slice(-30);
     $("move-log").innerHTML = recentMoves.length ? recentMoves.map((move) => `<li class="${move.type === "pass" ? "pass" : ""}">${moveLabel(move)}</li>`).join("") : "<li>尚未落子。</li>";
   }
@@ -518,7 +522,7 @@ ${previewText}
   $("export-sgf-button").addEventListener("click", () => {
     try {
       download(Live.toSgf(game), timestampFilename()); event("sgf_export", { status: game.status }); save();
-      showFeedback("SGF 已建立；可用 KaTrain／其他棋譜工具開啟。9×9 棋譜也可回課程匯入做局部複盤。", "success");
+      showFeedback(game.boardSize === 9 ? "SGF 已建立；可用 KaTrain／其他棋譜工具開啟，也可回課程匯入做局部複盤。" : game.boardSize === 19 ? "19×19 SGF 已建立；可用 KaTrain／其他棋譜工具開啟。本站課程端單點重建目前仍只支援 9×9。" : "SGF 已建立；可用相容棋譜工具保存或檢視。", "success");
     } catch (error) { showFeedback(error.message, "error"); }
   });
   $("import-sgf-input").addEventListener("change", (e) => {
