@@ -683,3 +683,13 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Synthesis：** 主線改成「先秦成熟弈文化 → 132 年 17 路實物 → 5～6 世紀品評／編纂＋文獻亡佚 → 595 年 19 路實物 → 盤制逐漸收斂但其他規則未同步統一 → 若干棋形判定／技術術語後世再現」。此排列是 Claim Ladder 的 evidence sequence，不是單一因果鏈。
 - **Authority／candidate：** History Explore 仍是 read-only Explore surface，不接 learner state、KC、scheduler、T0–T3 或 formal evaluation；未修改首頁與 Core critical asset set，因此 `formal-teaching-candidate-2026-09-28-a` 不重凍結。正式教學維持 `BLOCKED`、formal evaluation unavailable、learning effect `NOT_MEASURED`。
 - **Validation target：** `tests/history.test.cjs` 新增望都、制度化措辭、Lost Corpus、角曲四 continuity、scoped negative 與《讀曲歌》斷代反證；browser UI 與 served Pages marker 同步到 History v4／2026-09-28。工程測試通過只支持內容契約與部署一致性，不等於外部歷史學術同行審查。
+
+
+## 2026-09-28 Change note｜History Explore v5 證據型態與近現代轉折
+
+- **Bottleneck：** v4 已補齊早期盤制、Lost Corpus 與技術術語再現，但主線仍容易讓讀者把「留下更多材料」「規則正式成文化」「棋理／戰略觀念改變」視為同一種歷史進程。
+- **實作：** `history.html` 升 v5，但仍維持四個核心問題不變；新增一個三卡片的「證據與觀念的轉折」區塊，只納入三個高壓縮節點：北宋《忘憂清樂集》作棋譜／棋書 corpus 的證據型態轉折、1949→1989 日本圍棋規約作近現代規則成文化與修訂錨點、1933→1934 新布石作戰略理解快速變化案例。
+- **Evidence boundary：** 《忘憂清樂集》只支持可研究棋譜／局面材料的存在，不替書中每盤古局 attribution 背書；1949／1989 只描述日本規則史，不推成全球規則統一；新布石只描述戰略觀念變化，不寫成規則改制。
+- **Compression gate：** 不新增御城碁、名人年表、世界冠軍史、AI 時代等素材；它們可留待 details／專題頁，避免 History Explore 退化成一般編年史。
+- **Authority／candidate：** History Explore 仍是 read-only Explore surface，不接 learner state、KC、scheduler、T0–T3 或 formal evaluation；未修改 Core critical asset set，因此 formal teaching candidate 不重凍結。正式教學維持 `BLOCKED`、formal evaluation unavailable、learning effect `NOT_MEASURED`。
+- **Validation target：** 新增 History v5 regression，分別反證 corpus attribution 過度推論、1949／1989 全球化誤讀、新布石＝規則改制等錯誤；browser 與 served Pages marker 同步 v5。工程通過只支持內容契約與部署一致性，不等於外部歷史學術同行審查。
