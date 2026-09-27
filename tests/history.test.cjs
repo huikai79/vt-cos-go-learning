@@ -45,3 +45,10 @@ test("首頁以低優先級入口連到歷史探索，不改 Core／Advanced 兩
   assert.match(home, /歷史與典故另外讀，不擋住你的學習主線/);
   assert.equal((home.match(/class="course-entry-card/g) || []).length, 2);
 });
+
+
+test("巡將圍棋、關羽刮骨與原爆棋都有 claim-near source", () => {
+  assert.ok(html.includes("ART001844106"), "Sunjang institutional-history source");
+  assert.ok(html.includes("https://ctext.org/sanguozhi/36"), "Guan Yu primary text");
+  assert.ok(html.includes("https://www.nihonkiin.or.jp/teach/history/history03.html"), "atomic-bomb game official history");
+});
