@@ -1,3 +1,5 @@
+2026-09-27 formal usability candidate fingerprint v1：正式三位 usability smoke gate 的 learner-facing candidate 不再只靠人工宣稱凍結。新增 deterministic candidate manifest，覆蓋五項 critical tasks 的 Core runtime；gate 每次動態重算 fingerprint。human evidence root、usability summary、每位 participant 與 accessibility spot check 必須綁同一 candidate ID/fingerprint。任何 critical surface 改動會使舊 candidate manifest stale 並 fail closed，直到明確建立新 candidate；這不會把開發期 formative observation 回溯升格為正式證據。
+
 2026-09-27 直三四段探索 scope clarification：四階段「找急所→換方向→換攻方→相似反例」是直三目前的專用 teaching sequence，不是所有名型的固定模板。UI 必須把 stage list 視覺與語意綁在直三區塊；其他 family 應依自身可驗證 variation axes 決定 practice 結構。這避免把某一 family 的 pedagogy 誤升格成全域 curriculum invariant。
 
 2026-09-27 直三首屏互動修復：共享 Core `styles.css` 後段對 `.question-card` 使用 named grid-area，但 `classic-shapes.html` 原本的 `.classic-grid` 沒有對應 grid-template-areas，造成題幹卡可被配置到隱式欄位；另有 SVG cursor ring 攔截 click 與初始游標壓在已有棋子的風險。修正原則是 classic page 明確隔離自己的 grid areas、所有交叉點點擊都產生可見 feedback、游標 overlay 不取得 pointer authority。browser test 直接重播 occupied→wrong→correct 三種作答，不以靜態字串取代互動驗證。

@@ -4,15 +4,33 @@ const fs = require("node:fs");
 const path = require("node:path");
 const gateDefinition = require("./teaching-gate.json");
 const ReviewVerifier = require("./r1-review-verify.cjs");
+const CandidateVerifier = require("./formal-teaching-candidate.cjs");
+const candidateManifest = require("./formal-teaching-candidate.json");
 
 function validTimestamp(value) { return typeof value === "string" && Number.isFinite(Date.parse(value)); }
 function nonEmpty(value) { return typeof value === "string" && value.trim().length > 0; }
 
-function evaluateHumanEvidence(evidence, definition = gateDefinition) {
+function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate = CandidateVerifier.evaluateManifest(candidateManifest, __dirname)) {
   const errors = [];
   if (!evidence) return { usabilityPassed: false, accessibilityPassed: false, privateHoldoutPassed: false, r1bPassed: false, errors: ["尚未提供真人證據檔"] };
-  if (evidence.schemaVersion !== 1 || evidence.protocolId !== "go-formal-teaching-evidence-v1") errors.push("真人證據 schema 或 protocol 不符");
-  if (evidence.r1ContentFingerprint !== definition.r1ContentFingerprint) errors.push("真人證據未綁定目前 R1 內容指紋");
+  const schemaValid = evidence.schemaVersion === 2 && evidence.protocolId === "go-formal-teaching-evidence-v2";
+  const r1BindingValid = evidence.r1ContentFingerprint === definition.r1ContentFingerprint;
+  if (!schemaValid) errors.push("真人證據 schema 或 protocol 不符");
+  if (!r1BindingValid) errors.push("真人證據未綁定目前 R1 內容指紋");
+  const expectedCandidateId = definition.formalTeachingCandidateId;
+  const expectedCandidateFingerprint = definition.formalTeachingCandidateFingerprint;
+  const candidateUsable = candidate
+    && candidate.valid
+    && candidate.candidateId === expectedCandidateId
+    && candidate.assetFingerprint === expectedCandidateFingerprint
+    && candidate.computedFingerprint === expectedCandidateFingerprint;
+  if (!candidateUsable) errors.push("目前 formal teaching candidate manifest 未通過動態指紋驗證");
+  const rootCandidateBindingValid = evidence.candidateId === expectedCandidateId
+    && evidence.candidateFingerprint === expectedCandidateFingerprint;
+  if (!rootCandidateBindingValid) {
+    errors.push("真人證據未綁定目前 formal teaching candidate");
+  }
+  const evidenceEnvelopeValid = schemaValid && r1BindingValid && rootCandidateBindingValid;
 
   const teachingCriteria = definition.criteria.formalTeachingUse;
   const usability = evidence.usability || {};
@@ -25,11 +43,17 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition) {
       participant
       && participant.targetNovice === true
       && teachingCriteria.requiredCriticalTasks.every((task) => participant.tasks && participant.tasks[task] === true)
+      && participant.candidateId === expectedCandidateId
+      && participant.candidateFingerprint === expectedCandidateFingerprint
       && Array.isArray(participant.blockingIssues)
       && participant.blockingIssues.length === 0
       && nonEmpty(participant.evidenceReference)
     );
-  const usabilityPassed = validTimestamp(usability.completedAt)
+  const usabilityPassed = evidenceEnvelopeValid
+    && candidateUsable
+    && usability.candidateId === expectedCandidateId
+    && usability.candidateFingerprint === expectedCandidateFingerprint
+    && validTimestamp(usability.completedAt)
     && Number.isInteger(usability.participantCount)
     && usability.participantCount === participants.length
     && usability.participantCount >= teachingCriteria.minimumNoviceParticipants
@@ -41,7 +65,11 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition) {
   if (!usabilityPassed) errors.push("初學者關鍵任務觀察未達最低正式教學閘門（需逐位參與者完成全部關鍵任務並保留證據引用）");
 
   const accessibility = evidence.accessibility || {};
-  const accessibilityPassed = validTimestamp(accessibility.completedAt)
+  const accessibilityPassed = evidenceEnvelopeValid
+    && candidateUsable
+    && accessibility.candidateId === expectedCandidateId
+    && accessibility.candidateFingerprint === expectedCandidateFingerprint
+    && validTimestamp(accessibility.completedAt)
     && teachingCriteria.requiredAccessibilityChecks.every((check) => accessibility.checks && accessibility.checks[check] === true)
     && accessibility.openBlockingIssues === teachingCriteria.maximumOpenBlockingIssues
     && nonEmpty(accessibility.evidenceReference);
@@ -50,19 +78,28 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition) {
   const formalEvaluation = evidence.formalEvaluation || {};
   const privateHoldoutPassed = formalEvaluation.privateUnexposedHoldoutEstablished === true && nonEmpty(formalEvaluation.evidenceReference);
   const r1bPassed = formalEvaluation.r1bComparabilityEstablished === true && nonEmpty(formalEvaluation.evidenceReference);
-  return { usabilityPassed, accessibilityPassed, privateHoldoutPassed, r1bPassed, errors };
+  return { usabilityPassed, accessibilityPassed, privateHoldoutPassed, r1bPassed, candidateUsable, errors };
 }
 
-function evaluateGate({ definition = gateDefinition, receipt = null, humanEvidence = null } = {}) {
+function evaluateGate({ definition = gateDefinition, receipt = null, humanEvidence = null, candidate = null } = {}) {
   const definitionErrors = [];
-  if (definition.schemaVersion !== 1 || definition.protocolId !== "go-formal-teaching-gate-v1") definitionErrors.push("正式教學 gate schema 或 protocol 不符");
+  if (definition.schemaVersion !== 2 || definition.protocolId !== "go-formal-teaching-gate-v2") definitionErrors.push("正式教學 gate schema 或 protocol 不符");
   if (definition.r1ProtocolId !== ReviewVerifier.PROTOCOL_ID) definitionErrors.push("R1 protocol 與 verifier 不一致");
+  if (definition.formalTeachingCandidateProtocolId !== CandidateVerifier.PROTOCOL_ID) definitionErrors.push("formal teaching candidate protocol 與 verifier 不一致");
   if (definition.r1ContentFingerprint !== ReviewVerifier.fingerprint(ReviewVerifier.reviewItems)) definitionErrors.push("R1 內容指紋與 gate 不一致");
   if (!definition.currentStatus || definition.currentStatus.engineeringRelease !== "pass") definitionErrors.push("工程發布尚未通過");
 
+  const candidateVerification = candidate || CandidateVerifier.evaluateManifest(candidateManifest, __dirname);
+  if (!candidateVerification.valid) definitionErrors.push("formal teaching candidate manifest 與目前 critical learner surface 不一致");
+  if (candidateVerification.candidateId !== definition.formalTeachingCandidateId) definitionErrors.push("formal teaching candidate id 與 gate 不一致");
+  if (candidateVerification.assetFingerprint !== definition.formalTeachingCandidateFingerprint
+    || candidateVerification.computedFingerprint !== definition.formalTeachingCandidateFingerprint) {
+    definitionErrors.push("formal teaching candidate fingerprint 與 gate 不一致");
+  }
+
   const r1 = receipt ? ReviewVerifier.verifyReceipt(receipt) : null;
   const r1Passed = Boolean(r1 && r1.receiptValid && r1.r1IndependentReviewPassed);
-  const human = evaluateHumanEvidence(humanEvidence, definition);
+  const human = evaluateHumanEvidence(humanEvidence, definition, candidateVerification);
   const formalTeachingPassed = definitionErrors.length === 0 && r1Passed && human.usabilityPassed && human.accessibilityPassed;
   const formalEvaluationPassed = formalTeachingPassed && human.privateHoldoutPassed && human.r1bPassed;
   const blockingReasons = [...definitionErrors];
@@ -73,6 +110,12 @@ function evaluateGate({ definition = gateDefinition, receipt = null, humanEviden
   return {
     protocolId: definition.protocolId,
     r1ContentFingerprint: definition.r1ContentFingerprint,
+    formalTeachingCandidate: {
+      candidateId: candidateVerification.candidateId,
+      expectedFingerprint: definition.formalTeachingCandidateFingerprint,
+      computedFingerprint: candidateVerification.computedFingerprint,
+      valid: candidateVerification.valid
+    },
     formalTeachingUse: { status: formalTeachingPassed ? "PASS" : "BLOCKED", blockingReasons },
     formalEvaluation: {
       status: formalEvaluationPassed ? "PASS" : "BLOCKED",
@@ -90,7 +133,7 @@ function evaluateGate({ definition = gateDefinition, receipt = null, humanEviden
 
 function readJson(filePath) { return JSON.parse(fs.readFileSync(path.resolve(filePath), "utf8")); }
 
-module.exports = { evaluateHumanEvidence, evaluateGate };
+module.exports = { evaluateHumanEvidence, evaluateGate, CandidateVerifier };
 
 if (require.main === module) {
   const args = process.argv.slice(2);

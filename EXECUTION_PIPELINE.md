@@ -177,3 +177,8 @@
 ## 2026-09-27 Decision note｜variation axes 不統一成固定四步
 
 直三現有四段探索只是該 family 的 teaching sequence；刀把五、梅花五與後續名型不得為了 UI 一致性被迫套用同樣四步。每個 family 的 variation axes 仍由 geometry、role、orientation、ruleset、branch contract 與已驗來源決定。UI 若使用進度列，必須標明其 family scope，避免學習者把局部流程誤解為世界名型館共通規則。
+
+
+## 2026-09-27 Decision note｜正式 usability 先凍結 candidate，再收三位證據
+
+正式三位初學者與 accessibility spot check 必須使用 `formal-teaching-candidate.json` 指定的同一 candidate。`formal-teaching-candidate.cjs` 對五項 critical tasks 所依賴的 Core learner-facing assets 重算 deterministic fingerprint；CI 與 teaching gate 都 fail closed。若任何 critical flow／content／storage／export 依賴檔改動，先建立新 candidate fingerprint，再重新收集受影響的正式證據；不得把不同 candidate 的 participant 紀錄拼成同一分母。這只處理 evidence integrity，不降低 R1a、真人 usability 或 accessibility gate。

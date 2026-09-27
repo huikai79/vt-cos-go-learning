@@ -85,6 +85,8 @@
     "content.js",
     "evidence-taxonomy.js",
     "favicon.svg",
+    "formal-teaching-candidate.cjs",
+    "formal-teaching-candidate.json",
     "formal-teaching-evidence.example.json",
     "go.js",
     "index.html",

@@ -43,6 +43,9 @@ jobs:
           set -euo pipefail
           node scripts/build-r1-review-bank.cjs
           git diff --exit-code -- r1-review-bank.js
+      - name: Verify frozen formal teaching candidate
+        shell: bash
+        run: node formal-teaching-candidate.cjs
       - name: Verify teaching gate behavior
         shell: bash
         run: node teaching-gate-verify.cjs --report-only
