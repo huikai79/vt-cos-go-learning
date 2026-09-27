@@ -1,3 +1,6 @@
+2026-09-28 方四／直四 status proof v1：曲三合併後，下一個 bottleneck 不是再加一個『找唯一急所』題，而是避免學習者形成『所有眼形都找中心』的錯誤規則。外部教學來源對 Square Four 甚至有明顯衝突：Board to Bits 與多份傳統教材指出完全包圍的 2×2 Square Four 即使守方先走仍死；另有近期網站反向寫成 always alive。因此本輪不做來源投票，而用 rules-backed finite proof 建立 `classic-four-space-status-v1`。
+方四 proof：逐一重播守方四種第一手，剩餘三空必須全部同構於曲三，且攻方彎點回應合法。直四 proof：逐一重播攻方四種第一手，守方每一支都必須至少有一手合法回應，使剩餘兩個眼點互不相鄰。題目不保存 expectedStatus／answer。前提限定 sealed、完全包圍、無缺陷的局部眼空；不外推全局含缺陷、外氣或連接的局面。
+
 2026-09-28 曲三 / Bent Three bounded geometry practice v1：在 ontology／fingerprint／extraction／reference-oracle 底盤完成後，重新盤點 catalog-only family。L Group 已有更穩定的英／日／韓名稱與『六點角部死形』教學描述，但仍缺可合法 shipping、可重算的 canonical coordinates，因此保持 BLOCKED，不以名稱或受限圖示手寫 geometry。
 為持續提高 playable coverage，轉向曲三。YeeFan／Go4Go 直接把「曲三」對應 Bent Three；日本棋院將三目中手列為基礎生死主題；英語教學資料明確描述三點 L 形的彎點為共同急所。新增 `classic-bent-three-vital-point-v1`：只接受 L triomino，同時接觸另外兩點的唯一 degree-2 彎點由 geometry 即時計算；item 禁止保存 vitalPoint／answer／correctMove。四個 variant 覆蓋攻守、換色、旋轉與位移。這只建立 bounded first-move practice，不建立完整吃淨答案樹、KC、mastery、transfer、T2/T3 或 formal evaluation。
 
