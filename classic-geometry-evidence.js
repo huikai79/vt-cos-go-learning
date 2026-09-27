@@ -108,7 +108,7 @@
     Object.freeze({
       id:"small-ruler-legacy-name-only-v1",
       conceptId:null,
-      ambiguityId:"zh-small-carpenters-square-ambiguity-v1",
+      ambiguityId:"zh-small-curved-ruler-ambiguity-v2",
       sourceType:"external_text",
       sourceId:"legacyEnglishChineseTerms",
       licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
@@ -117,6 +117,45 @@
       points:null,
       context:Object.freeze({boardContext:"corner",boundary:["top","left"],role:"unknown",toPlay:"unspecified"}),
       note:"來源只建立名稱映射，沒有足以重建棋形的座標。"
+    }),
+    Object.freeze({
+      id:"small-ruler-chinese-teaching-text-v1",
+      conceptId:"small-curved-ruler-candidate-v1",
+      ambiguityId:"zh-small-curved-ruler-ambiguity-v2",
+      sourceType:"external_text",
+      sourceId:"chineseSmallCarpenterDead",
+      licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
+      publicGeometryPromotion:"reference_only_no_geometry",
+      evidenceStatus:EVIDENCE_STATUS.TEXT_ONLY_GEOMETRY_UNAVAILABLE,
+      points:null,
+      context:Object.freeze({boardContext:"corner",boundary:["top","left"],role:"life_death_family",toPlay:"unspecified"}),
+      note:"來源把「小曲尺」作為基本死活型並稱其為死棋，但可擷取文字不足以重建 canonical coordinates。"
+    }),
+    Object.freeze({
+      id:"small-ruler-course-series-text-v1",
+      conceptId:"small-curved-ruler-candidate-v1",
+      ambiguityId:"zh-small-curved-ruler-ambiguity-v2",
+      sourceType:"external_text",
+      sourceId:"renrendocCurvedSquareCourse",
+      licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
+      publicGeometryPromotion:"reference_only_no_geometry",
+      evidenceStatus:EVIDENCE_STATUS.TEXT_ONLY_GEOMETRY_UNAVAILABLE,
+      points:null,
+      context:Object.freeze({boardContext:"corner",boundary:["top","left"],role:"life_death_family",toPlay:"unspecified"}),
+      note:"搜尋可見文字把該系列描述為曲尺型並提到最小型；user-uploaded document 的權利與圖形 extraction 均未通過 public promotion gate。"
+    }),
+    Object.freeze({
+      id:"small-ruler-growth-story-text-v1",
+      conceptId:"small-curved-ruler-candidate-v1",
+      ambiguityId:"zh-small-curved-ruler-ambiguity-v2",
+      sourceType:"external_text",
+      sourceId:"sohuTeachingSystemSmallRuler",
+      licenseStatus:Extraction.LICENSE_STATUS.UNKNOWN,
+      publicGeometryPromotion:"reference_only_no_geometry",
+      evidenceStatus:EVIDENCE_STATUS.TEXT_ONLY_GEOMETRY_UNAVAILABLE,
+      points:null,
+      context:Object.freeze({boardContext:"corner",boundary:["top","left"],role:"life_death_family",toPlay:"unspecified"}),
+      note:"教學文章以「小曲尺長大的故事」組織延伸局面；只支持 teaching-sequence/taxonomy 訊號，不提供可重用 canonical geometry。"
     }),
     Object.freeze({
       id:"badukworld-carpenter-diagram-pending-v1",
@@ -182,7 +221,7 @@
   }
 
   return Object.freeze({
-    version:"classic-geometry-evidence-v3",
+    version:"classic-geometry-evidence-v4",
     EVIDENCE_STATUS,
     records,
     recordsForConcept,
