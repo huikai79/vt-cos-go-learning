@@ -547,3 +547,4 @@
 - **變形：** 守／攻、黑／白、旋轉、位移；表面座標改變後必須重新依 geometry 找急所。
 - **反證：** 直四 geometry fail、偷塞答案 fail、shifted variant 使用 seed coordinate 判錯。
 - **未驗：** 完整吃淨 sequence、外部獨立審題、真人 usability、formal assessment、retention／transfer、learning effect。
+- **Validation：** PR #30 initial verify run #450 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持工程／geometry contract。
