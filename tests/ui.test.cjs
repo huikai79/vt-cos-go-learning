@@ -880,7 +880,7 @@ async function main() {
     assert.deepEqual(completedFilter, {hidden: 76, visible: 1, label: "已完成（1）"});
     const reviewDraft = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__reviewDraftBlob = blob; return 'blob:review-draft'; }; URL.revokeObjectURL = () => {}; document.querySelector('#export-draft').click(); return JSON.parse(await window.__reviewDraftBlob.text()); })()`);
     assert.equal(reviewDraft.draft, true);
-    assert.equal(reviewDraft.protocolId, "go-r1-independent-content-review-v4");
+    assert.equal(reviewDraft.protocolId, "go-r1-independent-content-review-v5");
     assert.equal(reviewDraft.population.publicReviewGroupCount, 48);
     assert.equal(reviewDraft.reviews.length, 77);
     assert.equal(reviewDraft.reviews.filter((review) => review.status).length, 1);
