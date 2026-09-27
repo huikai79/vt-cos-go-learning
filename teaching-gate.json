@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "protocolId": "go-formal-teaching-gate-v1",
+  "schemaVersion": 2,
+  "protocolId": "go-formal-teaching-gate-v2",
   "r1ProtocolId": "go-r1-independent-content-review-v4",
   "r1ContentFingerprint": "fnv1a32-1afc0a13",
   "criteria": {
@@ -35,5 +35,8 @@
     "replacementPrivateHoldout": "not_established",
     "r1bComparability": "not_established",
     "learningEffect": "not_measured"
-  }
+  },
+  "formalTeachingCandidateProtocolId": "go-formal-teaching-candidate-v1",
+  "formalTeachingCandidateId": "formal-teaching-candidate-2026-09-27-a",
+  "formalTeachingCandidateFingerprint": "fnv1a32-js16-db5cff20"
 }
