@@ -119,6 +119,7 @@
     boodBigPigsMouthSgf: source("boodBigPigsMouthSgf","bood/go-test：大猪嘴.sgf","https://github.com/bood/go-test/blob/2f3db241dc26a5ab59c86cf1293b3b005283c288/sgf/%E5%A4%A7%E7%8C%AA%E5%98%B4.sgf","oss_regression","bood-go-test-j-group"),
     tchanLifeDeathMonth: source("tchanLifeDeathMonth","圍棋死活一月通目錄：大豬嘴型 / J-Group Pattern","https://tchan001.wordpress.com/2010/05/05/weiqi-one-month-to-understand-series-7-books/","bibliographic_secondary","life-death-month-index"),
     badukworldProverbs: source("badukworldProverbs","BadukWorld：사활격언 / L Group related series","https://badukworld.co.kr/biz/terms3.html","community_secondary","badukworld-life-death-proverbs"),
+    badukworldCarpenterShape2: source("badukworldCarpenterShape2","BadukWorld：Carpenter's Square Diagram 2.1","https://www.badukworld.co.kr/biz/lesson2/csqare/csq2.html","instructional_secondary","badukworld-carpenter-series"),
     ondaCornerL: source("ondaCornerL","恩田烈彦：隅のL字型をマスターしよう","https://note.com/go_pro275_denen/n/n299c0c730c08","professional_instruction","onda-corner-l"),
     legacyEnglishChineseTerms: source("legacyEnglishChineseTerms","2007 臺灣網路流傳英文圍棋術語：Carpenter's Square → 小曲尺","https://www.ptt.cc/bbs/NCCUGO/M.1191493050.A.A65.html","historical_community","legacy-en-zh-terms-2007"),
     chineseSmallCarpenterDead: source("chineseSmallCarpenterDead","中文教學：小曲尺是死棋","https://read01.com/BngJNdM.html","instructional_secondary","chinese-small-carpenter-dead")
