@@ -86,7 +86,12 @@
     if (!record.sourceLocator || typeof record.sourceLocator !== "string") errors.push("sourceLocator missing");
     if (!Object.values(METHOD).includes(record.method)) errors.push("method invalid");
     if (!Object.values(LICENSE_STATUS).includes(record.licenseStatus)) errors.push("licenseStatus invalid");
+    if (!Object.values(REVIEW_STATUS).includes(record.reviewStatus)) errors.push("reviewStatus invalid");
     if (!record.reviewKey || typeof record.reviewKey !== "string") errors.push("reviewKey missing");
+    if (!record.sourceDigest || typeof record.sourceDigest !== "string") errors.push("sourceDigest missing");
+    if (record.licenseStatus === LICENSE_STATUS.VERIFIED_REUSABLE && (!record.rightsEvidence || typeof record.rightsEvidence !== "string")) {
+      errors.push("verified_reusable requires rightsEvidence");
+    }
     if (!Number.isInteger(record.boardSize) || record.boardSize < 2 || record.boardSize > 52) errors.push("boardSize invalid");
 
     if (record.points !== null && record.points !== undefined) errors.push(...validatePointArray(record.points,"points"));
@@ -146,6 +151,9 @@
     if (a.sourceId !== b.sourceId || a.sourceLocator !== b.sourceLocator) {
       return {ok:false,status:PROMOTION_STATUS.INVALID,errors:["independent extractions must refer to the same source and locator"]};
     }
+    if (a.sourceDigest !== b.sourceDigest) {
+      return {ok:false,status:PROMOTION_STATUS.INVALID,errors:["independent extractions must use the same sourceDigest"]};
+    }
     if (a.reviewKey === b.reviewKey) {
       return {ok:false,status:PROMOTION_STATUS.NEEDS_INDEPENDENT_REVIEW,errors:["reviewKey must differ for independent review"]};
     }
@@ -174,8 +182,9 @@
 
     const sourceId=list[0].sourceId;
     const sourceLocator=list[0].sourceLocator;
-    if (list.some((record) => record.sourceId!==sourceId || record.sourceLocator!==sourceLocator)) {
-      return {ok:false,status:PROMOTION_STATUS.INVALID,errors:["promotion batch must describe one source observation"]};
+    const sourceDigest=list[0].sourceDigest;
+    if (list.some((record) => record.sourceId!==sourceId || record.sourceLocator!==sourceLocator || record.sourceDigest!==sourceDigest)) {
+      return {ok:false,status:PROMOTION_STATUS.INVALID,errors:["promotion batch must describe one immutable source observation"]};
     }
 
     const deterministic=list.find((record) =>
