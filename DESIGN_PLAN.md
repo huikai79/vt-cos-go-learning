@@ -1,3 +1,5 @@
+2026-09-27 R1 reviewer-visible fingerprint v5：外部內容審查的版本身份擴充到 reviewer 實際看到的 prompt／focus，以及 familyId／skillId／boardSize／type／pool 等構念身份；仍同時涵蓋 stones／answer／goal。目的不是增加更多自動內容證據，而是防止 reviewer-facing 文案或焦點變更後舊 receipt 被誤用。blinded bank 仍只輸出 id／prompt／focus／stones。舊 v4 receipt fail closed；目前無正式外部 receipt，因此不做自動 migration。
+
 2026-09-27 formal usability candidate fingerprint v1：正式三位 usability smoke gate 的 learner-facing candidate 不再只靠人工宣稱凍結。新增 deterministic candidate manifest，覆蓋五項 critical tasks 的 Core runtime；gate 每次動態重算 fingerprint。human evidence root、usability summary、每位 participant 與 accessibility spot check 必須綁同一 candidate ID/fingerprint。任何 critical surface 改動會使舊 candidate manifest stale 並 fail closed，直到明確建立新 candidate；這不會把開發期 formative observation 回溯升格為正式證據。
 
 2026-09-27 直三四段探索 scope clarification：四階段「找急所→換方向→換攻方→相似反例」是直三目前的專用 teaching sequence，不是所有名型的固定模板。UI 必須把 stage list 視覺與語意綁在直三區塊；其他 family 應依自身可驗證 variation axes 決定 practice 結構。這避免把某一 family 的 pedagogy 誤升格成全域 curriculum invariant。
