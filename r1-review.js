@@ -3,7 +3,7 @@
   const reviewBank = window.GoR1ReviewBank;
   const reviewItems = reviewBank.reviewItems;
   const reviews = new Map();
-  const draftStorageKey = "go-r1-independent-review-draft-v4";
+  const draftStorageKey = "go-r1-independent-review-draft-v5";
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
