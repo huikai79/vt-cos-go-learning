@@ -99,3 +99,10 @@ test("原爆棋使用可直接支撐再開與終局時間的日本棋院官方�
 test("歷史 HTML 不得把 escaped newline 當可見文字帶進來源清單", () => {
   assert.equal(html.includes("\\n"), false);
 });
+
+
+test("History Explore learner-facing version metadata 一致為 v2", () => {
+  assert.match(html, /history\.css\?v=history-explore-v2/);
+  assert.match(html, /歷史探索 v2/);
+  assert.doesNotMatch(html, /歷史探索 v1/);
+});
