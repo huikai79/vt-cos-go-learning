@@ -25,6 +25,7 @@
     nihonkiinCarpenter: { label: "日本棋院：新ポケット詰碁200", url: "https://www.nihonkiin.or.jp/publishing/books/newtsumego200.html", sourceTier: "official" },
     nihonkiinFive: { label: "日本棋院：五目中手實例", url: "https://www.nihonkiin.or.jp/news/docs/2024/spnintei2024springans.pdf", sourceTier: "official" },
     ntkrFlowerSix: { label: "日本囲碁連盟：花六", url: "https://www.ntkr.co.jp/igoyogo/yogo_801.html", sourceTier: "publisher" },
+    cazenaveRabbitySix: { label: "Vilà & Cazenave：When One Eye is Sufficient", url: "https://www.lamsade.dauphine.fr/~cazenave/papers/eyeLabelling.pdf", sourceTier: "primary_research" },
     bgaTerms: { label: "British Go Association：Japanese Go terms", url: "https://www.britgo.org/general/definitions.html", sourceTier: "association" },
     bgaRules: { label: "British Go Association：rules comparison", url: "https://www.britgo.org/rules/compare.html", sourceTier: "association" },
     bgaIndex: { label: "British Go Journal：Life & Death index", url: "https://britgo.org/bgj/index/subj-inf.html", sourceTier: "association" },
@@ -89,20 +90,21 @@
       category: "nakade",
       preferredZhTW: null,
       zhAliases: [],
-      teachingTranslation: "花六／六目中手",
+      teachingTranslation: "花六（日本名）／六目中手",
       literalTranslation: null,
       zhNameStatus: ZH_NAME_STATUS.NEEDS_REVIEW,
-      zhNameNote: "日本來源可確認「花六」；是否與各華語教材的梅花六／葡萄六完全同形仍需幾何核對。",
-      teachingLabel: "六點大眼的花形中手",
-      practiceStatus: "catalog_only",
+      zhNameNote: "日本來源可確認「花六」；英文研究文獻稱同一六點 nakade 幾何為 Rabbity Six。本專案仍不把「葡萄六」直接升格為精確同義詞。",
+      teachingLabel: "六點大眼唯一中手形的共同急所",
+      practiceStatus: "playable_bounded_vital_point_contract",
       reviewStatus: REVIEW.VERIFIED,
       aliases: [
-        { locale: "ja-JP", name: "花六", relationType: "shape-name", reviewStatus: REVIEW.VERIFIED },
+        { locale: "ja-JP", name: "花六", relationType: "exact-established-name", reviewStatus: REVIEW.VERIFIED },
+        { locale: "en", name: "Rabbity Six", relationType: "geometry-equivalent", reviewStatus: REVIEW.VERIFIED },
         { locale: "ko-KR", name: "매화6궁", relationType: "candidate-shape-equivalent", reviewStatus: REVIEW.PARTIAL }
       ],
-      note: "日本囲碁連盟將花六定義為花形的六目中手；本專案暫不把其他六點俗稱自動視為同形。",
+      note: "已建立 bounded 第一手 practice：六點眼空必須同構於 Rabbity Six／花六，並具有唯一 degree-4 急所。守方與攻方都只評第一手共同急所；完整長變化仍未建立。葡萄六保持獨立待核對。",
       rulesetSensitive: false,
-      sources: [sources.ntkrFlowerSix, sources.badukworldDeath]
+      sources: [sources.ntkrFlowerSix, sources.cazenaveRabbitySix, sources.badukworldDeath]
     },
     {
       id: "bent-four-corner-v1",
@@ -369,7 +371,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v6",
+    version: "world-classic-shapes-v7",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
