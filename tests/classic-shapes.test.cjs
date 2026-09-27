@@ -69,16 +69,16 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("ontology v3 是 canonical source，catalog entries 只由 adapter 衍生", () => {
-  assert.equal(Ontology.version, "classic-shape-ontology-v4");
+  assert.equal(Ontology.version, "classic-shape-ontology-v5");
   assert.equal(Catalog.ontologyVersion, Ontology.version);
   assert.ok(Ontology.concepts.every(Ontology.validateConcept));
   assert.deepEqual(Catalog.entries.map((entry) => entry.id), Ontology.concepts.map((concept) => concept.id));
   assert.doesNotMatch(catalogSource, /const\s+entries\s*=\s*\[/);
   assert.match(catalogSource, /Ontology\.concepts\.map\(toLegacyEntry\)/);
-  assert.match(html, /classic-shapes-ontology\.js\?v=classic-shape-ontology-v4/);
+  assert.match(html, /classic-shapes-ontology\.js\?v=classic-shape-ontology-v5/);
   assert.match(html, /classic-geometry-fingerprint\.js\?v=classic-geometry-fingerprint-v1/);
   assert.match(html, /classic-geometry-extraction\.js\?v=classic-geometry-extraction-v1/);
-  assert.match(html, /classic-geometry-evidence\.js\?v=classic-geometry-evidence-v3/);
+  assert.match(html, /classic-geometry-evidence\.js\?v=classic-geometry-evidence-v4/);
   assert.ok(html.indexOf("classic-geometry-extraction.js") < html.indexOf("classic-geometry-evidence.js"));
   assert.ok(html.indexOf("classic-geometry-evidence.js") < html.indexOf("classic-shapes-catalog.js"));
   assert.ok(html.indexOf("classic-shapes-ontology.js") < html.indexOf("classic-shapes-catalog.js"));
@@ -156,13 +156,22 @@ test("ontology v3 將名稱歧義、taxonomy 與 geometry relation 分開", () =
   assert.ok(ambiguity);
   assert.equal(ambiguity.status, Ontology.AMBIGUITY_STATUS.AMBIGUOUS_HISTORICAL_MAPPING);
   assert.equal(ambiguity.resolutionRequirement, Ontology.AMBIGUITY_STATUS.GEOMETRY_REQUIRED);
-  assert.deepEqual([...ambiguity.candidateConceptIds].sort(), ["carpenters-square-v1","l-group-v1"].sort());
+  assert.deepEqual(
+    [...ambiguity.candidateConceptIds].sort(),
+    ["small-curved-ruler-candidate-v1","carpenters-square-v1","l-group-v1"].sort()
+  );
 
   const carpenter = Ontology.concepts.find((item) => item.id === "carpenters-square-v1");
   const lGroup = Ontology.concepts.find((item) => item.id === "l-group-v1");
-  const smallRuler = carpenter.names.find((item) => item.name === "小曲尺");
-  assert.equal(smallRuler.relationToCanonical, Ontology.RELATION.UNKNOWN);
-  assert.equal(smallRuler.reviewStatus, Ontology.REVIEW.NEEDS_REVIEW);
+  const smallRulerConcept = Ontology.concepts.find((item) => item.id === "small-curved-ruler-candidate-v1");
+  const historicalSmallRuler = carpenter.names.find((item) => item.name === "小曲尺");
+  assert.equal(historicalSmallRuler.relationToCanonical, Ontology.RELATION.UNKNOWN);
+  assert.equal(historicalSmallRuler.reviewStatus, Ontology.REVIEW.NEEDS_REVIEW);
+  assert.ok(smallRulerConcept);
+  assert.ok(smallRulerConcept.names.some((item) => item.name === "小曲尺" && item.relationToCanonical === Ontology.RELATION.EXACT));
+  assert.equal(smallRulerConcept.geometryIdentity.reviewStatus, Ontology.REVIEW.NEEDS_REVIEW);
+  assert.ok(smallRulerConcept.negativeMappings.some((item) => item.name === "L Group" && item.status === "blocked_pending_geometry"));
+  assert.ok(smallRulerConcept.negativeMappings.some((item) => item.name === "Carpenter's Square" && item.status === "blocked_pending_geometry"));
   assert.ok(lGroup.names.some((item) => item.locale === "ja-JP" && item.name === "隅のL字型"));
   assert.ok(lGroup.names.some((item) => item.locale === "ko-KR" && item.name === "작은 됫박형"));
   assert.equal(lGroup.names.some((item) => item.name === "小曲尺"), false);
@@ -170,6 +179,46 @@ test("ontology v3 將名稱歧義、taxonomy 與 geometry relation 分開", () =
   const geometry = Ontology.geometryRelations.find((item) => item.id === "l-vs-carpenter-unresolved-v1");
   assert.equal(geometry.relation, Ontology.GEOMETRY_RELATION.RELATED_UNRESOLVED);
   assert.equal(geometry.reviewStatus, Ontology.REVIEW.NEEDS_REVIEW);
+});
+
+test("小曲尺 v5 是中文 candidate concept，不再被迫二選一", () => {
+  const small = Ontology.concepts.find((item) => item.id === "small-curved-ruler-candidate-v1");
+  const carpenter = Ontology.concepts.find((item) => item.id === "carpenters-square-v1");
+  const lGroup = Ontology.concepts.find((item) => item.id === "l-group-v1");
+  assert.ok(small);
+  assert.equal(small.practiceStatus, "catalog_candidate_only");
+  assert.equal(small.entityType, Ontology.ENTITY_TYPE.CORNER_LIFE_DEATH_FAMILY);
+  assert.equal(small.names.some((item) => item.name === "L Group"), false);
+  assert.equal(small.names.some((item) => item.name === "Carpenter's Square"), false);
+  assert.ok(carpenter.names.some((item) => item.name === "曲尺" && item.relationToCanonical === Ontology.RELATION.EXACT));
+  assert.ok(lGroup.names.some((item) => item.name === "小曲尺") === false);
+
+  const relL = Ontology.geometryRelations.find((item) => item.id === "small-ruler-vs-l-unresolved-v1");
+  const relC = Ontology.geometryRelations.find((item) => item.id === "small-ruler-vs-carpenter-unresolved-v1");
+  assert.equal(relL.relation, Ontology.GEOMETRY_RELATION.RELATED_UNRESOLVED);
+  assert.equal(relC.relation, Ontology.GEOMETRY_RELATION.RELATED_UNRESOLVED);
+});
+
+test("小曲尺所有新增外部 geometry evidence 都保持 text-only / no coordinates", () => {
+  const small = Catalog.entries.find((item) => item.id === "small-curved-ruler-candidate-v1");
+  assert.ok(small);
+  assert.ok(small.geometryEvidence.length >= 3);
+  for (const item of small.geometryEvidence) {
+    assert.equal(item.evidenceStatus, "text_only_geometry_unavailable");
+    assert.equal(item.points, null);
+    assert.equal(item.publicGeometryPromotion, "reference_only_no_geometry");
+  }
+  assert.equal(small.practiceStatus, "catalog_candidate_only");
+});
+
+test("小曲尺 taxonomy 訊號不能升格成 geometry 或 scoring authority", () => {
+  const small = Ontology.concepts.find((item) => item.id === "small-curved-ruler-candidate-v1");
+  assert.ok(small.taxonomyMemberships.some((item) => item.familyId === "曲尺型系列"));
+  assert.ok(small.taxonomyMemberships.some((item) => item.familyId === "小曲尺延伸教學"));
+  assert.equal(small.geometryIdentity.contractVersion, null);
+  assert.equal(small.geometryIdentity.fingerprint, null);
+  assert.equal(/playable_/.test(small.practiceStatus), false);
+  assert.doesNotMatch(ontologySource, /small-curved-ruler-candidate-v1[\s\S]{0,1200}(correctMove|formalEligible\s*:\s*true|mastery)/);
 });
 
 test("不同教材 taxonomy 可並存，不被強制壓成唯一 parent tree", () => {
@@ -263,14 +312,14 @@ test("compatibility catalog 顯示 ontology v4 relation metadata，但不取得 
   assert.ok(lGroup.taxonomyMemberships.length >= 1);
   assert.ok(lGroup.geometryRelations.some((item) => item.relation === Ontology.GEOMETRY_RELATION.RELATED_UNRESOLVED));
   assert.equal(lGroup.practiceStatus, "catalog_only");
-  assert.match(html, /classic-shape-ontology-v4/);
+  assert.match(html, /classic-shape-ontology-v5/);
   assert.match(js, /名稱歧義/);
   assert.match(js, /Taxonomy/);
   assert.doesNotMatch(ontologySource, /correctMove|formalEligible\s*:\s*true|mastery/);
 });
 
 test("catalog adapter 暴露 geometry evidence，但不由名稱補 geometry", () => {
-  assert.equal(Catalog.geometryEvidenceVersion, "classic-geometry-evidence-v3");
+  assert.equal(Catalog.geometryEvidenceVersion, "classic-geometry-evidence-v4");
   const carpenter = Catalog.entries.find((item) => item.id === "carpenters-square-v1");
   const lGroup = Catalog.entries.find((item) => item.id === "l-group-v1");
   const pyramid = Catalog.entries.find((item) => item.id === "pyramid-four-v1");
@@ -287,7 +336,7 @@ test("catalog adapter 暴露 geometry evidence，但不由名稱補 geometry", (
 });
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v18");
+  assert.equal(Catalog.version, "world-classic-shapes-v19");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
