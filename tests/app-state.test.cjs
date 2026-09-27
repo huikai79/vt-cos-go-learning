@@ -549,7 +549,7 @@ test("live eligibility/scoring contract 的資料只進 live evidence，不污�
     ]
   };
   const { elements, storage, downloads } = createApp({}, { rawStorage: { [GoLiveEvidence.STORAGE_KEY]: JSON.stringify(store) } });
-  assert.match(elements["live-evidence-summary"].textContent, /已掃描 1 個人類回合/);
+  assert.match(elements["live-evidence-summary"].textContent, /已查看 1 個你的回合/);
   assert.match(elements["live-evidence-summary"].textContent, /合格 live 機會 1/);
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.deepEqual(saved.events, []);
