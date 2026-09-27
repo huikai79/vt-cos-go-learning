@@ -548,10 +548,10 @@ test("有外氣時 sealed reduction 不得錯報 forced capture 或 square-four 
 test("sealed reduction UI 明示零外氣前提與 square-four terminal", () => {
   assert.match(html, /刀把五：手抜き後如何縮成方四/);
   assert.match(html, /守方整串無外氣/);
-  assert.match(html, /若有外氣，本 contract 直接判定不適用/);
+  assert.match(html, /如果外面還有氣，這個局部判定就不適用/);
   assert.match(html, /提四子 → 方四/);
   assert.match(js, /GoClassicShapeReductionContract/);
-  assert.match(js, /其他應手與有外氣局面仍是 UNKNOWN/);
+  assert.match(js, /結果仍要重新判斷/);
 });
 
 
@@ -593,10 +593,10 @@ test("梅花五 contract 對非十字幾何、錯誤中心與平移後舊座標 
 
 test("梅花五 UI 明示棋形中央而非棋盤中央，且不升格完整答案樹", () => {
   assert.match(html, /梅花五：不要找棋盤中央，要找棋形中央/);
-  assert.match(html, /唯一的 degree-4 中心/);
-  assert.match(html, /不宣稱完整五目中手答案樹/);
+  assert.match(html, /十字形唯一的中心點/);
+  assert.match(html, /目前不判斷完整後續變化/);
   assert.match(js, /GoCrossFiveContract/);
-  assert.match(js, /不代表完整五目中手答案樹或 mastery/);
+  assert.match(js, /還不代表已掌握完整的五目中手變化/);
 });
 
 
@@ -669,9 +669,9 @@ test("contrast UI 首答前隱藏 family，答後才揭示，且不宣稱 transf
   assert.match(html, /刀把五 vs 梅花五：混合辨形/);
   assert.match(html, /作答前不顯示名稱/);
   assert.match(html, /contrast layer 不保存答案/);
-  assert.match(html, /答對只代表這一題第一手正確，不代表 transfer 或 mastery/);
+  assert.match(html, /答對只代表這一題第一手正確，不代表已經能穩定運用到其他棋形/);
   assert.match(js, /\$\("contrast-reveal"\)\.hidden=true/);
-  assert.match(js, /不代表已證明跨 family transfer/);
+  assert.match(js, /還不能因此判定你已能在所有新棋形中穩定運用/);
 });
 
 
@@ -696,7 +696,7 @@ test("直三棋盤已有棋子與游標圈不再造成無反應點擊", () => {
 test("四段探索明確只屬於直三，不冒充所有名型共用流程", () => {
   assert.match(html, /直三專用 · 4 段探索/);
   assert.match(html, /下面四格只屬於直三/);
-  assert.match(html, /其他名型依各自 geometry／scoring contract 安排，不固定套用這四步/);
+  assert.match(html, /其他名型會依自己的棋形特點安排，不一定照這四步/);
   assert.match(html, /1 直三 · 找急所/);
   assert.match(html, /2 直三 · 換方向/);
   assert.match(html, /3 直三 · 換攻方/);
@@ -751,9 +751,9 @@ test("花六 catalog 與 UI 區分 Rabbity Six geometry 和仍待核對的葡萄
   assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
   assert.match(html, /花六／Rabbity Six：找兩個「耳朵」的根部/);
   assert.match(html, /「葡萄六」仍保持待核對，不直接合併/);
-  assert.match(html, /不宣稱完整六目中手長變化或 12 手吃淨答案樹/);
+  assert.match(html, /目前不判斷完整的長變化或一路吃淨的所有手順/);
   assert.match(js, /GoFlowerSixContract/);
-  assert.match(js, /不代表完整六目中手長變化、mastery 或 transfer/);
+  assert.match(js, /還不代表已掌握完整的長變化或能穩定運用到所有新局面/);
 });
 
 
