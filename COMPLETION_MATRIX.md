@@ -607,7 +607,7 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Johari 盲點修正：** 不把前兩輪提出的 Learn／Understand／Explore 三分法做成三個等權首頁入口，也不把研究對話原文直接搬成教材。這會稀釋 Core 的零基礎主路徑，並把研究密度誤當教學密度。
 - **最新判斷：** 新增獨立 `history.html`／`history.css`，以問題導向呈現「起源、19 路、規則演化、典故」四個 MVP 主題；證據標籤固定為確證、高度可信、有爭議、傳說、研究假說、未知。首頁只在主學習與教學方法之後提供低優先級 Explore 入口。
 - **Authority boundary：** 歷史頁不載入 `app.js`、`scheduler.js`、`learner-progress.js`，不讀寫 localStorage，不建立 KC、mastery、T0–T3、formal evaluation 或 learner event；歷史證據標籤也不是 learner evidence taxonomy。
-- **Formal usability candidate：** 因首頁 `index.html` 新增 History Explore 低優先級入口，舊 `formal-teaching-candidate-2026-09-27-a` fingerprint 不再適用；已重新凍結為 `formal-teaching-candidate-2026-09-27-b`。目前尚無正式三位 usability 證據，因此沒有舊證據可遷移或沿用。
+- **Formal usability candidate：** 因首頁 `index.html` 新增 History Explore 低優先級入口，舊 `formal-teaching-candidate-2026-09-27-a` fingerprint 不再適用；已重新凍結為 `formal-teaching-candidate-2026-09-28-a`。目前尚無正式三位 usability 證據，因此沒有舊證據可遷移或沿用。
 - **反證／測試：** `tests/history.test.cjs` 驗證傳說與未知不被升格、孫策—呂範棋譜不被寫成三國 19 路硬證據、首頁仍只有兩張 Core／Advanced 主入口卡、歷史頁不接 learner runtime。release manifest 另把 `history.html` 列為靜態 entrypoint。
 - **證據邊界：** 這是內容架構與歷史敘事工程 PASS 候選；不代表歷史內容已完成獨立學術同行審查，也不改正式教學 `BLOCKED`、formal evaluation unavailable、learning outcome `NOT_MEASURED`。
 
@@ -619,7 +619,7 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **來源邊界：** 古籍 URL 只證明現存傳世文本／引文如何記載，不自動證明故事是事件同期紀錄；手稿目錄、現代轉錄、制度史與實際規則復現各自只在其 evidence scope 內使用。移除未實質支撐頁面主張的唐代棋子材料來源。
 - **Accessibility：** 修正品牌副標、題號、比較表頭、頁尾四組小字低對比配色；新的配色在其實際背景上均高於一般文字 4.5:1 門檻。
 - **Browser regression：** Windows browser UI suite 現在直接導航 `history.html`，驗證四個主題、六種 evidence label、來源查核日期、零 runtime script，以及桌面／375px 行動版無水平溢出與單欄重排。
-- **Candidate boundary：** 本輪只改 `history.html`／`history.css` 與測試／文件；這些不在 `formal-teaching-candidate.json` 的 Core critical asset set，因此 `formal-teaching-candidate-2026-09-27-b` 不需重凍結。
+- **Candidate boundary：** 本輪只改 `history.html`／`history.css` 與測試／文件；這些不在 `formal-teaching-candidate.json` 的 Core critical asset set，因此 `formal-teaching-candidate-2026-09-28-a` 不需重凍結。
 - **狀態：** 歷史內容工程、claim-near source fit、自動 accessibility contract 與 browser regression 為 **PASS**。PR #37 final verify run #487 全數 PASS；squash merge `afe2e39b855beb9bc680523ae34c1de20dac8e1c` 後 main verify run #488 亦全數 PASS，GitHub Pages deployment run #378 成功。外部歷史學術同行審查、正式 novice usability、真人 accessibility 與 learning effect 仍分別保持 NOT_REVIEWED／NOT_TESTED／NOT_TESTED／NOT_MEASURED。由於本執行環境對公開 Pages 網域 DNS／web fetch 不可達，部署後的獨立 HTTP 內容抽查標為 UNKNOWN；不以工具網路限制覆寫 GitHub Pages deployment PASS。
 
 
@@ -630,7 +630,7 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Johari 隱藏區：** 來源清單仍有一個泛用 CText 首頁入口，和「只保留實際支撐 learner-facing claim 的來源」規則不完全一致；已改為《孟子》《博物志》傳說鏈與《世說新語》直達頁。
 - **實作：** History Explore 升 v3；helper text 增加 contrast safety margin；browser UI 直接以 computed style 掃描歷史頁小字與六類 evidence badge 的實際前景／背景，要求 contrast ratio ≥ 4.5；375px 驗證頁底 Advanced CTA 可見；`prefers-reduced-motion: reduce` 以 browser emulation 驗證 `scroll-behavior:auto`。
 - **部署驗證：** 新增 `.github/workflows/pages-smoke.yml`。Pages deployment 成功後，對 manifest 的正式 Pages URL 讀取 `index.html` 與 `history.html`，以 cache-bust＋retry 驗 History v3、72 因果修正、來源查核日期與 Advanced CTA。此 gate 只驗 served artifact，不升格為 usability、內容效度或學習成效。
-- **Candidate boundary：** `history.html`／`history.css`／release workflow 不在 formal candidate critical asset set，首頁 learner-facing critical assets 未變，因此 candidate `formal-teaching-candidate-2026-09-27-b` 不重凍結。
+- **Candidate boundary：** `history.html`／`history.css`／release workflow 不在 formal candidate critical asset set，首頁 learner-facing critical assets 未變，因此 candidate `formal-teaching-candidate-2026-09-28-a` 不重凍結。
 - **未知區保留：** 外部歷史專業審查與真人鍵盤／螢幕閱讀器 accessibility 仍為 NOT_REVIEWED／NOT_TESTED；新增自動檢查不替代真人證據。
 
 
@@ -658,7 +658,7 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Bottleneck：** Step 4 verifier／blinded bank 已完成，但外部 reviewer 原本只能直接進 77 題頁或 repository 文件，增加先看到答案／機器結果而破壞 answer-blind 的操作風險。
 - **實作：** 新增 `r1-review-start.html`，固定 `go-r1-independent-content-review-v5`、content fingerprint `fnv1a32-c34ef6a4`、77 題母體與三項獨立性前提；只連到去答案 `r1-review.html`。
 - **反證：** test 會要求 handoff protocol/fingerprint 與 verifier 同步，且不得載入 Phase 2 答案模組或出現 answer/scoring 欄位；served-content gate 也會直接讀公開 handoff。
-- **真人模板修正：** `formal-teaching-evidence.example.json` 從 stale candidate `-a` 修到 current `-b` / `fnv1a32-js16-e9637bc0`，並新增同步測試。
+- **真人模板修正：** `formal-teaching-evidence.example.json` 從 stale candidate `-a` 修到 current `-b` / `fnv1a32-js16-2d1aa93b`，並新增同步測試。
 - **狀態：** R1a 執行條件 = **READY_FOR_EXTERNAL_REVIEW**；R1a 證據本身仍 **AWAITING_EXTERNAL_RECEIPT**。沒有外部回條前，不升格內容效度、正式教學或正式評量。
 
 
@@ -681,5 +681,5 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Continuity：** 新增敦煌「角旁曲四，局竟乃亡」與後世《棋經十三篇》「角盤曲四，局終乃亡」對照，並保留征／劫／持術語再現；只支持技術分類／術語在後世再次出現，不建立不中斷 transmission chain。
 - **Unknown boundary：** 新卡固定寫「目前查核範圍內，尚未確認可可靠重建的早期 17 路實戰局面」，並明示這是資料缺口、不代表證據不存在；失傳棋書只支持 corpus loss，不補寫 17→19 因果答案。
 - **Synthesis：** 主線改成「先秦成熟弈文化 → 132 年 17 路實物 → 5～6 世紀品評／編纂＋文獻亡佚 → 595 年 19 路實物 → 盤制逐漸收斂但其他規則未同步統一 → 若干棋形判定／技術術語後世再現」。此排列是 Claim Ladder 的 evidence sequence，不是單一因果鏈。
-- **Authority／candidate：** History Explore 仍是 read-only Explore surface，不接 learner state、KC、scheduler、T0–T3 或 formal evaluation；未修改首頁與 Core critical asset set，因此 `formal-teaching-candidate-2026-09-27-b` 不重凍結。正式教學維持 `BLOCKED`、formal evaluation unavailable、learning effect `NOT_MEASURED`。
+- **Authority／candidate：** History Explore 仍是 read-only Explore surface，不接 learner state、KC、scheduler、T0–T3 或 formal evaluation；未修改首頁與 Core critical asset set，因此 `formal-teaching-candidate-2026-09-28-a` 不重凍結。正式教學維持 `BLOCKED`、formal evaluation unavailable、learning effect `NOT_MEASURED`。
 - **Validation target：** `tests/history.test.cjs` 新增望都、制度化措辭、Lost Corpus、角曲四 continuity、scoped negative 與《讀曲歌》斷代反證；browser UI 與 served Pages marker 同步到 History v4／2026-09-28。工程測試通過只支持內容契約與部署一致性，不等於外部歷史學術同行審查。
