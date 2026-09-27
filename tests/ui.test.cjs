@@ -354,8 +354,8 @@ async function main() {
     await delay(30);
     assert.equal(await evaluate(socket, "document.activeElement.id"), "question-prompt");
     const phase4 = await evaluate(socket, `document.querySelector('#tools-menu').open = true; document.querySelector('#application-button').click(); const application = {number: document.querySelector('#question-number').textContent, tag: document.querySelector('#question-tag').textContent, why: document.querySelector('#learning-why').textContent, toolsClosed: !document.querySelector('#tools-menu').open, focused: document.activeElement.id}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sample-sgf-button').click(); const picker = {open: document.querySelector('#sgf-picker-dialog').open, choices: document.querySelector('#sgf-picker-move').options.length}; document.querySelector('#sgf-picker-confirm-button').click(); const candidate = document.querySelector('#sgf-candidate-input'); const reason = document.querySelector('#sgf-reason-input'); const expectedResponse = document.querySelector('#sgf-opponent-response-input'); candidate.value = '第 5 行第 5 列'; reason.value = '先確認中央氣數'; expectedResponse.value = '預期白棋會先補氣'; document.querySelector('#sgf-reflection-save-button').click(); const local = {number: document.querySelector('#question-number').textContent, player: document.querySelector('#player-color').textContent, status: document.querySelector('#sgf-reflection-status').textContent}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sgf-review-status-input').value = 'original_confirmed'; document.querySelector('#sgf-acceptable-answer-input').value = '人工複盤確認原著可接受'; document.querySelector('#sgf-review-save-button').click(); const review = document.querySelector('#sgf-review-status').textContent; ({application, picker, local, review, feedback: document.querySelector('#feedback').textContent})`);
-    assert.match(phase4.application.number, /固定應用探測/);
-    assert.equal(phase4.application.tag, "固定應用探測");
+    assert.match(phase4.application.number, /局面應用練習/);
+    assert.equal(phase4.application.tag, "局面應用練習");
     assert.match(phase4.application.why, /固定局面應用練習/);
     assert.equal(phase4.application.toolsClosed, true);
     assert.equal(phase4.application.focused, "question-prompt");
@@ -375,8 +375,8 @@ async function main() {
     assert.equal(evaluation.preflight.open, true);
     assert.match(evaluation.preflight.text, /每題只記第一次作答/);
     assert.match(evaluation.preflight.text, /已在舊 R1 自我審查中看過/);
-    assert.match(evaluation.number, /個人 pilot.*基線/);
-    assert.equal(evaluation.tag, "無提示個人試行");
+    assert.match(evaluation.number, /個人流程試行.*第一次/);
+    assert.equal(evaluation.tag, "無提示流程試行");
     assert.equal(evaluation.hintDisabled, true);
     assert.match(evaluation.feedback, /完成整批前不顯示正誤/);
     assert.equal(evaluation.progress, "7 / 106");
@@ -752,7 +752,7 @@ async function main() {
     assert.match(advancedFlow.beforeTarget, /完整名稱、術語與重點會在走完後揭露/);
     assert.equal(advancedFlow.variantDisabledBefore, true);
     assert.equal(advancedFlow.termsHiddenBefore, true);
-    assert.match(advancedFlow.afterWrong, /這手合法，但不是本題 contract 的下一手/);
+    assert.match(advancedFlow.afterWrong, /這手合法，但不是本題預期的下一手/);
     assert.match(advancedFlow.afterFirstCorrect, /白棋依題目中的局部應手/);
     assert.equal(advancedFlow.stepAfterOpponent, "第 2 / 2 步");
     assert.match(advancedFlow.finalFeedback, /這條多手變化已走完/);
@@ -909,7 +909,7 @@ async function main() {
         nextDisabled: document.querySelector('#bent-three-next').disabled
       };
     })()`);
-    assert.match(bentThreeWrong.feedback, /不是 L 形 geometry/);
+    assert.match(bentThreeWrong.feedback, /不是 L 形棋形/);
     assert.equal(bentThreeWrong.revealHidden, true);
     assert.equal(bentThreeWrong.nextDisabled, true);
 
@@ -1061,7 +1061,7 @@ async function main() {
         nextDisabled: document.querySelector('#pyramid-four-next').disabled
       };
     })()`);
-    assert.match(pyramidFourWrong.feedback, /不是 T 形 geometry/);
+    assert.match(pyramidFourWrong.feedback, /不是 T 形棋形/);
     assert.equal(pyramidFourWrong.revealHidden, true);
     assert.equal(pyramidFourWrong.nextDisabled, true);
 
@@ -1118,7 +1118,7 @@ async function main() {
         nextDisabled: document.querySelector('#flower-six-next').disabled
       };
     })()`);
-    assert.match(flowerSixCorrect.feedback, /共同急所|degree-4/);
+    assert.match(flowerSixCorrect.feedback, /共同急所/);
     assert.equal(flowerSixCorrect.revealHidden, false);
     assert.equal(flowerSixCorrect.name, "花六／Rabbity Six");
     assert.equal(flowerSixCorrect.nextDisabled, false);
