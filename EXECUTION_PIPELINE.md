@@ -256,3 +256,12 @@
 \n## 2026-09-27 Decision note｜Geometry extraction gate v1\n\n- **Bottleneck：** geometry fingerprint 只能保證 normalization 正確；若 diagram／SGF 的座標轉錄本身錯誤或來源權利不清，仍會把壞 evidence 穩定地 fingerprint。\n- **實作：** 新增 `classic-geometry-extraction.js`，版本化 extraction method、rights status、review status、payload signature、independent review 與 public promotion gate。\n- **人工轉錄：** 單份不能升格；兩個不同 reviewKey 的轉錄必須 canonical payload 完全相同。不同即 `CONFLICT`，不採多數決。
 - **來源不可變性：** promotion batch 必須共用同一 `sourceDigest`；來源版本不同不得互相充當覆核。`verified_reusable` 必須帶 `rightsEvidence`，避免只改狀態字串繞過 gate。\n- **Deterministic source：** SGF parse／source-native coordinates 可免第二份人工轉錄，但只在 `verified_reusable` 權利與 deterministic source flag 同時成立時。\n- **Public boundary：** `unknown`／`reference_only` 來源衍生 geometry 不得進公開 registry；可作 non-shipping reference/oracle。現有 BadukWorld geometry source 暫標 `unknown`。\n- **Context gate：** corner 需要兩個 board boundaries；side 需要至少一個 boundary。缺失即 INVALID，不能拿 shape-only match 冒充完整局面等價。\n- **反證：** single manual、same reviewKey、independent conflict、unknown rights、corner missing boundary 全部必須 fail closed。\n- **下一步：** 研究可合法重用的 L Group／Carpenter／Comb geometry source；若只有 reference-only source，建立 external oracle workflow 而非把其座標複製入 repo。
 - **Validation：** PR #34 verify run #469 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。\n
+## 2026-09-27 Decision note｜Reference-only geometry oracle v1
+
+- **Bottleneck：** extraction gate 對 rights=unknown/reference-only 正確阻止 shipping，但若完全不能利用這些來源，geometry-first research 會失去大量候選／反證材料。
+- **實作：** `classic-geometry-reference-oracle.js` 只在記憶中使用 observation geometry，比對後輸出 sanitized report。
+- **持久化邊界：** report 禁止 points、stones、shape/context signature、fingerprint、raw observation；`authority=reference_oracle_only`、`canonicalPromotionAllowed=false`。
+- **證據獨立性：** aggregation 以 `evidenceChain` 去重，不以 URL／sourceDigest 數量灌票。
+- **一致結果：** 兩條以上獨立 decisive oracle 同方向可標 `CONSISTENT_REFERENCE_SUPPORT`，只作 research prioritization，不升格 canonical geometry。
+- **衝突結果：** MATCH／DIFFERENT 跨獨立 chain 衝突時回 `CONFLICTING_REFERENCE_ORACLES`，不得選邊。
+- **下一步：** 用此 workflow 研究 L Group／Carpenter／Comb／Notcher 候選來源；只有取得可重用權利或 project-generated independent geometry 後才進 public geometry registry。
