@@ -20,12 +20,12 @@ test("歷史探索頁明示六種證據狀態並保留未知", () => {
     assert.ok(html.includes(">" + label + "<"), label);
   }
   assert.match(html, /誰最先創造 19 路、是否因棋理平衡或曆法宇宙觀而改盤，目前仍未知/);
-  assert.match(html, /數字吻合.*不能證明/s);
+  assert.match(html, /兩個 72 不能當成同一條歷史因果證據/);
 });
 
 test("歷史探索頁不把堯傳說或孫策棋譜升格為硬史實", () => {
   assert.match(html, /堯造圍棋是重要的起源傳說/);
-  assert.match(html, /現存宋代傳下的 19 路棋譜不能直接等同三國原局/);
+  assert.match(html, /《忘憂清樂集》所收 19 路棋譜則是後世傳本，不能直接等同三國原局/);
   assert.doesNotMatch(html, /堯帝發明圍棋已有四千年/);
 });
 
@@ -87,10 +87,15 @@ test("歷史頁小字配色維持一般文字 AA 對比安全值", () => {
 test("孫策呂範的對弈傳文與後世十九路棋譜分開處理", () => {
   assert.ok(html.includes("https://ctext.org/taiping-yulan/753/zh"));
   assert.match(html, /只支持對弈敘事，不直接驗證後世 19 路棋譜/);
-  assert.match(html, /現存宋代傳下的 19 路棋譜不能直接等同三國原局/);
+  assert.match(html, /《忘憂清樂集》所收 19 路棋譜則是後世傳本，不能直接等同三國原局/);
 });
 
 test("原爆棋使用可直接支撐再開與終局時間的日本棋院官方頁", () => {
   assert.ok(html.includes("https://www.nihonkiin.or.jp/special/100anniversary/kishi_select/17.html"));
   assert.match(html, /約 10:30 再開、約 16:00 終局/);
+});
+
+
+test("歷史 HTML 不得把 escaped newline 當可見文字帶進來源清單", () => {
+  assert.equal(html.includes("\\n"), false);
 });
