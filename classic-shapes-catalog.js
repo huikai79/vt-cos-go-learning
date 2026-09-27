@@ -43,7 +43,9 @@
     boardToBitsBulkyReduction: { label: "Board to Bits Go：Big Eyes / Bulky Five reduction", url: "https://boardtobitsgo.wordpress.com/2020/09/02/lesson-6-big-eyes/", sourceTier: "instructional_secondary" },
     meaningfulStonesCrossFive: { label: "Meaningful Stones：Cross Five", url: "https://jimseibert.github.io/Meaningful-Stones/sec-shapes.html", sourceTier: "instructional_secondary" },
     yikePlumFive: { label: "弈客圍棋：大眼（5）梅花五", url: "https://www.sohu.com/a/475377109_533159", sourceTier: "publisher_secondary" },
-    hzSchoolVitalShapes: { label: "浙江工大附校：死活棋要點", url: "https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml", sourceTier: "educational_secondary" }
+    hzSchoolVitalShapes: { label: "浙江工大附校：死活棋要點", url: "https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml", sourceTier: "educational_secondary" },
+    gnugoTripodRegression: { label: "GNU Go：tripod2 life/death regression", url: "https://github.com/runningskull/gnugo/blob/84a32e9cee2a70c0ec6ef58c1be279fed84a9a53/regression/ld_owl.tst", sourceTier: "oss_regression" },
+    gnugoTripodPosition: { label: "GNU Go：tripod2.sgf source position", url: "https://github.com/runningskull/gnugo/blob/84a32e9cee2a70c0ec6ef58c1be279fed84a9a53/regression/games/life_and_death/tripod2.sgf", sourceTier: "oss_regression" }
   });
 
   const entries = [
@@ -308,14 +310,14 @@
       zhNameStatus: ZH_NAME_STATUS.NO_ESTABLISHED_NAME_FOUND,
       zhNameNote: "本輪未找到可確認的固定中文專名；「三腳形角部死活」只是描述性翻譯。",
       teachingLabel: "Tripod Group",
-      practiceStatus: "catalog_only",
+      practiceStatus: "playable_source_oracle_first_move_contract",
       reviewStatus: REVIEW.PARTIAL,
       aliases: [
         { locale: "en", name: "Tripod Group", relationType: "source-name", reviewStatus: REVIEW.VERIFIED }
       ],
-      note: "British Go Journal 有直接使用 Tripod Group。中文顯示不把描述性翻譯包裝成華語傳統名稱。",
+      note: "已新增 bounded source-case practice：只使用 GNU Go tripod2 regression 的右下角 R3 局面，攻擊第一手 Q1、防守第一手 T1，並加入對稱旋轉變形。這個 contract 只證明固定來源局面的第一手 oracle，不把 GNU Go 的 reading 結果升格成整個 Tripod family 的完整答案樹。",
       rulesetSensitive: false,
-      sources: [sources.bgaTripod]
+      sources: [sources.bgaTripod, sources.gnugoTripodRegression, sources.gnugoTripodPosition]
     },
     {
       id: "long-l-group-v1",
@@ -371,7 +373,7 @@
   if (!entries.every(validateEntry)) throw new Error("Invalid classic shape catalog entry.");
 
   return Object.freeze({
-    version: "world-classic-shapes-v7",
+    version: "world-classic-shapes-v8",
     REVIEW,
     ZH_NAME_STATUS,
     categories,
