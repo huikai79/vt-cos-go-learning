@@ -6,6 +6,8 @@
   const PracticeContract = window.GoClassicShapePracticeContract;
   const CrossFive = window.GoCrossFivePractice;
   const CrossFiveContract = window.GoCrossFiveContract;
+  const FlowerSix = window.GoFlowerSixPractice;
+  const FlowerSixContract = window.GoFlowerSixContract;
   const Contrast = window.GoClassicContrastPractice;
   const ContrastContract = window.GoClassicContrastContract;
   const ShortRead = window.GoClassicShapeRead;
@@ -14,11 +16,13 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !FlowerSix || !FlowerSixContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
   if (!crossFiveValidation.ok) throw new Error("Cross Five practice contract invalid: " + crossFiveValidation.errors.join("; "));
+  const flowerSixValidation = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
+  if (!flowerSixValidation.ok) throw new Error("Flower Six practice contract invalid: " + flowerSixValidation.errors.join("; "));
   const contrastValidation = ContrastContract.validateAll(Contrast.rounds, {
     Go,
     BulkyPractice: Practice,
@@ -55,6 +59,10 @@
   let crossSolved = false;
   let crossHintShown = false;
   let crossCursor = [3, 3];
+  let flowerSixIndex = 0;
+  let flowerSixSolved = false;
+  let flowerSixHintShown = false;
+  let flowerSixCursor = [2, 2];
   let bulkyIndex = 0;
   let bulkySolved = false;
   let bulkyHintShown = false;
@@ -341,6 +349,92 @@
     if (item.eyeSpace.some(([x,y]) => x===next[0] && y===next[1])) {
       crossCursor = next;
       renderCrossBoard();
+    }
+  }
+
+  function renderFlowerSixBoard() {
+    const item = FlowerSix.items[flowerSixIndex];
+    const validation = FlowerSixContract.validateItem(item,{ Go, PracticeContract });
+    const size = item.boardSize;
+    const pad = 7;
+    const span = 86;
+    const step = span / (size - 1);
+    const setup = new Map(validation.setupStones.map(([x,y,color]) => [pointKey(x,y), color]));
+    const eye = new Set(item.eyeSpace.map(([x,y]) => pointKey(x,y)));
+    const lines = [];
+    const nodes = [];
+    for (let i=0; i<size; i+=1) {
+      const p = pad + i * step;
+      lines.push('<line x1="' + pad + '" y1="' + p + '" x2="' + (pad+span) + '" y2="' + p + '" stroke="#70502c" stroke-width=".55"/>');
+      lines.push('<line x1="' + p + '" y1="' + pad + '" x2="' + p + '" y2="' + (pad+span) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let y=0; y<size; y+=1) for (let x=0; x<size; x+=1) {
+      const px = pad + x * step;
+      const py = pad + y * step;
+      const color = setup.get(pointKey(x,y));
+      if (color === Go.BLACK) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-black"/>');
+      if (color === Go.WHITE) nodes.push('<circle cx="' + px + '" cy="' + py + '" r="5.3" class="stone-white"/>');
+      if (eye.has(pointKey(x,y))) nodes.push('<circle data-flower-six-x="' + x + '" data-flower-six-y="' + y + '" cx="' + px + '" cy="' + py + '" r="6.2" class="classic-hit bulky-hit"/>');
+    }
+    const [cx0,cy0] = flowerSixCursor;
+    nodes.push('<circle cx="' + (pad+cx0*step) + '" cy="' + (pad+cy0*step) + '" r="6.4" class="classic-cursor-ring"/>');
+    $("flower-six-board").innerHTML = '<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("flower-six-cursor-status").textContent = "游標：第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderFlowerSix() {
+    const item = FlowerSix.items[flowerSixIndex];
+    flowerSixSolved = false;
+    flowerSixHintShown = false;
+    flowerSixCursor = item.eyeSpace[0].slice();
+    $("flower-six-tag").textContent = (flowerSixIndex+1) + " / " + FlowerSix.items.length + " · 名稱不提示答案";
+    $("flower-six-title").textContent = flowerSixIndex === 0 ? "找六點眼空共同急所" : "換角色／方向／位置再找急所";
+    $("flower-six-prompt").textContent = item.prompt;
+    $("flower-six-feedback").className = "feedback";
+    $("flower-six-feedback").textContent = "";
+    $("flower-six-reveal").hidden = true;
+    $("flower-six-hint").disabled = false;
+    $("flower-six-next").disabled = true;
+    $("flower-six-next").textContent = flowerSixIndex === FlowerSix.items.length-1 ? "完成花六練習" : "下一題 →";
+    $("flower-six-side").textContent = item.playerColor === Go.BLACK ? "● 黑棋" : "○ 白棋";
+    renderFlowerSixBoard();
+  }
+
+  function attemptFlowerSix(x,y) {
+    if (flowerSixSolved) return;
+    const item = FlowerSix.items[flowerSixIndex];
+    if (!item.eyeSpace.some(([ex,ey]) => ex===x && ey===y)) {
+      $("flower-six-feedback").className = "feedback error";
+      $("flower-six-feedback").textContent = "這一區只比較六個眼空中的候選點。";
+      return;
+    }
+    const result = FlowerSixContract.score(item,[x,y],{ Go, PracticeContract });
+    if (!result.ok) {
+      $("flower-six-feedback").className = "feedback error";
+      $("flower-six-feedback").textContent = "花六 contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if (result.correct) {
+      flowerSixSolved = true;
+      $("flower-six-feedback").className = "feedback success";
+      $("flower-six-feedback").textContent = item.success;
+      $("flower-six-reveal").hidden = false;
+      $("flower-six-hint").disabled = true;
+      $("flower-six-next").disabled = false;
+    } else {
+      $("flower-six-feedback").className = "feedback error";
+      $("flower-six-feedback").textContent = flowerSixHintShown
+        ? "還不是。重新數每個眼空直接相鄰的眼空；只有一點是 degree-4。"
+        : "這一點不是兩個突出點的根部。不要記座標，請重新看六點 adjacency。";
+    }
+  }
+
+  function moveFlowerSixCursor(dx,dy) {
+    const item = FlowerSix.items[flowerSixIndex];
+    const next = [flowerSixCursor[0]+dx,flowerSixCursor[1]+dy];
+    if (item.eyeSpace.some(([x,y]) => x===next[0] && y===next[1])) {
+      flowerSixCursor = next;
+      renderFlowerSixBoard();
     }
   }
 
@@ -851,6 +945,43 @@
     }
   });
 
+  $("flower-six-board").addEventListener("click",(event) => {
+    const hit = event.target.closest("[data-flower-six-x][data-flower-six-y]");
+    if (!hit) return;
+    flowerSixCursor = [Number(hit.dataset.flowerSixX),Number(hit.dataset.flowerSixY)];
+    renderFlowerSixBoard();
+    attemptFlowerSix(flowerSixCursor[0],flowerSixCursor[1]);
+  });
+
+  $("flower-six-board").addEventListener("keydown",(event) => {
+    if (event.key==="ArrowLeft") { event.preventDefault(); moveFlowerSixCursor(-1,0); }
+    else if (event.key==="ArrowRight") { event.preventDefault(); moveFlowerSixCursor(1,0); }
+    else if (event.key==="ArrowUp") { event.preventDefault(); moveFlowerSixCursor(0,-1); }
+    else if (event.key==="ArrowDown") { event.preventDefault(); moveFlowerSixCursor(0,1); }
+    else if (event.key==="Enter" || event.key===" ") {
+      event.preventDefault();
+      attemptFlowerSix(flowerSixCursor[0],flowerSixCursor[1]);
+    }
+  });
+
+  $("flower-six-hint").addEventListener("click",() => {
+    flowerSixHintShown = true;
+    $("flower-six-feedback").className = "feedback";
+    $("flower-six-feedback").textContent = FlowerSix.items[flowerSixIndex].hint;
+  });
+
+  $("flower-six-next").addEventListener("click",() => {
+    if (!flowerSixSolved) return;
+    if (flowerSixIndex < FlowerSix.items.length-1) {
+      flowerSixIndex += 1;
+      renderFlowerSix();
+    } else {
+      $("flower-six-feedback").className = "feedback success";
+      $("flower-six-feedback").textContent = "花六共同急所練習完成。這只表示完成四個 bounded variant，不代表完整六目中手長變化、mastery 或 transfer。";
+      $("flower-six-next").disabled = true;
+    }
+  });
+
   $("bulky-board").addEventListener("click", (event) => {
     const hit = event.target.closest("[data-bulky-x][data-bulky-y]");
     if (!hit) return;
@@ -978,6 +1109,7 @@
   renderCatalog("all");
   renderContrast();
   renderCross();
+  renderFlowerSix();
   renderBulky();
   renderRead();
   renderReduction();
