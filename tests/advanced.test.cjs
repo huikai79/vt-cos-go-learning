@@ -466,6 +466,23 @@ test("family transition 缺 seed 或 variant 首答時保持 INSUFFICIENT_DATA",
   assert.equal(SequenceEvents.classifyFamilyTransition(SequenceEvents.read(storage).store, "net").status, "INSUFFICIENT_DATA");
 });
 
+test("v1 與 v2 多手事件各自保留歷史 reader，不被 v3 policy migration 改寫", () => {
+  const storage = memoryStorage();
+  const v1Event = {
+    schemaVersion: 1, eventStreamVersion: "advanced-sequence-events-v1", eventId: "old-1", sessionId: "old-s", presentationId: "old-p",
+    experienceId: "adv-seq-snapback-01", experienceVersion: 1, trackId: "reading-tesuji", type: "move_first",
+    occurredAt: "2026-09-26T00:00:00.000Z", decisionId: "sacrifice", stepIndex: 0, point: [0,2], correct: true, legal: true,
+    capturedCount: 0, hintShown: false, firstResponse: true, formalEligible: false, qualifiedOpportunity: false,
+    evidenceUse: "advanced_practice_only", evaluationContext: "advanced_sequence_practice", scoringContractVersion: "advanced-sequence-v1",
+    transferLevel: null, skillId: null
+  };
+  storage.setItem(SequenceEvents.V1_STORAGE_KEY, JSON.stringify({ schemaVersion: 1, eventStreamVersion: "advanced-sequence-events-v1", events: [v1Event] }));
+  const old = SequenceEvents.readV1(storage);
+  assert.equal(old.ok, true);
+  assert.equal(old.store.events[0].familyId, undefined);
+  assert.equal(SequencePolicy.currentEvents(old.store).length, 0);
+});
+
 test("多手 sequence store 損壞時 fail closed，且頁面明示棋盤 Response", () => {
   const storage = memoryStorage();
   storage.setItem(SequenceEvents.STORAGE_KEY, "{broken");
