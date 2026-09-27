@@ -10,20 +10,22 @@
   <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v11">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v7"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v8"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
   <script defer src="classic-cross-five-practice.js?v=cross-five-practice-v1"></script>
   <script defer src="classic-flower-six-contract.js?v=classic-flower-six-vital-point-v1"></script>
   <script defer src="classic-flower-six-practice.js?v=flower-six-practice-v1"></script>
+  <script defer src="classic-golden-chicken-contract.js?v=classic-golden-chicken-mechanism-v1"></script>
+  <script defer src="classic-golden-chicken-practice.js?v=golden-chicken-practice-v1"></script>
   <script defer src="classic-contrast-contract.js?v=classic-contrast-vital-point-v1"></script>
   <script defer src="classic-contrast-practice.js?v=classic-contrast-practice-v1"></script>
   <script defer src="classic-shape-read-contract.js?v=classic-bulky-five-short-read-v1"></script>
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v10"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v11"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -36,7 +38,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五、梅花五與花六各有 bounded practice，另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五、梅花五與花六各有 bounded nakade practice；金雞獨立另走 rules-backed tesuji mechanism contract；另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
@@ -147,6 +149,37 @@
           <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> unique degree-4</span></div>
           <div id="flower-six-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路花六練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="flower-six-cursor-status">方向鍵移動 · Enter 落子</span><span id="flower-six-side">● 黑棋</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="golden-chicken-practice" aria-labelledby="golden-chicken-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">死活手筋 · rules-backed mechanism</span>
+        <h2 id="golden-chicken-practice-title">金雞獨立：不是大眼中手，是雙重氣緊手筋</h2>
+        <p>本區使用本專案自行編製的 7 路局部棋形，只練一個可由規則引擎驗證的機制：邊線一立，己方從 1 氣變 2 氣；對手兩側都因自身氣緊而不能入子，己方反而可從任一側提子。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="golden-chicken-tag">1 / 4 · tesuji mechanism</span>
+          <h3 id="golden-chicken-title">找讓 1 氣變 2 氣的一路立</h3>
+          <p id="golden-chicken-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>rules engine 必須同時證明：原串僅一氣、正解「立」不立即提子、著後恰有兩口氣、對手在兩口氣處都屬自殺禁著、己方在任一側都可提兩子。只判第一手是否完成這個機制，不宣稱所有實戰金雞獨立都長成同一棋形。</span></div>
+          <div id="golden-chicken-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="golden-chicken-reveal" class="classic-reveal" hidden>
+            <span>規則機制成立</span>
+            <strong id="golden-chicken-name">金雞獨立</strong>
+            <p>外部資料只用來核對名稱與「一路立＋雙重不入」機制；本站棋形自行編製。它是 tesuji，不和刀把五、梅花五、花六共用 nakade geometry contract。</p>
+          </div>
+          <div class="classic-actions">
+            <button id="golden-chicken-hint" class="subtle-button" type="button">給我數氣提示</button>
+            <button id="golden-chicken-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="金雞獨立規則機制練習棋盤">
+          <div class="card-top"><span>7 × 7 original practice</span><span class="board-status"><i></i> double shortage of liberties</span></div>
+          <div id="golden-chicken-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路金雞獨立機制練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="golden-chicken-cursor-status">方向鍵移動 · Enter 落子</span><span id="golden-chicken-side">● 黑棋</span></div>
         </section>
       </div>
     </section>
