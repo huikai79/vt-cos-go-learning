@@ -23,3 +23,5 @@ main{max-width:1040px;margin:0 auto;padding:54px 24px 72px}.history-hero{padding
 footer{padding:24px;color:#53675a;text-align:center;font-size:.82rem}footer p{margin:3px}
 @media(max-width:760px){.history-header-inner{padding:9px 16px}.history-brand small{display:none}.history-header nav a:nth-child(2){display:none}main{padding:34px 18px 52px}.history-hero{padding-top:22px}.history-hero h1{font-size:2.45rem}.history-section{padding:22px 17px}.badge-grid,.claim-grid,.story-grid,.frontier-grid,.source-list{grid-template-columns:1fr}.compare-grid>div{grid-template-columns:1fr}.compare-grid strong{padding-bottom:4px}.compare-grid span{padding-top:4px}.history-cta{align-items:stretch;flex-direction:column;padding:24px 20px}.history-cta-actions{width:100%}.history-cta-actions a{flex:1}}
 @media(max-width:420px){.history-header nav a{padding:8px}.history-header nav a:nth-child(3){display:none}.history-hero h1{font-size:2.1rem}.history-section{border-radius:14px}.question-block{padding:20px 15px}.question-topline{align-items:flex-start;flex-direction:column}.question-badges{justify-content:flex-start}}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
