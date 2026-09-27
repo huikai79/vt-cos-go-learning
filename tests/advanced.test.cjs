@@ -30,7 +30,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
   assert.match(html, /href="index\.html">← 悟之一手首頁<\/a>/);
   assert.match(html, /href="index\.html#core">核心課程<\/a>/);
   assert.match(indexHtml, /class="course-entry-link" href="advanced\.html">進入進階訓練/);
-  assert.match(html, /不更新 KC、scheduler、T2／T3、mastery 或正式評量/);
+  assert.match(html, /不影響核心課程的學習紀錄、複習安排或正式評量/);
   assert.match(html, /先作答再看完整理由；答錯可重試，但首答會和重試分開保存/);
   assert.match(js, /answer_first/);
   assert.match(js, /answer_retry/);
@@ -44,7 +44,7 @@ test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 p
   assert.equal(full.status, "active");
   assert.equal(full.href, "live-game.html?size=19");
   assert.match(full.summary, /practice/);
-  assert.match(html, /不建立新的 T3／mastery/);
+  assert.match(html, /不納入正式能力評量/);
   assert.equal(content.experiences.length, 8);
   for (const item of content.experiences) {
     assert.ok(content.tracks.some((track) => track.id === item.trackId));
