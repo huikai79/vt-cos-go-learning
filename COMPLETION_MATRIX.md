@@ -526,3 +526,4 @@
 - **變形與反證：** 四題涵蓋黑／白、下／右／上邊；wrong geometry、合法但非正解的 first move、旋轉後沿用 seed 座標、item 偷塞 answer 都 fail closed。
 - **來源用途：** Sensei's Library、中央棋院及既有華語術語來源只支持「金雞獨立」名稱與 double-shortage／不入機制；不把其圖片、題目座標或解答樹複製進 repository。
 - **證據邊界：** 工程 PASS 只代表此原創 bounded mechanism contract 可重算；不代表外部內容審查、真人 usability、正式評量或學習成效通過。正式教學 gate 仍維持 `BLOCKED`。
+- **Validation：** PR #28 initial verify run #445 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持工程／規則契約。
