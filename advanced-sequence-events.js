@@ -43,9 +43,6 @@
       || event.scoringContractVersion !== SCORING_CONTRACT_VERSION
       || event.transferLevel !== null
       || event.skillId !== null
-      || event.presentationPolicyVersion !== PRESENTATION_POLICY_VERSION
-      || !Number.isInteger(event.policyPosition)
-      || event.policyPosition < 0
       || typeof event.familyId !== "string"
       || !event.familyId
       || typeof event.variantId !== "string"
@@ -86,6 +83,9 @@
       || event.scoringContractVersion !== SCORING_CONTRACT_VERSION
       || event.transferLevel !== null
       || event.skillId !== null
+      || event.presentationPolicyVersion !== PRESENTATION_POLICY_VERSION
+      || !Number.isInteger(event.policyPosition)
+      || event.policyPosition < 0
       || typeof event.familyId !== "string"
       || !event.familyId
       || typeof event.variantId !== "string"
