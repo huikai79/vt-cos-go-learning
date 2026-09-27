@@ -576,3 +576,7 @@
 ### 2026-09-27 Geometry fingerprint v1 validation
 
 PR #33 verify run #465 全數 PASS：Node contracts、JavaScript syntax、deterministic R1 review bank、formal teaching candidate、teaching gate、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。此結果只支持 geometry normalization／evidence-state／compatibility UI 工程契約；小曲尺、L Group、Carpenter's Square 的 canonical geometry 仍未解。
+
+### 2026-09-27 Geometry extraction gate v1 validation
+
+PR #34 verify run #469 全數 PASS：Node contracts、JavaScript syntax、deterministic R1 review bank、formal teaching candidate、teaching gate、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功。此結果只支持 extraction／rights／provenance gate 的工程契約；沒有因此取得任何外部 diagram／SGF 的重用權，也沒有解除小曲尺 geometry ambiguity。
