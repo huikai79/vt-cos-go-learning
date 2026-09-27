@@ -126,11 +126,21 @@
 
     const literal = concept.names.find((item) => item.semanticRole === Ontology.SEMANTIC_ROLE.LITERAL_TRANSLATION);
     const zhNameStatus = deriveZhNameStatus(concept,preferred,translation);
+    const noNameResearch = concept.nameResearch.some((item) => item.locale === "zh" && item.status === Ontology.NAME_STATUS.NO_ESTABLISHED_NAME_FOUND);
+    const regionalUnresolved = concept.nameResearch.some((item) => item.locale === "zh-TW" && item.status === "regional_preference_unresolved");
+    const displayName = preferred
+      ? preferred.name
+      : (noNameResearch || regionalUnresolved)
+        ? concept.teachingLabel
+        : (translation || concept.teachingLabel);
+
     return Object.freeze({
       id:concept.id,
+      entityType:concept.entityType,
       category:concept.catalogCategory,
       preferredZhTW:preferred ? preferred.name : null,
       preferenceBasis:preferred ? (preferred.usageScope === Ontology.USAGE_SCOPE.OFFICIAL ? "source_supported" : "project_ui") : "unresolved",
+      displayName,
       zhAliases,
       teachingTranslation:translation,
       literalTranslation:literal ? literal.name : null,
@@ -141,6 +151,10 @@
       reviewStatus:concept.reviewStatus,
       aliases,
       note:concept.note,
+      geometryIdentity:concept.geometryIdentity,
+      nameResearch:concept.nameResearch,
+      rulesetBehavior:concept.rulesetBehavior,
+      negativeMappings:concept.negativeMappings,
       rulesetSensitive:concept.rulesetBehavior.length > 0,
       sources:sourceObjects(concept)
     });
