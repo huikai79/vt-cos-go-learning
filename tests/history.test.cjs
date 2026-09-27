@@ -33,7 +33,7 @@ test("歷史探索頁至少連回主要學習入口與主要來源", () => {
   for (const href of ["index.html", "index.html#core", "advanced.html", "classic-shapes.html"]) {
     assert.ok(html.includes('href="' + href + '"'), href);
   }
-  for (const host of ["ctext.org", "chnmus.net", "idp.bl.uk", "kci.go.kr", "nihonkiin.or.jp", "mpiwg-berlin.mpg.de"]) {
+  for (const host of ["wenwu.hebei.gov.cn", "ctext.org", "chnmus.net", "idp.bl.uk", "kci.go.kr", "nihonkiin.or.jp", "mpiwg-berlin.mpg.de"]) {
     assert.ok(html.includes(host), host);
   }
 });
