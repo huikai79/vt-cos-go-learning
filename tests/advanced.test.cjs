@@ -36,11 +36,15 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
   assert.match(js, /answer_retry/);
 });
 
-test("進階 choice scaffold 保留三條可用訓練線與一條後續路線", () => {
-  assert.equal(content.version, 5);
+test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 practice", () => {
+  assert.equal(content.version, 6);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
-  assert.equal(content.tracks.filter((track) => track.status === "active").length, 3);
-  assert.ok(content.tracks.some((track) => track.id === "full-board-review" && track.status === "planned"));
+  assert.equal(content.tracks.filter((track) => track.status === "active").length, 4);
+  const full = content.tracks.find((track) => track.id === "full-board-review");
+  assert.equal(full.status, "active");
+  assert.equal(full.href, "live-game.html?size=19");
+  assert.match(full.summary, /practice/);
+  assert.match(html, /不建立新的 T3／mastery/);
   assert.equal(content.experiences.length, 8);
   for (const item of content.experiences) {
     assert.ok(content.tracks.some((track) => track.id === item.trackId));
