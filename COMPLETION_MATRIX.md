@@ -624,3 +624,14 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - 修正：刪除獨立 `pages-smoke.yml`，把 `served-pages-content` job 併入既有 `verify.yml`；只在 `main push` 執行，且需等 Node／Sabaki／Windows UI jobs 成功後再輪詢正式 Pages URL。
 - gate 最多 12 次、每 10 秒重試，使用 cache-bust query，驗首頁 History 入口與 History v3／72 修正／來源日期／Advanced CTA。
 - 此修正只建立 deploy artifact → served content 的工程證據鏈；若公開 URL 因外部網路或 DNS 長期不可達，job 必須 FAIL，不得自動降級為成功。
+
+
+### 2026-09-27 Final validation｜History Explore v3 Johari audit
+
+- PR #39 verify run #491：Node contracts、formal candidate、teaching gate、Sabaki oracle、Windows file-URL UI（含 rendered small-text contrast／375px Advanced CTA／reduced-motion）、Edge smoke、repository boundary 全數 PASS。
+- PR #39 squash merge：`83baa65e57c00c7f5879c30dcb15fade530fb2ee`；main verify #492 PASS；Pages deployment #380 PASS。
+- 初版獨立 `workflow_run` served-content smoke 未被 deployment #380 觸發，已明確記為 FAIL 並撤回；不能把 workflow 檔存在當成功證據。
+- PR #40 verify #493：既有 jobs 全 PASS、served-pages-content 在 PR 上依設計 SKIPPED。PR #40 squash merge：`07649651263b785af319e14902d6baeb74e07586`。
+- main verify #494：Node、Sabaki、Windows UI／Edge／boundary 以及新的 `served-pages-content` 全數 PASS；Pages deployment #381 亦 PASS。
+- `served-pages-content` 的 GitHub-hosted runner 實際讀回 `https://huikai.com.kg/vt-cos-go-learning/index.html` 與 `history.html`，確認首頁 History 入口、History v3、72 因果修正、來源查核日期與 Advanced CTA 均已公開供應。因此「served content 已更新」在工程部署層由 UNKNOWN 升為 **PASS**。
+- **仍未升格：** 外部歷史專業審查 NOT_REVIEWED；formal novice usability NOT_TESTED；真人鍵盤／螢幕閱讀器 accessibility NOT_TESTED；formal teaching BLOCKED；formal evaluation BLOCKED／unavailable；learning effect NOT_MEASURED。
