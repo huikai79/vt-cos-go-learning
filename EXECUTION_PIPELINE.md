@@ -309,3 +309,14 @@
 - **反證：** 方四 geometry、直四 geometry、偷塞 expectedStatus 均不得通過曲四 contract。
 - **真人 gate：** R1a、三位初學者 usability、真人 accessibility 延後到最後階段，不由本工程補成已驗。
 - **Validation：** PR #49 verify run #510 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
+
+## 2026-09-28 Decision note｜板六只先升格兩中心 miai response，不把『活形』教材結論直接寫進 scorer
+
+- **來源：** 日本囲碁連盟稱板六為無弱點活形；Malaysia Weiqi Association 教材稱 rectangular six 為 living shape；Chen & Chen (1999) 將 perfect Rectangular-Six 列為 2-eye region；YeeFan／Go4Go 直接對應 `板六 = rectangular six`。
+- **Claim fit：** 上述來源足以支援名稱與活形背景，但本輪 scorer 只取得更窄的 geometry authority：2×3 六點 eye-space 的兩個 degree-3 中心互為 miai。
+- **Contract：** `classic-rectangular-six-miai-v1` 只接受 2×3 rectangle；攻方第一手必須是兩中心之一，守方 expected response 由 geometry 排除已佔中心後推導另一中心。item 禁止保存 answer／correctMove／responsePoint／vitalPoint。
+- **Variation axes：** 攻方換中心、horizontal/vertical、black/white、position shift；表面座標改變後仍重新推導。
+- **Negative mapping：** 一般板六 ≠ 盤角板六；後者是 corner-specific family，可能受外氣等條件影響，保持 catalog/research lane。
+- **反證：** wrong six geometry、非中心 attack、item 偷塞 response、旋轉後 stale coordinate 均 fail closed／判錯。
+- **證據邊界：** 工程 PASS 只支持 bounded miai first-response，不是完整 rectangular-six unconditional-life proof，更不處理盤角板六。
+- **真人 gate：** R1a、三位初學者 usability、真人 accessibility 仍延後到最後階段。
