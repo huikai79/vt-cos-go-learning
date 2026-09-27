@@ -182,6 +182,11 @@
             escapeHtml(entry.geometryRelations.map((item) => item.relation + ' · ' + item.note).join('；')) +
           '</span></div>'
         : '';
+      const geometryEvidence = entry.geometryEvidence.length
+        ? '<div class="catalog-geometry-evidence"><strong>Geometry evidence</strong><span>' +
+            escapeHtml(entry.geometryEvidence.map((item) => item.evidenceStatus + (item.note ? ' · ' + item.note : '')).join('；')) +
+          '</span></div>'
+        : '<div class="catalog-geometry-evidence pending"><strong>Geometry evidence</strong><span>尚無可重算幾何證據。</span></div>';
       const sources = entry.sources.length
         ? '<div class="catalog-sources"><span>來源</span>' + entry.sources.map((source) => '<a href="' + escapeHtml(source.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(source.label) + '</a>').join("") + '</div>'
         : '<div class="catalog-sources pending"><span>來源</span><em>待補可靠來源與幾何核對</em></div>';
@@ -197,6 +202,7 @@
         ambiguities +
         taxonomy +
         geometryRelations +
+        geometryEvidence +
         (entry.negativeMappings.length ? '<p class="catalog-warning">禁止自動合併：' + escapeHtml(entry.negativeMappings.map((item) => item.name + ' · ' + item.reason).join('；')) + '</p>' : '') +
         (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：已記錄 ' + entry.rulesetBehavior.length + ' 個 ruleset behavior；未指定規則與程序階段前不建立單一評分答案。</p>' : '') +
         sources +

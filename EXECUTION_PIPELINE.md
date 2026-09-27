@@ -242,3 +242,14 @@
 - **不可破壞 invariant：** practice/scoring contracts、first response、learner events、KC、scheduler、storage、T2/T3、formal evaluation 全部不變。
 - **下一個研究方法：** 文字搜尋只繼續服務 names／taxonomy provenance；若要解除 `geometry_required`，必須轉成 geometry-first retrieval、座標 normalize 與獨立 fingerprint review。
 - **Validation：** PR #32 verify run #459 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。
+
+## 2026-09-27 Decision note｜Geometry-first fingerprint v1
+
+- **Bottleneck：** Ontology 已能正確保存名稱歧義，但仍沒有可重算的 geometry comparison path；繼續文字搜尋無法解除 `geometry_required`。
+- **實作：** 新增 `classic-geometry-fingerprint.js`：point-set translation + D4 canonicalization、board-context signature、strict／shape-only compare、candidate resolver。
+- **Evidence registry：** 新增 `classic-geometry-evidence.js`；來源必須明示 `geometry_verified_from_contract`、`diagram_requires_extraction` 或 `text_only_geometry_unavailable`。
+- **Positive oracle：** 丁四、刀把五、梅花五、花六由既有 bounded contract geometry 產生 fingerprint；旋轉、鏡射、平移必須同形，不同 polyomino 必須不同。
+- **Negative oracle：** 小曲尺舊術語、BadukWorld L Group 文字敘述、Carpenter Diagram 2.1 在未保存座標前都必須回 `INSUFFICIENT_GEOMETRY_EVIDENCE`；不得由名稱或生死結論補 geometry。
+- **Authority boundary：** fingerprint 只能回答『這兩份已結構化 geometry 是否等價』；不能決定死活答案、family taxonomy、regional name、scoring、KC 或 mastery。
+- **下一步：** 尋找可合法保存／人工轉錄且具 provenance 的 L Group／Carpenter geometry source，先完成座標提取 protocol，再嘗試解除小曲尺 ambiguity。
+- **Validation：** PR #33 verify run #465 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。

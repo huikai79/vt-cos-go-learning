@@ -69,6 +69,9 @@ test("ontology v3 是 canonical source，catalog entries 只由 adapter 衍生",
   assert.doesNotMatch(catalogSource, /const\s+entries\s*=\s*\[/);
   assert.match(catalogSource, /Ontology\.concepts\.map\(toLegacyEntry\)/);
   assert.match(html, /classic-shapes-ontology\.js\?v=classic-shape-ontology-v3/);
+  assert.match(html, /classic-geometry-fingerprint\.js\?v=classic-geometry-fingerprint-v1/);
+  assert.match(html, /classic-geometry-evidence\.js\?v=classic-geometry-evidence-v1/);
+  assert.ok(html.indexOf("classic-geometry-evidence.js") < html.indexOf("classic-shapes-catalog.js"));
   assert.ok(html.indexOf("classic-shapes-ontology.js") < html.indexOf("classic-shapes-catalog.js"));
 });
 
@@ -192,8 +195,22 @@ test("compatibility catalog 顯示 ontology v3 relation metadata，但不取得 
   assert.doesNotMatch(ontologySource, /correctMove|formalEligible\s*:\s*true|mastery/);
 });
 
+test("catalog adapter 暴露 geometry evidence，但不由名稱補 geometry", () => {
+  assert.equal(Catalog.geometryEvidenceVersion, "classic-geometry-evidence-v1");
+  const carpenter = Catalog.entries.find((item) => item.id === "carpenters-square-v1");
+  const lGroup = Catalog.entries.find((item) => item.id === "l-group-v1");
+  const pyramid = Catalog.entries.find((item) => item.id === "pyramid-four-v1");
+
+  assert.ok(carpenter.geometryEvidence.some((item) => item.evidenceStatus === "diagram_requires_extraction"));
+  assert.ok(lGroup.geometryEvidence.some((item) => item.evidenceStatus === "text_only_geometry_unavailable"));
+  assert.ok(pyramid.geometryEvidence.some((item) => item.evidenceStatus === "geometry_verified_from_contract"));
+  assert.equal(carpenter.geometryIdentity.reviewStatus, Ontology.REVIEW.PARTIAL);
+  assert.equal(lGroup.geometryIdentity.reviewStatus, Ontology.REVIEW.NEEDS_REVIEW);
+  assert.doesNotMatch(catalogSource, /small-ruler.*points\s*:\s*\[/i);
+});
+
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v12");
+  assert.equal(Catalog.version, "world-classic-shapes-v13");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);

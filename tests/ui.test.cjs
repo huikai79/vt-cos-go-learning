@@ -863,6 +863,8 @@ async function main() {
         lGroupAmbiguity: lGroup?.querySelector('.catalog-ambiguity')?.textContent || '',
         lGroupTaxonomy: lGroup?.querySelector('.catalog-taxonomy')?.textContent || '',
         lGroupGeometryRelation: lGroup?.querySelector('.catalog-geometry-rel')?.textContent || '',
+        carpenterGeometryEvidence: carpenter?.querySelector('.catalog-geometry-evidence')?.textContent || '',
+        lGroupGeometryEvidence: lGroup?.querySelector('.catalog-geometry-evidence')?.textContent || '',
         smallPigWarning: smallPig?.querySelector('.catalog-warning')?.textContent || '',
         bentWarning: bent?.querySelector('.catalog-warning')?.textContent || '',
         ontologyMeta: Boolean(carpenter?.querySelector('.catalog-ontology-meta'))
@@ -875,6 +877,8 @@ async function main() {
     assert.match(ontologyCatalogState.lGroupAmbiguity, /geometry-first retrieval/);
     assert.match(ontologyCatalogState.lGroupTaxonomy, /badukworld-life-death-proverbs/);
     assert.match(ontologyCatalogState.lGroupGeometryRelation, /related_unresolved/);
+    assert.match(ontologyCatalogState.carpenterGeometryEvidence, /diagram_requires_extraction/);
+    assert.match(ontologyCatalogState.lGroupGeometryEvidence, /text_only_geometry_unavailable/);
     assert.match(ontologyCatalogState.smallPigWarning, /Tripod Group/);
     assert.match(ontologyCatalogState.bentWarning, /ruleset behavior/);
     assert.equal(ontologyCatalogState.ontologyMeta, true);

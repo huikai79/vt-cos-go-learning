@@ -139,6 +139,14 @@ v2 另外輸出 `collectionReadiness`，只描述資料管線目前落在哪個�
 
 `classic-shapes-catalog.js` 現在是 compatibility adapter：舊 UI 所需的 `preferredZhTW`、`zhNameStatus`、`aliases`、`rulesetSensitive` 與 `sources` 皆由 ontology 衍生。它不得再手寫第二套概念資料。新功能應優先讀 `Catalog.concepts`／ontology 欄位；舊欄位只為漸進 migration 保留。
 
+### Geometry-first fingerprint layer
+
+`classic-geometry-fingerprint.js` 提供與名稱無關的 geometry normalization。v1 對 point-set shape 做 translation + D4（旋轉／鏡射）canonicalization，另保存 board context（corner/side/center、boundary、toPlay、role、outside liberties、ko context）作第二層 signature。shape-only compare 與 context-sensitive compare 必須明確分開。
+
+`classic-geometry-evidence.js` 是 geometry evidence registry，不是 scoring source。每筆 evidence 必須標記來源種類與 evidence status；沒有可重算座標時只能是 `text_only_geometry_unavailable` 或 `diagram_requires_extraction`，不得由名稱、圖說或死活結論自動補點。
+
+目前正向 oracle 只來自既有已驗證 practice contracts：丁四、刀把五、梅花五、花六。`小曲尺`、L Group 與 Carpenter's Square 尚未有可重算 canonical coordinates，因此 fingerprint resolver 必須回傳 `INSUFFICIENT_GEOMETRY_EVIDENCE`。
+
 Migration invariant：
 
 1. practice/scoring contract ID 與答案語義不變；

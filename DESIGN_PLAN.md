@@ -1,3 +1,6 @@
+2026-09-27 geometry-first fingerprint v1：Ontology v3 已能表示 ambiguity／taxonomy relation，但還缺真正能解 geometry-required unknown 的可重算 comparison layer。本輪新增 `classic-geometry-fingerprint.js` 與 `classic-geometry-evidence.js`。Fingerprint v1 對 shape point-set 做 translation + D4 normalization，另把 board context 分開編碼；來源只有文字或圖說而沒有座標時 fail closed 為 `INSUFFICIENT_GEOMETRY_EVIDENCE`。
+已驗證的丁四、刀把五、梅花五、花六 practice geometry 作正向 oracle；Carpenter's Square 的 BadukWorld Diagram 2.1 目前只記 `diagram_requires_extraction`，L Group proverb 只記 `text_only_geometry_unavailable`，小曲尺舊術語資料也只屬名稱層。這一輪建立的是研究基礎設施，不宣稱已解決小曲尺 canonical geometry。
+
 2026-09-27 世界死活名型館 ontology v3：v2 已把 names、geometry、ruleset 與 negative mapping 分離，但「小曲尺」暴露另一個 bottleneck：同一名稱可能歷史上指向不同概念層級，而不同語言／教材也可能使用不同 taxonomy。
 外部 QA 顯示：日本專業教學使用「隅のL字型」；BadukWorld 直接寫「작은 됫박형 = The L group」，並把 L+1、L+2、Long L、J、Straight J 列在同一延伸教學脈絡；2007 臺灣舊英中術語資料則把 Carpenter's Square 對到「小曲尺」，另有中文教材把「小曲尺」描述為死棋。
 這些來源足以證明 ambiguity 與 source-specific taxonomy 的存在，但不足以把「小曲尺 = L Group」或「L Group 是 Carpenter variant」升格。v3 新增 `nameAmbiguities[]`、`nameRelations[]`、`taxonomyMemberships[]`、`taxonomyRelations[]`、`geometryRelations[]`；「小曲尺」以 `ambiguous_historical_mapping + geometry_required` 保存，L Group／Carpenter 只記 `related_unresolved` geometry relation。

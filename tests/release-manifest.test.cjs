@@ -119,9 +119,11 @@ test("大豬嘴 source-case 與第三方 notice 一併列入公開發佈清單",
   }
 });
 
-test("世界名型 ontology 與 compatibility catalog 都列入公開發佈清單", () => {
+test("世界名型 ontology、geometry registry 與 compatibility catalog 都列入公開發佈清單", () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-ontology.js"));
+  assert.ok(manifest.publicFiles.includes("classic-geometry-fingerprint.js"));
+  assert.ok(manifest.publicFiles.includes("classic-geometry-evidence.js"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
   assert.ok(manifest.hosting.entrypoints.includes("classic-shapes.html"));
 });
