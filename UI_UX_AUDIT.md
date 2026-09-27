@@ -233,3 +233,8 @@
 - 375px 除了 reflow／overflow，現在另外要求 History CTA 的 `advanced.html` 返回入口實際可見，避免 ≤420px header 隱藏 Advanced 後只剩間接回首頁。
 - `prefers-reduced-motion` 不只檢查 CSS 字串，browser 會模擬 reduce media feature 並驗 computed `scrollBehavior === "auto"`。
 - 這些仍不是 WCAG 全站合規聲明；focus order、screen reader 語意與認知負荷仍需真人 spot check。
+
+
+### 2026-09-27｜History v3 deployment-validation correction
+
+獨立 `workflow_run` 版本的 Pages smoke 在 deployment #380 後未觸發，因此不算可運作的驗收。served-content check 改由既有 `verify.yml` 在 main push、且本地 Node／Sabaki／Windows UI 全部 PASS 後執行；它直接輪詢正式 Pages URL。這只修正 delivery verification，不改任何 accessibility／usability 結論。
