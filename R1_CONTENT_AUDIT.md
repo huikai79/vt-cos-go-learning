@@ -44,3 +44,8 @@ R1a 的機器反證、全題庫審查母體與去答案 reviewer-only 工具已�
 - R1b 狀態：**未建立**。現有結構配對不能宣稱實際難度等值。
 - 個人 pilot 狀態：`personal-pilot-v3` 只從上述 22 題選八題；可檢查操作流程、七天返回、資料缺漏與負擔，`formalEligible=false`。正式評量須另建從未公開的新題庫與角色分離流程。
 - R4 狀態：固定與自適應效果比較繼續暫停。
+
+
+## 2026-09-27 Change note｜R1 protocol v5
+
+R1 content fingerprint 從 v4 升為 v5，新增綁定 reviewer-visible `prompt`、`focus`，以及 `familyId`、`skillId`、`boardSize`、`type`、`pool`；同時保留 stones／answer／goal／item version 綁定。瀏覽器審查 bank 仍只含 `id`、`prompt`、`focus`、`stones`，因此審查者不會因這次版本升級看到答案或 scoring metadata。舊 v4 receipt 不得轉寫成 v5；若曾有草稿，需以 v5 bank 重新核對。当前仍沒有正式外部 R1a 回條，因此內容效度狀態維持待外部審查。
