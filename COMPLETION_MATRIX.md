@@ -604,4 +604,4 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Accessibility：** 修正品牌副標、題號、比較表頭、頁尾四組小字低對比配色；新的配色在其實際背景上均高於一般文字 4.5:1 門檻。
 - **Browser regression：** Windows browser UI suite 現在直接導航 `history.html`，驗證四個主題、六種 evidence label、來源查核日期、零 runtime script，以及桌面／375px 行動版無水平溢出與單欄重排。
 - **Candidate boundary：** 本輪只改 `history.html`／`history.css` 與測試／文件；這些不在 `formal-teaching-candidate.json` 的 Core critical asset set，因此 `formal-teaching-candidate-2026-09-27-b` 不需重凍結。
-- **狀態：** 歷史內容工程與來源對位為 PASS 候選；外部歷史學術同行審查、正式 novice usability、真人 accessibility 與 learning effect 仍分別保持 NOT_REVIEWED／NOT_TESTED／NOT_TESTED／NOT_MEASURED。
+- **狀態：** 歷史內容工程、claim-near source fit、自動 accessibility contract 與 browser regression 為 **PASS**。PR #37 final verify run #487 全數 PASS；squash merge `afe2e39b855beb9bc680523ae34c1de20dac8e1c` 後 main verify run #488 亦全數 PASS，GitHub Pages deployment run #378 成功。外部歷史學術同行審查、正式 novice usability、真人 accessibility 與 learning effect 仍分別保持 NOT_REVIEWED／NOT_TESTED／NOT_TESTED／NOT_MEASURED。由於本執行環境對公開 Pages 網域 DNS／web fetch 不可達，部署後的獨立 HTTP 內容抽查標為 UNKNOWN；不以工具網路限制覆寫 GitHub Pages deployment PASS。
