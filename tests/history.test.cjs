@@ -204,9 +204,9 @@ test("《讀曲歌》只作南朝歌辭傳統的 17 路補充，不綁定 440 �
   assert.doesNotMatch(html, /440 年仍確定使用17路/);
 });
 
-test("History Explore v5 加入宋代棋譜 corpus，但不替個別古局 attribution 背書", () => {
+test("History Explore v5 加入宋代棋譜資料，但不替個別古局人物歸屬背書", () => {
   assert.match(html, /北宋｜《忘憂清樂集》讓證據進入可研究棋譜/);
-  assert.match(html, /開始能直接面對具體局面與棋譜 attribution/);
+  assert.match(html, /開始能直接面對具體局面，以及棋譜所標示的人物歸屬/);
   assert.match(html, /不代表書中每一盤所標示的古代人物與年代都已獲得同期證據確認/);
   assert.ok(html.includes("https://www.ndl.go.jp/kaleido/entry/22/3.html"));
 });
