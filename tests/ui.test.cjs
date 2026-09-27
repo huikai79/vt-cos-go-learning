@@ -1158,7 +1158,7 @@ async function main() {
         evidenceLabels: [...new Set([...document.querySelectorAll('.evidence-guide .evidence-badge')].map((node) => node.textContent.trim()))],
         sourceAuditDate: document.querySelector('.source-audit-date')?.textContent.trim(),
         scripts: document.querySelectorAll('script').length,
-        historyVersion: document.querySelector('footer')?.textContent.includes('歷史探索 v3'),
+        historyVersion: document.querySelector('footer')?.textContent.includes('歷史探索 v4'),
         minContrast: Math.min(...audited.map((item) => item.ratio)),
         lowContrast: audited.filter((item) => item.ratio < 4.5),
         width: innerWidth,
@@ -1168,7 +1168,7 @@ async function main() {
     assert.match(historyDesktop.title, /圍棋為什麼會長成今天這個樣子/);
     assert.equal(historyDesktop.questions, 4);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
-    assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-27");
+    assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-28");
     assert.equal(historyDesktop.scripts, 0);
     assert.equal(historyDesktop.historyVersion, true);
     assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);
