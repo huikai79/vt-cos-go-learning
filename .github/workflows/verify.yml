@@ -153,10 +153,12 @@ jobs:
               name: "history",
               url: new URL(`history.html?deploy=${deploySha}`, base),
               checks: [
-                'history.css?v=history-explore-v4',
-                '歷史探索 v4',
+                'history.css?v=history-explore-v5',
+                '歷史探索 v5',
                 '兩個 72 不能當成同一條歷史因果證據',
                 '132｜東漢望都',
+                '1949 → 1989｜規則到近現代仍在成文化與修訂',
+                '1933 → 1934｜規則沒換，布石觀念仍能劇烈改變',
                 '目前查核範圍內，尚未確認可可靠重建的早期 17 路實戰局面',
                 '本頁來源最後查核：2026-09-28',
                 'href="advanced.html">回進階訓練</a>'

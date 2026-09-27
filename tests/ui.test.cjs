@@ -1273,7 +1273,7 @@ async function main() {
         evidenceLabels: [...new Set([...document.querySelectorAll('.evidence-guide .evidence-badge')].map((node) => node.textContent.trim()))],
         sourceAuditDate: document.querySelector('.source-audit-date')?.textContent.trim(),
         scripts: document.querySelectorAll('script').length,
-        historyVersion: document.querySelector('footer')?.textContent.includes('歷史探索 v4'),
+        historyVersion: document.querySelector('footer')?.textContent.includes('歷史探索 v5'),
         minContrast: Math.min(...audited.map((item) => item.ratio)),
         lowContrast: audited.filter((item) => item.ratio < 4.5),
         width: innerWidth,
