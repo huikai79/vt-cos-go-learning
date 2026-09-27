@@ -3,6 +3,8 @@ const assert = require("node:assert/strict");
 const gateDefinition = require("../teaching-gate.json");
 const GateVerifier = require("../teaching-gate-verify.cjs");
 const ReviewVerifier = require("../r1-review-verify.cjs");
+const CandidateVerifier = require("../formal-teaching-candidate.cjs");
+const candidateManifest = require("../formal-teaching-candidate.json");
 
 function validReceipt() {
   return {
@@ -27,12 +29,18 @@ function validReceipt() {
 function validHumanEvidence() {
   const criticalTasks = Object.fromEntries(gateDefinition.criteria.formalTeachingUse.requiredCriticalTasks.map((task) => [task, true]));
   const checks = Object.fromEntries(gateDefinition.criteria.formalTeachingUse.requiredAccessibilityChecks.map((check) => [check, true]));
+  const candidateId = gateDefinition.formalTeachingCandidateId;
+  const candidateFingerprint = gateDefinition.formalTeachingCandidateFingerprint;
   return {
-    schemaVersion: 1,
-    protocolId: "go-formal-teaching-evidence-v1",
+    schemaVersion: 2,
+    protocolId: "go-formal-teaching-evidence-v2",
     r1ContentFingerprint: gateDefinition.r1ContentFingerprint,
+    candidateId,
+    candidateFingerprint,
     usability: {
-      completedAt: "2026-09-21T00:00:00.000Z",
+      candidateId,
+      candidateFingerprint,
+      completedAt: "2026-09-27T00:00:00.000Z",
       participantCount: 3,
       participantsAreTargetNovices: true,
       criticalTasks,
@@ -41,12 +49,21 @@ function validHumanEvidence() {
       participants: ["novice-01", "novice-02", "novice-03"].map((participantCode) => ({
         participantCode,
         targetNovice: true,
+        candidateId,
+        candidateFingerprint,
         tasks: { ...criticalTasks },
         blockingIssues: [],
         evidenceReference: `local-usability-report#${participantCode}`
       }))
     },
-    accessibility: { completedAt: "2026-09-21T00:00:00.000Z", checks, openBlockingIssues: 0, evidenceReference: "local-accessibility-report" },
+    accessibility: {
+      candidateId,
+      candidateFingerprint,
+      completedAt: "2026-09-27T00:00:00.000Z",
+      checks,
+      openBlockingIssues: 0,
+      evidenceReference: "local-accessibility-report"
+    },
     formalEvaluation: { privateUnexposedHoldoutEstablished: false, r1bComparabilityEstablished: false, evidenceReference: null }
   };
 }
@@ -98,6 +115,64 @@ test("participantCount 與逐位紀錄數量不一致時 fail closed", () => {
 test("重複 participant code 不得冒充三位獨立初學者", () => {
   const evidence = validHumanEvidence();
   evidence.usability.participants[2].participantCode = "novice-02";
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
+  assert.equal(result.formalTeachingUse.status, "BLOCKED");
+});
+
+
+test("formal teaching candidate manifest 必須與目前 critical surface 動態指紋一致", () => {
+  const result = CandidateVerifier.evaluateManifest(candidateManifest);
+  assert.equal(result.valid, true, result.errors.join("; "));
+  assert.equal(result.candidateId, gateDefinition.formalTeachingCandidateId);
+  assert.equal(result.computedFingerprint, gateDefinition.formalTeachingCandidateFingerprint);
+  assert.equal(result.assetFingerprint, result.computedFingerprint);
+});
+
+test("舊 v1 真人證據不得在 v2 gate 被靜默接受", () => {
+  const evidence = validHumanEvidence();
+  evidence.schemaVersion = 1;
+  evidence.protocolId = "go-formal-teaching-evidence-v1";
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
+  assert.equal(result.formalTeachingUse.status, "BLOCKED");
+  assert.match(result.humanEvidenceErrors.join(" "), /schema|protocol/);
+});
+
+test("任一參與者使用不同 candidate fingerprint 時 fail closed", () => {
+  const evidence = validHumanEvidence();
+  evidence.usability.participants[1].candidateFingerprint = "fnv1a32-js16-deadbeef";
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
+  assert.equal(result.formalTeachingUse.status, "BLOCKED");
+  assert.match(result.humanEvidenceErrors.join(" "), /逐位參與者/);
+});
+
+test("accessibility spot check 不得使用不同 candidate", () => {
+  const evidence = validHumanEvidence();
+  evidence.accessibility.candidateId = "other-candidate";
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
+  assert.equal(result.formalTeachingUse.status, "BLOCKED");
+  assert.match(result.humanEvidenceErrors.join(" "), /無障礙/);
+});
+
+test("candidate manifest 動態指紋失配時 formal teaching 必須 BLOCKED", () => {
+  const candidate = CandidateVerifier.evaluateManifest(candidateManifest);
+  const stale = {
+    ...candidate,
+    valid: false,
+    computedFingerprint: "fnv1a32-js16-00000000",
+    errors: ["simulated stale critical surface"]
+  };
+  const result = GateVerifier.evaluateGate({
+    receipt: validReceipt(),
+    humanEvidence: validHumanEvidence(),
+    candidate: stale
+  });
+  assert.equal(result.formalTeachingUse.status, "BLOCKED");
+  assert.match(result.formalTeachingUse.blockingReasons.join(" "), /candidate|fingerprint|指紋/);
+});
+
+test("總表 usability candidate 與逐位 candidate 必須同時一致", () => {
+  const evidence = validHumanEvidence();
+  evidence.usability.candidateFingerprint = "fnv1a32-js16-aaaaaaaa";
   const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
   assert.equal(result.formalTeachingUse.status, "BLOCKED");
 });
