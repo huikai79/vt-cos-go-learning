@@ -506,11 +506,11 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
 
 test("人機實戰事件只進獨立 practice stream，不污染技能事件、診斷或排程", async () => {
   const practiceStore = {
-    schemaVersion: 1,
-    eventStreamVersion: "live-practice-events-v1",
+    schemaVersion: 2,
+    eventStreamVersion: "live-practice-events-v2",
     events: [
-      { schemaVersion:1,eventStreamVersion:"live-practice-events-v1",eventId:"p1",sessionId:"s1",type:"move",occurredAt:"2026-09-22T12:00:00.000Z",boardSize:5,opponentMode:"computer",humanColor:1,actor:"human",moveCount:1,point:[2,2],captured:0,actionColor:1,botVersion:null,selectionReason:null,reason:null,gameStatus:"playing",formalEligible:false,qualifiedOpportunity:false,evidenceUse:"practice_observation_only",scoringStatus:"unscored",skillId:null,transferLevel:null,evaluationContext:"live_practice_unscored" },
-      { schemaVersion:1,eventStreamVersion:"live-practice-events-v1",eventId:"p2",sessionId:"s1",type:"computer_move",occurredAt:"2026-09-22T12:00:01.000Z",boardSize:5,opponentMode:"computer",humanColor:1,actor:"computer",moveCount:2,point:[1,1],captured:0,actionColor:2,botVersion:"local-practice-bot-v1",selectionReason:"heuristic_legal_choice",reason:null,gameStatus:"playing",formalEligible:false,qualifiedOpportunity:false,evidenceUse:"practice_observation_only",scoringStatus:"unscored",skillId:null,transferLevel:null,evaluationContext:"live_practice_unscored" }
+      { schemaVersion:2,eventStreamVersion:"live-practice-events-v2",eventId:"p1",sessionId:"s1",type:"move",occurredAt:"2026-09-22T12:00:00.000Z",boardSize:5,opponentMode:"computer",humanColor:1,actor:"human",moveCount:1,point:[2,2],captured:0,actionColor:1,botVersion:null,selectionReason:null,reason:null,gameStatus:"playing",formalEligible:false,qualifiedOpportunity:false,evidenceUse:"practice_observation_only",scoringStatus:"unscored",skillId:null,transferLevel:null,evaluationContext:"live_practice_unscored" },
+      { schemaVersion:2,eventStreamVersion:"live-practice-events-v2",eventId:"p2",sessionId:"s1",type:"computer_move",occurredAt:"2026-09-22T12:00:01.000Z",boardSize:5,opponentMode:"computer",humanColor:1,actor:"computer",moveCount:2,point:[1,1],captured:0,actionColor:2,botVersion:"local-practice-bot-v1",selectionReason:"heuristic_legal_choice",reason:null,gameStatus:"playing",formalEligible:false,qualifiedOpportunity:false,evidenceUse:"practice_observation_only",scoringStatus:"unscored",skillId:null,transferLevel:null,evaluationContext:"live_practice_unscored" }
     ]
   };
   const { elements, storage, downloads } = createApp({}, { rawStorage: { [GoPracticeEvents.STORAGE_KEY]: JSON.stringify(practiceStore) } });
