@@ -7,21 +7,23 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v10">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v11">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v6"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v7"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
   <script defer src="classic-cross-five-practice.js?v=cross-five-practice-v1"></script>
+  <script defer src="classic-flower-six-contract.js?v=classic-flower-six-vital-point-v1"></script>
+  <script defer src="classic-flower-six-practice.js?v=flower-six-practice-v1"></script>
   <script defer src="classic-contrast-contract.js?v=classic-contrast-vital-point-v1"></script>
   <script defer src="classic-contrast-practice.js?v=classic-contrast-practice-v1"></script>
   <script defer src="classic-shape-read-contract.js?v=classic-bulky-five-short-read-v1"></script>
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v9"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v10"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -34,7 +36,7 @@
       <span class="question-tag">世界名型 · practice / reference</span>
       <h1>世界死活名型館</h1>
       <p>同一棋形在中文、日文、韓文與英文裡可能有不同名稱，也可能只有分類對應而不是精確同義詞。本頁以繁中解釋；已核實的跨語名稱會標示關係，尚未完成棋形核對的名稱保持「待核對」。</p>
-      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五與梅花五各有 bounded practice，另新增不揭名的 interleaved contrast practice，交錯測兩個 family 的第一手急所。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
+      <div class="classic-boundary"><strong>證據邊界</strong><span>圖鑑不是能力證據。直三使用既有 scoring contract；刀把五、梅花五與花六各有 bounded practice，另有不揭名的 interleaved contrast practice。其他名型在完成棋形、答案樹與規則核對前不評分。所有名型館練習都不寫 KC、排程、T2／T3 或正式評量。</span></div>
     </header>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
@@ -114,6 +116,37 @@
           <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> degree-4 center</span></div>
           <div id="cross-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路梅花五練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="cross-cursor-status">方向鍵移動 · Enter 落子</span><span id="cross-side">● 黑棋</span></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="flower-six-practice" aria-labelledby="flower-six-practice-title">
+      <div class="classic-atlas-head">
+        <span class="question-tag">第三個可玩大眼 family · bounded practice</span>
+        <h2 id="flower-six-practice-title">花六／Rabbity Six：找兩個「耳朵」的根部</h2>
+        <p>六個眼空形成唯一的六目中手 family。這裡只練第一手共同急所：找出唯一直接相鄰四個眼空的 degree-4 點；四題會交換攻守、棋色、方向與位置。</p>
+      </div>
+      <div class="bulky-practice-grid">
+        <section class="question-card">
+          <span class="question-tag" id="flower-six-tag">1 / 4 · 名稱不提示答案</span>
+          <h3 id="flower-six-title">找六點眼空共同急所</h3>
+          <p id="flower-six-prompt"></p>
+          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只判第一手是否落在花六／Rabbity Six geometry 唯一的 degree-4 急所；不宣稱完整六目中手長變化或 12 手吃淨答案樹。</span></div>
+          <div id="flower-six-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="flower-six-reveal" class="classic-reveal" hidden>
+            <span>作答後揭名</span>
+            <strong id="flower-six-name">花六／Rabbity Six</strong>
+            <p>英文名稱來自兔子外形；急所在兩個突出點的根部。這裡的「花六」依日文來源使用；「葡萄六」仍保持待核對，不直接合併。</p>
+          </div>
+          <div class="classic-actions">
+            <button id="flower-six-hint" class="subtle-button" type="button">給我幾何提示</button>
+            <button id="flower-six-next" class="primary-button" type="button" disabled>下一題 →</button>
+          </div>
+        </section>
+        <section class="board-card" aria-label="花六共同急所練習棋盤">
+          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> unique degree-4</span></div>
+          <div id="flower-six-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路花六練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
+          <div class="board-foot"><span id="flower-six-cursor-status">方向鍵移動 · Enter 落子</span><span id="flower-six-side">● 黑棋</span></div>
         </section>
       </div>
     </section>

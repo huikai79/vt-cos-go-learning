@@ -13,6 +13,8 @@ const Reduction = require("../classic-shape-reduction.js");
 const ReductionContract = require("../classic-shape-reduction-contract.js");
 const CrossFive = require("../classic-cross-five-practice.js");
 const CrossFiveContract = require("../classic-cross-five-contract.js");
+const FlowerSix = require("../classic-flower-six-practice.js");
+const FlowerSixContract = require("../classic-flower-six-contract.js");
 const Contrast = require("../classic-contrast-practice.js");
 const ContrastContract = require("../classic-contrast-contract.js");
 
@@ -35,7 +37,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /刀把五與梅花五各有 bounded practice，另新增不揭名的 interleaved contrast practice/);
+  assert.match(html, /刀把五、梅花五與花六各有 bounded practice，另有不揭名的 interleaved contrast practice/);
   assert.match(html, /名稱仍在作答後才揭示|名稱放到第一手之後/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
@@ -51,7 +53,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v6");
+  assert.equal(Catalog.version, "world-classic-shapes-v7");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -98,7 +100,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["flower-six-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -414,4 +416,56 @@ test("四段探索明確只屬於直三，不冒充所有名型共用流程", ()
   assert.match(html, /3 直三 · 換攻方/);
   assert.match(html, /4 直三 · 相似反例/);
   assert.match(html, /aria-label="直三專用探索進度"/);
+});
+
+
+test("花六四個 variant 通過 Rabbity Six geometry + rules bounded contract", () => {
+  assert.equal(FlowerSix.version, "flower-six-practice-v1");
+  assert.equal(FlowerSix.scoringContractVersion, FlowerSixContract.CONTRACT_VERSION);
+  assert.equal(FlowerSix.items.length, 4);
+  const all = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
+  assert.equal(all.ok, true, all.errors.join("; "));
+  for (const item of FlowerSix.items) {
+    const vital = FlowerSixContract.deriveVitalPoint(item.eyeSpace, PracticeContract);
+    assert.deepEqual(vital, item.vitalPoint, item.id);
+    const scored = FlowerSixContract.score(item, item.vitalPoint, { Go, PracticeContract });
+    assert.equal(scored.ok, true, item.id);
+    assert.equal(scored.correct, true, item.id);
+    assert.equal(scored.status, "CORRECT", item.id);
+  }
+});
+
+test("花六 contract 對錯誤六點幾何、錯誤急所與位移後舊座標 fail closed", () => {
+  const seed = FlowerSix.items[0];
+  const wrongGeometry = {
+    ...seed,
+    id: "flower-six-wrong-geometry",
+    eyeSpace: [[2,2],[3,2],[4,2],[2,3],[3,3],[4,3]]
+  };
+  assert.equal(FlowerSixContract.validateItem(wrongGeometry, { Go, PracticeContract }).ok, false);
+
+  const wrongVital = { ...seed, id: "flower-six-wrong-vital", vitalPoint: [3,3] };
+  assert.equal(FlowerSixContract.validateItem(wrongVital, { Go, PracticeContract }).ok, false);
+
+  const shifted = FlowerSix.items.find((item) => item.variantId === "attack-shift");
+  assert.ok(shifted);
+  assert.notDeepEqual(shifted.vitalPoint, seed.vitalPoint);
+  const stale = FlowerSixContract.score(shifted, seed.vitalPoint, { Go, PracticeContract });
+  assert.equal(stale.ok, true);
+  assert.equal(stale.correct, false);
+});
+
+test("花六 catalog 與 UI 區分 Rabbity Six geometry 和仍待核對的葡萄六名稱", () => {
+  const flower = Catalog.entries.find((entry) => entry.id === "flower-six-v1");
+  const grape = Catalog.entries.find((entry) => entry.id === "grape-six-candidate-v1");
+  assert.equal(flower.practiceStatus, "playable_bounded_vital_point_contract");
+  assert.ok(flower.aliases.some((alias) => alias.locale === "en" && alias.name === "Rabbity Six" && alias.reviewStatus === Catalog.REVIEW.VERIFIED));
+  assert.ok(flower.sources.some((source) => source.sourceTier === "primary_research"));
+  assert.equal(grape.practiceStatus, "catalog_candidate_only");
+  assert.equal(grape.aliases.some((alias) => alias.name === "Rabbity Six"), false);
+  assert.match(html, /花六／Rabbity Six：找兩個「耳朵」的根部/);
+  assert.match(html, /「葡萄六」仍保持待核對，不直接合併/);
+  assert.match(html, /不宣稱完整六目中手長變化或 12 手吃淨答案樹/);
+  assert.match(js, /GoFlowerSixContract/);
+  assert.match(js, /不代表完整六目中手長變化、mastery 或 transfer/);
 });
