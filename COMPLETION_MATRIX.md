@@ -515,3 +515,4 @@
 - **名稱邊界：** catalog 將英文 `Rabbity Six` 與日文 `花六` 綁到同一已驗幾何 family；「葡萄六」仍保持獨立 `needs_review` candidate，不因中文俗稱相似而自動合併。
 - **反證：** 非同構六點矩形、錯誤 vital point、位移後沿用舊座標都必須 fail；browser regression 實際驗錯答不揭名、正答才揭名。
 - **證據邊界：** 只支持第一手共同急所 recognition。完整六目中手長變化、傳統「12 手」吃淨序列、mastery、transfer、T2/T3 與 formal evaluation 均未建立。
+- **Validation：** PR #27 verify run #442 全數 PASS：Node contracts、deterministic R1 review bank rebuild、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；browser regression 已實際驗錯答不揭名、正答後揭示「花六／Rabbity Six」。PR 已於 2026-09-27 squash merge 至 `main`（merge commit `99a85cd3008bd5e86ad6f53302eb8602d1c70674`）。
