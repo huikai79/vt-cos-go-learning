@@ -187,3 +187,12 @@
 ## 2026-09-27 Decision note｜R1a receipt 必須綁 reviewer-visible semantics
 
 第 4 步 R1a 的 content fingerprint 已升 v5。審查身份不只取決於答案與棋盤；`prompt`／`focus`、family／skill identity 也屬於審查者所判斷的內容語義。任何這些欄位改動都必須使舊 receipt 失效並重新審查；不得只靠未 bump 的 contentVersion 延續舊證據。blinded bank 繼續不載入答案／goal／scoring identity，以維持 answer-blind 邊界。
+
+
+## 2026-09-27 Decision note｜金雞獨立採 rules-backed mechanism，Tripod 因授權停止升格
+
+- **候選盤點：** 盤角曲四仍需 ruleset-aware contract；斗方／Carpenter's Square 仍需 variation tree；Long L／帶鉤受外氣條件影響；大／小豬嘴與葡萄六的 geometry identity 尚不足；Tripod Group 有名稱來源與 GNU Go regression，但 GNU Go repository 明示預設 GPLv3，且相關 SGF 在該 repository 內未能辨明為 public domain。
+- **授權停止線：** 不把 GNU Go `tripod2.sgf`、其完整 setup 或其他 GPL／授權不明題目資產複製到本 MIT repository。外部 engine／regression 可以作研究 reference，但不能因此取得 shipping authority。Tripod 本輪維持 catalog-only。
+- **本輪選擇：** 金雞獨立的核心可操作化為規則機制，而非複製特定外部題圖：己方原串只有一氣；在邊線「立」後不立即提子且恰好變兩氣；對手若填任一側都因自身無氣且未提子而非法；己方反而可在任一側提兩子。
+- **實作契約：** `classic-golden-chicken-mechanism-v1` 使用專案原創 7×7 setup，由 `go.js` 重算上述五個條件；practice variant 只保存 rotation／color-swap，不保存答案或 setup 副本。wrong geometry、wrong legal move 與旋轉後沿用舊座標都必須 fail。
+- **證據邊界：** 這只支持一個 bounded tesuji Experience 的工程／規則契約。外部來源支持名稱與 double-shortage mechanism，不證明本站棋形是唯一標準形，不建立完整死活答案樹、KC、mastery、transfer、T2/T3、formal evaluation 或 learning effect。
