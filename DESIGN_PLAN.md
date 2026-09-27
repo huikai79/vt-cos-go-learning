@@ -519,3 +519,25 @@ KaTrain／KataGo 已有分析與重試能力，但自動根因分類、題目生
 - 原著重建表現若日後要作診斷，只能回答「是否記得／重建該歷史著手」，不能直接代表理解、讀棋或遷移。
 
 **連續猜手／整段重建**暫列 experimental backlog。只有現有單點流程在真人使用中出現可重複 bottleneck，且 Reference 工具不足時，才做最小 sequential prototype。驗收先看工程完整性與操作負擔；只有在額外資料能改善 prediction、selection 或 intervention 時才保留。即使連續重建率提高，也必須另看獨立新局面 retention／transfer，避免把「記得原棋譜」偷換成「會在新局面用」。
+
+
+## 2026-09-27｜Explore Go：歷史內容先做獨立閱讀層，不併入 Core curriculum
+
+### Bottleneck
+
+目前 Core／Advanced 的學習入口已清楚，但「圍棋為什麼是 19 路、古代規則為何不同、典故哪些可信」沒有適合的 learner-facing 知識出口。直接把深度研究塞進 Core 會提高認知負荷，也會把文化史內容誤作必要 prerequisite。
+
+### 決策
+
+- 歷史與典故先以獨立 `history.html` 發布，定位為 optional Explore experience。
+- MVP 只做四個問題：起源、19×19、規則演化、典故史實分層。
+- 每個主張可使用「確證／高度可信／有爭議／傳說／研究假說／未知」標籤；不使用虛假百分比。
+- 首頁 Core 仍是唯一零基礎主 CTA；Advanced 維持第二學習入口；History 只在較低資訊層提供閱讀入口。
+- 歷史頁不得寫 learner state、不得更新 scheduler／KC／T2-T3，也不得把閱讀完成視為學習證據。
+
+### 驗收與停止線
+
+- 能從首頁進入、能回 Core／Advanced／名型館。
+- 手機單欄、來源可展開閱讀；MVP 不依賴 JavaScript。
+- 任何「發明者、首次年份、單一路徑傳播」若證據不足，一律保留 UNKNOWN／DEBATED。
+- 若後續沒有觀察到讀者需求或不改善理解，不擴張成大型歷史百科；新增主題以前先問是否解決實際 learner question。
