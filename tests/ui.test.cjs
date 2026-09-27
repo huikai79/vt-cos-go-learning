@@ -893,6 +893,48 @@ async function main() {
     assert.equal(flowerSixCorrect.name, "花六／Rabbity Six");
     assert.equal(flowerSixCorrect.nextDisabled, false);
 
+    const tripodState = await evaluate(socket, `(() => {
+      const board = document.querySelector('#tripod-board');
+      return {
+        prompt: document.querySelector('#tripod-prompt').textContent,
+        points: board.querySelectorAll('[data-tripod-x][data-tripod-y]').length,
+        revealHidden: document.querySelector('#tripod-reveal').hidden,
+        nextDisabled: document.querySelector('#tripod-next').disabled
+      };
+    })()`);
+    assert.match(tripodState.prompt, /輪到白棋攻/);
+    assert.ok(tripodState.points >= 70);
+    assert.equal(tripodState.revealHidden, true);
+    assert.equal(tripodState.nextDisabled, true);
+
+    const tripodWrong = await evaluate(socket, `(() => {
+      const point = document.querySelector('#tripod-board [data-tripod-x="16"][data-tripod-y="17"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#tripod-feedback').textContent,
+        revealHidden: document.querySelector('#tripod-reveal').hidden,
+        nextDisabled: document.querySelector('#tripod-next').disabled
+      };
+    })()`);
+    assert.match(tripodWrong.feedback, /不是本題外部 regression oracle 指定的第一手/);
+    assert.equal(tripodWrong.revealHidden, true);
+    assert.equal(tripodWrong.nextDisabled, true);
+
+    const tripodCorrect = await evaluate(socket, `(() => {
+      const point = document.querySelector('#tripod-board [data-tripod-x="15"][data-tripod-y="18"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#tripod-feedback').textContent,
+        revealHidden: document.querySelector('#tripod-reveal').hidden,
+        name: document.querySelector('#tripod-name').textContent,
+        nextDisabled: document.querySelector('#tripod-next').disabled
+      };
+    })()`);
+    assert.match(tripodCorrect.feedback, /外部 regression oracle/);
+    assert.equal(tripodCorrect.revealHidden, false);
+    assert.equal(tripodCorrect.name, "Tripod Group");
+    assert.equal(tripodCorrect.nextDisabled, false);
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
