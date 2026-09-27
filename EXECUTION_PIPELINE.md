@@ -229,3 +229,4 @@
 - **不可破壞 invariant：** 所有 existing practice/scoring contract、first response、learner events、KC、scheduler、T2/T3、formal evaluation 與 storage schema 不變。Ontology 不取得 board truth/scoring authority。
 - **反證：** tests 必須證明 catalog entries 不是手寫第二套 source、Carpenter preferredZhTW 為 null、小豬嘴 plain Tripod 有 negative mapping、Bent Four ruleset flag 從 rulesetBehavior 衍生、同 evidence chain 不得當成多份獨立來源。
 - **Rollback：** 恢復上一版 catalog 與移除 ontology script 即可，不需 learner data migration。
+- **Validation：** PR #31 initial verify run #454 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。
