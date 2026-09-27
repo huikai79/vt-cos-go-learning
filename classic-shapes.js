@@ -10,6 +10,8 @@
   const BentThreeContract = window.GoBentThreeContract;
   const FourSpaceStatus = window.GoFourSpaceStatusPractice;
   const FourSpaceStatusContract = window.GoFourSpaceStatusContract;
+  const CurvedFourStatus = window.GoCurvedFourStatusPractice;
+  const CurvedFourStatusContract = window.GoCurvedFourStatusContract;
   const PyramidFour = window.GoPyramidFourPractice;
   const PyramidFourContract = window.GoPyramidFourContract;
   const FlowerSix = window.GoFlowerSixPractice;
@@ -26,7 +28,7 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !BentThree || !BentThreeContract || !FourSpaceStatus || !FourSpaceStatusContract || !PyramidFour || !PyramidFourContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !BentThree || !BentThreeContract || !FourSpaceStatus || !FourSpaceStatusContract || !CurvedFourStatus || !CurvedFourStatusContract || !PyramidFour || !PyramidFourContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
@@ -35,6 +37,12 @@
   if (!bentThreeValidation.ok) throw new Error("Bent Three practice contract invalid: " + bentThreeValidation.errors.join("; "));
   const fourSpaceStatusValidation = FourSpaceStatusContract.validateAll(FourSpaceStatus.items, { Go, PracticeContract, BentThreeContract });
   if (!fourSpaceStatusValidation.ok) throw new Error("Four-space status contract invalid: " + fourSpaceStatusValidation.errors.join("; "));
+  const curvedFourStatusValidation = CurvedFourStatusContract.validateAll(CurvedFourStatus.items, { Go, PracticeContract });
+  if (!curvedFourStatusValidation.ok) throw new Error("Curved Four status contract invalid: " + curvedFourStatusValidation.errors.join("; "));
+  const fourStatusRounds = [
+    ...FourSpaceStatus.items.map((item) => ({ item, contract:"four-space" })),
+    ...CurvedFourStatus.items.map((item) => ({ item, contract:"curved-four" }))
+  ];
   const pyramidFourValidation = PyramidFourContract.validateAll(PyramidFour.items, { Go, PracticeContract });
   if (!pyramidFourValidation.ok) throw new Error("Pyramid Four practice contract invalid: " + pyramidFourValidation.errors.join("; "));
   const flowerSixValidation = FlowerSixContract.validateAll(FlowerSix.items, { Go, PracticeContract });
@@ -526,9 +534,17 @@
     }
   }
 
+  function currentFourStatus() {
+    const round=fourStatusRounds[fourStatusIndex];
+    if (!round) throw new Error("Four-space status round missing.");
+    const validation=round.contract==="curved-four"
+      ? CurvedFourStatusContract.validateItem(round.item,{ Go, PracticeContract })
+      : FourSpaceStatusContract.validateItem(round.item,{ Go, PracticeContract, BentThreeContract });
+    return { ...round, validation };
+  }
+
   function renderFourStatusBoard() {
-    const item=FourSpaceStatus.items[fourStatusIndex];
-    const validation=FourSpaceStatusContract.validateItem(item,{ Go, PracticeContract, BentThreeContract });
+    const {item,validation}=currentFourStatus();
     if (!validation.ok) throw new Error("Four-space status item invalid: " + validation.errors.join("; "));
     const size=item.boardSize;
     const pad=7;
@@ -554,7 +570,10 @@
     $("four-status-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
   }
 
-  function fourStatusProofText(item,validation) {
+  function fourStatusProofText(item,validation,contract) {
+    if (contract==="curved-four") {
+      return "proof：攻方四種第一手逐一檢查後，守方每一支都至少有一手回應，使剩餘兩個分離眼點互不相鄰。因此在本 contract 的 sealed eye-space 前提下曲四仍活。";
+    }
     if (validation.shapeKind==="square-four") {
       return "proof：守方四種第一手全部留下曲三；每一支都有合法的攻方彎點回應。因此在本 contract 的 sealed eye-space 前提下仍死。";
     }
@@ -562,13 +581,14 @@
   }
 
   function renderFourStatus() {
-    const item=FourSpaceStatus.items[fourStatusIndex];
-    const validation=FourSpaceStatusContract.validateItem(item,{ Go, PracticeContract, BentThreeContract });
+    const {item,contract,validation}=currentFourStatus();
     if(!validation.ok) throw new Error("Four-space status item invalid: " + validation.errors.join("; "));
     fourStatusSolved=false;
     fourStatusHintShown=false;
-    $("four-status-tag").textContent=(fourStatusIndex+1) + " / " + FourSpaceStatus.items.length + " · rules-backed status";
-    $("four-status-question").textContent=validation.shapeKind==="square-four" ? "守方先走，還救得活嗎？" : "攻方先走，殺得死嗎？";
+    $("four-status-tag").textContent=(fourStatusIndex+1) + " / " + fourStatusRounds.length + " · rules-backed status";
+    $("four-status-question").textContent=contract==="curved-four"
+      ? "曲四：攻方先走，殺得死嗎？"
+      : validation.shapeKind==="square-four" ? "守方先走，還救得活嗎？" : "攻方先走，殺得死嗎？";
     $("four-status-prompt").textContent=item.prompt;
     $("four-status-feedback").className="feedback";
     $("four-status-feedback").textContent="";
@@ -579,7 +599,7 @@
     $("four-status-next").disabled=true;
     $("four-status-alive").disabled=false;
     $("four-status-dead").disabled=false;
-    $("four-status-next").textContent=fourStatusIndex===FourSpaceStatus.items.length-1 ? "完成四目眼比較" : "下一題 →";
+    $("four-status-next").textContent=fourStatusIndex===fourStatusRounds.length-1 ? "完成四目眼比較" : "下一題 →";
     $("four-status-board-size").textContent=item.boardSize + " × " + item.boardSize + " bounded proof";
     $("four-status-side").textContent=item.defenderColor===Go.BLACK ? "● 黑棋守" : "○ 白棋守";
     renderFourStatusBoard();
@@ -587,8 +607,10 @@
 
   function attemptFourStatus(response) {
     if(fourStatusSolved) return;
-    const item=FourSpaceStatus.items[fourStatusIndex];
-    const result=FourSpaceStatusContract.score(item,response,{ Go, PracticeContract, BentThreeContract });
+    const {item,contract,validation}=currentFourStatus();
+    const result=contract==="curved-four"
+      ? CurvedFourStatusContract.score(item,response,{ Go, PracticeContract })
+      : FourSpaceStatusContract.score(item,response,{ Go, PracticeContract, BentThreeContract });
     if(!result.ok){
       $("four-status-feedback").className="feedback error";
       $("four-status-feedback").textContent="四目眼 status contract 驗證失敗；本題停止評分。";
@@ -599,7 +621,7 @@
       $("four-status-feedback").className="feedback success";
       $("four-status-feedback").textContent=item.success;
       $("four-status-reveal").hidden=false;
-      $("four-status-proof").textContent=fourStatusProofText(item,FourSpaceStatusContract.validateItem(item,{ Go, PracticeContract, BentThreeContract }));
+      $("four-status-proof").textContent=fourStatusProofText(item,validation,contract);
       $("four-status-hint").disabled=true;
       $("four-status-next").disabled=false;
       $("four-status-alive").disabled=true;
@@ -1539,12 +1561,12 @@
   $("four-status-hint").addEventListener("click",() => {
     fourStatusHintShown=true;
     $("four-status-feedback").className="feedback";
-    $("four-status-feedback").textContent=FourSpaceStatus.items[fourStatusIndex].hint;
+    $("four-status-feedback").textContent=currentFourStatus().item.hint;
   });
 
   $("four-status-next").addEventListener("click",() => {
     if(!fourStatusSolved) return;
-    if(fourStatusIndex<FourSpaceStatus.items.length-1){
+    if(fourStatusIndex<fourStatusRounds.length-1){
       fourStatusIndex+=1;
       renderFourStatus();
     }else{
