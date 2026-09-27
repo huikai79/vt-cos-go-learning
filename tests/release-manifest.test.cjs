@@ -62,7 +62,7 @@ test("Pages 採無 Jekyll 的 repository root 靜態發布", () => {
     defaultProjectUrl: "https://huikai79.github.io/vt-cos-go-learning/",
     accountCustomDomainInherited: true,
     jekyllDisabled: true,
-    entrypoints: ["index.html", "advanced.html", "classic-shapes.html", "history.html", "live-game.html", "r1-review.html"]
+    entrypoints: ["index.html", "advanced.html", "classic-shapes.html", "history.html", "live-game.html", "r1-review-start.html", "r1-review.html"]
   });
   assert.equal(fs.statSync(path.join(root, ".nojekyll")).isFile(), true);
 });
@@ -153,4 +153,15 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /本頁來源最後查核：2026-09-27/);
   assert.match(workflow, /href="advanced\.html">回進階訓練<\/a>/);
   assert.match(workflow, /attempt <= 12/);
+});
+
+
+test("R1a reviewer handoff 是公開 reviewer-only entrypoint", () => {
+  assert.ok(manifest.hosting.entrypoints.includes("r1-review-start.html"));
+  assert.ok(manifest.publicFiles.includes("r1-review-start.html"));
+  const html = fs.readFileSync(path.join(root, "r1-review-start.html"), "utf8");
+  assert.match(html, /R1a 外部獨立內容審查交接/);
+  assert.match(html, /go-r1-independent-content-review-v5/);
+  assert.match(html, /fnv1a32-c34ef6a4/);
+  assert.match(html, /href="r1-review\.html"/);
 });
