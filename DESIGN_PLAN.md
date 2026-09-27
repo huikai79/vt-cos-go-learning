@@ -560,7 +560,7 @@ History Explore 的證據呈現遵守「claim → evidence unit → source recor
 ## 2026-09-27｜Historical evidence / delivery contract v3
 
 - learner-facing source list 不保留泛用 portal 當裝飾性來源；若某 claim 已有直接文本／館藏／制度研究入口，來源表應指到該 Evidence Unit。
-- 「頁面可由 local browser 正常載入」與「公開 Pages 已供應同一版本」是不同工程主張；前者由 `tests/ui.test.cjs`，後者由 post-deploy `pages-smoke.yml` 驗證。
+- 「頁面可由 local browser 正常載入」與「公開 Pages 已供應同一版本」是不同工程主張；前者由 `tests/ui.test.cjs`，後者由 `verify.yml` 的 main-push `served-pages-content` job 輪詢正式 Pages URL 驗證。曾嘗試以獨立 `workflow_run` 監聽動態 Pages workflow，但 deployment #380 後未觸發，已撤回。
 - accessibility 自動驗證不可只鎖幾個曾經失敗的 selector；History Explore 的小字／badge 由 browser computed style 做整體掃描，static test 另保留明示 palette contract。
 - mobile header 為了降資訊密度可以隱藏次要導覽，但頁面本身必須仍有可達的 Core／Advanced／名型館返回路徑。
 - 以上只提高 evidence fit、delivery integrity 與 accessibility engineering；歷史學術外審與真人可用性仍是不同 gate。
