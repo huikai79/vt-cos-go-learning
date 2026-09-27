@@ -195,7 +195,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="四目眼狀態比較棋盤">
-          <div class="card-top"><span id="four-status-board-size">7 × 7 bounded proof</span><span class="board-status"><i></i> 判斷活／死</span></div>
+          <div class="card-top"><span id="four-status-board-size">7 × 7 局部判斷</span><span class="board-status"><i></i> 判斷活／死</span></div>
           <div id="four-status-board" class="board classic-board" aria-label="四目眼狀態比較棋盤"></div>
           <div class="board-foot"><span>棋盤只供觀察，不需落子</span><span id="four-status-side">● 黑棋守</span></div>
         </section>
@@ -204,21 +204,21 @@
 
     <section class="pyramid-four-practice" aria-labelledby="pyramid-four-practice-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">四目中手 · geometry-derived</span>
-        <h2 id="pyramid-four-practice-title">丁四／Pyramid Four：T 形中心就是共同急所</h2>
-        <p>四個眼空必須是 T 形。這一區不在題目資料保存答案；contract 會從 geometry 重算唯一 degree-3 中心，再用它評分。</p>
+        <span class="question-tag">四目眼形 · 找共同急所</span>
+        <h2 id="pyramid-four-practice-title">丁四（Pyramid Four）：T 形中心就是共同急所</h2>
+        <p>四個眼位必須排成 T 形。這一區不直接把答案寫在題目資料裡，而是依棋形重新找出唯一的中心點，再用它判定第一手。</p>
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
-          <span class="question-tag" id="pyramid-four-tag">1 / 4 · answer derived from geometry</span>
+          <span class="question-tag" id="pyramid-four-tag">1 / 4 · 先看棋形再下</span>
           <h3 id="pyramid-four-title">找 T 形唯一中心</h3>
           <p id="pyramid-four-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只接受與 T tetromino 同構的四點眼空，並把唯一 degree-3 點當共同急所。守方／攻方都只評第一手，不宣稱完整後續吃淨答案樹。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>只處理四個眼位排成 T 形的情況，並把唯一的中心點當共同急所。無論攻守，目前都只評第一手，不判斷完整後續變化。</span></div>
           <div id="pyramid-four-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="pyramid-four-reveal" class="classic-reveal" hidden>
             <span>作答後揭名</span>
             <strong id="pyramid-four-name">丁四／Pyramid Four</strong>
-            <p>「丁四」與 Pyramid Four 的跨語對照已有術語與教材來源；本題 identity 則由四點 T 形 geometry 決定。</p>
+            <p>「丁四」和 Pyramid Four 是不同語言教材中的常見名稱；這裡真正要辨認的是四個眼位排成 T 形時的共同急所。</p>
           </div>
           <div class="classic-actions">
             <button id="pyramid-four-hint" class="subtle-button" type="button">給我幾何提示</button>
@@ -226,7 +226,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="丁四共同急所練習棋盤">
-          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> unique degree-3</span></div>
+          <div class="card-top"><span>7 × 7 限定練習</span><span class="board-status"><i></i> 找 T 形中心</span></div>
           <div id="pyramid-four-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路丁四練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="pyramid-four-cursor-status">方向鍵移動 · Enter 落子</span><span id="pyramid-four-side">● 黑棋</span></div>
         </section>
@@ -235,16 +235,16 @@
 
     <section class="flower-six-practice" aria-labelledby="flower-six-practice-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">第三個可玩大眼 family · bounded practice</span>
+        <span class="question-tag">六目眼形 · 找共同急所</span>
         <h2 id="flower-six-practice-title">花六／Rabbity Six：找兩個「耳朵」的根部</h2>
-        <p>六個眼空形成唯一的六目中手 family。這裡只練第一手共同急所：找出唯一直接相鄰四個眼空的 degree-4 點；四題會交換攻守、棋色、方向與位置。</p>
+        <p>六個眼位形成花六的典型棋形。這裡只練第一手共同急所：找出唯一同時連著四個眼位的點；四題會交換攻守、棋色、方向與位置。</p>
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
           <span class="question-tag" id="flower-six-tag">1 / 4 · 名稱不提示答案</span>
           <h3 id="flower-six-title">找六點眼空共同急所</h3>
           <p id="flower-six-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只判第一手是否落在花六／Rabbity Six geometry 唯一的 degree-4 急所；不宣稱完整六目中手長變化或 12 手吃淨答案樹。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>只看第一手有沒有下在花六（Rabbity Six）唯一的共同急所；目前不判斷完整的長變化或一路吃淨的所有手順。</span></div>
           <div id="flower-six-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="flower-six-reveal" class="classic-reveal" hidden>
             <span>作答後揭名</span>
@@ -257,7 +257,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="花六共同急所練習棋盤">
-          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> unique degree-4</span></div>
+          <div class="card-top"><span>7 × 7 限定練習</span><span class="board-status"><i></i> 找唯一共同急所</span></div>
           <div id="flower-six-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路花六練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="flower-six-cursor-status">方向鍵移動 · Enter 落子</span><span id="flower-six-side">● 黑棋</span></div>
         </section>
@@ -275,12 +275,12 @@
           <span class="question-tag" id="golden-chicken-tag">1 / 4 · tesuji mechanism</span>
           <h3 id="golden-chicken-title">找讓 1 氣變 2 氣的一路立</h3>
           <p id="golden-chicken-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>rules engine 必須同時證明：原串僅一氣、正解「立」不立即提子、著後恰有兩口氣、對手在兩口氣處都屬自殺禁著、己方在任一側都可提兩子。只判第一手是否完成這個機制，不宣稱所有實戰金雞獨立都長成同一棋形。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>系統會檢查：原本這串棋只剩一氣；正確的「立」不會立刻提子；落子後留下兩口氣，而對手兩邊都不能直接下；接著己方在任一側都能提兩子。這裡只判第一手是否符合這個手筋，不代表所有實戰中的金雞獨立都長得一樣。</span></div>
           <div id="golden-chicken-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="golden-chicken-reveal" class="classic-reveal" hidden>
             <span>規則機制成立</span>
             <strong id="golden-chicken-name">金雞獨立</strong>
-            <p>外部資料只用來核對名稱與「一路立＋雙重不入」機制；本站棋形自行編製。它是 tesuji，不和刀把五、梅花五、花六共用 nakade geometry contract。</p>
+            <p>外部資料只用來核對名稱與「一路立＋兩邊都不能直接下」這個手筋；本站棋形是另外編製的。它屬於手筋練習，不和刀把五、梅花五、花六使用同一種判定方式。</p>
           </div>
           <div class="classic-actions">
             <button id="golden-chicken-hint" class="subtle-button" type="button">給我數氣提示</button>
@@ -288,7 +288,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="金雞獨立規則機制練習棋盤">
-          <div class="card-top"><span>7 × 7 original practice</span><span class="board-status"><i></i> double shortage of liberties</span></div>
+          <div class="card-top"><span>7 × 7 原創練習</span><span class="board-status"><i></i> 兩邊都氣緊</span></div>
           <div id="golden-chicken-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路金雞獨立機制練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="golden-chicken-cursor-status">方向鍵移動 · Enter 落子</span><span id="golden-chicken-side">● 黑棋</span></div>
         </section>
@@ -297,28 +297,28 @@
 
     <section class="big-pigs-mouth-practice" aria-labelledby="big-pigs-mouth-practice-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">角部死活 · exact source-case oracle</span>
-        <h2 id="big-pigs-mouth-practice-title">大豬嘴／J Group：先限定在一個可追溯實戰 case</h2>
-        <p>中文資料支持「大豬嘴，扳點死」作為經典角部死活口訣；但本站目前不把它改寫成整個 family 的固定答案。這四題只重播同一個 MIT regression：<code>j_group_live2</code> 在第 52 手前輪白走，expected move 為 R1，另外做三個旋轉版本防止只背座標。</p>
+        <span class="question-tag">角部死活 · 來源局面練習</span>
+        <h2 id="big-pigs-mouth-practice-title">大豬嘴（J Group）：先從一個可追溯的實戰局面練起</h2>
+        <p>中文資料支持「大豬嘴，扳點死」這個經典角部死活口訣；但本站目前不把它當成所有大豬嘴棋形的固定答案。這四題都來自同一個 MIT 測試局面 <code>j_group_live2</code>：在第 52 手前輪白棋下，正確第一手是 R1；另外再做三個旋轉版本，避免只背座標。</p>
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
           <span class="question-tag" id="big-pigs-mouth-tag">1 / 4 · exact source case</span>
           <h3 id="big-pigs-mouth-title">固定實戰局面的第一手</h3>
           <p id="big-pigs-mouth-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>完整 19×19 source position 才是本 contract 的 canonical identity；畫面只裁角部 viewport。只判 upstream regression 指定的第一手與其旋轉等價點，不宣稱 R1 是所有大豬嘴／J Group 的共同答案，也不宣稱標準 geometry 或 variation tree 已完成。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>判定仍以完整 19×19 來源局面為準，畫面只是把角部放大給你看。這裡只判來源測試指定的第一手，以及旋轉後的對應位置；不表示 R1 是所有大豬嘴（J Group）的共同答案，也不表示所有標準棋形與後續變化都已整理完成。</span></div>
           <div id="big-pigs-mouth-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="big-pigs-mouth-reveal" class="classic-reveal" hidden>
             <span>作答後揭名</span>
             <strong id="big-pigs-mouth-name">大豬嘴／J Group</strong>
-            <p>名稱對照有華語術語表與書目來源；本題的棋盤與 expected move 則綁定 MIT regression。兩者用途分開，不用一個 source-case 反推整個 family。</p>
+            <p>名稱對照來自華語術語表與書目資料；本題的棋盤與正確第一手則來自 MIT 的測試局面。兩種資料用途不同，不能只靠這一個局面推成所有大豬嘴都一樣。</p>
           </div>
           <div class="classic-actions">
-            <button id="big-pigs-mouth-hint" class="subtle-button" type="button">給我 source-case 提示</button>
+            <button id="big-pigs-mouth-hint" class="subtle-button" type="button">給我局面提示</button>
             <button id="big-pigs-mouth-next" class="primary-button" type="button" disabled>下一題 →</button>
           </div>
         </section>
-        <section class="board-card" aria-label="大豬嘴 source-case 練習棋盤">
+        <section class="board-card" aria-label="大豬嘴來源局面練習棋盤">
           <div class="card-top"><span>19 × 19 source · cropped viewport</span><span class="board-status"><i></i> exact first-move oracle</span></div>
           <div id="big-pigs-mouth-board" class="board classic-board" tabindex="0" role="application" aria-label="大豬嘴固定來源局面；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="big-pigs-mouth-cursor-status">方向鍵移動 · Enter 落子</span><span id="big-pigs-mouth-side">○ 白棋</span></div>
@@ -328,7 +328,7 @@
 
     <section class="bulky-practice" aria-labelledby="bulky-practice-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">新可玩 family · bounded practice</span>
+        <span class="question-tag">五目眼形 · 找共同急所</span>
         <h2 id="bulky-practice-title">刀把五：找共同急所</h2>
         <p>先不背完整死活變化，只練一件可驗證的事：在五個眼空中找出雙方共同急所。四題涵蓋守方、攻方、旋轉與鏡像。</p>
       </div>
@@ -337,7 +337,7 @@
           <span class="question-tag" id="bulky-tag">1 / 4 · 名稱不提示答案</span>
           <h3 id="bulky-title">找共同急所</h3>
           <p id="bulky-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只判第一手是否落在 geometry contract 推導出的唯一共同急所；不宣稱完整死活答案樹。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>只看第一手有沒有下在這個棋形唯一的共同急所；目前不判斷完整後續死活變化。</span></div>
           <div id="bulky-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="bulky-reveal" class="classic-reveal" hidden><span>作答後揭名</span><strong id="bulky-name">刀把五／Bulky Five</strong><p id="bulky-story"></p></div>
           <div class="classic-actions">
@@ -346,7 +346,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="刀把五共同急所練習棋盤">
-          <div class="card-top"><span>7 × 7 bounded practice</span><span class="board-status"><i></i> vital point only</span></div>
+          <div class="card-top"><span>7 × 7 限定練習</span><span class="board-status"><i></i> 只找第一個急所</span></div>
           <div id="bulky-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="bulky-cursor-status">方向鍵移動 · Enter 落子</span><span id="bulky-side">● 黑棋</span></div>
         </section>
@@ -355,7 +355,7 @@
 
     <section class="bulky-read" aria-labelledby="bulky-read-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">短讀 · 3 手 bounded branch</span>
+        <span class="question-tag">短讀 · 三手主要變化</span>
         <h2 id="bulky-read-title">刀把五：A/B 互補短讀</h2>
         <p>棋盤已重播攻方先佔共同急所、守方再走 A 或 B。你只下第 3 手：找另一個互補點。這裡仍不是完整答案樹。</p>
       </div>
@@ -364,7 +364,7 @@
           <span class="question-tag" id="read-tag">1 / 3 · 第 3 手</span>
           <h3 id="read-title">補另一個 A/B 點</h3>
           <p id="read-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>只判來源支持的 A/B 互補主分支；未列分支保持 UNKNOWN，不用固定 fallback 猜答案。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>只判目前資料支持的兩條主要變化；沒有列出的其他變化先保留未知，系統不會自行猜答案。</span></div>
           <div id="read-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div class="classic-actions">
             <button id="read-hint" class="subtle-button" type="button">給我短讀提示</button>
@@ -390,7 +390,7 @@
           <span class="question-tag" id="reduction-tag">1 / 2 · sealed local branch</span>
           <h3 id="reduction-title">填滿 2×2 核心</h3>
           <p id="reduction-prompt"></p>
-          <div class="classic-rule"><strong>本區成立條件</strong><span>守方整串無外氣；局部手抜き只表示外部著手不改變這個局部。若有外氣，本 contract 直接判定不適用。</span></div>
+          <div class="classic-rule"><strong>本區成立條件</strong><span>守方整串沒有外氣；這裡的「手拔」只表示外面的落子不改變這個局部。如果外面還有氣，這個局部判定就不適用。</span></div>
           <div id="reduction-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="reduction-terminal" class="classic-reveal" hidden>
             <span>規則引擎重播結果</span>
@@ -418,10 +418,10 @@
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
-          <span class="question-tag" id="contrast-tag">1 / 6 · family hidden</span>
+          <span class="question-tag" id="contrast-tag">1 / 6 · 名稱先隱藏</span>
           <h3 id="contrast-title">先看幾何，再找第一手</h3>
           <p id="contrast-prompt"></p>
-          <div class="classic-rule"><strong>本區 scoring 範圍</strong><span>contrast layer 不保存答案；實際評分委託原本刀把五或梅花五 contract。答對只代表這一題第一手正確，不代表 transfer 或 mastery。</span></div>
+          <div class="classic-rule"><strong>這一區怎麼判定</strong><span>混合練習本身不另外保存答案，而是沿用刀把五或梅花五原本的第一手判定。答對只代表這一題第一手正確，不代表已經能穩定運用到其他棋形。</span></div>
           <div id="contrast-feedback" class="feedback" role="status" aria-live="polite"></div>
           <div id="contrast-reveal" class="classic-reveal" hidden>
             <span>首答後揭示</span>
@@ -434,7 +434,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="名型混合辨形練習棋盤">
-          <div class="card-top"><span>7 × 7 interleaved practice</span><span class="board-status"><i></i> family hidden</span></div>
+          <div class="card-top"><span>7 × 7 交錯練習</span><span class="board-status"><i></i> 名稱先隱藏</span></div>
           <div id="contrast-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路名型混合辨形棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="contrast-cursor-status">方向鍵移動 · Enter 落子</span><span id="contrast-side">● / ○ 依題目</span></div>
         </section>
