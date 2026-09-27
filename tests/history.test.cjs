@@ -141,7 +141,7 @@ test("歷史 HTML 不得把 escaped newline 當可見文字帶進來源清單", 
 });
 
 
-test("History Explore learner-facing version metadata 一致為 v2", () => {
+test("History Explore learner-facing version metadata 一致為 v3", () => {
   assert.match(html, /history\.css\?v=history-explore-v3/);
   assert.match(html, /歷史探索 v3/);
   assert.doesNotMatch(html, /歷史探索 v1|歷史探索 v2/);
