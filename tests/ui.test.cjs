@@ -878,7 +878,10 @@ async function main() {
     assert.match(ontologyCatalogState.lGroupTaxonomy, /badukworld-life-death-proverbs/);
     assert.match(ontologyCatalogState.lGroupGeometryRelation, /related_unresolved/);
     assert.match(ontologyCatalogState.carpenterGeometryEvidence, /diagram_requires_extraction/);
+    assert.match(ontologyCatalogState.carpenterGeometryEvidence, /rights=unknown/);
+    assert.match(ontologyCatalogState.carpenterGeometryEvidence, /public=blocked_pending_rights_and_extraction/);
     assert.match(ontologyCatalogState.lGroupGeometryEvidence, /text_only_geometry_unavailable/);
+    assert.match(ontologyCatalogState.lGroupGeometryEvidence, /rights=unknown/);
     assert.match(ontologyCatalogState.smallPigWarning, /Tripod Group/);
     assert.match(ontologyCatalogState.bentWarning, /ruleset behavior/);
     assert.equal(ontologyCatalogState.ontologyMeta, true);

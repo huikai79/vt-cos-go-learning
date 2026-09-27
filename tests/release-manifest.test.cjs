@@ -123,7 +123,9 @@ test("世界名型 ontology、geometry registry 與 compatibility catalog 都列
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-ontology.js"));
   assert.ok(manifest.publicFiles.includes("classic-geometry-fingerprint.js"));
+  assert.ok(manifest.publicFiles.includes("classic-geometry-extraction.js"));
   assert.ok(manifest.publicFiles.includes("classic-geometry-evidence.js"));
+  assert.ok(manifest.publicFiles.includes("tests/classic-geometry-extraction.test.cjs"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
   assert.ok(manifest.hosting.entrypoints.includes("classic-shapes.html"));
 });
