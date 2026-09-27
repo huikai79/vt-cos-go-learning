@@ -147,6 +147,14 @@ git status --short --untracked-files=all
 - [x] served-content gate 改併入 `verify.yml` 的 `main push` job；等 Node／Sabaki／Windows UI 全部成功後才輪詢公開站點。
 - [x] smoke 由 `release-manifest.json.hosting.pagesUrl` 取得正式網址，不建立第二份部署 URL source of truth。
 - [x] 對首頁與 `history.html` 使用 cache-bust query、redirect follow 與最多 12 次有限 retry；需看到當次 History Explore 版本與關鍵 learner-facing marker 才 PASS。
-- [ ] 只有新的 `served-pages-content` job 在 `main` 實際成功後，才可把「公開 served content 已更新」由 UNKNOWN 改為 PASS。
+- [x] `served-pages-content` 已在 main verify #494 實際成功；GitHub-hosted runner 讀回正式 `index.html` 與 `history.html`，確認 History v3 關鍵 marker。公開 served content 的工程狀態為 PASS。
 
 停止線：Pages deployment 成功但 `served-pages-content` 失敗時，不得把「部署工作完成」寫成「公開頁已供應正確版本」。
+
+
+### History v3 最終發布證據
+
+- main commit `07649651263b785af319e14902d6baeb74e07586`
+- verify run #494：含 `served-pages-content` 全數 PASS。
+- Pages deployment #381：PASS。
+- served-content 日誌確認正式 custom-domain URL 已回傳當次 History v3 HTML；此證據只支持部署內容一致性，不代表歷史學術效度、真人 usability 或 learning effect。
