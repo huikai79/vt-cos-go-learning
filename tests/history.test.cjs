@@ -50,7 +50,7 @@ test("首頁以低優先級入口連到歷史探索，不改 Core／Advanced 兩
 test("巡將圍棋、關羽刮骨與原爆棋都有 claim-near source", () => {
   assert.ok(html.includes("ART001844106"), "Sunjang institutional-history source");
   assert.ok(html.includes("https://ctext.org/sanguozhi/36"), "Guan Yu primary text");
-  assert.ok(html.includes("https://www.nihonkiin.or.jp/teach/history/history03.html"), "atomic-bomb game official history");
+  assert.ok(html.includes("https://www.nihonkiin.or.jp/special/100anniversary/kishi_select/17.html"), "atomic-bomb game official history");
 });
 
 
@@ -81,4 +81,16 @@ test("歷史頁小字配色維持一般文字 AA 對比安全值", () => {
   assert.match(css, /\.question-number\{font-size:\.82rem;font-weight:900;color:#52685a\}/);
   assert.match(css, /\.compare-head\{font-size:\.82rem;font-weight:850;color:#52685a;background:#eef3eb\}/);
   assert.match(css, /footer\{padding:24px;color:#53675a/);
+});
+
+
+test("孫策呂範的對弈傳文與後世十九路棋譜分開處理", () => {
+  assert.ok(html.includes("https://ctext.org/taiping-yulan/753/zh"));
+  assert.match(html, /只支持對弈敘事，不直接驗證後世 19 路棋譜/);
+  assert.match(html, /現存宋代傳下的 19 路棋譜不能直接等同三國原局/);
+});
+
+test("原爆棋使用可直接支撐再開與終局時間的日本棋院官方頁", () => {
+  assert.ok(html.includes("https://www.nihonkiin.or.jp/special/100anniversary/kishi_select/17.html"));
+  assert.match(html, /約 10:30 再開、約 16:00 終局/);
 });
