@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v5 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v11 | `classic-shapes.html` 現有直三、丁四／Pyramid Four、刀把五、梅花五／Cross Five、花六／Rabbity Six、金雞獨立，以及大豬嘴／J Group exact source-case。丁四新增 `classic-pyramid-four-vital-point-v1`：四點眼空必須同構於 T tetromino，唯一 degree-3 center 由 geometry 即時計算，item 不保存答案；四個 variant 涵蓋攻守、換色、旋轉與位移。J Group family geometry 升級因仍缺第二組可機讀／授權清楚的共享 oracle 而 BLOCKED，維持 source-case scope | `classic-shapes.test.cjs`、geometry canonical signature、Go legal-move check、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語 provenance | 條件通過僅限已建立 bounded contracts。丁四 wrong geometry、answer injection、stale coordinate 均有反證；正式教學仍 BLOCKED，完整答案樹、內容效度、formal assessment、retention／transfer 與 learning effect 均未由此建立 |
+| 世界死活名型館 v12 / ontology v2 | playable practice 不變：直三、丁四／Pyramid Four、刀把五、梅花五、花六、金雞獨立與大豬嘴 exact source-case。新增 `classic-shapes-ontology.js` 作唯一 canonical concept source，分離 entityType、names、geometryIdentity、rulesetBehavior、negativeMappings、dated nameResearch 與 evidenceChain；`classic-shapes-catalog.js` 降為 compatibility adapter，舊 `preferredZhTW / zhNameStatus / aliases / rulesetSensitive` 皆由 ontology 衍生。Carpenter's Square 的臺灣繁中首選改為 unresolved；小豬嘴新增 Tripod Group with Extra Leg mapping 與 plain Tripod negative mapping；金雞獨立固定為 tesuji mechanism | ontology validator、compatibility adapter regression、existing classic-shape contracts、release manifest、browser UI；完整 CI 以 PR workflow 為準 | 工程／metadata provenance | schema migration 不改棋盤/scoring authority，不代表名稱 regional usage、geometry、內容效度或學習成效已全面驗證。正式教學仍 BLOCKED |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -548,3 +548,14 @@
 - **反證：** 直四 geometry fail、偷塞答案 fail、shifted variant 使用 seed coordinate 判錯。
 - **未驗：** 完整吃淨 sequence、外部獨立審題、真人 usability、formal assessment、retention／transfer、learning effect。
 - **Validation：** PR #30 initial verify run #450 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持工程／geometry contract。
+
+
+## 2026-09-27 Change note｜世界死活名型館 ontology v2
+
+- **改了什麼：** `classic-shapes-ontology.js` 成為 canonical data；`classic-shapes-catalog.js` 只負責舊 UI compatibility。新增 entity type、language-agnostic names ontology、geometry identity、ruleset behavior、negative mappings、dated negative name research 與 evidence chain。
+- **為何現在改：** playable family 已增加到多種 ontology 類型，現行「中文主欄位＋aliases」開始把棋形、family、tesuji 與規則局面混成同一種 entry；繼續新增候選會放大錯誤 alias 與 regional preference 假設。
+- **歷史語義：** existing practice/scoring item IDs、contract versions、答案、event semantics、KC、scheduler、formal evaluation 與 storage 都不 migration。舊 catalog UI 欄位暫時由 adapter 產生，因此歷史頁面與測試可漸進遷移。
+- **負面 oracle：** 小豬嘴不得直接 alias Tripod Group；金雞獨立不得視為 static nakade；五目中手不得當刀把五唯一專名；Carpenter 簡繁轉字不得推成臺灣 regional preference。
+- **Evidence Chain：** Go4Go 明示 Chinese Go Terms copy 自 YeeFan；兩者共用 evidence chain，不因兩個 URL 當成兩份獨立驗證。
+- **Rollback：** 回復 ontology 前 catalog + HTML script ordering；無 learner/storage migration。
+- **未驗：** regional usage、未完成 geometry、完整 ruleset scoring、外部內容審查、真人 usability、formal assessment、retention／transfer、learning effect。
