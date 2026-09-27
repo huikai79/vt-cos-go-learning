@@ -18,6 +18,28 @@
 
   const records = Object.freeze([
     Object.freeze({
+      id:"square-four-contract-geometry-v1",
+      conceptId:"square-four-v1",
+      sourceType:"internal_contract",
+      sourceId:"classic-four-space-status-v1",
+      evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
+      points:Object.freeze([[0,0],[1,0],[0,1],[1,1]]),
+      context:Object.freeze({boardContext:"center",boundary:[],role:"sealed-eye-space",toPlay:"unspecified"})
+    }),
+    Object.freeze({
+      id:"straight-four-contract-geometry-v1",
+      conceptId:"straight-four-v1",
+      sourceType:"internal_contract",
+      sourceId:"classic-four-space-status-v1",
+      evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
+      points:Object.freeze([[0,0],[1,0],[2,0],[3,0]]),
+      context:Object.freeze({boardContext:"center",boundary:[],role:"sealed-eye-space",toPlay:"unspecified"})
+    }),
+    Object.freeze({
       id:"bent-three-contract-geometry-v1",
       conceptId:"bent-three-v1",
       sourceType:"internal_contract",

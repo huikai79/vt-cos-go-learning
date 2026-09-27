@@ -76,3 +76,6 @@
 .catalog-geometry-evidence strong{font-size:.78rem;color:#4d6653}
 .catalog-geometry-evidence span{font-size:.84rem;color:#58665b}
 .catalog-geometry-evidence.pending{background:#f8f6f2}
+
+.classic-eye-marker{fill:rgba(255,255,255,.18);stroke:rgba(85,65,38,.45);stroke-width:.7}
+.four-status-actions{margin:12px 0}.four-status-actions button{min-width:84px}

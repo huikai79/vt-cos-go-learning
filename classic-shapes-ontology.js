@@ -109,7 +109,7 @@
     ogsBulkyVital: source("ogsBulkyVital","Online Go Forum：Bulky Five vital point discussion","https://forums.online-go.com/t/is-it-impossible-to-save-a-3-x-2-territory/16356","community_secondary","ogs-bulky"),
     yeefanBulkyAB: source("yeefanBulkyAB","YeeFan：Multiple-Space Eyes, Bulky Five A/B sequence","https://yeefan.sg/weiqi/howtoplaygo/howtoplaygo06.htm","instructional_secondary","yeefan-multiple-space-eyes"),
     malaysiaWeiqiBulky: source("malaysiaWeiqiBulky","Malaysia Weiqi Association：Multiple Eye Space","https://www.weiqi.org.my/wp-content/uploads/2013/05/moduleav21.pdf","association","mwa-multiple-eye-space"),
-    boardToBitsBulkyReduction: source("boardToBitsBulkyReduction","Board to Bits Go：Big Eyes / Bulky Five reduction","https://boardtobitsgo.wordpress.com/2020/09/02/lesson-6-big-eyes/","instructional_secondary","board-to-bits-bulky"),
+    boardToBitsBulkyReduction: source("boardToBitsBulkyReduction","Board to Bits Go：Big Eyes","https://boardtobitsgo.wordpress.com/2020/09/02/lesson-6-big-eyes/","instructional_secondary","board-to-bits-big-eyes"),
     meaningfulStonesCrossFive: source("meaningfulStonesCrossFive","Meaningful Stones：Cross Five","https://jimseibert.github.io/Meaningful-Stones/sec-shapes.html","instructional_secondary","meaningful-stones-cross-five"),
     yikePlumFive: source("yikePlumFive","弈客圍棋：大眼（5）梅花五","https://www.sohu.com/a/475377109_533159","publisher_secondary","yike-plum-five"),
     hzSchoolVitalShapes: source("hzSchoolVitalShapes","浙江工大附校：死活棋要點","https://www.hzxhjy.cn/zgdfs/bfst/tylst/wq/201902/t20190226_26916.shtml","educational_secondary","hz-school-vital-shapes"),
@@ -182,6 +182,30 @@
       taxonomyMemberships:[], rulesetBehavior:[],
       negativeMappings:[{locale:"zh-Hant",name:"刀把五",relation:"unique_name_for_category",status:"blocked",reason:"五目中手是上位分類，不是刀把五的唯一專名",sourceIds:["nihonkiinFive"]}],
       sourceIds:["nihonkiinFive"], note:"分類層級不可自動等同任何單一五點名型。"
+    },
+    {
+      id:"square-four-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
+      teachingLabel:"2×2 四目眼沒有做活急所", practiceStatus:"playable_rules_backed_status_proof_contract", reviewStatus:REVIEW.VERIFIED,
+      names:[
+        name("zh-Hant","方四",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.VERIFIED,["go4goChinese","yeefanChineseTerms"],{displayPreference:"project"}),
+        name("en","Square Four",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.VERIFIED,["boardToBitsBulkyReduction"])
+      ],
+      nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-four-space-status-v1","O-tetromino","center",{surroundingDefects:"sealed"}),
+      taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
+      sourceIds:["go4goChinese","yeefanChineseTerms","boardToBitsBulkyReduction"],
+      note:"限定完全包圍、無缺陷的四點 2×2 眼空。守方任一第一手都留下曲三，攻方仍可搶彎點，因此局部狀態為死；不外推含缺陷或外部連接的全局棋塊。"
+    },
+    {
+      id:"straight-four-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",
+      teachingLabel:"直線四目眼有兩個互為 miai 的做眼點", practiceStatus:"playable_rules_backed_status_proof_contract", reviewStatus:REVIEW.VERIFIED,
+      names:[
+        name("zh-Hant","直四",NAME_STATUS.ESTABLISHED_ALIAS,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.VERIFIED,["go4goChinese","yeefanChineseTerms"],{displayPreference:"project"}),
+        name("en","Straight Four",NAME_STATUS.ESTABLISHED,SEMANTIC_ROLE.EXACT_SHAPE_NAME,RELATION.EXACT,USAGE_SCOPE.INSTRUCTIONAL,REVIEW.VERIFIED,["boardToBitsBulkyReduction"])
+      ],
+      nameResearch:[], geometryIdentity:geometry("shape_family",REVIEW.VERIFIED,"classic-four-space-status-v1","I-tetromino","center",{surroundingDefects:"sealed"}),
+      taxonomyMemberships:[], rulesetBehavior:[], negativeMappings:[],
+      sourceIds:["go4goChinese","yeefanChineseTerms","boardToBitsBulkyReduction"],
+      note:"限定完全包圍、無缺陷的直線四點眼空。攻方任一第一手後，守方總有回應留下兩個分離眼點，因此局部狀態為活；不外推含缺陷或邊角特殊條件的局面。"
     },
     {
       id:"bent-three-v1", entityType:ENTITY_TYPE.NAKADE_SHAPE, catalogCategory:"nakade",

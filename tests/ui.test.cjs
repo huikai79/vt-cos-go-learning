@@ -926,6 +926,79 @@ async function main() {
     assert.equal(bentThreeCorrect.name, "曲三／Bent Three");
     assert.equal(bentThreeCorrect.nextDisabled, false);
 
+    const fourStatusState = await evaluate(socket, `(() => ({
+      prompt: document.querySelector('#four-status-prompt').textContent,
+      revealHidden: document.querySelector('#four-status-reveal').hidden,
+      nextDisabled: document.querySelector('#four-status-next').disabled,
+      aliveDisabled: document.querySelector('#four-status-alive').disabled,
+      deadDisabled: document.querySelector('#four-status-dead').disabled
+    }))()`);
+    assert.match(fourStatusState.prompt, /黑棋守方先走/);
+    assert.equal(fourStatusState.revealHidden, true);
+    assert.equal(fourStatusState.nextDisabled, true);
+    assert.equal(fourStatusState.aliveDisabled, false);
+    assert.equal(fourStatusState.deadDisabled, false);
+
+    const fourStatusWrong = await evaluate(socket, `(() => {
+      document.querySelector('#four-status-alive').click();
+      return {
+        feedback: document.querySelector('#four-status-feedback').textContent,
+        revealHidden: document.querySelector('#four-status-reveal').hidden,
+        nextDisabled: document.querySelector('#four-status-next').disabled
+      };
+    })()`);
+    assert.match(fourStatusWrong.feedback, /不符合 rules-backed proof/);
+    assert.equal(fourStatusWrong.revealHidden, true);
+    assert.equal(fourStatusWrong.nextDisabled, true);
+
+    const fourStatusCorrect = await evaluate(socket, `(() => {
+      document.querySelector('#four-status-dead').click();
+      return {
+        feedback: document.querySelector('#four-status-feedback').textContent,
+        revealHidden: document.querySelector('#four-status-reveal').hidden,
+        name: document.querySelector('#four-status-name').textContent,
+        proof: document.querySelector('#four-status-proof').textContent,
+        nextDisabled: document.querySelector('#four-status-next').disabled,
+        aliveDisabled: document.querySelector('#four-status-alive').disabled,
+        deadDisabled: document.querySelector('#four-status-dead').disabled
+      };
+    })()`);
+    assert.match(fourStatusCorrect.feedback, /方四沒有做活急所|仍死/);
+    assert.equal(fourStatusCorrect.revealHidden, false);
+    assert.equal(fourStatusCorrect.name, "方四／Square Four");
+    assert.match(fourStatusCorrect.proof, /留下曲三/);
+    assert.equal(fourStatusCorrect.nextDisabled, false);
+    assert.equal(fourStatusCorrect.aliveDisabled, true);
+    assert.equal(fourStatusCorrect.deadDisabled, true);
+
+    const fourStatusSecond = await evaluate(socket, `(() => {
+      document.querySelector('#four-status-next').click();
+      return {
+        prompt: document.querySelector('#four-status-prompt').textContent,
+        revealHidden: document.querySelector('#four-status-reveal').hidden,
+        aliveDisabled: document.querySelector('#four-status-alive').disabled,
+        deadDisabled: document.querySelector('#four-status-dead').disabled
+      };
+    })()`);
+    assert.match(fourStatusSecond.prompt, /白棋攻方先走/);
+    assert.equal(fourStatusSecond.revealHidden, true);
+    assert.equal(fourStatusSecond.aliveDisabled, false);
+    assert.equal(fourStatusSecond.deadDisabled, false);
+
+    const straightFourCorrect = await evaluate(socket, `(() => {
+      document.querySelector('#four-status-alive').click();
+      return {
+        feedback: document.querySelector('#four-status-feedback').textContent,
+        name: document.querySelector('#four-status-name').textContent,
+        proof: document.querySelector('#four-status-proof').textContent,
+        nextDisabled: document.querySelector('#four-status-next').disabled
+      };
+    })()`);
+    assert.match(straightFourCorrect.feedback, /直四是無條件活形|仍有回應/);
+    assert.equal(straightFourCorrect.name, "直四／Straight Four");
+    assert.match(straightFourCorrect.proof, /兩個分離眼點/);
+    assert.equal(straightFourCorrect.nextDisabled, false);
+
     const pyramidFourState = await evaluate(socket, `(() => ({
       points: document.querySelectorAll('#pyramid-four-board [data-pyramid-four-x][data-pyramid-four-y]').length,
       prompt: document.querySelector('#pyramid-four-prompt').textContent,

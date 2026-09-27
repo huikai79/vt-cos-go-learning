@@ -16,6 +16,8 @@ const CrossFive = require("../classic-cross-five-practice.js");
 const CrossFiveContract = require("../classic-cross-five-contract.js");
 const BentThree = require("../classic-bent-three-practice.js");
 const BentThreeContract = require("../classic-bent-three-contract.js");
+const FourSpaceStatus = require("../classic-four-space-status-practice.js");
+const FourSpaceStatusContract = require("../classic-four-space-status-contract.js");
 const PyramidFour = require("../classic-pyramid-four-practice.js");
 const PyramidFourContract = require("../classic-pyramid-four-contract.js");
 const FlowerSix = require("../classic-flower-six-practice.js");
@@ -47,7 +49,8 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
-  assert.match(html, /刀把五、梅花五與花六各有 bounded nakade practice/);
+  assert.match(html, /曲三、丁四、刀把五、梅花五與花六有 bounded vital-point practice/);
+  assert.match(html, /方四／直四另用 rules-backed status proof/);
   assert.match(html, /金雞獨立走 rules-backed tesuji mechanism contract/);
   assert.match(html, /名稱仍在作答後才揭示|名稱放到第一手之後/);
   assert.match(js, /直三/);
@@ -217,7 +220,7 @@ test("catalog adapter 暴露 geometry evidence，但不由名稱補 geometry", (
 });
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v15");
+  assert.equal(Catalog.version, "world-classic-shapes-v16");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -267,7 +270,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["bent-three-v1", "big-pigs-mouth-candidate-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "pyramid-four-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["bent-three-v1", "big-pigs-mouth-candidate-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "pyramid-four-v1", "square-four-v1", "straight-four-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -770,6 +773,73 @@ test("大豬嘴 source-case 有 MIT provenance notice，不把上游 SGF 當本�
   assert.match(contractSource, /source-case scoped/);
 });
 
+
+test("四目眼 status contract 由規則分支推導方四死、直四活", () => {
+  assert.equal(FourSpaceStatus.version, "four-space-status-practice-v1");
+  assert.equal(FourSpaceStatus.scoringContractVersion, FourSpaceStatusContract.CONTRACT_VERSION);
+  assert.equal(FourSpaceStatus.items.length, 4);
+  const deps={ Go, PracticeContract, BentThreeContract };
+  const all=FourSpaceStatusContract.validateAll(FourSpaceStatus.items,deps);
+  assert.equal(all.ok,true,all.errors.join("; "));
+
+  for (const item of FourSpaceStatus.items) {
+    for (const field of ["answer","expectedStatus","status","correctChoice"]) {
+      assert.equal(Object.prototype.hasOwnProperty.call(item,field),false,item.id+" "+field);
+    }
+    const v=FourSpaceStatusContract.validateItem(item,deps);
+    assert.equal(v.ok,true,v.errors.join("; "));
+    assert.equal(v.proof.branches.length,4,item.id);
+    if (item.shapeKind==="square-four") {
+      assert.equal(v.expectedStatus,FourSpaceStatusContract.STATUS.DEAD);
+      for (const branch of v.proof.branches) {
+        assert.ok(Array.isArray(branch.defenderFirst));
+        assert.ok(Array.isArray(branch.attackerReply));
+      }
+    } else {
+      assert.equal(v.expectedStatus,FourSpaceStatusContract.STATUS.ALIVE);
+      for (const branch of v.proof.branches) {
+        assert.equal(branch.eyePoints.length,2);
+        const [a,b]=branch.eyePoints;
+        assert.notEqual(Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1]),1);
+      }
+    }
+    assert.equal(FourSpaceStatusContract.score(item,v.expectedStatus,deps).correct,true);
+    const wrong=v.expectedStatus===FourSpaceStatusContract.STATUS.ALIVE ? FourSpaceStatusContract.STATUS.DEAD : FourSpaceStatusContract.STATUS.ALIVE;
+    assert.equal(FourSpaceStatusContract.score(item,wrong,deps).correct,false);
+  }
+});
+
+test("四目眼 status contract 對 wrong geometry、偷塞 status 與錯 shapeKind fail closed", () => {
+  const deps={ Go, PracticeContract, BentThreeContract };
+  const seed=FourSpaceStatus.items[0];
+  const wrongGeometry={...seed,id:"four-space-wrong",eyeSpace:[[2,2],[3,2],[4,2],[2,3]]};
+  assert.equal(FourSpaceStatusContract.validateItem(wrongGeometry,deps).ok,false);
+
+  const leaked={...seed,id:"four-space-leaked",expectedStatus:"dead"};
+  assert.equal(FourSpaceStatusContract.validateItem(leaked,deps).ok,false);
+
+  const mislabeled={...seed,id:"four-space-mislabeled",shapeKind:"straight-four"};
+  assert.equal(FourSpaceStatusContract.validateItem(mislabeled,deps).ok,false);
+});
+
+test("方四／直四 ontology 與 geometry evidence 對齊 status proof", () => {
+  const square=Ontology.concepts.find((item)=>item.id==="square-four-v1");
+  const straight=Ontology.concepts.find((item)=>item.id==="straight-four-v1");
+  const squareEntry=Catalog.entries.find((item)=>item.id==="square-four-v1");
+  const straightEntry=Catalog.entries.find((item)=>item.id==="straight-four-v1");
+
+  assert.equal(square.geometryIdentity.contractVersion,"classic-four-space-status-v1");
+  assert.equal(square.geometryIdentity.fingerprint,"O-tetromino");
+  assert.equal(square.geometryIdentity.conditions.surroundingDefects,"sealed");
+  assert.equal(straight.geometryIdentity.fingerprint,"I-tetromino");
+  assert.equal(squareEntry.practiceStatus,"playable_rules_backed_status_proof_contract");
+  assert.equal(straightEntry.practiceStatus,"playable_rules_backed_status_proof_contract");
+  assert.ok(squareEntry.geometryEvidence.some((item)=>item.id==="square-four-contract-geometry-v1"));
+  assert.ok(straightEntry.geometryEvidence.some((item)=>item.id==="straight-four-contract-geometry-v1"));
+  assert.match(html,/方四 vs 直四：不是每個眼形都有「唯一急所」/);
+  assert.match(html,/classic-four-space-status-contract\.js\?v=classic-four-space-status-v1/);
+  assert.match(js,/GoFourSpaceStatusContract/);
+});
 
 test("曲三四個 variant 由 L geometry 推導唯一 degree-2 彎點", () => {
   assert.equal(BentThree.version, "bent-three-practice-v1");
