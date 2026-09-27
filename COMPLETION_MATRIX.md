@@ -28,7 +28,7 @@
 | 承諾 | 現況與實作 | 已有驗證 | 證據等級 | 狀態 |
 |---|---|---|---|---|
 | 離線個人課程 | 15 單元、19 課、106 題；直接開啟 `index.html` | 課程與 Chrome 流程測試 | 工程 | 條件通過 |
-| Core 後續進階訓練 v6 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
+| Core 後續進階訓練 v7 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
 | 世界死活名型館 v19 / 四目眼 status contrast + 曲四 | playable practice 現有直三、曲三、丁四、方四、直四、曲四／Curved Four、刀把五、梅花五、花六、金雞獨立與大豬嘴 exact source-case。新增獨立 `classic-curved-four-status-v1`：sealed L-tetromino 曲四對攻方四種第一手逐一驗證，守方均有回應留下兩個分離 eye points，因此導出 alive；兩個 variant 覆蓋換色、旋轉與位移。既有方四／直四 v1 contract 不修改；ontology 加入 Curved Four ≠ Bent Four in the Corner negative mapping | Curved Four proof/negative tests、browser 第 5/6 題、geometry evidence、release manifest；既有 four-space status 與 research-governance tests 不變；完整 CI 以 PR workflow 為準 | 工程／rules-backed local status proof | 工程 PASS 只支持 sealed interior Curved Four，不代表盤角曲四、含缺陷／外氣局面或全局死活；內容效度、formal assessment、retention／transfer、learning effect 未由此建立。真人 R1a/usability/accessibility 延後到最後階段 |
@@ -100,6 +100,14 @@
 - **不可破壞 invariant：** 不改 first response／retry、scheduler、formal evaluation 遮蔽、曝光、題目答案或 evidence taxonomy。關鍵詞與短講仍屬教學支架；formal evaluation 不以此作答案來源。
 - **驗收：** 新增 negative tests，要求紅叉不得再被複盤圖拿來表示原著位置、關鍵抽象課必須有足夠步驟，且 19 課都至少有一個可顯示的關鍵詞定義；live-game learner-facing 規則術語亦有靜態契約。
 - **證據邊界：** 外部網站只能證明其公開教學做法與術語安排，不證明本改法對本專案初學者一定更有效；棋理適切性仍待 R1a，真人理解仍待 usability。
+
+## 2026-09-28 Change note｜19×19 全盤 practice v1
+
+- **Bottleneck：** Advanced 已有局部讀棋／攻防／官子與 rules-backed multi-step practice，但『完整棋局與複盤』仍是 planned；局部能力缺一個標準全盤整合 Experience。
+- **實作：** `live-game` active practice 從 5／7／9 擴為 5／7／9／19；19 路使用同一 rules engine、Pass／認輸、人工死子確認、中國式面積、SGF round-trip、本機續局與 provider seam。進階頁第四 track 直接進 19×19，而不是再增加線性單元。
+- **Evidence：** 19×19 只寫 `live-practice-events-v2` 的 unscored practice observation；既有 `live-eligibility-v1` 明確只接受 9×9，因此 19 路不會被升為 T3。v1 practice events 保留 legacy reader，不回填 19 路新語義。
+- **Negative tests：** 19×19 SGF round-trip、19 路 practice event 可保存、19 路 live T3 必須 `not_eligible`、v1 legacy event 保留原 schema。
+- **停止線：** heuristic bot 在 19 路只保證合法 bounded practice，不代表合理棋力；simple ko／人工死子也不是完整規則裁判。19 路勝負、完成局數與 SGF 都不產生 mastery／formal evaluation／learning-effect claim。R1a／三位初學者／真人 accessibility 依使用者決策延後到最後，狀態仍 BLOCKED／NOT_TESTED。
 
 ## 2026-09-26 Change note｜Core 後續進階訓練 v1
 
