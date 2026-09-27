@@ -184,7 +184,12 @@
         : '';
       const geometryEvidence = entry.geometryEvidence.length
         ? '<div class="catalog-geometry-evidence"><strong>Geometry evidence</strong><span>' +
-            escapeHtml(entry.geometryEvidence.map((item) => item.evidenceStatus + (item.note ? ' · ' + item.note : '')).join('；')) +
+            escapeHtml(entry.geometryEvidence.map((item) =>
+              item.evidenceStatus +
+              (item.licenseStatus ? ' · rights=' + item.licenseStatus : '') +
+              (item.publicGeometryPromotion ? ' · public=' + item.publicGeometryPromotion : '') +
+              (item.note ? ' · ' + item.note : '')
+            ).join('；')) +
           '</span></div>'
         : '<div class="catalog-geometry-evidence pending"><strong>Geometry evidence</strong><span>尚無可重算幾何證據。</span></div>';
       const sources = entry.sources.length
