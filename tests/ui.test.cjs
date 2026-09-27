@@ -1078,6 +1078,45 @@ async function main() {
     assert.equal(pyramidFourCorrect.name, "丁四／Pyramid Four");
     assert.equal(pyramidFourCorrect.nextDisabled, false);
 
+    const rectSixState = await evaluate(socket, `(() => ({
+      points: document.querySelectorAll('#rect-six-board [data-rect-six-x][data-rect-six-y]').length,
+      prompt: document.querySelector('#rect-six-prompt').textContent,
+      revealHidden: document.querySelector('#rect-six-reveal').hidden,
+      nextDisabled: document.querySelector('#rect-six-next').disabled
+    }))()`);
+    assert.equal(rectSixState.points, 5);
+    assert.match(rectSixState.prompt, /白棋已先佔板六的一個中心/);
+    assert.equal(rectSixState.revealHidden, true);
+    assert.equal(rectSixState.nextDisabled, true);
+
+    const rectSixWrong = await evaluate(socket, `(() => {
+      const point = document.querySelector('#rect-six-board [data-rect-six-x="2"][data-rect-six-y="3"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#rect-six-feedback').textContent,
+        revealHidden: document.querySelector('#rect-six-reveal').hidden,
+        nextDisabled: document.querySelector('#rect-six-next').disabled
+      };
+    })()`);
+    assert.match(rectSixWrong.feedback, /不是另一個 miai 中心/);
+    assert.equal(rectSixWrong.revealHidden, true);
+    assert.equal(rectSixWrong.nextDisabled, true);
+
+    const rectSixCorrect = await evaluate(socket, `(() => {
+      const point = document.querySelector('#rect-six-board [data-rect-six-x="3"][data-rect-six-y="4"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#rect-six-feedback').textContent,
+        revealHidden: document.querySelector('#rect-six-reveal').hidden,
+        name: document.querySelector('#rect-six-name').textContent,
+        nextDisabled: document.querySelector('#rect-six-next').disabled
+      };
+    })()`);
+    assert.match(rectSixCorrect.feedback, /兩個中心互為 miai|回下中心/);
+    assert.equal(rectSixCorrect.revealHidden, false);
+    assert.equal(rectSixCorrect.name, "板六／Rectangular Six");
+    assert.equal(rectSixCorrect.nextDisabled, false);
+
     const flowerSixState = await evaluate(socket, `(() => {
       const board = document.querySelector('#flower-six-board');
       const points = [...board.querySelectorAll('[data-flower-six-x][data-flower-six-y]')];
