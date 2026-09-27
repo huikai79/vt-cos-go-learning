@@ -51,9 +51,16 @@
 **通過條件：** 兩批資料可重算，沒有非預定回饋、答案洩漏或資料缺漏。輸出只描述各技能的觀察值與負擔。  
 **停止線：** 任一批看過保留題、題目修訂、遮蔽失敗、時間異常或資料缺漏，該批標為失效，不用敘事補救。
 
-### 4｜必要外部證據：R1a 獨立內容審題
+### 4｜先完成 learner-facing 題型／名型 practice scope
 
-**原因：** 題庫、答案與自動測試共享定義，不能自行證明內容效度。  
+**原因：** 正式外部審查與 frozen-candidate usability 應支持接近發布候選的內容集合；若仍持續新增大量題型，過早收證據會造成 reviewer/candidate 版本很快失效，並增加重審與重測成本。
+**動作：** 先完成目前名型館 catalog 中具有獨立棋形／手筋 identity 的 planned practice family，依「來源 → geometry/mechanism → rules/scoring contract → negative oracle → practice」逐一升格。分類層 entry 可保留 reference-only；ruleset-sensitive／多分支 family 需先建立相稱 bounded contract，不用固定答案硬補。
+**完成條件：** planned practice family 已全部成為可玩 bounded practice，或被明確標記為 BLOCKED 並有不能安全生題的具體理由；learner-facing 題型不再處於高頻新增期。
+**停止線：** 任一 family 缺幾何、規則或分支 oracle 時保持 catalog-only／BLOCKED，不以名稱存在或 LLM 敘事替代。
+
+### 4a｜最後內容凍結後：R1a 獨立內容審題
+
+**原因：** 題庫、答案與自動測試共享定義，不能自行證明內容效度；但外部審查應在 planned learner-facing 題型完成後進行，避免同一輪持續加題造成回條立即過期。  
 **動作：** 由未參與編題、且不是目前學習者的圍棋審查者填寫 77 題 reviewer-only 回條；每題必須有一致／需修／歧義／多解狀態。學習者介面不得連到審題頁。  
 **通過條件：** 審查母體均有獨立狀態，歧義與多解題不作正式候選。通過只記為單一外部內容審查證據。  
 **停止線：** 若答案或技能邊界被推翻，升題目／技能版本，保留歷史資料，不回溯升格任何 pilot 資料。
@@ -63,9 +70,9 @@
 **現況：** 基線與追蹤只在棋串大小、氣數、讀棋深度、分支與作答方式等可觀察特徵上配對；實際難度未校準。  
 **規則：** R1a 通過不得自動使 R1b 通過。沒有多批真人資料時，只能輸出「結構已配對、難度可比性未知」。
 
-### 4c｜正式教學前最後閘門：凍結 candidate 後做三位初學者 usability
+### 4c｜正式教學前最後閘門：全部 planned 題型完成後重新凍結 candidate，再做三位初學者 usability
 
-**進入條件：** learner-facing 核心流程已相對收斂，準備解除 `TEACHING_GATE`；先凍結同一個 candidate 的 UI version、content version、critical tasks 與 pass/fail criteria。  
+**進入條件：** 第 4 步 planned learner-facing 題型／名型 practice scope 已完成或明確 BLOCKED，且 R1a 所需內容版本已固定；此時重新產生正式 candidate fingerprint，凍結同一個 candidate 的 UI version、content version、critical tasks 與 pass/fail criteria。現有 candidate manifest 只作工程 guard，不代表現在已適合開始正式真人收證。  
 **動作：** 依 `TEACHING_GATE.md` 由至少三位唯一 target novice 各自完成五項關鍵任務，另做真人鍵盤／螢幕閱讀器 spot check。  
 **證據規則：** 開發期間的 formative observation 不得補進這三位正式分母。若正式觀察後因 blocking issue 修改了會影響 critical task 的 learner-facing 行為，受影響的正式觀察需在新 candidate 重做；不得把修改前後版本靜默合併。  
 **通過條件：** `teaching-gate-verify.cjs` 在同一 candidate 的 R1a 與真人證據上回傳正式教學 `PASS`；這仍不代表正式評量或學習成效。
@@ -187,3 +194,12 @@
 ## 2026-09-27 Decision note｜R1a receipt 必須綁 reviewer-visible semantics
 
 第 4 步 R1a 的 content fingerprint 已升 v5。審查身份不只取決於答案與棋盤；`prompt`／`focus`、family／skill identity 也屬於審查者所判斷的內容語義。任何這些欄位改動都必須使舊 receipt 失效並重新審查；不得只靠未 bump 的 contentVersion 延續舊證據。blinded bank 繼續不載入答案／goal／scoring identity，以維持 answer-blind 邊界。
+
+
+## 2026-09-27 Decision note｜外部審查與正式 usability 延後到 planned 題型完成後
+
+- **最新順序：** evidence-integrity 問題仍隨時優先；開發期 formative observation 可持續；但 R1a 外部審查、frozen-candidate 三位 target novice usability 與真人 accessibility spot check，全部延後到 learner-facing planned 題型／名型 practice scope 完成後。
+- **理由：** 現在仍在把 catalog-only 名型逐一升為 bounded practice。若此時先收正式外部／真人證據，後續新增題型會讓內容版本與 candidate 快速失效，產生不必要的重審／重測。
+- **完成 scope：** 以名型館 catalog 中具有獨立棋形／手筋 identity 的 planned family 為工作清單；分類性 reference entry 不強制生題。每個 family 必須可玩，或留下明確 BLOCKED 原因。ruleset-sensitive 與複雜多分支題型不能用固定答案偷渡完成。
+- **凍結時點：** scope 完成後重新 freeze 最終 candidate，再執行 R1a、三位初學者與 accessibility。既有 candidate fingerprint 仍可作 CI evidence-integrity guard，但不作「現在可以正式收真人證據」的授權。
+- **證據邊界：** 此排序只降低版本污染與重工；不降低 R1a／usability／accessibility 的正式 gate 要求。
