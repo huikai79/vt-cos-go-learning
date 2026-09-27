@@ -877,16 +877,16 @@ async function main() {
     assert.equal(ontologyCatalogState.carpenterTitle, "一合マス／Carpenter's Square");
     assert.match(ontologyCatalogState.carpenterStatus, /尚未判定臺灣繁中首選名稱/);
     assert.match(ontologyCatalogState.carpenterAmbiguity, /小曲尺/);
-    assert.match(ontologyCatalogState.lGroupAmbiguity, /geometry-first retrieval/);
-    assert.match(ontologyCatalogState.lGroupTaxonomy, /badukworld-life-death-proverbs/);
-    assert.match(ontologyCatalogState.lGroupGeometryRelation, /related_unresolved/);
-    assert.match(ontologyCatalogState.carpenterGeometryEvidence, /diagram_requires_extraction/);
-    assert.match(ontologyCatalogState.carpenterGeometryEvidence, /rights=unknown/);
-    assert.match(ontologyCatalogState.carpenterGeometryEvidence, /public=blocked_pending_rights_and_extraction/);
-    assert.match(ontologyCatalogState.lGroupGeometryEvidence, /text_only_geometry_unavailable/);
-    assert.match(ontologyCatalogState.lGroupGeometryEvidence, /rights=unknown/);
+    assert.match(ontologyCatalogState.lGroupAmbiguity, /名稱可能指不同棋形/);
+    assert.match(ontologyCatalogState.lGroupTaxonomy, /分類資料.*內部分類關係/);
+    assert.match(ontologyCatalogState.lGroupGeometryRelation, /相關棋形關係仍在整理/);
+    assert.match(ontologyCatalogState.carpenterGeometryEvidence, /棋形核對/);
+    assert.doesNotMatch(ontologyCatalogState.carpenterGeometryEvidence, /rights=|public=/);
+    assert.match(ontologyCatalogState.carpenterGeometryEvidence, /詳細依據請看下方來源|還沒有足夠資料/);
+    assert.match(ontologyCatalogState.lGroupGeometryEvidence, /棋形核對/);
+    assert.doesNotMatch(ontologyCatalogState.lGroupGeometryEvidence, /rights=|public=/);
     assert.match(ontologyCatalogState.smallPigWarning, /Tripod Group/);
-    assert.match(ontologyCatalogState.bentWarning, /ruleset behavior/);
+    assert.match(ontologyCatalogState.bentWarning, /不同規則下可能出現不同結果/);
     assert.equal(ontologyCatalogState.ontologyMeta, true);
 
     const bentThreeState = await evaluate(socket, `(() => ({
