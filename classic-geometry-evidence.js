@@ -95,6 +95,17 @@
       context:Object.freeze({boardContext:"center",boundary:[],role:"shape",toPlay:"unspecified"})
     }),
     Object.freeze({
+      id:"rectangular-six-contract-geometry-v1",
+      conceptId:"rectangular-six-v1",
+      sourceType:"internal_contract",
+      sourceId:"classic-rectangular-six-miai-v1",
+      evidenceStatus:EVIDENCE_STATUS.GEOMETRY_VERIFIED_FROM_CONTRACT,
+      licenseStatus:Extraction.LICENSE_STATUS.PROJECT_GENERATED,
+      publicGeometryPromotion:"eligible_internal_contract",
+      points:Object.freeze([[0,0],[1,0],[2,0],[0,1],[1,1],[2,1]]),
+      context:Object.freeze({boardContext:"center",boundary:[],role:"sealed-eye-space",toPlay:"unspecified"})
+    }),
+    Object.freeze({
       id:"flower-six-contract-geometry-v1",
       conceptId:"flower-six-v1",
       sourceType:"internal_contract",
