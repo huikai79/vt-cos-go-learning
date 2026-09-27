@@ -81,6 +81,7 @@ test("target color 的最近角部連通塊可轉成 reference-only observation"
   assert.deepEqual(result.observation.points.sort(),[[0,0],[1,0],[2,0],[2,1]].sort());
   assert.deepEqual(result.observation.context.boundary,["top","left"]);
   assert.equal(result.metadata.sourceDigest.startsWith("sha256:"),true);
+  assert.equal(result.metadata.comparisonContractId,"corner-defender-connected-group-v1");
 });
 
 test("角部 group selector 同距同大小時必須拒絕猜測", () => {
