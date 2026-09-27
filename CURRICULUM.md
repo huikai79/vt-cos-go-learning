@@ -47,7 +47,7 @@
 | 讀棋與手筋 | 征子前檢查引征、枷、倒撲、對殺 | 候選、條件、反例與次序的概念判斷 | 已具段位讀棋、能正確讀完任意實戰分支 |
 | 中盤攻防 | 打入／侵消、輕重／手抜き | 把退路、厚弱、救棋成本加入候選比較 | 已能判定全局最佳打入、棄子一定正確 |
 | 官子與全局判斷 | 先手／後手／逆先手、形勢判斷 | 分開點數、行棋權、確定實地與未定風險 | 已能精確數目或形成可靠勝率判斷 |
-| 完整棋局與複盤 | planned | 未來承接 19 路實戰、SGF 轉折重建 | 現階段尚未實作成本站正式進階 Experience |
+| 完整棋局與複盤 | 19×19 全盤 practice | 已可從進階頁進入標準全盤，自由對局、Pass／終局確認、SGF 匯入／匯出 | 19×19 勝負不作棋力／T3；本站深度 SGF 轉折重建仍未實作 |
 
 choice-based Experience 仍保留 first response、hint、retry 與 completed event；v6 的棋盤 Response 把倒撲、枷、對殺、征子各保留兩個 practice-only variant，共 8 題，並以 `advanced-fixed-interleave-v1` 固定分兩輪呈現：四個 seed 全部完成後才進四個 variant。第二 variant 至少改一個非單純旋轉的條件：倒撲改回提數與局部棋串、枷改出口幾何、對殺交換 learner 棋色、征子改棋盤大小／路線長度／終點。每題以 `familyId`／`variantId`／`variationAxes` 明示 family 假說，再由 `advanced-sequence-contract.js` 重播 canonical line 與必要 branch。固定交錯只降低相鄰記憶 cue，不是 adaptive scheduler；所有進階 Experience 仍為 `advanced_practice_only`，不進 KC、scheduler、T2／T3 或 formal evaluation；兩題同 family 也不表示難度已可比或已證明 transfer。
 
