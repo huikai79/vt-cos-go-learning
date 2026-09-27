@@ -64,5 +64,13 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 
 - 新增 `r1-review-start.html` 作為外部 reviewer 的唯一建議起點；頁面明示 v5 protocol、`fnv1a32-c34ef6a4`、77 題母體、answer-blind 條件與異議停止線。
 - handoff 不載入題庫答案／scoring modules，只連到去答案的 `r1-review.html`；CI 會檢查 handoff protocol/fingerprint 必須與 verifier 同步。
-- `formal-teaching-evidence.example.json` 已改綁 current candidate `formal-teaching-candidate-2026-09-28-a` / `fnv1a32-js16-2d1aa93b`，避免未來真人證據從模板開始就失效。
+- `formal-teaching-evidence.example.json` 會綁定當前 frozen candidate；若 critical learner surface 改變，candidate 必須重新凍結，舊真人證據不得跨 candidate 沿用。
 - 此 change 只代表 **READY_FOR_EXTERNAL_REVIEW**；目前仍沒有真人 R1a receipt，因此 `r1aExternalContentReview` 仍是 `awaiting_external_receipt`，正式教學仍 `BLOCKED`。
+
+
+## 2026-09-28 Change note｜16～20 歲 learner-facing 語言清理後重新凍結 candidate
+
+- **變更：** Core learner-facing 文案完成一輪白話化，`index.html`、`learner-progress.js` 與 `app.js` 因此發生 critical surface 變更；底層 scoring、scheduler、event schema、evidence taxonomy 與正式評量語義未改。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-b`，fingerprint 為 `fnv1a32-js16-5adc703c`。
+- **理由：** formal usability candidate fingerprint 會把五項 critical tasks 依賴的 learner-facing surface 一起凍結。即使只是前台語言改善，只要這些 critical assets 改變，就不能沿用舊 candidate 指紋。
+- **證據邊界：** 目前仍沒有正式三位 target novice usability evidence 或真人 accessibility spot check，因此沒有既有正式真人證據可遷移；正式教學狀態仍為 `BLOCKED`，正式評量仍為 `BLOCKED`，學習成效仍為 `NOT_MEASURED`。
