@@ -216,3 +216,4 @@
 - **Contract：** `classic-pyramid-four-vital-point-v1` 只接受 T tetromino canonical signature；答案由唯一 degree-3 center 推導，item 禁止保存 `vitalPoint`、`answer`、`correctMove`。
 - **反證：** 直四 geometry、偷偷塞 vitalPoint、位移後沿用 seed coordinate 都必須 fail。
 - **證據邊界：** 只支持丁四 bounded first-move Experience 的工程／geometry contract；完整 reduction sequence、內容效度、mastery、retention／transfer、formal evaluation 與 learning effect 均未建立。
+- **Validation：** PR #30 initial verify run #450 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式 teaching gate 仍為 BLOCKED。
