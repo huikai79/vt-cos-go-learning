@@ -6,6 +6,12 @@ const Go = require("../go.js");
 const Live = require("../live-game.js");
 const Bot = require("../practice-bot.js");
 const PracticeEvents = require("../practice-events.js");
+const LiveEvidence = require("../live-evidence.js");
+
+function memoryStorage() {
+  const data = new Map();
+  return { getItem: (key) => data.has(key) ? data.get(key) : null, setItem: (key, value) => data.set(key, String(value)) };
+}
 
 function playOk(game, x, y) {
   const result = Live.play(game, x, y);
@@ -186,7 +192,6 @@ test("19 路 practice 使用標準棋盤邊界、貼目與 SGF round-trip", () =
 });
 
 test("19 路只進 practice event，不會被既有 9 路 live T3 contract 接受", () => {
-  const PracticeEvents = require("../practice-events.js");
   const storage = memoryStorage();
   const appended = PracticeEvents.append(storage, {
     eventId: "p19", sessionId: "s19", type: "move", occurredAt: "2026-09-28T00:00:00.000Z",
