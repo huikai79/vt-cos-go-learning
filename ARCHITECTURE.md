@@ -31,7 +31,7 @@
 - **AI 分析**：後期以本機 KataGo 處理實戰複盤。候選、勝率、目數及地盤歸屬是搜尋估計；規則合法性由規則引擎判定。LLM 如加入，依核對過的局面資料解說，與固定模板比較效益，不推定心理根因。
 - **VT-COS**：承接使用者主動匯出的反思筆記，不把答題原始事件自動寫進治理知識庫。
 
-詳細計數與延後驗收依 [DESIGN_PLAN.md](DESIGN_PLAN.md) 第 1 節；[研究查核](RESEARCH_LEARNING_METRICS.md)區分文獻支持與設計假設。AI 只標異常線索，錯誤原因允許未知；實戰機會須同時記錄正確與錯誤決策。現版對一手提子、直接連接、直三做活／破眼及第二眼補／破共六個技能實作事件：呈現、提示、首答與重試、離題結果、首次曝光、題目／技能／事件政策版本、任務特徵與可比較機會；驗收效度仍待外部內容審查與真人資料。
+進階 multi-step practice 另有獨立 evidence stream：`advanced-sequence-events-v3` 保存 family／variant、首答／retry、`presentationPolicyVersion` 與固定 policy position；`advanced-sequence-policy.js` 只實作 `advanced-fixed-interleave-v1` 的 deterministic baseline（四個 seed → 四個 variant），不讀 learner model、不寫核心 scheduler。v1／v2 sequence storage 只由 legacy reader 解讀原語義，不遷移成 v3。這個 runtime 分離避免把 practice interleaving 偷換成 Core adaptive sequencing 或 formal evaluation。\n\n詳細計數與延後驗收依 [DESIGN_PLAN.md](DESIGN_PLAN.md) 第 1 節；[研究查核](RESEARCH_LEARNING_METRICS.md)區分文獻支持與設計假設。AI 只標異常線索，錯誤原因允許未知；實戰機會須同時記錄正確與錯誤決策。現版對一手提子、直接連接、直三做活／破眼及第二眼補／破共六個技能實作事件：呈現、提示、首答與重試、離題結果、首次曝光、題目／技能／事件政策版本、任務特徵與可比較機會；驗收效度仍待外部內容審查與真人資料。
 
 ## Authority Boundary
 
