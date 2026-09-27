@@ -52,7 +52,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
   assert.match(html, /曲三、丁四、刀把五、梅花五與花六有 bounded vital-point practice/);
-  assert.match(html, /方四／直四另用 rules-backed status proof/);
+  assert.match(html, /方四／直四／曲四另用 rules-backed status proof/);
   assert.match(html, /金雞獨立走 rules-backed tesuji mechanism contract/);
   assert.match(html, /名稱仍在作答後才揭示|名稱放到第一手之後/);
   assert.match(js, /直三/);
@@ -890,7 +890,7 @@ test("方四／直四 ontology 與 geometry evidence 對齊 status proof", () =>
   assert.equal(straightEntry.practiceStatus,"playable_rules_backed_status_proof_contract");
   assert.ok(squareEntry.geometryEvidence.some((item)=>item.id==="square-four-contract-geometry-v1"));
   assert.ok(straightEntry.geometryEvidence.some((item)=>item.id==="straight-four-contract-geometry-v1"));
-  assert.match(html,/方四 vs 直四：不是每個眼形都有「唯一急所」/);
+  assert.match(html,/方四 vs 直四 vs 曲四：不是每個眼形都有「唯一急所」/);
   assert.match(html,/classic-four-space-status-contract\.js\?v=classic-four-space-status-v1/);
   assert.match(js,/GoFourSpaceStatusContract/);
 });
