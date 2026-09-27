@@ -616,3 +616,11 @@ PR #35 verify run #473 全數 PASS：Node contracts、JavaScript syntax、determ
 - **部署驗證：** 新增 `.github/workflows/pages-smoke.yml`。Pages deployment 成功後，對 manifest 的正式 Pages URL 讀取 `index.html` 與 `history.html`，以 cache-bust＋retry 驗 History v3、72 因果修正、來源查核日期與 Advanced CTA。此 gate 只驗 served artifact，不升格為 usability、內容效度或學習成效。
 - **Candidate boundary：** `history.html`／`history.css`／release workflow 不在 formal candidate critical asset set，首頁 learner-facing critical assets 未變，因此 candidate `formal-teaching-candidate-2026-09-27-b` 不重凍結。
 - **未知區保留：** 外部歷史專業審查與真人鍵盤／螢幕閱讀器 accessibility 仍為 NOT_REVIEWED／NOT_TESTED；新增自動檢查不替代真人證據。
+
+
+### 2026-09-27 Correction｜post-deploy trigger implementation
+
+- 初版 v3 嘗試用獨立 `workflow_run` 監聽 GitHub 動態 `pages build and deployment`。實際 main deployment #380 成功後沒有觸發該 workflow，因此此路徑判定 **FAIL**，不能把「workflow 檔存在」當作 served-content gate 已成立。
+- 修正：刪除獨立 `pages-smoke.yml`，把 `served-pages-content` job 併入既有 `verify.yml`；只在 `main push` 執行，且需等 Node／Sabaki／Windows UI jobs 成功後再輪詢正式 Pages URL。
+- gate 最多 12 次、每 10 秒重試，使用 cache-bust query，驗首頁 History 入口與 History v3／72 修正／來源日期／Advanced CTA。
+- 此修正只建立 deploy artifact → served content 的工程證據鏈；若公開 URL 因外部網路或 DNS 長期不可達，job 必須 FAIL，不得自動降級為成功。
