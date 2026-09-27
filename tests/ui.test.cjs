@@ -998,7 +998,7 @@ async function main() {
     })()`);
     assert.match(straightFourCorrect.feedback, /直四是無條件活形|仍有回應/);
     assert.equal(straightFourCorrect.name, "直四／Straight Four");
-    assert.match(straightFourCorrect.proof, /兩個分離眼點/);
+    assert.match(straightFourCorrect.proof, /兩個分開的眼/);
     assert.equal(straightFourCorrect.nextDisabled, false);
 
     const curvedFourState = await evaluate(socket, `(() => {
