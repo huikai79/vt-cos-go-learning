@@ -275,6 +275,19 @@ test("practice event stream 只把人類人機操作計入可觀察決策，且�
   assert.equal(summary.formalEligible, false);
 });
 
+test("practice event v1 保留 legacy reader，不把舊 5／7／9 路事件改寫成 v2", () => {
+  const values = new Map();
+  const legacy = {
+    schemaVersion: 1, eventStreamVersion: "live-practice-events-v1",
+    events: [{ schemaVersion:1,eventStreamVersion:"live-practice-events-v1",eventId:"old",sessionId:"s",type:"move",occurredAt:"2026-09-22T00:00:00.000Z",boardSize:9,formalEligible:false,qualifiedOpportunity:false }]
+  };
+  values.set(PracticeEvents.LEGACY_STORAGE_KEY, JSON.stringify(legacy));
+  const result = PracticeEvents.readLegacy({ getItem: (key) => values.get(key) || null });
+  assert.equal(result.ok, true);
+  assert.equal(result.store.schemaVersion, 1);
+  assert.equal(result.store.events[0].boardSize, 9);
+});
+
 test("損壞的 practice event store 保持失敗，不回退成空白成功", () => {
   const storage = { getItem: () => "{broken", setItem() {} };
   const result = PracticeEvents.read(storage);
