@@ -558,7 +558,7 @@
     if (validation.shapeKind==="square-four") {
       return "proof：守方四種第一手全部留下曲三；每一支都有合法的攻方彎點回應。因此在本 contract 的 sealed eye-space 前提下仍死。";
     }
-    return "proof：攻方四種第一手逐一檢查後，守方每一支都至少有一手回應，使剩餘兩個眼點互不相鄰。因此在本 contract 的 sealed eye-space 前提下仍活。";
+    return "proof：攻方四種第一手逐一檢查後，守方每一支都至少有一手回應，使剩餘兩個分離眼點互不相鄰。因此在本 contract 的 sealed eye-space 前提下仍活。";
   }
 
   function renderFourStatus() {
