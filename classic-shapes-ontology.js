@@ -444,7 +444,50 @@
     return true;
   }
 
+  const conceptIds = new Set(concepts.map((concept) => concept.id));
+
+  function validSourceIds(ids) {
+    return Array.isArray(ids) && ids.every((id) => Boolean(sources[id]));
+  }
+
+  function validateAmbiguity(item) {
+    return item && item.id && item.locale && item.name
+      && Object.values(AMBIGUITY_STATUS).includes(item.status)
+      && Object.values(AMBIGUITY_STATUS).includes(item.resolutionRequirement)
+      && Array.isArray(item.candidateConceptIds) && item.candidateConceptIds.length >= 2
+      && item.candidateConceptIds.every((id) => conceptIds.has(id))
+      && Object.values(REVIEW).includes(item.reviewStatus)
+      && validSourceIds(item.sourceIds);
+  }
+
+  function validateNameRelation(item) {
+    return item && item.id && item.subject && item.object && item.relation
+      && conceptIds.has(item.subject.conceptId) && conceptIds.has(item.object.conceptId)
+      && Object.values(REVIEW).includes(item.reviewStatus)
+      && validSourceIds(item.sourceIds);
+  }
+
+  function validateTaxonomyRelation(item) {
+    return item && item.id && item.taxonomyId
+      && conceptIds.has(item.subjectConceptId) && conceptIds.has(item.objectConceptId)
+      && Object.values(TAXONOMY_RELATION).includes(item.relation)
+      && Object.values(REVIEW).includes(item.reviewStatus)
+      && validSourceIds(item.sourceIds);
+  }
+
+  function validateGeometryRelation(item) {
+    return item && item.id
+      && conceptIds.has(item.subjectConceptId) && conceptIds.has(item.objectConceptId)
+      && Object.values(GEOMETRY_RELATION).includes(item.relation)
+      && Object.values(REVIEW).includes(item.reviewStatus)
+      && validSourceIds(item.sourceIds);
+  }
+
   if (!concepts.every(validateConcept)) throw new Error("Invalid classic-shape ontology concept.");
+  if (!nameAmbiguities.every(validateAmbiguity)) throw new Error("Invalid classic-shape name ambiguity.");
+  if (!nameRelations.every(validateNameRelation)) throw new Error("Invalid classic-shape name relation.");
+  if (!taxonomyRelations.every(validateTaxonomyRelation)) throw new Error("Invalid classic-shape taxonomy relation.");
+  if (!geometryRelations.every(validateGeometryRelation)) throw new Error("Invalid classic-shape geometry relation.");
 
   return Object.freeze({
     version:"classic-shape-ontology-v3",
@@ -464,6 +507,10 @@
     taxonomyRelations,
     geometryRelations,
     validateName,
-    validateConcept
+    validateConcept,
+    validateAmbiguity,
+    validateNameRelation,
+    validateTaxonomyRelation,
+    validateGeometryRelation
   });
 });
