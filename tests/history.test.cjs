@@ -55,7 +55,7 @@ test("巡將圍棋、關羽刮骨與原爆棋都有 claim-near source", () => {
 
 
 test("17→19 路與七十二的敘述不把數字巧合升格為改盤因果", () => {
-  assert.match(html, /棋局縱橫，各十七道|棋局縱橫各十七道/);
+  assert.match(html, /傳世注疏保存「棋局縱橫各十七道」的 17 路記載/);
   assert.match(html, /19² − 17² = 72.*今天做的算術比較/s);
   assert.match(html, /古籍的「七十二」指 19 路棋盤的外周交叉點數/);
   assert.match(html, /兩個 72 不能當成同一條歷史因果證據/);
