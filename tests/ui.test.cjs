@@ -817,7 +817,7 @@ async function main() {
     assert.match(classicLayout.operation, /單題落子練習/);
     assert.match(classicLayout.operation, /點|空點/);
     assert.match(classicLayout.intro, /直三專用/);
-    assert.match(classicLayout.intro, /下面四格只屬於直三/);
+    assert.match(classicLayout.intro, /下面四格只用來練直三/);
     assert.deepEqual(classicLayout.stages, [
       "1 直三 · 找急所",
       "2 直三 · 換方向",
