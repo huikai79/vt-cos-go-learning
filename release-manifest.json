@@ -80,6 +80,8 @@
     "classic-shape-read.js",
     "classic-shape-reduction-contract.js",
     "classic-shape-reduction.js",
+    "classic-tripod-contract.js",
+    "classic-tripod-practice.js",
     "classic-shapes-catalog.js",
     "classic-shapes.css",
     "classic-shapes.html",
