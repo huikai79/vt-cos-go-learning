@@ -283,3 +283,4 @@
 - **反證：** 直三 geometry 必須 fail、偷塞答案 fail、位移後使用 seed 座標判錯。
 - **Variation axes：** attack/defense、black/white、rotation、position shift；表面座標改變後仍須依 geometry 找彎點。
 - **證據邊界：** 只支持 bounded first-move geometry contract。完整 sequence、內容效度、真人 usability、retention／transfer、formal evaluation 與 learning effect 均未建立。
+- **Validation：** PR #43 verify run #499 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
