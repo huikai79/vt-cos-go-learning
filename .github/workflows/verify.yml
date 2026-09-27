@@ -159,6 +159,16 @@ jobs:
                 '本頁來源最後查核：2026-09-27',
                 'href="advanced.html">回進階訓練</a>'
               ]
+            },
+            {
+              name: "r1-review-start",
+              url: new URL(`r1-review-start.html?deploy=${deploySha}`, base),
+              checks: [
+                'go-r1-independent-content-review-v5',
+                'fnv1a32-c34ef6a4',
+                'href="r1-review.html"',
+                '不要瀏覽本專案 repository'
+              ]
             }
           ];
 
