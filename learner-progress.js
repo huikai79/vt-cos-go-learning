@@ -41,23 +41,23 @@
 
   function nextEvidenceNeed(state) {
     if (state === "delayed_t2_and_live_observed") return "繼續用新的可比較機會觀察是否維持；不因目前狀態停止學習。";
-    if (state === "delayed_t2_observed_live_pending") return "等待新的合格 9×9 live 機會；沒有機會不算退步。";
-    if (state === "live_observed_t2_pending") return "需要不同棋形、延後且無提示的 T2 才能補足保留證據。";
-    if (state === "needs_more_practice_evidence") return "先保留錯誤與 live 未完成紀錄，再以新題／新局取得可比較機會。";
-    if (state === "mixed_live_evidence" || state === "accumulating_live_evidence") return "需要更多預先合格的 live 機會；不依單局勝負判定。";
-    if (state === "practice_evidence_only") return "目前只有練習證據；等待延後 T2 或合格 live 機會。";
-    return "目前資料不足；先收集可比較首答、延後新題或合格 live 機會。";
+    if (state === "delayed_t2_observed_live_pending") return "等待新的 9×9 實戰機會；暫時沒有機會不算退步。";
+    if (state === "live_observed_t2_pending") return "還需要隔一段時間，用不同棋形、沒有提示地再做一次。";
+    if (state === "needs_more_practice_evidence") return "先保留目前的錯誤與未完成紀錄，再用新題或新棋局繼續觀察。";
+    if (state === "mixed_live_evidence" || state === "accumulating_live_evidence") return "還需要更多符合條件的實戰機會；不會只看一盤勝負就下結論。";
+    if (state === "practice_evidence_only") return "目前只有練習紀錄；還需要延後複習或新的實戰機會。";
+    return "目前資料還不夠；先累積第一次作答、延後新題與實戰紀錄。";
   }
 
   function label(state) {
     const labels = {
       insufficient_evidence: "資料不足",
       needs_more_practice_evidence: "仍需更多可比較練習／實戰證據",
-      delayed_t2_and_live_observed: "已觀察到延後 T2 與 live 應用",
-      delayed_t2_observed_live_pending: "已觀察到延後 T2；live 待機會",
-      live_observed_t2_pending: "已觀察到 live 應用；延後 T2 待驗",
-      mixed_live_evidence: "live 證據混合",
-      accumulating_live_evidence: "live 證據累積中",
+      delayed_t2_and_live_observed: "延後複習與實戰都有紀錄",
+      delayed_t2_observed_live_pending: "延後複習已有紀錄；實戰待觀察",
+      live_observed_t2_pending: "實戰已有紀錄；延後複習待觀察",
+      mixed_live_evidence: "實戰表現不一致",
+      accumulating_live_evidence: "實戰紀錄累積中",
       practice_evidence_only: "目前只有練習證據"
     };
     return labels[state] || state;
@@ -99,7 +99,7 @@
       firstResponses,
       unansweredOpportunities,
       distinctSessionsWithFirstResponse,
-      interpretationBoundary: "這只是資料收集 readiness，不是樣本量充分性、mastery、棋力或學習成效判定；沒有 eligible 機會不表示退步。"
+      interpretationBoundary: "這只表示目前收集到多少可比較資料，不代表樣本已足夠，也不是熟練程度、棋力或學習成效判定；沒有符合條件的機會不表示退步。"
     };
   }
 
@@ -133,7 +133,7 @@
       schemaVersion: 1,
       progressPolicyVersion: POLICY_VERSION,
       generatedAt: new Date().toISOString(),
-      interpretationBoundary: "這是證據狀態彙總，不是校準後 mastery、棋力或學習成效分數。T0–T2 練習／延後證據與 live T3 分開保存後才並列；單局勝負、bot 強度與不合格回合不改變技能狀態。",
+      interpretationBoundary: "這只是把課程練習、延後複習與實戰紀錄放在一起查看，不是熟練程度、棋力或學習成效分數。單局勝負、電腦強度與不符合條件的回合都不會直接改變能力紀錄。",
       schedulerAuthority: false,
       formalEvaluationAuthority: false,
       collectionReadiness: collectionReadiness(live),
