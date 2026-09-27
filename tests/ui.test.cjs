@@ -932,6 +932,45 @@ async function main() {
     assert.equal(goldenChickenCorrect.name, "金雞獨立");
     assert.equal(goldenChickenCorrect.nextDisabled, false);
 
+    const bigPigsMouthState = await evaluate(socket, `(() => ({
+      points: document.querySelectorAll('#big-pigs-mouth-board [data-big-pig-x][data-big-pig-y]').length,
+      prompt: document.querySelector('#big-pigs-mouth-prompt').textContent,
+      revealHidden: document.querySelector('#big-pigs-mouth-reveal').hidden,
+      nextDisabled: document.querySelector('#big-pigs-mouth-next').disabled
+    }))()`);
+    assert.equal(bigPigsMouthState.points, 81);
+    assert.match(bigPigsMouthState.prompt, /輪到白棋/);
+    assert.equal(bigPigsMouthState.revealHidden, true);
+    assert.equal(bigPigsMouthState.nextDisabled, true);
+
+    const bigPigsMouthWrong = await evaluate(socket, `(() => {
+      const point = document.querySelector('#big-pigs-mouth-board [data-big-pig-x="18"][data-big-pig-y="18"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#big-pigs-mouth-feedback').textContent,
+        revealHidden: document.querySelector('#big-pigs-mouth-reveal').hidden,
+        nextDisabled: document.querySelector('#big-pigs-mouth-next').disabled
+      };
+    })()`);
+    assert.match(bigPigsMouthWrong.feedback, /不是 upstream regression/);
+    assert.equal(bigPigsMouthWrong.revealHidden, true);
+    assert.equal(bigPigsMouthWrong.nextDisabled, true);
+
+    const bigPigsMouthCorrect = await evaluate(socket, `(() => {
+      const point = document.querySelector('#big-pigs-mouth-board [data-big-pig-x="16"][data-big-pig-y="18"]');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {
+        feedback: document.querySelector('#big-pigs-mouth-feedback').textContent,
+        revealHidden: document.querySelector('#big-pigs-mouth-reveal').hidden,
+        name: document.querySelector('#big-pigs-mouth-name').textContent,
+        nextDisabled: document.querySelector('#big-pigs-mouth-next').disabled
+      };
+    })()`);
+    assert.match(bigPigsMouthCorrect.feedback, /MIT regression/);
+    assert.equal(bigPigsMouthCorrect.revealHidden, false);
+    assert.equal(bigPigsMouthCorrect.name, "大豬嘴／J Group");
+    assert.equal(bigPigsMouthCorrect.nextDisabled, false);
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {

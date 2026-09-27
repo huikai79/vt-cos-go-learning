@@ -197,3 +197,13 @@
 - **實作契約：** `classic-golden-chicken-mechanism-v1` 使用專案原創 7×7 setup，由 `go.js` 重算上述五個條件；practice variant 只保存 rotation／color-swap，不保存答案或 setup 副本。wrong geometry、wrong legal move 與旋轉後沿用舊座標都必須 fail。
 - **證據邊界：** 這只支持一個 bounded tesuji Experience 的工程／規則契約。外部來源支持名稱與 double-shortage mechanism，不證明本站棋形是唯一標準形，不建立完整死活答案樹、KC、mastery、transfer、T2/T3、formal evaluation 或 learning effect。
 - **Validation：** PR #28 initial verify run #445 全數 PASS，包含 Windows file-URL UI、Edge smoke 與 repository boundary；正式教學 gate 仍為 BLOCKED。
+
+
+## 2026-09-27 Decision note｜大豬嘴只先升格 exact source-case，不把 J Group 寫成單一答案
+
+- **來源分工：** Go4Go／華語術語表與《圍棋死活一月通》書目支持「大豬嘴 ↔ J Group」的名稱／family 關係；中文教學資料支持「大豬嘴，扳點死」是經典角部死活機制。另有 MIT `bood/go-test` regression 把 `大猪嘴.sgf` 標成 `j_group_live2`，並在 `loadsgf ... 52` 前要求白棋走 R1。
+- **Authority boundary：** 前兩類來源不提供本專案可直接 shipping 的完整標準 geometry；MIT regression 則只提供一個 exact position 的 executable oracle。因此本輪 canonical identity 是該 19×19 source position，不是「J Group 的標準圖」。
+- **實作：** `classic-big-pigs-mouth-source-case-v1` 保存 reconstructed exact board state、expected R1 與三個旋轉等價；UI 只裁角部 viewport。item 不保存 setup／answer，評分由 contract 重新 materialize。
+- **反證：** 少一顆 source stone、合法但非 expected move、旋轉後沿用原 R1、item 偷塞 answer 都 fail closed。
+- **授權：** 上游為 MIT；`THIRD_PARTY_NOTICES.md` 保存 repository、commit、使用檔案、copyright 與 license。這和先前 GNU Go Tripod 的 GPL／public-domain 不明案例不同。
+- **停止線：** 此 PASS 不能推出「R1 是所有大豬嘴答案」、不能證明標準 family geometry、不能證明完整扳→點→立→撲 branch，也不產生 KC、mastery、transfer、formal evaluation 或 learning effect。

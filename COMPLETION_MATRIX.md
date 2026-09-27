@@ -31,7 +31,7 @@
 | Core 後續進階訓練 v5 | 獨立 `advanced.html`；不是第 16 單元。保留 8 個 choice-based practice Experience；棋盤 Response 由 4 個 seed 擴成 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
 | 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
-| 世界死活名型館 v9 | `classic-shapes.html` 保留直三、刀把五、梅花五／Cross Five、花六／Rabbity Six，新增金雞獨立 rules-backed tesuji practice。金雞獨立的 7×7 setup 為專案原創，不複製外部題圖；`classic-golden-chicken-mechanism-v1` 驗「原串一氣 → 邊線立後兩氣 → 對手兩側皆不入 → 己方任一側可提兩子」，四個 variant 涵蓋換色與旋轉。Tripod Group 曾評估 GNU Go regression 作 oracle，但因 repository 預設 GPLv3、相關 SGF public-domain 身分未能辨明，本輪不 ship 該局面，仍維持 catalog-only。盤角曲四、斗方、Long L、大／小豬嘴、葡萄六等依各自 ruleset／variation／geometry gate 保持 reference | `classic-shapes.test.cjs`、Go rules mechanism oracle、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語 provenance | 條件通過僅限已建立的 bounded contracts。金雞獨立是 tesuji mechanism，不與 nakade geometry 共用 scoring；wrong geometry、wrong answer、surface-coordinate memorization 均有反證。正式教學仍 BLOCKED；內容效度、完整死活答案樹、formal assessment、retention／transfer 與 learning effect 均未由此建立 |
+| 世界死活名型館 v10 | `classic-shapes.html` 保留直三、刀把五、梅花五／Cross Five、花六／Rabbity Six、金雞獨立，新增大豬嘴／J Group exact source-case first-move practice。大豬嘴不是手寫「標準答案」：來源分成名稱／family provenance 與 executable source oracle；MIT `bood/go-test` 的 `j_group_live2` case 在第 52 手前輪白走時 expected move 為 R1，本館 canonical identity 只綁 exact 19×19 position，另做四向旋轉。上游 attribution 寫入 `THIRD_PARTY_NOTICES.md`。Tripod 仍因 GNU Go GPL／SGF public-domain 身分不明而 catalog-only；盤角曲四、斗方、Long L、小豬嘴、葡萄六等依各自 ruleset／variation／geometry gate 保持 reference | `classic-shapes.test.cjs`、Go rules legal-move check、source-position signature、release manifest、browser UI；完整 CI 以分支 workflow 為準 | 工程／教學 UX／術語與 source provenance | 條件通過僅限既有 bounded contracts 與大豬嘴 exact source-case。大豬嘴 source-case 不代表標準 J Group geometry、完整扳點死答案樹或 family generalization；正式教學仍 BLOCKED，內容效度、formal assessment、retention／transfer 與 learning effect 均未由此建立 |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
 | 失敗後的同類修正 | 已依技能首答結果產生可觀察的任務錯誤類型；不推定粗心、誤解等心理根因 | `learning-metrics.test.cjs`、`app-state.test.cjs`、`scheduler.test.cjs` | 工程 | 條件通過；分類效度仍待內容與真人資料檢驗 |
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
@@ -527,3 +527,13 @@
 - **來源用途：** Sensei's Library、中央棋院及既有華語術語來源只支持「金雞獨立」名稱與 double-shortage／不入機制；不把其圖片、題目座標或解答樹複製進 repository。
 - **證據邊界：** 工程 PASS 只代表此原創 bounded mechanism contract 可重算；不代表外部內容審查、真人 usability、正式評量或學習成效通過。正式教學 gate 仍維持 `BLOCKED`。
 - **Validation：** PR #28 initial verify run #445 全數 PASS：Node contracts、deterministic R1 review bank、frozen formal teaching candidate、teaching gate、JavaScript syntax、Sabaki SGF oracle、Windows file-URL UI、Edge smoke、repository boundary 均成功；此結果只支持工程／規則契約。
+
+
+## 2026-09-27 Change note｜大豬嘴 / J Group exact source-case v1
+
+- **選擇理由：** catalog-only 候選中，大豬嘴已有華語名稱、J Group 對照與經典「扳點死」多來源背景；更重要的是找到 MIT regression 可作 exact-position oracle，因此比需 ruleset-aware 的盤角曲四、需完整 variation tree 的斗方、受外氣影響的 Long L 更適合先增加 playable coverage。
+- **不可升格部分：** MIT regression 只證明 `j_group_live2` 一個 source case 的 expected first move，不證明所有 J Group 都有相同第一手，也不能自行定義整個 family 的 canonical geometry。
+- **Contract：** `classic-big-pigs-mouth-source-case-v1` 固定 19×19 board state；seed expected move 為 R1，三個 variant 只作 90°／180°／270° rotation。UI crop 不改 scoring identity。
+- **Negative oracle：** wrong geometry、legal wrong answer、stale seed coordinate、answer injection 全部 fail closed。
+- **Provenance／license：** `THIRD_PARTY_NOTICES.md` 記錄 `bood/go-test` commit、`config.yml`、`sgf/大猪嘴.sgf`、Copyright (c) 2018 Bood Qian 與 MIT License。
+- **未驗：** 尚未建立標準大豬嘴 geometry、扳→點→立→撲 variation tree、獨立內容審查、真人 usability、formal assessment 或 learning effect。正式 teaching gate 不變。

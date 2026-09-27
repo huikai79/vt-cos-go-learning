@@ -17,6 +17,8 @@ const FlowerSix = require("../classic-flower-six-practice.js");
 const FlowerSixContract = require("../classic-flower-six-contract.js");
 const GoldenChicken = require("../classic-golden-chicken-practice.js");
 const GoldenChickenContract = require("../classic-golden-chicken-contract.js");
+const BigPigsMouth = require("../classic-big-pigs-mouth-practice.js");
+const BigPigsMouthContract = require("../classic-big-pigs-mouth-contract.js");
 const Contrast = require("../classic-contrast-practice.js");
 const ContrastContract = require("../classic-contrast-contract.js");
 
@@ -40,7 +42,7 @@ test("經典眼形探索只重用既有 practice 題，不建立第二套答案�
 test("探索頁明示 practice-only，名稱在互動腳本解答後揭示", () => {
   assert.match(html, /圖鑑不是能力證據/);
   assert.match(html, /刀把五、梅花五與花六各有 bounded nakade practice/);
-  assert.match(html, /金雞獨立另走 rules-backed tesuji mechanism contract/);
+  assert.match(html, /金雞獨立走 rules-backed tesuji mechanism contract/);
   assert.match(html, /名稱仍在作答後才揭示|名稱放到第一手之後/);
   assert.match(js, /直三/);
   assert.match(js, /名稱是記憶鉤子/);
@@ -56,7 +58,7 @@ test("探索頁提供鍵盤落子與相似反例層", () => {
 
 
 test("世界名型圖鑑把精確別名、分類對應與待核對分開", () => {
-  assert.equal(Catalog.version, "world-classic-shapes-v8");
+  assert.equal(Catalog.version, "world-classic-shapes-v9");
   assert.ok(Catalog.entries.every(Catalog.validateEntry));
   const bentFour = Catalog.entries.find((entry) => entry.id === "bent-four-corner-v1");
   assert.equal(bentFour.rulesetSensitive, true);
@@ -103,7 +105,7 @@ test("中文名稱身分與描述性翻譯保持分離", () => {
 
 test("多語圖鑑不新增第二套可評分答案或 learner evidence", () => {
   const playable = Catalog.entries.filter((entry) => entry.practiceStatus.startsWith("playable_"));
-  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
+  assert.deepEqual(playable.map((entry) => entry.id).sort(), ["big-pigs-mouth-candidate-v1", "flower-six-v1", "golden-chicken-candidate-v1", "knife-five-candidate-v1", "plum-five-candidate-v1", "straight-three-v1"]);
   assert.doesNotMatch(catalogSource, /localStorage|scheduler|mastery|formalEligible\s*:\s*true/);
   assert.match(html, /多語圖鑑 · 不評分/);
   assert.match(html, /待核對/);
@@ -535,4 +537,70 @@ test("金雞獨立 catalog 與 UI 保留 tesuji/nakade authority boundary", () =
   assert.match(html, /不和刀把五、梅花五、花六共用 nakade geometry contract/);
   assert.match(js, /GoGoldenChickenContract/);
   assert.doesNotMatch(require("node:fs").readFileSync(require("node:path").join(root,"classic-golden-chicken-contract.js"),"utf8"), /https?:\/\/.*\.(png|jpg|jpeg|sgf)/i);
+});
+
+
+test("大豬嘴 source-case 四個 variant 綁定 exact MIT regression position", () => {
+  assert.equal(BigPigsMouth.version, "big-pigs-mouth-source-practice-v1");
+  assert.equal(BigPigsMouth.scoringContractVersion, BigPigsMouthContract.CONTRACT_VERSION);
+  assert.equal(BigPigsMouth.items.length, 4);
+  const all = BigPigsMouthContract.validateAll(BigPigsMouth.items, Go);
+  assert.equal(all.ok, true, all.errors.join("; "));
+
+  const seed = BigPigsMouth.items[0];
+  const position = BigPigsMouthContract.materializeItem(seed);
+  assert.equal(position.setupStones.length, 51);
+  assert.deepEqual(position.expectedMove, [16,18]);
+  const scored = BigPigsMouthContract.score(seed, position.expectedMove, Go);
+  assert.equal(scored.ok, true);
+  assert.equal(scored.correct, true);
+  assert.equal(scored.scope, "exact_source_position_first_move_only");
+});
+
+test("大豬嘴 source-case 對錯棋形、錯答案與旋轉後舊座標 fail closed", () => {
+  const seed = BigPigsMouth.items[0];
+  const seedPosition = BigPigsMouthContract.materializeItem(seed);
+  const wrongGeometry = seedPosition.setupStones.slice(1);
+  assert.equal(BigPigsMouthContract.validatePosition(wrongGeometry).ok, false);
+
+  const board = Go.boardFromStones(seedPosition.setupStones, seed.boardSize);
+  let wrongMove = null;
+  for (let y=0; y<seed.boardSize && !wrongMove; y+=1) for (let x=0; x<seed.boardSize && !wrongMove; x+=1) {
+    if (BigPigsMouthContract.samePoint([x,y], seedPosition.expectedMove)) continue;
+    if (Go.playMove(board,x,y,Go.WHITE).legal) wrongMove=[x,y];
+  }
+  assert.ok(wrongMove);
+  assert.equal(BigPigsMouthContract.score(seed, wrongMove, Go).correct, false);
+
+  const rotated = BigPigsMouth.items.find((item) => item.variantId === "source-rot90");
+  const rotatedPosition = BigPigsMouthContract.materializeItem(rotated);
+  assert.notDeepEqual(rotatedPosition.expectedMove, BigPigsMouthContract.BASE_EXPECTED_MOVE);
+  assert.equal(BigPigsMouthContract.score(rotated, BigPigsMouthContract.BASE_EXPECTED_MOVE, Go).correct, false);
+
+  const leaked = { ...seed, id:"big-pig-leaked-answer", answer:BigPigsMouthContract.BASE_EXPECTED_MOVE };
+  assert.equal(BigPigsMouthContract.validateItem(leaked, Go).ok, false);
+});
+
+test("大豬嘴 catalog/UI 明示 source-case 與 family generalization 分離", () => {
+  const entry = Catalog.entries.find((item) => item.id === "big-pigs-mouth-candidate-v1");
+  assert.equal(entry.practiceStatus, "playable_source_case_first_move_contract");
+  assert.ok(entry.aliases.some((alias) => alias.name === "J Group"));
+  assert.ok(entry.sources.some((source) => source.sourceTier === "oss_regression"));
+  assert.match(entry.note, /不代表 R1 是所有大豬嘴／J Group 的共同答案/);
+  assert.match(html, /大豬嘴／J Group：先限定在一個可追溯實戰 case/);
+  assert.match(html, /完整 19×19 source position 才是本 contract 的 canonical identity/);
+  assert.match(html, /不宣稱 R1 是所有大豬嘴／J Group 的共同答案/);
+  assert.match(js, /GoBigPigsMouthSourceCaseContract/);
+  assert.match(js, /標準 family geometry、主要 variation 與一般化仍是 UNKNOWN/);
+});
+
+test("大豬嘴 source-case 有 MIT provenance notice，不把上游 SGF 當本站自有題庫", () => {
+  const notice = fs.readFileSync(path.join(root, "THIRD_PARTY_NOTICES.md"), "utf8");
+  assert.match(notice, /bood\/go-test/);
+  assert.match(notice, /Copyright \(c\) 2018 Bood Qian/);
+  assert.match(notice, /MIT License/);
+  assert.match(notice, /does \*\*not\*\* claim.*canonical geometry/i);
+  const contractSource = fs.readFileSync(path.join(root, "classic-big-pigs-mouth-contract.js"), "utf8");
+  assert.match(contractSource, /SOURCE_LICENSE/);
+  assert.match(contractSource, /source-case scoped/);
 });

@@ -10,6 +10,8 @@
   const FlowerSixContract = window.GoFlowerSixContract;
   const GoldenChicken = window.GoGoldenChickenPractice;
   const GoldenChickenContract = window.GoGoldenChickenContract;
+  const BigPigsMouth = window.GoBigPigsMouthSourcePractice;
+  const BigPigsMouthContract = window.GoBigPigsMouthSourceCaseContract;
   const Contrast = window.GoClassicContrastPractice;
   const ContrastContract = window.GoClassicContrastContract;
   const ShortRead = window.GoClassicShapeRead;
@@ -18,7 +20,7 @@
   const ReductionContract = window.GoClassicShapeReductionContract;
   const Go = window.GoCore;
   if (!Catalog) throw new Error("Classic shape catalog missing.");
-  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
+  if (!Practice || !PracticeContract || !CrossFive || !CrossFiveContract || !FlowerSix || !FlowerSixContract || !GoldenChicken || !GoldenChickenContract || !BigPigsMouth || !BigPigsMouthContract || !Contrast || !ContrastContract || !ShortRead || !ShortReadContract || !Reduction || !ReductionContract || !Go) throw new Error("Classic shape practice runtime missing.");
   const practiceValidation = PracticeContract.validateAll(Practice.items, Go);
   if (!practiceValidation.ok) throw new Error("Classic shape practice contract invalid: " + practiceValidation.errors.join("; "));
   const crossFiveValidation = CrossFiveContract.validateAll(CrossFive.items, { Go, PracticeContract });
@@ -27,6 +29,8 @@
   if (!flowerSixValidation.ok) throw new Error("Flower Six practice contract invalid: " + flowerSixValidation.errors.join("; "));
   const goldenChickenValidation = GoldenChickenContract.validateAll(GoldenChicken.items, Go);
   if (!goldenChickenValidation.ok) throw new Error("Golden Chicken practice contract invalid: " + goldenChickenValidation.errors.join("; "));
+  const bigPigsMouthValidation = BigPigsMouthContract.validateAll(BigPigsMouth.items, Go);
+  if (!bigPigsMouthValidation.ok) throw new Error("Big Pig's Mouth source-case contract invalid: " + bigPigsMouthValidation.errors.join("; "));
   const contrastValidation = ContrastContract.validateAll(Contrast.rounds, {
     Go,
     BulkyPractice: Practice,
@@ -71,6 +75,10 @@
   let goldenChickenSolved = false;
   let goldenChickenHintShown = false;
   let goldenChickenCursor = [3, 0];
+  let bigPigsMouthIndex = 0;
+  let bigPigsMouthSolved = false;
+  let bigPigsMouthHintShown = false;
+  let bigPigsMouthCursor = [16, 18];
   let bulkyIndex = 0;
   let bulkySolved = false;
   let bulkyHintShown = false;
@@ -540,6 +548,111 @@
     if (next[0]>=0 && next[0]<item.boardSize && next[1]>=0 && next[1]<item.boardSize) {
       goldenChickenCursor=next;
       renderGoldenChickenBoard();
+    }
+  }
+
+  function initialBigPigsMouthCursor(item,position) {
+    const board=Go.boardFromStones(position.setupStones,item.boardSize);
+    for (let y=position.viewport.minY; y<=position.viewport.maxY; y+=1) {
+      for (let x=position.viewport.minX; x<=position.viewport.maxX; x+=1) {
+        if (board[y][x]===Go.EMPTY && !BigPigsMouthContract.samePoint([x,y],position.expectedMove)) return [x,y];
+      }
+    }
+    return position.expectedMove.slice();
+  }
+
+  function renderBigPigsMouthBoard() {
+    const item=BigPigsMouth.items[bigPigsMouthIndex];
+    const validation=BigPigsMouthContract.validateItem(item,Go);
+    if (!validation.ok) throw new Error("Big Pig's Mouth item invalid: " + validation.errors.join("; "));
+    const position=validation.position;
+    const {minX,maxX,minY,maxY}=position.viewport;
+    const pad=7;
+    const span=86;
+    const width=maxX-minX;
+    const height=maxY-minY;
+    const step=span/Math.max(width,height);
+    const setup=new Map(position.setupStones.map(([x,y,color])=>[pointKey(x,y),color]));
+    const lines=[];
+    const nodes=[];
+    for (let y=minY;y<=maxY;y+=1) {
+      const py=pad+(y-minY)*step;
+      lines.push('<line x1="' + pad + '" y1="' + py + '" x2="' + (pad+width*step) + '" y2="' + py + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let x=minX;x<=maxX;x+=1) {
+      const px=pad+(x-minX)*step;
+      lines.push('<line x1="' + px + '" y1="' + pad + '" x2="' + px + '" y2="' + (pad+height*step) + '" stroke="#70502c" stroke-width=".55"/>');
+    }
+    for (let y=minY;y<=maxY;y+=1) for (let x=minX;x<=maxX;x+=1) {
+      const px=pad+(x-minX)*step;
+      const py=pad+(y-minY)*step;
+      const color=setup.get(pointKey(x,y));
+      if (color===Go.BLACK) nodes.push('<circle data-big-pig-x="' + x + '" data-big-pig-y="' + y + '" cx="' + px + '" cy="' + py + '" r="4.5" class="stone-black classic-occupied"/>');
+      else if (color===Go.WHITE) nodes.push('<circle data-big-pig-x="' + x + '" data-big-pig-y="' + y + '" cx="' + px + '" cy="' + py + '" r="4.5" class="stone-white classic-occupied"/>');
+      else nodes.push('<circle data-big-pig-x="' + x + '" data-big-pig-y="' + y + '" cx="' + px + '" cy="' + py + '" r="5.3" class="classic-hit"/>');
+    }
+    const [cx0,cy0]=bigPigsMouthCursor;
+    nodes.push('<circle cx="' + (pad+(cx0-minX)*step) + '" cy="' + (pad+(cy0-minY)*step) + '" r="5.6" class="classic-cursor-ring"/>');
+    $("big-pigs-mouth-board").innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true">' + lines.join("") + nodes.join("") + '</svg>';
+    $("big-pigs-mouth-cursor-status").textContent="游標：全盤第 " + (cy0+1) + " 行，第 " + (cx0+1) + " 列";
+  }
+
+  function renderBigPigsMouth() {
+    const item=BigPigsMouth.items[bigPigsMouthIndex];
+    const validation=BigPigsMouthContract.validateItem(item,Go);
+    if (!validation.ok) throw new Error("Big Pig's Mouth item invalid: " + validation.errors.join("; "));
+    bigPigsMouthSolved=false;
+    bigPigsMouthHintShown=false;
+    bigPigsMouthCursor=initialBigPigsMouthCursor(item,validation.position);
+    $("big-pigs-mouth-tag").textContent=(bigPigsMouthIndex+1) + " / " + BigPigsMouth.items.length + " · exact source case";
+    $("big-pigs-mouth-title").textContent=bigPigsMouthIndex===0 ? "固定實戰局面的第一手" : "旋轉後重新定位第一手";
+    $("big-pigs-mouth-prompt").textContent=item.prompt;
+    $("big-pigs-mouth-feedback").className="feedback";
+    $("big-pigs-mouth-feedback").textContent="";
+    $("big-pigs-mouth-reveal").hidden=true;
+    $("big-pigs-mouth-hint").disabled=false;
+    $("big-pigs-mouth-next").disabled=true;
+    $("big-pigs-mouth-next").textContent=bigPigsMouthIndex===BigPigsMouth.items.length-1 ? "完成大豬嘴 source-case" : "下一題 →";
+    renderBigPigsMouthBoard();
+  }
+
+  function attemptBigPigsMouth(x,y) {
+    if (bigPigsMouthSolved) return;
+    const item=BigPigsMouth.items[bigPigsMouthIndex];
+    const result=BigPigsMouthContract.score(item,[x,y],Go);
+    if (!result.ok) {
+      $("big-pigs-mouth-feedback").className="feedback error";
+      $("big-pigs-mouth-feedback").textContent="大豬嘴 source-case contract 驗證失敗；本題停止評分。";
+      return;
+    }
+    if (result.status==="ILLEGAL_MOVE") {
+      $("big-pigs-mouth-feedback").className="feedback error";
+      $("big-pigs-mouth-feedback").textContent="這裡已有棋子或不是目前規則下可落子的點。";
+      return;
+    }
+    if (result.correct) {
+      bigPigsMouthSolved=true;
+      $("big-pigs-mouth-feedback").className="feedback success";
+      $("big-pigs-mouth-feedback").textContent=item.success;
+      $("big-pigs-mouth-reveal").hidden=false;
+      $("big-pigs-mouth-hint").disabled=true;
+      $("big-pigs-mouth-next").disabled=false;
+    } else {
+      $("big-pigs-mouth-feedback").className="feedback error";
+      $("big-pigs-mouth-feedback").textContent=bigPigsMouthHintShown
+        ? "還不是。只針對這個 exact source case，重新看目前角部一線附近可做活的第一手。"
+        : "這手合法，但不是 upstream regression 對此 exact source case 指定的 expected move。";
+    }
+  }
+
+  function moveBigPigsMouthCursor(dx,dy) {
+    const item=BigPigsMouth.items[bigPigsMouthIndex];
+    const validation=BigPigsMouthContract.validateItem(item,Go);
+    const v=validation.position.viewport;
+    const next=[bigPigsMouthCursor[0]+dx,bigPigsMouthCursor[1]+dy];
+    if (next[0]>=v.minX && next[0]<=v.maxX && next[1]>=v.minY && next[1]<=v.maxY) {
+      bigPigsMouthCursor=next;
+      renderBigPigsMouthBoard();
     }
   }
 
@@ -1124,6 +1237,43 @@
     }
   });
 
+  $("big-pigs-mouth-board").addEventListener("click",(event) => {
+    const hit=event.target.closest("[data-big-pig-x][data-big-pig-y]");
+    if (!hit) return;
+    bigPigsMouthCursor=[Number(hit.dataset.bigPigX),Number(hit.dataset.bigPigY)];
+    renderBigPigsMouthBoard();
+    attemptBigPigsMouth(bigPigsMouthCursor[0],bigPigsMouthCursor[1]);
+  });
+
+  $("big-pigs-mouth-board").addEventListener("keydown",(event) => {
+    if (event.key==="ArrowLeft") { event.preventDefault(); moveBigPigsMouthCursor(-1,0); }
+    else if (event.key==="ArrowRight") { event.preventDefault(); moveBigPigsMouthCursor(1,0); }
+    else if (event.key==="ArrowUp") { event.preventDefault(); moveBigPigsMouthCursor(0,-1); }
+    else if (event.key==="ArrowDown") { event.preventDefault(); moveBigPigsMouthCursor(0,1); }
+    else if (event.key==="Enter" || event.key===" ") {
+      event.preventDefault();
+      attemptBigPigsMouth(bigPigsMouthCursor[0],bigPigsMouthCursor[1]);
+    }
+  });
+
+  $("big-pigs-mouth-hint").addEventListener("click",() => {
+    bigPigsMouthHintShown=true;
+    $("big-pigs-mouth-feedback").className="feedback";
+    $("big-pigs-mouth-feedback").textContent=BigPigsMouth.items[bigPigsMouthIndex].hint;
+  });
+
+  $("big-pigs-mouth-next").addEventListener("click",() => {
+    if (!bigPigsMouthSolved) return;
+    if (bigPigsMouthIndex<BigPigsMouth.items.length-1) {
+      bigPigsMouthIndex+=1;
+      renderBigPigsMouth();
+    } else {
+      $("big-pigs-mouth-feedback").className="feedback success";
+      $("big-pigs-mouth-feedback").textContent="大豬嘴 source-case 練習完成。這只支持同一 MIT regression 局面的四向 first-move oracle；標準 family geometry、主要 variation 與一般化仍是 UNKNOWN。";
+      $("big-pigs-mouth-next").disabled=true;
+    }
+  });
+
   $("bulky-board").addEventListener("click", (event) => {
     const hit = event.target.closest("[data-bulky-x][data-bulky-y]");
     if (!hit) return;
@@ -1253,6 +1403,7 @@
   renderCross();
   renderFlowerSix();
   renderGoldenChicken();
+  renderBigPigsMouth();
   renderBulky();
   renderRead();
   renderReduction();

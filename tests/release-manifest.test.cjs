@@ -106,6 +106,13 @@ test("學習入口載入完整題庫，R1 入口只載入去答案審查資料",
 });
 
 
+test("大豬嘴 source-case 與第三方 notice 一併列入公開發佈清單", () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
+  for (const file of ["classic-big-pigs-mouth-contract.js","classic-big-pigs-mouth-practice.js","THIRD_PARTY_NOTICES.md"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
+
 test("世界名型圖鑑資料列入公開發佈清單", () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "release-manifest.json"), "utf8"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
