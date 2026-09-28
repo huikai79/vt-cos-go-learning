@@ -949,3 +949,11 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - learner-facing critical surface 因 styles.css 改動，formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-q`，fingerprint `fnv1a32-js16-681f5de6`；此值來自 PR #94 首輪 CI 對精確 candidate surface 的 fail-closed 重算。
 - 不修改題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 或 formal evaluation 語義；example evidence 僅更新 candidate binding，所有真人 evidence 仍為 false/null，未偽造完成紀錄。
 - 正式教學仍 `BLOCKED`（R1a 外部回條、target novice usability、真人 accessibility 尚未完成）；正式評量仍 `BLOCKED`；學習成效仍 `NOT_MEASURED`。本次 CI 只能驗證工程與 candidate binding 一致性。
+
+
+## 2026-09-29 Change note｜Homepage outcome decoration removal refreeze
+
+- 移除「完成核心課程，大約會到哪裡」卡片右上角純裝飾黑白棋子 pseudo-elements；不補替代圖示，不改文字或 DOM 結構。
+- `styles.css` 屬 learner-facing critical surface，因此 formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-r`，fingerprint `fnv1a32-js16-f41b404c`；此值由 PR #97 首輪 CI fail-closed 對精確 surface 重算取得。
+- example evidence 只更新 candidate binding；真人 usability/accessibility 欄位仍保持 false/null，未建立或偽造真人證據。
+- 題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 與 formal evaluation 語義不變。正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
