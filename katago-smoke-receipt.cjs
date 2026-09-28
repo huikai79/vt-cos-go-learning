@@ -3,6 +3,7 @@
 const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
+const { spawnSync } = require("node:child_process");
 const Comparison = require("./decision-comparison.js");
 
 const RECEIPT_VERSION = "katago-windows-smoke-receipt-v1";
@@ -23,25 +24,32 @@ function isSha256(value) {
   return typeof value === "string" && /^[a-f0-9]{64}$/i.test(value);
 }
 function isIsoDate(value) {
-  if (typeof value !== "string" || !value) return false;
-  if (!/(Z|[+-]\d{2}:\d{2})$/i.test(value)) return false;
-  return Number.isFinite(Date.parse(value));
+  return typeof value === "string" &&
+    /(Z|[+-]\d{2}:\d{2})$/i.test(value) &&
+    Number.isFinite(Date.parse(value));
+}
+function repositoryCommit(rootDir) {
+  const result = spawnSync("git", ["-C", path.resolve(rootDir || "."), "rev-parse", "HEAD"], { encoding: "utf8" });
+  if (result.status !== 0) throw new Error("katago_smoke_repository_commit_unavailable");
+  const value = String(result.stdout || "").trim();
+  if (!/^[a-f0-9]{40}$/i.test(value)) throw new Error("katago_smoke_repository_commit_invalid");
+  return value.toLowerCase();
 }
 function contractFileHashes(rootDir) {
   const root = path.resolve(rootDir || ".");
   const result = {};
   for (const relativePath of CONTRACT_FILES) {
     const filePath = path.join(root, relativePath);
-    if (!fs.statSync(filePath).isFile()) throw new Error("katago_smoke_contract_file_missing:" + relativePath);
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) throw new Error("katago_smoke_contract_file_missing:" + relativePath);
     result[relativePath] = sha256File(filePath);
   }
   return result;
 }
 function hasForbiddenInference(value) {
   if (!value || typeof value !== "object") return false;
-  if (Object.prototype.hasOwnProperty.call(value, "correct")) return true;
-  if (Object.prototype.hasOwnProperty.call(value, "mastery")) return true;
-  if (Object.prototype.hasOwnProperty.call(value, "transferLevel")) return true;
+  for (const key of ["correct", "mastery", "transferLevel"]) {
+    if (Object.prototype.hasOwnProperty.call(value, key)) return true;
+  }
   if (Array.isArray(value)) return value.some(hasForbiddenInference);
   return Object.values(value).some(hasForbiddenInference);
 }
@@ -60,6 +68,7 @@ function validateReceipt(receipt) {
   if (!isIsoDate(receipt.generatedAt)) return "katago_smoke_generated_at_invalid";
   if (receipt.platform !== "windows") return "katago_smoke_platform_invalid";
   if (typeof receipt.repositoryCommit !== "string" || !/^[a-f0-9]{40}$/i.test(receipt.repositoryCommit)) return "katago_smoke_repository_commit_invalid";
+
   const contractError = validateContractFiles(receipt.contractFiles);
   if (contractError) return contractError;
 
@@ -73,9 +82,10 @@ function validateReceipt(receipt) {
     if (!isSha256(engine[key])) return "katago_smoke_engine_hash_invalid";
   }
 
-  if (!receipt.runtime || typeof receipt.runtime !== "object") return "katago_smoke_runtime_missing";
+  const runtime = receipt.runtime;
+  if (!runtime || typeof runtime !== "object") return "katago_smoke_runtime_missing";
   for (const key of ["powershellVersion", "nodeVersion", "osVersion"]) {
-    if (typeof receipt.runtime[key] !== "string" || !receipt.runtime[key]) return "katago_smoke_runtime_metadata_missing";
+    if (typeof runtime[key] !== "string" || !runtime[key].trim()) return "katago_smoke_runtime_metadata_missing";
   }
 
   const moveResult = receipt.moveResult;
@@ -84,6 +94,8 @@ function validateReceipt(receipt) {
   if (!["play", "pass", "resign"].includes(moveResult.type)) return "katago_smoke_move_action_invalid";
   if (moveResult.type === "play") {
     if (!Array.isArray(moveResult.point) || moveResult.point.length !== 2 || !moveResult.point.every((value) => Number.isInteger(value) && value >= 0 && value < 9)) return "katago_smoke_move_point_invalid";
+  } else if (moveResult.point !== null) {
+    return "katago_smoke_move_point_invalid";
   }
   if (typeof moveResult.model !== "string" || !moveResult.model) return "katago_smoke_move_model_missing";
 
@@ -105,14 +117,17 @@ function validateReceipt(receipt) {
 function verifyAgainstRepository(receipt, rootDir) {
   const error = validateReceipt(receipt);
   if (error) return error;
-  let current;
+  let currentCommit;
+  let currentHashes;
   try {
-    current = contractFileHashes(rootDir);
+    currentCommit = repositoryCommit(rootDir);
+    currentHashes = contractFileHashes(rootDir);
   } catch (error) {
-    return error.message || "katago_smoke_contract_hash_failed";
+    return error.message || "katago_smoke_repository_verification_failed";
   }
+  if (receipt.repositoryCommit.toLowerCase() !== currentCommit) return "katago_smoke_receipt_commit_mismatch";
   for (const relativePath of CONTRACT_FILES) {
-    if (receipt.contractFiles[relativePath] !== current[relativePath]) return "katago_smoke_receipt_stale:" + relativePath;
+    if (receipt.contractFiles[relativePath] !== currentHashes[relativePath]) return "katago_smoke_receipt_stale:" + relativePath;
   }
   return null;
 }
@@ -124,6 +139,7 @@ module.exports = {
   MOVE_PROVIDER_VERSION,
   COMPARISON_PROVIDER_VERSION,
   sha256File,
+  repositoryCommit,
   contractFileHashes,
   validateReceipt,
   verifyAgainstRepository
