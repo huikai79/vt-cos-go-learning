@@ -182,3 +182,17 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - Advanced 新增的 KataGo 兩手比較不在 formal Core critical asset set，故 formal candidate `formal-teaching-candidate-2026-09-29-p`／`fnv1a32-js16-16855e4f` 不重凍結。
 - engine result 固定是 bounded computational evidence，不提供 scoring authority，也不進 formal evaluation。
 - R1a 外部回條、三位 target novice usability、真人 keyboard／screen reader spot check 仍缺；formal teaching = `BLOCKED`、formal evaluation = `BLOCKED`、learning effect = `NOT_MEASURED`。
+
+
+## 2026-09-29 Change note｜KataGo real-engine receipt v1
+
+- 真引擎 receipt 只驗證 engine integration 的工程行為，不提供內容效度、正式評量或學習成效證據。
+- receipt 即使 PASS，也不解除 R1a、三位 target novice usability、真人 accessibility 或 private unseen evaluation 的既有 blocker。
+- 目前沒有本機 receipt，因此 real-engine smoke 仍為 `BLOCKED_ON_LOCAL_RECEIPT`；formal teaching／formal evaluation 狀態不變。
+
+
+## 2026-09-29 Change note｜Real KataGo Smoke Receipt v1
+
+- 真 KataGo smoke receipt 是 Advanced engine-integration 工程證據，不屬於 formal Core teaching evidence。
+- receipt PASS 也只證明指定 executable/config/model 在指定 commit 下能完成 bounded move/comparison contract，不證明棋理內容效度、真人 usability、formal evaluation 或 learning effect。
+- 本輪不修改 formal teaching candidate；R1a、三位 target novice usability 與真人 accessibility 缺口維持原狀。

@@ -8,3 +8,6 @@ gtp_logs/
 R1_獨立審題草稿.json
 R1_獨立審題回條.json
 formal-teaching-evidence.json
+
+# 本機真引擎 smoke 回條含 executable/config/model 雜湊與執行環境，只留本機。
+.local-evidence/

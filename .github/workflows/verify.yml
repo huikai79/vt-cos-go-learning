@@ -100,6 +100,15 @@ jobs:
         run: |
           node tests/ui.test.cjs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Parse real KataGo smoke script
+        shell: pwsh
+        run: |
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path "tests/katago-bridge-smoke.ps1"), [ref]$null, [ref]$errors) | Out-Null
+          if ($errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.Message }
+            exit 1
+          }
       - name: Run Edge smoke
         shell: pwsh
         run: |

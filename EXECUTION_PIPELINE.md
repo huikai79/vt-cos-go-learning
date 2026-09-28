@@ -1,3 +1,14 @@
+2026-09-29 Real KataGo Smoke Receipt v1：Decision Point Comparison 的下一個 gate 不再用 CI adapter 測試冒充真引擎證據。Windows `tests/katago-bridge-smoke.ps1` 現在要求 clean checkout，先以官方 `katago version` 取得 engine identity，再實跑 `/v1/move` 與 `/v1/compare`；兩者都通過後才產生本機 `.local-evidence/katago-smoke-receipt.json`。receipt 綁 repository commit、四個 contract file SHA-256、KataGo executable/config/model SHA-256、engine/model identity、runtime、comparison request/result；不保存絕對檔案路徑。公開 repo 只保留 receipt schema/verifier/tests，實際 receipt 被 gitignore/release boundary 排除。任何 commit 或 contract file 改變都使舊 receipt stale；`correct`／`mastery`／`transferLevel` 污染會 fail closed。CI 只驗 receipt contract、verifier、PowerShell syntax，沒有真 KataGo binary/model 時狀態必須保持 `READY_FOR_LOCAL_RUN / BLOCKED_ON_LOCAL_RECEIPT`，不得升格為 real-engine PASS。
+
+2026-09-29 Change note｜KataGo real-engine receipt v1
+
+- **bottleneck：** Decision Point Comparison v1 的 contract／adapter／browser flow 已通過 CI，但 CI 沒有實際 KataGo executable、config 與 model；因此仍缺一份能證明「這組公開 contract 曾由真引擎完整跑通」的可重算本機證據。
+- **實作：** `tests/katago-bridge-smoke.ps1` 成功跑完 `/v1/move` 與 `/v1/compare` 後，才產生 `.local-evidence/katago-smoke-receipt.json`。receipt 保存 repository commit、五個關鍵 contract file SHA-256、KataGo executable/config/model SHA-256、engine version、Windows/PowerShell/Node runtime、move result、完整 bounded comparison request/result。
+- **驗證：** `katago-smoke-receipt.cjs` 與 `scripts/verify-katago-smoke-receipt.cjs` 檢查 receipt schema、engine/model identity、request/result identity、兩候選 bounded authority 與 current contract hashes；stale contract、unknown engine version、model mismatch、以及 result 內出現 correct/mastery/transfer inference 都 fail closed。
+- **privacy／publication：** `.local-evidence/` 永不列入 public release；只公開 receipt contract、verifier 與 tests。receipt 只保存檔名與 SHA-256，不保存 executable/config/model 路徑或檔案內容。
+- **目前狀態：** `READY_FOR_LOCAL_RUN / BLOCKED_ON_LOCAL_RECEIPT`。本輪執行環境沒有使用者 Windows KataGo executable/model，因此不得標真機 PASS。
+- **下一個 gate：** 只有 local receipt 通過 verifier 後，才解除 real-engine smoke blocker；之後若要進 Comparison → Explanation，仍需另立 explanation authority／教學效度 contract，不由 engine receipt 自動升格。
+
 2026-09-29 Decision Point Comparison v1：19×19 SGF Decision Review 在原著揭露後可選擇比較「第一候選」與「原著」。分析只在規則／貼目明確、第一候選合法且兩手不同時成立；KataGo root search 限制在兩手，結果是 bounded search estimate，不取得 scoring、KC、scheduler、T2/T3 或 formal evaluation authority。provider／engine failure 保持失敗，不以 heuristic 補結果。
 
 2026-09-28 SGF Decision Review v1：Advanced 已有局部 multi-step reading 與 19×19 自由 practice，但兩者之間缺少可回看的全盤 Response。新增 practice-only「19×19 棋譜決策點複盤」：匯入單一主線 19 路 SGF、選一個可落子手數、在原著隱藏時先保存第一候選與 retry，再揭露原著做歷史比較並可留復盤備註。每筆紀錄版本化 source position、item、candidate-set、scoring contract、rules contract、evidence taxonomy 與 exposure state。規則引擎只判候選是否合法；「與原著不同」不是錯手，原著也不是唯一最佳手。此事件流固定 `advanced_sgf_review_practice_only`，不更新 KC／scheduler／T2-T3／formal evaluation；KataGo 若日後加入，只能另作 bounded comparison。舊 9×9 `parseSgf()` 與 single-move historical recall 語義保留。
