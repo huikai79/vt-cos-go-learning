@@ -162,6 +162,8 @@ test("世界名型 ontology、geometry registry 與 compatibility catalog 都列
   assert.ok(manifest.publicFiles.includes("research/reference-receipts/lgroup-core-aggregate-2026-09-29.json"));
   assert.ok(manifest.publicFiles.includes("tests/lgroup-reference-core-receipts.test.cjs"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
+  assert.ok(manifest.publicFiles.includes("classic-shapes-mode.js"));
+  assert.ok(manifest.publicFiles.includes("tests/classic-shapes-mode.test.cjs"));
   assert.ok(manifest.hosting.entrypoints.includes("classic-shapes.html"));
 });
 

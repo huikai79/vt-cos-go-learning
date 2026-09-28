@@ -917,3 +917,15 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Tsumego stop line：** 15362 的較大未標記 defender group 不符合 core contract eligibility；不得從中搜尋任何四子 L subset 來事後製造 MATCH。
 - **下一個解除條件：** 對日本 source-native 方框語義取得獨立人工覆核，或找到另一條直接標示 base L Group 且整個 target group 為四子的獨立來源。達成前不把 core hypothesis 寫入 canonical geometry registry／playable content。
 - **不變：** learner state、KC、scheduler、scoring、T0–T3、R1、formal evaluation 全部不變。
+
+## 2026-09-29 Change note｜世界死活名型館 UI IA v1
+
+- **Johari 開放區：** 經典棋形練習與「世界名型對照」已是兩種不同使用意圖；現行長頁把 atlas 放在所有 practice 後方，練習越多，查名型的捲動成本必然上升。
+- **Johari 盲點：** 直接把 atlas 完整搬到練習上方會提前暴露名稱／術語，可能破壞既有「先看棋形與首答，再揭名」支架；直接把所有練習重寫成共用引擎則改動 scoring/keyboard/event surface 過大。
+- **Johari 隱藏區：** 不需重寫練習 contract 即可先解決主要 IA bottleneck：把同頁切成 `#practice` 與 `#atlas` sibling modes，atlas 不再受練習長度推擠。
+- **Johari 未知區：** 真人是否偏好預設 practice、切換命名與快速導覽粒度仍未測；本輪不把模式偏好寫入 learner state，也不宣稱 usability 已驗證。
+- **實作：** 頁首新增「棋形練習／世界名型對照」雙模式；`#atlas` 可直接深連結，其他 hash 預設留在 practice；練習區新增描述性快速導覽，避免在作答前用正式名型名稱充當額外提示。窄版模式與導覽可降為單欄。
+- **不可破壞 invariant：** 題庫、scoring、首答／retry、提示、揭名時機、scheduler、learner events、formal evaluation 全部不變；模式只存在 URL hash／DOM state，不寫 localStorage。
+- **negative test：** `#atlas` 必須只顯示 atlas；練習深連結仍判作 practice；mode script 禁止 learner/storage/scoring authority；既有 `classic-reveal` 作答後揭名腳本仍存在。
+- **rollback：** 移除 `classic-shapes-mode.js`、mode nav/panel wrapper 與新增 CSS，即回復原長頁；無資料 migration。
+- **證據邊界：** 這是資訊架構工程修正；只可支持可直接抵達 atlas 與頁面不再因 practice 增長而推遠，不證明真人查找更快、理解更好或學習效果提升。
