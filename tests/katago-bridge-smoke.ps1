@@ -130,6 +130,7 @@ try {
     "katago-bridge.cjs",
     "decision-comparison.js",
     "katago-comparison-adapter.cjs",
+    "katago-smoke-receipt.cjs",
     "tests/katago-bridge-smoke.ps1"
   )) {
     $absolutePath = Join-Path $repoRoot $relativePath
