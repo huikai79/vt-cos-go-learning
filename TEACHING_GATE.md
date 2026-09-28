@@ -166,5 +166,12 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 ## 2026-09-29 Change note｜SGF Decision Review v1 shared parser candidate refreeze
 
 - **共享 critical asset：** `sgf.js` 新增獨立 19×19 decision-review parser／contract；既有 Core 9×9 `parseSgf()` historical recall API 保持。
-- **新 candidate：** `formal-teaching-candidate-2026-09-28-o`；fingerprint `fnv1a32-js16-edb91303`；asset set v6、UI version 仍 `learner-flow-v53`。
+- **新 candidate：** `formal-teaching-candidate-2026-09-29-p`；fingerprint `fnv1a32-js16-16855e4f`；asset set v6、UI version 仍 `learner-flow-v53`。
 - **狀態不升格：** R1a 外部回條、三位 target novice usability、真人 keyboard／screen reader spot check 仍缺；formal teaching = `BLOCKED`，formal evaluation = `BLOCKED`，learning effect = `NOT_MEASURED`。
+
+
+## 2026-09-29 Change note｜SGF Decision Review v1 hardening
+
+- candidate-set 語義由「all rules-legal moves」修正為 `board-intersection-attempts-rules-checked-v1`：非法第一次點擊仍屬實際 first response，規則合法性另欄保存，不得用名稱事後排除。
+- Windows browser regression 新增實際 File 匯入 → 選第 3 手 → 提出與原著不同的合法候選 → 揭露原著；事件必須保持 candidate 無答案、reveal 無 correctness。
+- shared `sgf.js` bytes 再變更，formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-p`／`fnv1a32-js16-16855e4f`。真人 gate 狀態不變。
