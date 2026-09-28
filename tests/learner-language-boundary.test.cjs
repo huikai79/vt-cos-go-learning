@@ -48,7 +48,7 @@ test("learner-facing HTML 不重新暴露內部研究／工程禁詞", () => {
 });
 
 test("棋譜複盤不用『原著』指稱棋譜著手", () => {
-  for (const file of ["advanced.html", "advanced-decision-review.js", "app.js"]) {
+  for (const file of ["index.html", "content.js", "advanced.html", "advanced-decision-review.js", "app.js"]) {
     assert.doesNotMatch(read(file), /原著/, `${file} 應使用「原棋譜／原棋譜著手」`);
   }
 });
