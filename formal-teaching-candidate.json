@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-29-p",
-  "frozenAt": "2026-09-29T00:16:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-29-q",
+  "frozenAt": "2026-09-29T04:46:00+08:00",
   "assetSetVersion": 6,
-  "assetFingerprint": "fnv1a32-js16-16855e4f",
+  "assetFingerprint": "fnv1a32-js16-681f5de6",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -38,5 +38,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v53 + SGF Decision Review v1。M4 Landing/Homepage current truth 保留；共享 sgf.js 新增獨立 19×19 decision-review parser／contract，既有 Core 9×9 parseSgf 與 single-move historical recall API 保持。Advanced decision review 固定 practice-only，不改 scoring、scheduler、KC、T2/T3 或 formal evaluation。 Hardening：candidate-set 名稱改為 board-intersection attempts + rules-checked，明示非法 first response 仍保存；新增 browser interaction regression。"
+  "scopeNote": "Homepage responsive-density correction：三項 learning evidence 在既有 mobile breakpoint 以上維持單列，science cards 圖示與標題同列；不改題目、scoring、scheduler、KC、learner events、evidence taxonomy 或 formal evaluation。 learner-flow-v53 + SGF Decision Review v1。M4 Landing/Homepage current truth 保留；共享 sgf.js 新增獨立 19×19 decision-review parser／contract，既有 Core 9×9 parseSgf 與 single-move historical recall API 保持。Advanced decision review 固定 practice-only，不改 scoring、scheduler、KC、T2/T3 或 formal evaluation。 Hardening：candidate-set 名稱改為 board-intersection attempts + rules-checked，明示非法 first response 仍保存；新增 browser interaction regression。"
 }

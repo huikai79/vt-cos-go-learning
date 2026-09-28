@@ -196,3 +196,11 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 真 KataGo smoke receipt 是 Advanced engine-integration 工程證據，不屬於 formal Core teaching evidence。
 - receipt PASS 也只證明指定 executable/config/model 在指定 commit 下能完成 bounded move/comparison contract，不證明棋理內容效度、真人 usability、formal evaluation 或 learning effect。
 - 本輪不修改 formal teaching candidate；R1a、三位 target novice usability 與真人 accessibility 缺口維持原狀。
+
+
+## 2026-09-29 Change note｜Homepage responsive-density candidate refreeze
+
+- 首頁「怎樣才算真的學會」三項 evidence 在既有 mobile breakpoint（760px）以上維持單列；「為什麼這樣設計」圖示與標題改為同列，減少無效垂直空間。
+- learner-facing critical surface 因 styles.css 改動，formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-q`，fingerprint `fnv1a32-js16-681f5de6`；此值來自 PR #94 首輪 CI 對精確 candidate surface 的 fail-closed 重算。
+- 不修改題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 或 formal evaluation 語義；example evidence 僅更新 candidate binding，所有真人 evidence 仍為 false/null，未偽造完成紀錄。
+- 正式教學仍 `BLOCKED`（R1a 外部回條、target novice usability、真人 accessibility 尚未完成）；正式評量仍 `BLOCKED`；學習成效仍 `NOT_MEASURED`。本次 CI 只能驗證工程與 candidate binding 一致性。
