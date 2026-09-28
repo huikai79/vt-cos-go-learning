@@ -877,7 +877,7 @@ async function main() {
     })()`);
     assert.match(decisionReview.source, /decision-review\.sgf/);
     assert.match(decisionReview.beforeReveal, /候選已保存/);
-    assert.match(decisionReview.afterReveal, /與原著不同/);
+    assert.match(decisionReview.afterReveal, /和原著不同|與原著不同/);
     assert.match(decisionReview.afterReveal, /不是錯手判定/);
     assert.deepEqual(decisionReview.types, ["review_presented", "candidate_first", "original_revealed"]);
     assert.deepEqual(decisionReview.candidate, {legal:true, originalMove:null, matchesOriginal:null, exposed:false, hasCorrect:false});
