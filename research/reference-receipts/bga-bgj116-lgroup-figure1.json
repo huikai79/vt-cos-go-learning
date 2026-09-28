@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "classic-reference-source-receipt-v2",
+  "authority": "reference_source_receipt_only",
+  "sourceId": "bga-bgj116-lgroup-figure1",
+  "sourceLocator": "https://www.britgo.org/files/bgj/bgj116.pdf",
+  "sourceDigest": "sha256:338acca065e4d88bad737c65f0914e14865f3b6adf85f87eb06502a6f1bd12a8",
+  "sourceDigestScope": "pdf_bytes",
+  "evidenceChain": "bga-richard-hunter-lgroup-bgj116",
+  "documentTitle": "British Go Journal 116",
+  "articleTitle": "Counting Liberties: The L group",
+  "locator": "PDF page 17 / printed page 32 / Figure 1",
+  "sourceToConceptClaim": "Figure 1 is identified in the article as the L group",
+  "structuredObservationAvailable": true,
+  "extractionMethod": "manual_transcription",
+  "reviewStatus": "draft",
+  "candidateSeedId": "bga-bgj116-figure1-defender-seed-v1",
+  "comparisonContractId": "corner-defender-connected-group-normalized-v3",
+  "geometryRepresentation": "defender_connected_group_normalized",
+  "geometryPersisted": false,
+  "rawSourcePersisted": false,
+  "canonicalPromotionAllowed": false,
+  "rightsStatus": "reference_only"
+}
