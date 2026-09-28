@@ -542,7 +542,7 @@ KaTrain／KataGo 已有分析與重試能力，但自動根因分類、題目生
 - 歷史與典故先以獨立 `history.html` 發布，定位為 optional Explore experience。
 - MVP 只做四個問題：起源、19×19、規則演化、典故史實分層。
 - 每個主張可使用「確證／高度可信／有爭議／傳說／研究假說／未知」標籤；不使用虛假百分比。
-- 首頁 Core 仍是唯一零基礎主 CTA；Advanced 維持第二學習入口；History 只在較低資訊層提供閱讀入口。
+- 首頁 Core 仍是唯一零基礎主 CTA；三張課程階段卡只代表 Core 1–15。Advanced 維持獨立的第二層進階入口，不佔用 Core 單元 6–10 或 11–15 的入口；History 只在較低資訊層提供閱讀入口。
 - 歷史頁不得寫 learner state、不得更新 scheduler／KC／T2-T3，也不得把閱讀完成視為學習證據。
 
 ### 驗收與停止線
@@ -574,3 +574,9 @@ History Explore 的證據呈現遵守「claim → evidence unit → source recor
 - accessibility 自動驗證不可只鎖幾個曾經失敗的 selector；History Explore 的小字／badge 由 browser computed style 做整體掃描，static test 另保留明示 palette contract。
 - mobile header 為了降資訊密度可以隱藏次要導覽，但頁面本身必須仍有可達的 Core／Advanced／名型館返回路徑。
 - 以上只提高 evidence fit、delivery integrity 與 accessibility engineering；歷史學術外審與真人可用性仍是不同 gate。
+
+## 2026-09-28｜Correction：首頁三階段卡只對應 Core Curriculum
+
+- 「基礎建立／局部與棋局判斷／全局與綜合應用」分別對應 Core 單元 1–5、6–10、11–15；三張卡的操作入口必須回到同一 Core runtime。
+- 局部階段入口固定到第 6 單元；全局階段入口固定到第 11 單元。這是導覽 shortcut，不表示前置能力已自動滿足，也不改課程完成或評分資料。
+- `advanced.html` 是 Core 後續的獨立 practice-only Experience，不屬於 1–15，也不得再以「單元 6–10」卡片作入口；是否另設首頁獨立入口，與 Core 三階段導覽分開處理。
