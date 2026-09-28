@@ -39,7 +39,7 @@
 | standardized T3 固定應用探測 | 5 個減少技能線索的固定局面；Evidence Taxonomy v2 以 `evaluationContext=standardized` 與 live T3 分開 | SGF、試行、UI 與 evidence-taxonomy contract 測試 | 工程 | 條件通過；只支持既定局部 scoring contract，不代表全局判斷或 live 實戰遷移 |
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
-| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：Hero 仍以零基礎 Core 為主要 CTA，首屏後由「基礎建立／局部與棋局判斷／全局與綜合應用」三階段直接承擔學習入口；基礎進 Core、局部可進獨立 advanced practice、全局可直達 Core 第 11 單元。Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、進階入口與無橫向溢出反證 | 工程 | `learner-flow-v50` 條件通過；首頁以已確認 mockup 作版面基準：桌面導覽、較大的 Hero 圖、三階段直接作學習入口、四格學習循環、研究動作卡、歷史／能力雙欄與 FAQ；第四格只作 outcome summary，不新增 learner evidence 語義。首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
+| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：Hero 仍以零基礎 Core 為主要 CTA，首屏後由「基礎建立／局部與棋局判斷／全局與綜合應用」三階段直接承擔核心課程入口；基礎進 Core、局部直達 Core 第 6 單元、全局直達 Core 第 11 單元。Advanced 維持獨立路線，不屬於單元 1–15，也不再冒充三階段中的局部入口。Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、Core 第 6／11 單元直達與無橫向溢出反證 | 工程 | `learner-flow-v53` 條件通過；三張階段卡只代表 Core 1–15，Advanced 另列為獨立進階訓練。首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v5 答案盲審流程條件通過；fingerprint 同時綁定 reviewer-visible `prompt`／`focus` 與 family／skill／scoring identity；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
@@ -824,3 +824,11 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - 選擇 Unit 只改變瀏覽中的課程目錄，不改目前 lesson、題目或 learner event；只有點選實際 lesson 才切換學習內容。
 - 到期複習／錯題只有非零時才出現在 sidebar 的「今天」區塊；不以 0 題製造假的今日任務。
 - 此變更不修改 scoring、first-response/retry、scheduler policy、storage/event schema、evidence taxonomy 或 formal evaluation masking。正式 usability 仍 NOT_TESTED；正式教學仍 `BLOCKED`；學習成效未量測。
+
+## 2026-09-28 Correction note｜三階段入口重新對齊 Core 1–15
+
+- **問題：** 首頁「局部與棋局判斷」卡標示為原課綱單元 6–10，實際按鈕卻導向獨立的 `advanced.html`。這把 Core 課程階段與 Core 後續進階路線混成同一入口，與「Advanced 不屬於單元 1–15」的既有契約衝突。
+- **修正：** 三張卡全部只導向 Core：基礎建立 → Core 起點；局部與棋局判斷 → 第 6 單元（`data-site-intro-unit="5"`）；全局與綜合應用 → 第 11 單元（`data-site-intro-unit="10"`）。Advanced 保留為獨立 practice-only 路線，首頁改由課程數量說明中的次要連結提供。
+- **反證／驗收：** UI regression 實際點擊第 6 與第 11 單元入口，確認都進入 `#core`、選中正確單元並開啟該單元短講；另確認首頁仍可到達 `advanced.html`，但該連結不在三階段卡內。
+- **不變範圍：** 題目、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 與 formal evaluation 語義不變。這只修正資訊架構，不證明真人更容易選對入口。
+- **Formal candidate：** learner-facing critical surface 改變，重新凍結為 `formal-teaching-candidate-2026-09-28-m`，fingerprint `fnv1a32-js16-f591f013`；UI version 維持 `learner-flow-v53`，因本輪未改 learner event schema 或 scoring 語義。

@@ -145,3 +145,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 選擇 Unit 只改變瀏覽中的課程目錄，不改目前 lesson、題目或 learner event；只有點選實際 lesson 才切換學習內容。
 - 到期複習／錯題只有非零時才出現在 sidebar 的「今天」區塊；不以 0 題製造假的今日任務。
 - 此變更不修改 scoring、first-response/retry、scheduler policy、storage/event schema、evidence taxonomy 或 formal evaluation masking。工程測試不等於真人 usability 證據。
+
+## 2026-09-28 Change note｜Core 三階段入口修正後重新凍結 candidate
+
+- **變更：** 首頁「局部與棋局判斷」由獨立 `advanced.html` 改為 Core 第 6 單元；「全局與綜合應用」明示由 Core 第 11 單元開始。三張階段卡因此與單元 1–5／6–10／11–15 標示一致。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-m`；fingerprint：`fnv1a32-js16-f591f013`；asset set version 維持 5，UI version 維持 `learner-flow-v53`.
+- **不變範圍：** Advanced 仍是獨立 practice-only 路線；題目、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 與 formal evaluation 語義未改。
+- **證據邊界：** 此修正不產生 R1a、真人 usability、accessibility 或 learning-effect 證據；正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
