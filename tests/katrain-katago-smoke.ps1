@@ -2,7 +2,8 @@ param(
   [string]$KaTrainConfig = (Join-Path $HOME ".katrain\config.json"),
   [string]$KaTrainRoot = "",
   [int]$Port = 8765,
-  [string]$ReceiptPath = ".local-evidence\katago-smoke-receipt.json"
+  [string]$ReceiptPath = ".local-evidence\katago-smoke-receipt.json",
+  [switch]$ResolveOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -165,7 +166,16 @@ Write-Host "KaTrain config: $configPath"
 Write-Host "KataGo executable: $exe"
 Write-Host "KataGo config: $configFile"
 Write-Host "KataGo model: $modelFile"
-Write-Host "Starting the repository smoke contract..."
+if ($ResolveOnly) {
+  [ordered]@{
+    kataGoExe = $exe
+    kataGoConfig = $configFile
+    kataGoModel = $modelFile
+    kaTrainConfig = $configPath
+  } | ConvertTo-Json -Compress
+  exit 0
+}
 
+Write-Host "Starting the repository smoke contract..."
 & (Join-Path $PSScriptRoot "katago-bridge-smoke.ps1") -KataGoExe $exe -KataGoConfig $configFile -KataGoModel $modelFile -Port $Port -ReceiptPath $ReceiptPath
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
