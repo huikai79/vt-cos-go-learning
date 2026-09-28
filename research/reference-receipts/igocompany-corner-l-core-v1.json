@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "lgroup-reference-core-source-receipt-v1",
+  "authority": "reference_source_receipt_only",
+  "sourceId": "igocompany-corner-l-shape-2024",
+  "sourceLocator": "https://note.com/igocompany_u/n/n3ff43e80bf2f",
+  "sourceDigest": "sha256:15fa3b991b35ce391c6628232d94d09bb5d5a1d0e289789fdfce754f0c58f2ab",
+  "sourceDigestScope": "source_image_bytes",
+  "evidenceChain": "igocompany-corner-l-shape-2024",
+  "locator": "article lines 82-93 / first L-shape image",
+  "directLabel": "隅のL字型 / 白先白死",
+  "selectionBasis": "source_native_marked_subset",
+  "selectionInterpretationReviewed": false,
+  "candidateConceptId": "bga-bgj116-lgroup-core-seed-v1",
+  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v1",
+  "contractStatus": "NEEDS_HUMAN_REVIEW",
+  "geometryPersisted": false,
+  "rawSourcePersisted": false,
+  "canonicalPromotionAllowed": false,
+  "rightsStatus": "reference_only"
+}
