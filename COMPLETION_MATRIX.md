@@ -756,3 +756,13 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **HTML→SGF adapter：** `classic-reference-html-sgf-v1` 只解析已取得 HTML 中的 JSON-string embedded SGF，不 eval JavaScript；目前固定 `corner-defender-connected-group-v1`，只表示比較角部 defender connected group，不表示這就是 L Group canonical identity。
 - **Rights boundary：** 外部 HTML/SGF 只作 `reference_only` memory observation；不把第三方 SGF、points、fingerprint 或 raw observation 寫入 public repo，`canonicalPromotionAllowed=false`。
 - **停止線：** 若後續研究發現應用 eye-space 或其他 representation，必須建立新的 comparison contract；不得與既有 defender-group reports 混合聚合。
+
+
+## 2026-09-28 Decision note｜第一份真實 L Group source receipt 已取得，但 geometry comparison 仍 BLOCKED
+
+- **實際 source capture：** 一次性 research workflow 在 GitHub Actions 取得 Tsumego Hero `The L Group 32/46` 題目頁，頁面主張為 `Black to kill`；embedded SGF 出現兩次且內容一致，root setup 可 deterministic parse。來源 HTML digest 固定為 `sha256:157f93c970c1c38fe18faa06c90c8814700d87e0710e93e5c96467065efbe398`。
+- **持久化邊界：** main 只保存 `classic-reference-source-receipt-v1`；不保存第三方 HTML、SGF、stones、points、shape/context signature、fingerprint 或 raw observation。rights 維持 `unknown_reference_only`，`canonicalPromotionAllowed=false`。
+- **重要 BLOCKED：** receipt 的 `comparisonContractId=null`、`geometryRepresentation=unassigned`。原因不是 parser 缺功能，而是 `l-group-v1` 尚無經驗證的 canonical geometry representation；不得為了得到 MATCH 而先假定 defender stones、eye-space 或 full-position 哪一種就是 L Group identity。
+- **Evidence independence：** 同一 Tsumego Hero collection 252 的其他 45 題仍屬同一 evidence chain，不可拿另一題湊成第二條獨立 evidence unit。
+- **第二來源查核：** GNU Go 的公開文件只在 suite 層說 L groups 有相當 regression coverage；目前查到的 `ld*.sgf` 沒有足以把特定檔案直接標成 L Group 的 provenance，因此暫不計為第二條 geometry evidence chain。
+- **下一個解除條件：** 找到一個來源直接把具體 diagram/SGF 與 L Group identity 綁定，且 representation 可明確定義；或先建立經獨立來源支持的 L Group comparison contract。未達成前不產生 MATCH/DIFFERENT report。
