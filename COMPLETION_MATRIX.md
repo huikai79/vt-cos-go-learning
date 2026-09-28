@@ -868,3 +868,10 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Science cards：** 32px 圖示與小標題改為同一列，說明文字維持下一列，減少無意義垂直空間；四張卡的內容與順序不變。
 - **不變範圍：** 不改 index.html 文案、圖片、題目、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
 - **Candidate boundary：** `styles.css` 是 formal candidate critical asset，因此合併前必須重新計算 fingerprint／更新 candidate；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-29 Refreeze note｜首頁 responsive density correction
+
+- `styles.css` learner-facing critical surface 變更後，CI fail-closed 正確偵測舊 candidate fingerprint 失配；workflow 回報 computed fingerprint = `fnv1a32-js16-681f5de6`。
+- formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-q`／`fnv1a32-js16-681f5de6`；example usability/accessibility evidence 的 candidate binding 同步更新，但所有真人欄位仍保持未完成，沒有把 refreeze 冒充真人證據。
+- 本輪只改首頁響應式密度與 science card 排版；formal teaching 仍 `BLOCKED`、formal evaluation 仍 `BLOCKED`、learning effect 仍 `NOT_MEASURED`。
