@@ -130,3 +130,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 新 candidate：`formal-teaching-candidate-2026-09-28-i`；fingerprint：`fnv1a32-js16-04a05a28`。
 - 題目、答案、scoring、scheduler、事件 schema、evidence taxonomy 與 formal evaluation 語義未改。
 - 目前仍缺 R1a 外部回條、三位 target novice usability 與真人 accessibility spot check；正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。
+
+## 2026-09-28 Change note｜Hero 改為 PNG 後重新凍結 candidate
+
+- 依使用者明示要求，首頁 Hero 改為 `assets/homepage/hero.png`；formal candidate critical asset set 因路徑與圖片內容改變而升至 v5。
+- 新 candidate：`formal-teaching-candidate-2026-09-28-j`；fingerprint：`fnv1a32-js16-59c14d2e`。
+- 圖內四步文案與手寫「這步提子，因為已經沒有氣了」只作 learner-facing 插畫文字；本輪未以 rules engine／scoring contract 驗證該圖片棋形，因此不得作正式答案或棋盤真值證據。
+- 題目、scoring、scheduler、first response／retry、事件 schema、evidence taxonomy 與 formal evaluation 語義未改；目前仍缺 R1a 外部回條、三位 target novice usability 與真人 accessibility spot check，正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。

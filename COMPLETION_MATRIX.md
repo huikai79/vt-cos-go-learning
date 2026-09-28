@@ -800,3 +800,10 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **最小修正：** 不改圖片內容與首頁資訊架構，只把 Hero URL 改為 `assets/homepage/hero.webp?v=hero-textfree-v1`，讓瀏覽器視為新資源請求；同步更新 UI regression 對該 URL 的斷言。
 - **Formal candidate：** `index.html` 屬 critical learner surface，因此重新凍結為 `formal-teaching-candidate-2026-09-28-i`，fingerprint `fnv1a32-js16-04a05a28`；事件 `ui_version` 保持 `learner-flow-v50`，因作答、事件與排程語義未變。
 - **證據邊界：** 此修正只處理前端資產快取一致性，不證明真人理解、可用性或學習成效；正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+## 2026-09-28 Change note｜首頁 Hero 改用使用者提供 PNG
+
+- **變更：** 依當輪使用者明示要求，首頁 Hero 從 `assets/homepage/hero.webp` 改為 `assets/homepage/hero.png`；正式資產使用其提供圖片的 960×720 PNG 版本，HTML 維持 4:3 顯示比例，並同步更新 UI regression 與 formal candidate critical asset 清單。
+- **Authority boundary：** PNG 內含「看懂／落子／回饋／換新棋形」以及手寫「這步提子，因為已經沒有氣了」。這些是 learner-facing 插畫文字；本輪沒有用 rules engine 重建該圖片棋形，也沒有把手寫句升格為 scoring、答案、KC 或 formal evaluation 真值。若日後要把該棋形當正式教學答案，需另走內容／棋理驗證。
+- **Formal candidate：** asset set 升至 v5，重新凍結為 `formal-teaching-candidate-2026-09-28-j`，fingerprint `fnv1a32-js16-59c14d2e`；事件 `ui_version` 維持 `learner-flow-v50`，因作答生命週期、事件與排程語義未改。
+- **證據邊界：** 此變更只支持指定 PNG 已成為首頁 Hero；是否更易理解、內容棋理是否完全正確、是否改善開始課程率或學習成效均未由本輪證據驗證。正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
