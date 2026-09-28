@@ -2,6 +2,8 @@ param(
   [Parameter(Mandatory=$true)][string]$KataGoExe,
   [Parameter(Mandatory=$true)][string]$KataGoConfig,
   [Parameter(Mandatory=$true)][string]$KataGoModel,
+  [string]$EngineVersion = "",
+  [string]$ReceiptPath = ".local-evidence\katago-smoke-receipt.json",
   [int]$Port = 8765
 )
 
@@ -10,10 +12,32 @@ foreach ($path in @($KataGoExe, $KataGoConfig, $KataGoModel)) {
   if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing required file: $path" }
 }
 
-$env:VTCOS_KATAGO_EXE = (Resolve-Path -LiteralPath $KataGoExe).Path
-$env:VTCOS_KATAGO_CONFIG = (Resolve-Path -LiteralPath $KataGoConfig).Path
-$env:VTCOS_KATAGO_MODEL = (Resolve-Path -LiteralPath $KataGoModel).Path
+$resolvedExe = (Resolve-Path -LiteralPath $KataGoExe).Path
+$resolvedConfig = (Resolve-Path -LiteralPath $KataGoConfig).Path
+$resolvedModel = (Resolve-Path -LiteralPath $KataGoModel).Path
+
+if (-not $EngineVersion.Trim()) {
+  $versionInfo = (Get-Item -LiteralPath $resolvedExe).VersionInfo
+  $EngineVersion = @($versionInfo.ProductVersion, $versionInfo.FileVersion) |
+    Where-Object { $_ -and $_.Trim() } |
+    Select-Object -First 1
+}
+if (-not $EngineVersion -or -not $EngineVersion.Trim()) {
+  throw "Could not determine KataGo engine version from executable metadata. Re-run with -EngineVersion, for example -EngineVersion '1.18.1'."
+}
+$EngineVersion = $EngineVersion.Trim()
+
+$env:VTCOS_KATAGO_EXE = $resolvedExe
+$env:VTCOS_KATAGO_CONFIG = $resolvedConfig
+$env:VTCOS_KATAGO_MODEL = $resolvedModel
+$env:VTCOS_KATAGO_ENGINE_VERSION = $EngineVersion
 $env:VTCOS_KATAGO_PORT = [string]$Port
+
+$repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
+$receiptFullPath = if ([System.IO.Path]::IsPathRooted($ReceiptPath)) { $ReceiptPath } else { Join-Path $repoRoot $ReceiptPath }
+$receiptDir = Split-Path -Parent $receiptFullPath
+if (-not (Test-Path -LiteralPath $receiptDir)) { New-Item -ItemType Directory -Path $receiptDir -Force | Out-Null }
+Remove-Item -LiteralPath $receiptFullPath -Force -ErrorAction SilentlyContinue
 
 $stdout = Join-Path $env:TEMP "vtcos-katago-bridge.stdout.log"
 $stderr = Join-Path $env:TEMP "vtcos-katago-bridge.stderr.log"
@@ -94,6 +118,63 @@ try {
     if ($null -eq $candidate.order -or $null -eq $candidate.visits) { throw "Comparison candidate lacks order/visits" }
   }
   Write-Host "PASS: Windows KataGo comparison returned both bounded candidates; provider=$($comparison.providerVersion); engine=$($comparison.engineVersion); model=$($comparison.model)"
+
+  if ($comparison.engineVersion -ne $EngineVersion) { throw "Comparison engine version mismatch: expected $EngineVersion, got $($comparison.engineVersion)" }
+  $repoCommit = (& git -C $repoRoot rev-parse HEAD).Trim()
+  if ($LASTEXITCODE -ne 0 -or $repoCommit -notmatch '^[0-9a-fA-F]{40}
+}
+finally {
+  if ($proc -and -not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+}
+) { throw "Could not determine repository commit for smoke receipt" }
+
+  $contractFiles = [ordered]@{}
+  foreach ($relativePath in @(
+    "katago-bridge.cjs",
+    "decision-comparison.js",
+    "katago-comparison-adapter.cjs",
+    "tests/katago-bridge-smoke.ps1"
+  )) {
+    $absolutePath = Join-Path $repoRoot $relativePath
+    $contractFiles[$relativePath] = (Get-FileHash -LiteralPath $absolutePath -Algorithm SHA256).Hash.ToLowerInvariant()
+  }
+
+  $comparisonRequest = $compareBody | ConvertFrom-Json -Depth 8
+  $receipt = [ordered]@{
+    schemaVersion = 1
+    receiptVersion = "katago-windows-smoke-receipt-v1"
+    status = "PASS"
+    generatedAt = (Get-Date).ToUniversalTime().ToString("o")
+    platform = "windows"
+    repositoryCommit = $repoCommit
+    contractFiles = $contractFiles
+    engine = [ordered]@{
+      version = $EngineVersion
+      executableName = [System.IO.Path]::GetFileName($resolvedExe)
+      executableSha256 = (Get-FileHash -LiteralPath $resolvedExe -Algorithm SHA256).Hash.ToLowerInvariant()
+      configName = [System.IO.Path]::GetFileName($resolvedConfig)
+      configSha256 = (Get-FileHash -LiteralPath $resolvedConfig -Algorithm SHA256).Hash.ToLowerInvariant()
+      modelName = [System.IO.Path]::GetFileName($resolvedModel)
+      modelSha256 = (Get-FileHash -LiteralPath $resolvedModel -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+    runtime = [ordered]@{
+      powershellVersion = $PSVersionTable.PSVersion.ToString()
+      nodeVersion = (& node --version).Trim()
+      osVersion = [System.Environment]::OSVersion.VersionString
+    }
+    moveResult = $response
+    comparisonRequest = $comparisonRequest
+    comparisonResult = $comparison
+  }
+  $receipt | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $receiptFullPath -Encoding UTF8
+
+  & node (Join-Path $repoRoot "scripts\verify-katago-smoke-receipt.cjs") $receiptFullPath
+  if ($LASTEXITCODE -ne 0) {
+    Remove-Item -LiteralPath $receiptFullPath -Force -ErrorAction SilentlyContinue
+    throw "Generated KataGo smoke receipt failed repository verification"
+  }
+
+  Write-Host "PASS: receipt saved to $receiptFullPath"
   exit 0
 }
 finally {
