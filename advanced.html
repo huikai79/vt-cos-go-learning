@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="styles.css?v=learner-flow-v45">
   <link rel="stylesheet" href="advanced.css?v=advanced-training-v5">
   <script defer src="go.js"></script>
+  <script defer src="sgf.js?v=sgf-decision-review-v1"></script>
+  <script defer src="advanced-decision-review-events.js?v=advanced-decision-review-v1"></script>
   <script defer src="advanced-content.js?v=advanced-training-v6"></script>
   <script defer src="advanced-events.js?v=advanced-training-v1"></script>
   <script defer src="advanced-sequence-events.js?v=advanced-sequence-v3"></script>
@@ -16,6 +18,7 @@
   <script defer src="advanced-sequence-policy.js?v=advanced-fixed-interleave-v1"></script>
   <script defer src="advanced.js?v=advanced-training-v3"></script>
   <script defer src="advanced-sequence.js?v=advanced-sequence-v6"></script>
+  <script defer src="advanced-decision-review.js?v=advanced-decision-review-v1"></script>
 </head>
 <body class="advanced-page">
   <a class="skip-link" href="#advanced-main">跳到進階訓練</a>
@@ -141,6 +144,41 @@
       </div>
     </section>
 
+    <section class="advanced-decision-review-section" aria-labelledby="decision-review-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">完整棋局複盤 · practice-only</span>
+          <h2 id="decision-review-title">19×19 棋譜決策點複盤</h2>
+        </div>
+        <p>先提出候選，再揭露原著；不把原著當唯一最佳手。</p>
+      </div>
+      <div class="decision-review-card">
+        <div class="decision-review-controls">
+          <label for="decision-review-file"><strong>1. 匯入 19 路 SGF</strong></label>
+          <input id="decision-review-file" type="file" accept=".sgf,application/x-go-sgf">
+          <p id="decision-review-source" class="decision-review-meta">尚未匯入棋譜。</p>
+          <label for="decision-review-move"><strong>2. 選擇一個可落子的決策點</strong></label>
+          <select id="decision-review-move" disabled><option value="">先匯入棋譜</option></select>
+          <p id="decision-review-meta" class="decision-review-meta">原著在你提出第一候選前保持隱藏。</p>
+          <div id="decision-review-feedback" class="feedback" role="status" aria-live="polite">這裡只比較你的候選與歷史原著是否一致，不判定全局最佳手。</div>
+          <div class="advanced-actions">
+            <button class="primary-button" id="decision-review-reveal" type="button" disabled>揭露原著並比較</button>
+          </div>
+          <label for="decision-review-reflection"><strong>復盤備註（揭露後可選）</strong></label>
+          <textarea id="decision-review-reflection" rows="4" disabled placeholder="例如：我漏看了哪個方向？原著和我的候選差在哪裡？"></textarea>
+          <button class="subtle-button" id="decision-review-save-reflection" type="button" disabled>保存復盤備註</button>
+          <p class="answer-policy">紀錄保存 source position、第一候選、retry、原著揭露時間與版本契約；不更新 KC、複習排程、T2／T3 或正式評量。</p>
+        </div>
+        <div class="decision-review-board-wrap">
+          <div id="decision-review-board" class="decision-review-board" aria-label="19 路棋譜決策點盤面"></div>
+          <div class="decision-review-legend" aria-label="決策點複盤符號">
+            <span><i class="decision-candidate-key" aria-hidden="true"></i>你的目前候選</span>
+            <span><i class="decision-original-key" aria-hidden="true"></i>原著（揭露後）</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="advanced-roadmap" aria-labelledby="advanced-roadmap-title">
       <span class="advanced-kicker">接下來怎麼練</span>
       <h2 id="advanced-roadmap-title">進階不是一直往下排單元</h2>
@@ -148,7 +186,7 @@
       <p>多手棋盤練習目前包含四類讀棋題，每類各有兩題。作答前只顯示中性的「棋盤練習」編號，不預先告訴你題型名稱或它和前一題的關係，以減少提示。</p>
       <p>題目會交錯出現：先各做一題，再做同類的變化題，避免相近題目連續出現。每次只開放下一題，完成後才揭示題型名稱與教學重點。變化題至少會改變一項實質條件，例如提子數、逃路形狀、執棋顏色或征子路線長度。</p>
       <p>所有變化題都會重新經過棋盤規則與既定手順驗證。目前這些題目只作練習，因此不能據此判定不同題目的難度相同，也不能證明所學已能穩定運用到新的局面。</p>
-      <p>19×19 對局目前用於自由練習與保存棋譜，不納入正式能力評量。更完整的棋譜重建與關鍵轉折練習，會作為後續獨立的練習內容。</p>
+      <p>19×19 對局仍用於自由練習與保存棋譜，不納入正式能力評量。本頁另提供單一決策點複盤：先保存第一候選，再揭露原著做歷史比較；它仍不是最佳手評分、transfer 證據或正式評量。</p>
     </section>
   </main>
 </body>
