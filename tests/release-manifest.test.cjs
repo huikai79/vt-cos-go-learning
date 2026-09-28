@@ -62,7 +62,7 @@ test("Pages 採無 Jekyll 的 repository root 靜態發布", () => {
     defaultProjectUrl: "https://huikai79.github.io/vt-cos-go-learning/",
     accountCustomDomainInherited: true,
     jekyllDisabled: true,
-    entrypoints: ["index.html", "advanced.html", "classic-shapes.html", "history.html", "live-game.html", "r1-review-start.html", "r1-review.html"]
+    entrypoints: ["index.html", "advanced.html", "classic-shapes.html", "history.html", "global-go-observatory.html", "live-game.html", "r1-review-start.html", "r1-review.html"]
   });
   assert.equal(fs.statSync(path.join(root, ".nojekyll")).isFile(), true);
 });
@@ -188,4 +188,15 @@ test("R1a reviewer handoff 是公開 reviewer-only entrypoint", () => {
   assert.match(html, /go-r1-independent-content-review-v5/);
   assert.match(html, /fnv1a32-c34ef6a4/);
   assert.match(html, /href="r1-review\.html"/);
+});
+
+
+test("全球圍棋觀察是公開研究入口，但不進 learner runtime", () => {
+  assert.ok(manifest.hosting.entrypoints.includes("global-go-observatory.html"));
+  for (const file of ["global-go-observatory.html", "global-go-observatory.css", "research/global-go-observatory-v1.md", "tests/global-go-observatory.test.cjs"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+  const html = fs.readFileSync(path.join(root, "global-go-observatory.html"), "utf8");
+  assert.doesNotMatch(html, /src="(?:app|scheduler|learner-progress|learning-metrics|practice-events|live-evidence)\\.js/);
+  assert.match(html, /研究資料不評分學習者/);
 });
