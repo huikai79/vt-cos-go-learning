@@ -204,3 +204,12 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - learner-facing critical surface 因 styles.css 改動，formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-q`，fingerprint `fnv1a32-js16-681f5de6`；此值來自 PR #94 首輪 CI 對精確 candidate surface 的 fail-closed 重算。
 - 不修改題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 或 formal evaluation 語義；example evidence 僅更新 candidate binding，所有真人 evidence 仍為 false/null，未偽造完成紀錄。
 - 正式教學仍 `BLOCKED`（R1a 外部回條、target novice usability、真人 accessibility 尚未完成）；正式評量仍 `BLOCKED`；學習成效仍 `NOT_MEASURED`。本次 CI 只能驗證工程與 candidate binding 一致性。
+
+
+## 2026-09-29 Change note｜Math Explore 首頁入口後重新凍結 candidate
+
+- 首頁既有 Explore 區增加 `math.html` 低優先入口，因此 `index.html` critical surface 發生變化；candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-r`，fingerprint `fnv1a32-js16-9962b0b5`。
+- `math.html` 本身是 research/content Explore 頁，不載入 learner runtime；不改五項 critical tasks、題目、scoring、scheduler、learner events、KC、T2/T3 或 formal evaluation。
+- HKBU 2024 七人質性研究已明確降格為感知策略連結線索，不作實測 transfer evidence。
+- 重新凍結不產生真人證據；R1a、至少三位 target novice usability 與真人 accessibility spot check 仍缺，因此正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
+
