@@ -43,7 +43,7 @@ test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 p
   const full = content.tracks.find((track) => track.id === "full-board-review");
   assert.equal(full.status, "active");
   assert.equal(full.href, "live-game.html?size=19");
-  assert.match(full.summary, /practice/);
+  assert.match(full.summary, /全盤實戰練習/);
   assert.match(html, /不納入正式能力評量/);
   assert.equal(content.experiences.length, 8);
   for (const item of content.experiences) {
