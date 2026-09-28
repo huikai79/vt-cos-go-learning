@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="從氣與提子開始，以短教學、落子練習、具體回饋與新棋形，一步一步學圍棋。">
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
   <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v50">
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v52">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -41,7 +41,7 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v50"></script>
+  <script defer src="app.js?v=learner-flow-v52"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
@@ -179,7 +179,7 @@
               </div>
             </div>
             <figure class="intro-hero-art">
-              <img class="intro-hero-image" src="assets/homepage/hero.webp?v=hero-textfree-v1" alt="九路棋盤風格插畫，金色標記強調一個觀察落點" width="960" height="720">
+              <img class="intro-hero-image" src="assets/homepage/hero.webp" alt="九路棋盤與看懂、落子、回饋、換新棋形四步學習流程插畫" width="640" height="387">
               <ol class="intro-loop intro-loop-sr" aria-label="每次學習的四個步驟">
                 <li><span>1</span><div><strong>看懂</strong><small>一次先抓一個棋盤概念</small></div></li>
                 <li><span>2</span><div><strong>落子</strong><small>自己先做，不先看答案</small></div></li>
@@ -402,7 +402,10 @@
               <p class="field-help" id="sgf-export-help">會下載保留局面、原著手與你的復盤紀錄的 SGF；可用 KaTrain 開啟，這裡不會自動判定好壞。</p>
               <p class="sgf-review-status" id="sgf-review-status" role="status" aria-live="polite"></p>
             </section>
+            <div id="system-status" class="aux-feedback system-status" role="alert" hidden></div>
             <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+            <div id="interaction-feedback" class="aux-feedback interaction-feedback" role="status" aria-live="polite" hidden></div>
+            <div id="hint-feedback" class="aux-feedback hint-feedback" role="status" aria-live="polite" hidden></div>
             <div class="question-actions">
               <button class="subtle-button" id="hint-button" type="button">給我一點提示</button>
               <button class="primary-button" id="next-button" type="button" disabled>下一題 <span aria-hidden="true">→</span></button>

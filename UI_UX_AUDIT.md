@@ -248,3 +248,8 @@
 
 
 2026-09-28 v50 mockup alignment：使用者明確指定先前整頁 mockup 為首頁版面基準。此次不再把 mockup 當「風格參考」而保留另一套 IA，而是對齊其 desktop hierarchy：header 導覽、Hero 大圖、三階段入口、四格 learning cycle、四張研究動作卡與下方雙欄。為保持 evidence authority，第 4 格只標示 outcome summary；實際 learner evidence 仍是 first response、delayed retrieval 與 new-shape/transfer 三條既有鏈。375px 仍須保持單欄與無水平溢出；是否更容易讓真人選對入口仍待 usability evidence。
+
+
+## 2026-09-28｜M1 作答閉環修正（v52）
+
+M1 不重畫整個 workspace；保留桌面棋盤左／問題與作答右，以及窄版問題→棋盤→作答的既有骨架。修正可觀察的 feedback collision：答案結果、提示、棋盤非法操作與本機儲存警告改為不同 region。Wrong 後 Hint 不再抹掉結果；Correct 後 Hint 不再與 Next 競爭；非法操作不冒充 answer incorrect；storage warning 不覆蓋答案結果。這些只屬工程與資訊層級修正，是否讓 375px 初學者更快察覺結果仍需真人 formative observation／正式 usability gate。

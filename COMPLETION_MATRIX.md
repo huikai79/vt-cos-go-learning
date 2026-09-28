@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v5`
-- `ui_version`: `learner-flow-v50`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v52`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -786,17 +786,10 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **candidate：** `formal-teaching-candidate-2026-09-28-f`，fingerprint `fnv1a32-js16-bbbe09bc`，asset set version 4；第四張 learning-cycle WebP 納入 frozen surface。
 - **證據邊界：** 正式教學仍 `BLOCKED`、formal evaluation 仍 `BLOCKED`、learning effect 仍 `NOT_MEASURED`；mockup 對齊與 CI PASS 只支持 learner-facing 工程契約。
 
-## 2026-09-28 Change note｜首頁 Hero 無字棋盤主視覺
 
-- **變更：** 保留既有首頁資訊架構、主標題、CTA、四步學習流程與三階段入口，只替換 `assets/homepage/hero.webp` 為無內嵌文字的棋盤編輯式插畫；`index.html` 同步修正圖片尺寸與中性替代文字。
-- **目的：** 讓首頁標題與按鈕仍由 HTML 承擔語意與響應式排版，圖片只負責建立「先觀察棋形，再落子」的視覺情境，避免圖片文字與頁面主標題重複。
-- **Authority boundary：** 圖中的棋盤與金色標記是概念視覺，不作 rules engine、scoring contract、答案、KC、scheduler、learner state 或 formal evaluation 真值。
-- **Formal candidate：** critical learner surface 因 Hero 資產與其 HTML metadata 改變，重新凍結為 `formal-teaching-candidate-2026-09-28-h`，fingerprint `fnv1a32-js16-1e54e467`；事件 `ui_version` 維持 `learner-flow-v50`，因本輪沒有改作答、事件或排程語義。
-- **證據邊界：** 此變更只支持首頁視覺資產已更新；是否更容易理解、是否提高開始課程率或學習成效均尚未由真人證據驗證。正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+## 2026-09-28 Change note｜M1 作答閉環 feedback separation
 
-## 2026-09-28 Change note｜Hero 圖片 cache-busting
-
-- **問題：** 新 Hero 已部署，但部分手機瀏覽器仍沿用舊的 `assets/homepage/hero.webp` 快取，因此使用者看到的仍是舊版四步文字 Hero。
-- **最小修正：** 不改圖片內容與首頁資訊架構，只把 Hero URL 改為 `assets/homepage/hero.webp?v=hero-textfree-v1`，讓瀏覽器視為新資源請求；同步更新 UI regression 對該 URL 的斷言。
-- **Formal candidate：** `index.html` 屬 critical learner surface，因此重新凍結為 `formal-teaching-candidate-2026-09-28-i`，fingerprint `fnv1a32-js16-04a05a28`；事件 `ui_version` 保持 `learner-flow-v50`，因作答、事件與排程語義未變。
-- **證據邊界：** 此修正只處理前端資產快取一致性，不證明真人理解、可用性或學習成效；正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+- **問題：** answer result、hint、非法操作與 storage warning 曾共用 `#feedback`，Wrong 後開 Hint 會覆蓋答錯結果，system failure 也可能遮掉 answer result。
+- **實作：** `learner-flow-v52` 分離 Result／Hint／Interaction／System Status；Correct 後隱藏 hint 入口並降低作答說明，Wrong 保留原題 retry；非法操作只進 interaction status，不建立 answer event 或揭露 takeaway。
+- **反證：** 新增 Wrong→Hint、Wrong→Correct retry、Illegal move、storage failure 不覆蓋 result 的 regression；既有 evaluation masking 與 first-response lifecycle 測試保留。
+- **狀態：** 工程候選；正式 usability 仍 `NOT_TESTED`，正式教學 `BLOCKED`，learning effect `NOT_MEASURED`。

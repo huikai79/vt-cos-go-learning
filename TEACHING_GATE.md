@@ -117,16 +117,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **邊界：** Core critical surface 的變更限於顯示文字與人可閱讀匯出；題目答案、KC、scheduler、scoring、事件 schema、evidence taxonomy、ontology 與 formal evaluation 語義未改。
 - **證據狀態：** 重新凍結 candidate 不會產生真人證據；正式教學仍依 R1a、至少三位 target novice usability 與真人 accessibility spot check 判定，正式評量與學習成效也不因本次語言清理升格。
 
-## 2026-09-28 Change note｜Hero 視覺更新後重新凍結 candidate
 
-- 首頁 Hero 換成無內嵌文字的棋盤編輯式插畫，並同步 `index.html` 的圖片尺寸與中性替代文字；題目、答案、scoring、scheduler、事件 schema、evidence taxonomy 與 formal evaluation 語義未改。
-- 新 candidate：`formal-teaching-candidate-2026-09-28-h`；fingerprint：`fnv1a32-js16-1e54e467`。
-- 生成圖只作 learner-facing 視覺／概念提示，不取得棋盤真值 authority。
-- 目前仍沒有此 candidate 的三位 target novice usability evidence 或真人 accessibility spot check；R1a 外部回條也仍待完成，因此正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。
+## 2026-09-28 Change note｜M1 作答閉環 feedback separation
 
-## 2026-09-28 Change note｜Hero cache-busting 後重新凍結 candidate
-
-- Hero 圖片網址加入 `?v=hero-textfree-v1`，避免瀏覽器沿用舊 Hero 快取；圖片本體與 learner-facing 語意未改。
-- 新 candidate：`formal-teaching-candidate-2026-09-28-i`；fingerprint：`fnv1a32-js16-04a05a28`。
-- 題目、答案、scoring、scheduler、事件 schema、evidence taxonomy 與 formal evaluation 語義未改。
-- 目前仍缺 R1a 外部回條、三位 target novice usability 與真人 accessibility spot check；正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。
+- **變更：** `learner-flow-v52` 將一般作答結果、提示、棋盤非法操作與本機儲存警告分成四個不同 region；Wrong → Hint 不再覆蓋 answer result，Correct 後不再讓提示與 Next 競爭，非法操作不使用 answer-error 語義。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-h`，fingerprint `fnv1a32-js16-c28d3665`；critical tasks 不變。
+- **不可破壞 invariant：** first response／retry、scoring、scheduler、storage schema、event schema、evidence taxonomy、formal evaluation masking 均未改。
+- **證據狀態：** 自動 regression 只支持工程契約；正式三位 target novice usability 與真人 accessibility 仍 `NOT_TESTED`，正式教學維持 `BLOCKED`。

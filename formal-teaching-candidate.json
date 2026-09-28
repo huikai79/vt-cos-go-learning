@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-28-i",
-  "frozenAt": "2026-09-28T19:21:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-28-h",
+  "frozenAt": "2026-09-28T19:35:00+08:00",
   "assetSetVersion": 4,
-  "assetFingerprint": "fnv1a32-js16-04a05a28",
+  "assetFingerprint": "fnv1a32-js16-c28d3665",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -39,5 +39,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v50：只對首頁 Hero 圖片 URL 加入明確 cache-busting query，確保瀏覽器重新抓取已核准的無文字棋盤插畫；畫面內容、題目、scoring、scheduler、事件、evidence taxonomy 與 formal evaluation 語義不變。"
+  "scopeNote": "learner-flow-v52：M1 作答閉環修正。將答案結果、提示、棋盤非法操作與本機儲存警告分成不同 learner-facing region；答錯後提示不再覆蓋結果，非法操作不冒充答錯。保留 first response／retry、scoring、scheduler、事件 schema、evidence taxonomy 與 formal evaluation 遮蔽語義。"
 }

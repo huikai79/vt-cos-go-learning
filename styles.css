@@ -74,6 +74,12 @@ svg .board-hit{fill:transparent;cursor:pointer}svg .board-hit:hover{fill:#ffffff
 .feedback.answer-result.success .feedback-badge{background:#1f6a3b;color:#fff}
 .feedback.answer-result.error{background:#fff4ec;border-color:#d79a75;color:#7f371f}
 .feedback.answer-result.error .feedback-badge{background:#a94f2d;color:#fff}
+.answer-card .feedback:empty{display:none}
+.aux-feedback{box-sizing:border-box;max-width:42em;margin-top:12px;padding:12px 14px;border:1px solid;border-radius:9px;font-size:1rem;line-height:1.65}
+.aux-feedback[hidden]{display:none}
+.hint-feedback{background:#f5f7ee;border-color:#bdcda8;color:#35543b}
+.interaction-feedback{background:#fff8e9;border-color:#d7bb7a;color:#6f5520}
+.system-status{background:#fff1e8;border-color:#d39a74;color:#743d25}
 .subtle-button,.primary-button{font-size:.875rem;min-height:44px}
 .subtle-button{color:#315c3e}
 .takeaway span{font-size:.875rem;color:#3d6547}

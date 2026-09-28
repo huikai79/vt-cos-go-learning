@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v50";
+  const uiVersion = "learner-flow-v52";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -180,6 +180,7 @@
       }));
       storageWriteFailed = false;
       storageWarningMessage = "";
+      clearAuxiliaryFeedback("system-status");
       return true;
     }
     catch (_) {
@@ -282,15 +283,28 @@
     target.textContent = `${readiness ? "資料收集：" + readiness.label + "。" : ""}${skillText}`;
   }
 
+  function clearAuxiliaryFeedback(id) {
+    const target = $(id);
+    if (!target) return;
+    target.hidden = true;
+    target.textContent = "";
+  }
+
+  function showAuxiliaryFeedback(id, message) {
+    const target = $(id);
+    if (!target) return;
+    target.textContent = message || "";
+    target.hidden = !message;
+  }
+
   function showStorageWarning() {
-    const feedback = $("feedback");
-    if (!feedback) return;
+    const status = $("system-status");
+    if (!status) return;
+    clearAuxiliaryFeedback("system-status");
     if (storageWriteFailed) {
-      feedback.className = "feedback error";
-      feedback.textContent = storageWarningMessage;
+      showAuxiliaryFeedback("system-status", storageWarningMessage);
     } else if (storageRecoveryNotice) {
-      feedback.className = "feedback error";
-      feedback.textContent = storageRecoveryNotice;
+      showAuxiliaryFeedback("system-status", storageRecoveryNotice);
       storageRecoveryNotice = "";
     }
   }
@@ -1156,8 +1170,12 @@
     $("takeaway").hidden = true;
     $("feedback").className = "feedback";
     $("feedback").textContent = "";
+    clearAuxiliaryFeedback("interaction-feedback");
+    clearAuxiliaryFeedback("hint-feedback");
+    $("hint-button").hidden = false;
     $("hint-button").textContent = "給我一點提示";
     $("hint-button").disabled = state.externalMode === "evaluation";
+    $("answer-policy").hidden = false;
     $("next-button").disabled = true;
     const nextCourseProblem = !state.scheduledProblem && state.index < problems.length - 1 ? problems[state.index + 1] : null;
     const nextLesson = nextCourseProblem ? lessons[nextCourseProblem.lesson] : null;
@@ -1234,6 +1252,7 @@
     }
     const isFirstAnswer = state.answersThisTurn === 0;
     state.answersThisTurn += 1;
+    clearAuxiliaryFeedback("interaction-feedback");
     if (state.externalMode === "evaluation") {
       state.trial = Trial.recordAnswer(state.trial, state.evaluationBatch, problem, correct, answerValue, elapsedMs(), Date.now(), { uiVersion });
       state.solved = true;
@@ -1284,6 +1303,9 @@
         ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原著一致</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`
         : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">答對了</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
       $("next-button").disabled = false;
+      $("hint-button").hidden = true;
+      $("answer-policy").hidden = true;
+      clearAuxiliaryFeedback("hint-feedback");
       renderBoard();
       for (const button of $("answer-area").querySelectorAll("button")) button.disabled = true;
     } else {
@@ -1316,10 +1338,10 @@
     if (problem.type !== "move") return;
     const result = playMove(state.board, x, y, current().playerColor || BLACK);
     if (!result.legal) {
-      $("feedback").className = "feedback error";
-      $("feedback").textContent = result.reason;
+      showAuxiliaryFeedback("interaction-feedback", result.reason);
       return;
     }
+    clearAuxiliaryFeedback("interaction-feedback");
     const correct = goalReached(problem, state.board, result, [x, y]);
     if (correct && state.externalMode !== "evaluation") {
       state.board = result.board;
@@ -1549,7 +1571,10 @@
     const x = Number(point.dataset.x);
     const y = Number(point.dataset.y);
     if (state.externalMode !== "evaluation") setBoardCursor(x, y, false);
-    if (point.dataset.occupied === "true") return;
+    if (point.dataset.occupied === "true") {
+      showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+      return;
+    }
     onMove(x, y);
   });
   $("board").addEventListener("keydown", (event) => {
@@ -1563,14 +1588,16 @@
     }
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      if (point.dataset.occupied === "true") return;
+      if (point.dataset.occupied === "true") {
+        showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+        return;
+      }
       onMove(Number(point.dataset.x), Number(point.dataset.y));
     }
   });
   $("hint-button").addEventListener("click", () => {
     if (state.solved || state.hintShown || state.externalMode === "evaluation") return;
-    $("feedback").className = "feedback";
-    $("feedback").textContent = current().hint;
+    showAuxiliaryFeedback("hint-feedback", current().hint);
     state.hintShown = true;
     markCurrentLessonIntroSeen();
     recordEvent("hint", {
