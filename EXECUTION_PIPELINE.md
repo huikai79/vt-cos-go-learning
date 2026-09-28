@@ -1,7 +1,7 @@
 2026-09-29 Change note｜KataGo real-engine receipt v1
 
 - **bottleneck：** Decision Point Comparison v1 的 contract／adapter／browser flow 已通過 CI，但 CI 沒有實際 KataGo executable、config 與 model；因此仍缺一份能證明「這組公開 contract 曾由真引擎完整跑通」的可重算本機證據。
-- **實作：** `tests/katago-bridge-smoke.ps1` 成功跑完 `/v1/move` 與 `/v1/compare` 後，才產生 `.local-evidence/katago-smoke-receipt.json`。receipt 保存 repository commit、四個關鍵 contract file SHA-256、KataGo executable/config/model SHA-256、engine version、Windows/PowerShell/Node runtime、move result、完整 bounded comparison request/result。
+- **實作：** `tests/katago-bridge-smoke.ps1` 成功跑完 `/v1/move` 與 `/v1/compare` 後，才產生 `.local-evidence/katago-smoke-receipt.json`。receipt 保存 repository commit、五個關鍵 contract file SHA-256、KataGo executable/config/model SHA-256、engine version、Windows/PowerShell/Node runtime、move result、完整 bounded comparison request/result。
 - **驗證：** `katago-smoke-receipt.cjs` 與 `scripts/verify-katago-smoke-receipt.cjs` 檢查 receipt schema、engine/model identity、request/result identity、兩候選 bounded authority 與 current contract hashes；stale contract、unknown engine version、model mismatch、以及 result 內出現 correct/mastery/transfer inference 都 fail closed。
 - **privacy／publication：** `.local-evidence/` 永不列入 public release；只公開 receipt contract、verifier 與 tests。receipt 只保存檔名與 SHA-256，不保存 executable/config/model 路徑或檔案內容。
 - **目前狀態：** `READY_FOR_LOCAL_RUN / BLOCKED_ON_LOCAL_RECEIPT`。本輪執行環境沒有使用者 Windows KataGo executable/model，因此不得標真機 PASS。
