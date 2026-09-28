@@ -228,7 +228,7 @@ test("R1a reviewer handoff 綁定目前 v5 protocol/fingerprint 且不揭露答�
   assert.match(handoff, new RegExp(ReviewVerifier.PROTOCOL_ID));
   assert.match(handoff, new RegExp(ReviewVerifier.fingerprint(ReviewVerifier.reviewItems)));
   assert.match(handoff, /77 題/);
-  assert.match(handoff, /不要瀏覽本專案 repository/);
+  assert.match(handoff, /不要瀏覽本專案的 GitHub 原始碼庫/);
   assert.match(handoff, /href="r1-review\.html"/);
   assert.doesNotMatch(handoff, /phase2-(foundation-bank|life-death-bank|content)\.js/);
   assert.doesNotMatch(handoff, /problem\.answer|expectedMove|correctMove/);

@@ -572,7 +572,7 @@
     if(!validation.ok) throw new Error("Four-space status item invalid: " + validation.errors.join("; "));
     fourStatusSolved=false;
     fourStatusHintShown=false;
-    $("four-status-tag").textContent=(fourStatusIndex+1) + " / " + fourStatusRounds.length + " · rules-backed status";
+    $("four-status-tag").textContent=(fourStatusIndex+1) + " / " + fourStatusRounds.length + " · 規則核對";
     $("four-status-question").textContent=contract==="curved-four"
       ? "曲四：攻方先走，殺得死嗎？"
       : validation.shapeKind==="square-four" ? "守方先走，還救得活嗎？" : "攻方先走，殺得死嗎？";
@@ -842,7 +842,7 @@
     goldenChickenSolved=false;
     goldenChickenHintShown=false;
     goldenChickenCursor=initialGoldenChickenCursor(item,validation.position);
-    $("golden-chicken-tag").textContent=(goldenChickenIndex+1) + " / " + GoldenChicken.items.length + " · tesuji mechanism";
+    $("golden-chicken-tag").textContent=(goldenChickenIndex+1) + " / " + GoldenChicken.items.length + " · 手筋機制";
     $("golden-chicken-title").textContent=goldenChickenIndex===0 ? "找讓 1 氣變 2 氣的一路立" : "換方向／棋色，再找同一機制";
     $("golden-chicken-prompt").textContent=item.prompt;
     $("golden-chicken-feedback").className="feedback";
@@ -946,7 +946,7 @@
     bigPigsMouthSolved=false;
     bigPigsMouthHintShown=false;
     bigPigsMouthCursor=initialBigPigsMouthCursor(item,validation.position);
-    $("big-pigs-mouth-tag").textContent=(bigPigsMouthIndex+1) + " / " + BigPigsMouth.items.length + " · exact source case";
+    $("big-pigs-mouth-tag").textContent=(bigPigsMouthIndex+1) + " / " + BigPigsMouth.items.length + " · 固定來源局面";
     $("big-pigs-mouth-title").textContent=bigPigsMouthIndex===0 ? "固定實戰局面的第一手" : "旋轉後重新定位第一手";
     $("big-pigs-mouth-prompt").textContent=item.prompt;
     $("big-pigs-mouth-feedback").className="feedback";
@@ -1256,7 +1256,7 @@
     reductionSolved=false;
     reductionHintShown=false;
     reductionCursor=candidates[0].slice();
-    $("reduction-tag").textContent=(reductionIndex+1)+" / "+Reduction.items.length+" · sealed local branch";
+    $("reduction-tag").textContent=(reductionIndex+1)+" / "+Reduction.items.length+" · 完全包圍的局部變化";
     $("reduction-title").textContent=reductionIndex===0?"填滿 2×2 核心":"鏡像後再找 2×2 核心";
     $("reduction-prompt").textContent=item.prompt;
     $("reduction-feedback").className="feedback";
@@ -1264,7 +1264,7 @@
     $("reduction-terminal").hidden=true;
     $("reduction-hint").disabled=false;
     $("reduction-next").disabled=true;
-    $("reduction-next").textContent=reductionIndex===Reduction.items.length-1?"完成 sealed reduction":"下一題 →";
+    $("reduction-next").textContent=reductionIndex===Reduction.items.length-1?"完成縮眼練習":"下一題 →";
     renderReductionBoard();
   }
 

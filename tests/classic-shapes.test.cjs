@@ -666,7 +666,7 @@ test("contrast contract 對連續同 family、缺 source 與偷偷塞答案 fail
 });
 
 test("contrast UI 首答前隱藏 family，答後才揭示，且不宣稱 transfer", () => {
-  assert.match(html, /刀把五 vs 梅花五：混合辨形/);
+  assert.match(html, /刀把五與梅花五：混合辨形/);
   assert.match(html, /作答前不顯示名稱/);
   assert.match(html, /混合練習本身不另外保存答案/);
   assert.match(html, /答對只代表這一題第一手正確，不代表已經能穩定運用到其他棋形/);
@@ -972,7 +972,7 @@ test("曲四 ontology 明確與盤角曲四分離", () => {
   assert.ok(concept.negativeMappings.some((item)=>item.name==="Bent Four in the Corner" && item.status==="blocked"));
   assert.equal(entry.practiceStatus,"playable_rules_backed_status_proof_contract");
   assert.ok(entry.geometryEvidence.some((item)=>item.id==="curved-four-contract-geometry-v1"));
-  assert.match(html,/方四 vs 直四 vs 曲四/);
+  assert.match(html,/方四、直四與曲四/);
   assert.match(html,/classic-curved-four-status-contract\.js\?v=classic-curved-four-status-v1/);
   assert.match(js,/GoCurvedFourStatusContract/);
 });
@@ -1004,7 +1004,7 @@ test("方四／直四 ontology 與 geometry evidence 對齊 status proof", () =>
   assert.equal(straightEntry.practiceStatus,"playable_rules_backed_status_proof_contract");
   assert.ok(squareEntry.geometryEvidence.some((item)=>item.id==="square-four-contract-geometry-v1"));
   assert.ok(straightEntry.geometryEvidence.some((item)=>item.id==="straight-four-contract-geometry-v1"));
-  assert.match(html,/方四 vs 直四 vs 曲四：不是每個眼形都有「唯一急所」/);
+  assert.match(html,/方四、直四與曲四：不是每個眼形都有「唯一急所」/);
   assert.match(html,/classic-four-space-status-contract\.js\?v=classic-four-space-status-v1/);
   assert.match(js,/GoFourSpaceStatusContract/);
 });

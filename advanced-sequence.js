@@ -365,7 +365,7 @@
   renderSequenceList();
   const initialStage = stageState();
   if (!initialStage.ok) {
-    setBlocked("固定交錯紀錄不可讀；已 fail closed，不會猜測下一題。");
+    setBlocked("固定交錯紀錄無法讀取；這組題目已暫停，不會猜測下一題。");
   } else {
     experienceIndex = initialStage.complete ? 0 : initialStage.nextIndex;
     beginPresentation();

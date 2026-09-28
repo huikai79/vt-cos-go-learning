@@ -47,7 +47,7 @@
       eyeSpace:[[2,2],[1,3],[2,3],[3,3],[2,4]],
       vitalPoint:[2,3],
       prompt:"換成白棋守方，而且整個十字形移到左側。不要找棋盤中央，請找棋形中央。",
-      hint:"比較眼空彼此的連接；唯一 degree-4 點才是急所。",
+      hint:"比較眼位彼此的連接；唯一同時連著上下左右四個眼位的點才是急所。",
       success:"對。位置改變後，急所仍由棋形結構決定，不是棋盤中心。",
       revealName:"梅花五／Cross Five",
       variationAxes:["role:defender","position:left-shift","color:white"],
@@ -65,7 +65,7 @@
       vitalPoint:[3,2],
       prompt:"最後一題把十字形上移並交換棋色。輪到黑棋攻，第一手共同急所在哪裡？",
       hint:"不要沿用上一題座標；重新找唯一接觸四個眼空的中心。",
-      success:"對。跨位置與棋色後仍能找中央，才是在辨識 family，而不是記座標。",
+      success:"對。位置和棋色改變後仍能找到中央，表示你是在辨認同類棋形，而不是只記座標。",
       revealName:"梅花五／Cross Five",
       variationAxes:["role:attacker","position:up-shift","color:black"],
       scoringContractVersion:"classic-cross-five-vital-point-v1"

@@ -122,7 +122,7 @@ test("重複 participant code 不得冒充三位獨立初學者", () => {
 
 test("formal teaching candidate manifest 必須與目前 critical surface 動態指紋一致", () => {
   const result = CandidateVerifier.evaluateManifest(candidateManifest);
-  assert.equal(result.valid, true, result.errors.join("; "));
+  assert.equal(result.valid, true, result.errors.join("; ") + `; computed=${result.computedFingerprint}`);
   assert.equal(result.candidateId, gateDefinition.formalTeachingCandidateId);
   assert.equal(result.computedFingerprint, gateDefinition.formalTeachingCandidateFingerprint);
   assert.equal(result.assetFingerprint, result.computedFingerprint);

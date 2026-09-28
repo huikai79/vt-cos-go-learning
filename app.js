@@ -1390,7 +1390,7 @@
       for (const skill of skills) {
         const eligible = skillEvents.filter((event) => event.type === "answer" && event.skillId === skill.id && event.qualifiedOpportunity);
         const correct = eligible.filter((event) => event.outcome === "correct").length;
-        lines.push(`- ${skill.name}（${skill.id} v${skill.version}）：可比較機會 ${eligible.length} 次；首答正確 ${correct} 次。`);
+        lines.push(`- ${skill.name}：可比較機會 ${eligible.length} 次；第一次作答正確 ${correct} 次。`);
       }
     }
     const diagnostics = Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses });
@@ -1399,13 +1399,15 @@
     for (const skill of diagnostics.skills) lines.push(`- ${diagnosticSummaryText({ skills: [skill] })}`);
     lines.push(`- 未納入診斷的提示後或資格不明作答：${diagnostics.excludedResponsesWithoutQualification} 筆。`, "");
     if (skillEvents.length) {
-      lines.push("", "## 試行技能事件", "", "| 時間 | 技能 | 題目 | 事件 | 條件 | 結果 | 經過時間 |", "| --- | --- | --- | --- | --- | --- | --- |");
+      lines.push("", "## 練習作答紀錄", "", "| 時間 | 技能 | 題目 | 事件 | 條件 | 結果 | 經過時間 |", "| --- | --- | --- | --- | --- | --- | --- |");
       for (const event of skillEvents) {
         const eventName = event.type === "presented" ? "顯示題目" : event.type === "presentation_end" ? "結束題目" : event.type === "hint" ? "顯示提示" : (event.firstAnswer ? "首次作答" : "重試作答");
         const condition = event.type === "answer" ? (event.unhinted ? "未提示" : "提示後") : event.type === "hint" ? "提示" : "—";
         const outcome = event.type === "answer" ? (event.outcome === "correct" ? "正確" : "錯誤") : event.type === "presentation_end" ? (event.outcome === "solved" ? "已解出" : event.outcome === "unanswered" ? "未作答" : "中斷") : "—";
         const duration = Number.isFinite(event.elapsedMs) ? `${Math.round(event.elapsedMs / 1000)} 秒` : "—";
-        lines.push(`| ${event.occurredAt} | ${event.skillId} | ${event.problemId} | ${eventName} | ${condition} | ${outcome} | ${duration} |`);
+        const readableSkill = (skills.find((item) => item.id === event.skillId) || { name: event.skillId }).name;
+        const readableProblem = (problems.find((item) => item.id === event.problemId) || { title: event.problemId }).title;
+        lines.push(`| ${event.occurredAt} | ${readableSkill} | ${readableProblem} | ${eventName} | ${condition} | ${outcome} | ${duration} |`);
       }
     }
     if (livePractice.ok && livePractice.summary && livePractice.summary.totalEvents) {
@@ -1437,7 +1439,7 @@
       }
     }
         const trialSummary = Trial.summarize(state.trial, state.applicationResults, state.applicationEvents);
-    lines.push("", "## 個人縱向試行", "", `- 目前判斷：${trialSummaryText(trialSummary)}`, `- 固定應用探測：${trialSummary.application.correct} / ${trialSummary.application.total}；呈現 ${trialSummary.application.presented} 次；未答／中斷 ${trialSummary.application.unansweredOrInterrupted} 次；不適用局面誤用 ${trialSummary.application.inappropriateUseErrors} 次；提示後或重複結果排除 ${trialSummary.application.excludedHintedOrRepeated} 次`, `- 判讀限制：${Trial.protocol.interpretation}`);
+    lines.push("", "## 個人縱向試行", "", `- 目前判斷：${trialSummaryText(trialSummary)}`, `- 局面應用練習：${trialSummary.application.correct} / ${trialSummary.application.total}；呈現 ${trialSummary.application.presented} 次；未答／中斷 ${trialSummary.application.unansweredOrInterrupted} 次；不適用局面誤用 ${trialSummary.application.inappropriateUseErrors} 次；提示後或重複結果排除 ${trialSummary.application.excludedHintedOrRepeated} 次`, `- 判讀限制：${Trial.protocol.interpretation}`);
     if (state.localExercises.length) {
       lines.push("", "## 棋譜局部複習", "", "以下是原局著手重建，不能單獨證明實戰改善；原判斷僅供日後人工復盤。", "");
       for (const entry of state.localExercises) {
