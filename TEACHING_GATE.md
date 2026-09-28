@@ -175,3 +175,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - candidate-set 語義由「all rules-legal moves」修正為 `board-intersection-attempts-rules-checked-v1`：非法第一次點擊仍屬實際 first response，規則合法性另欄保存，不得用名稱事後排除。
 - Windows browser regression 新增實際 File 匯入 → 選第 3 手 → 提出與原著不同的合法候選 → 揭露原著；事件必須保持 candidate 無答案、reveal 無 correctness。
 - shared `sgf.js` bytes 再變更，formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-p`／`fnv1a32-js16-16855e4f`。真人 gate 狀態不變。
+
+
+## 2026-09-29 Change note｜Decision Point Comparison v1
+
+- Advanced 新增的 KataGo 兩手比較不在 formal Core critical asset set，故 formal candidate `formal-teaching-candidate-2026-09-29-p`／`fnv1a32-js16-16855e4f` 不重凍結。
+- engine result 固定是 bounded computational evidence，不提供 scoring authority，也不進 formal evaluation。
+- R1a 外部回條、三位 target novice usability、真人 keyboard／screen reader spot check 仍缺；formal teaching = `BLOCKED`、formal evaluation = `BLOCKED`、learning effect = `NOT_MEASURED`。

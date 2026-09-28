@@ -157,6 +157,9 @@ jobs:
                 '19×19 棋譜決策點複盤',
                 'advanced-decision-review-events.js?v=advanced-decision-review-v1',
                 'advanced-decision-review.js?v=advanced-decision-review-v1',
+                'decision-comparison.js?v=decision-comparison-v1',
+                '用 KataGo 再比較這兩手（選用）',
+                '固定搜尋量下的估計',
                 '不把原著當唯一最佳手'
               ]
             },

@@ -214,3 +214,6 @@ test("全球圍棋觀察是公開研究入口，但不進 learner runtime", () =
 
 
 test("SGF decision review runtime 與 negative test 列入公開發佈清單",()=>{for(const file of ["advanced-decision-review-events.js","advanced-decision-review.js","tests/advanced-decision-review.test.cjs"])assert.ok(manifest.publicFiles.includes(file),file);});
+
+
+test("decision comparison runtime 與 contract tests 列入公開發佈清單",()=>{for(const file of ["decision-comparison.js","decision-comparison-provider.js","advanced-decision-comparison-events.js","katago-comparison-adapter.cjs","tests/decision-comparison.test.cjs"])assert.ok(manifest.publicFiles.includes(file),file);});
