@@ -233,3 +233,10 @@ test("KataGo 真引擎 receipt contract 可公開，但實際本機回條必須�
   assert.ok(manifest.excludedPatterns.includes(".local-evidence/"));
   assert.equal(manifest.publicFiles.some((file) => file.startsWith(".local-evidence/")), false);
 });
+
+
+test("KaTrain smoke autodiscovery helper 與 Windows fixture test 列入公開工具", () => {
+  for (const file of ["tests/katrain-katago-smoke.ps1", "tests/katrain-smoke-autodiscovery.test.ps1"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
