@@ -95,7 +95,7 @@
       <section class="board-card" aria-label="經典眼形練習棋盤">
         <div class="card-top"><span>9 × 9 單題落子練習</span><span class="board-status"><i></i> 點空點下 1 手</span></div>
         <div id="classic-board" class="board classic-board" tabindex="0" role="application" aria-label="9 路練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
-        <div class="board-foot"><span id="classic-cursor-status">滑鼠點空點落子 · 鍵盤方向鍵移動，Enter / Space 落子</span><span id="classic-side">● 黑棋</span></div>
+        <div class="board-foot"><span id="classic-cursor-status">滑鼠點空點落子 · 鍵盤方向鍵移動，Enter／空白鍵落子</span><span id="classic-side">● 黑棋</span></div>
       </section>
     </div>
 
@@ -175,7 +175,7 @@
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
-          <span class="question-tag" id="four-status-tag">1 / 6 · rules-backed status</span>
+          <span class="question-tag" id="four-status-tag">1 / 6 · 規則核對</span>
           <h3 id="four-status-question">先看眼形，再判斷活死</h3>
           <p id="four-status-prompt"></p>
           <div class="classic-rule"><strong>這一區怎麼判定</strong><span>只處理完全包圍、沒有缺口的四點眼形。方四會檢查守方怎麼下都會留下可被攻擊的曲三；直四與曲四則檢查守方是否仍能做出兩個分開的眼。</span></div>
@@ -266,13 +266,13 @@
 
     <section class="golden-chicken-practice" aria-labelledby="golden-chicken-practice-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">死活手筋 · rules-backed mechanism</span>
+        <span class="question-tag">死活手筋 · 規則驗證</span>
         <h2 id="golden-chicken-practice-title">金雞獨立：不是大眼中手，是雙重氣緊手筋</h2>
         <p>本區使用本專案自行編製的 7 路局部棋形，只練一個可由規則引擎驗證的機制：邊線一立，己方從 1 氣變 2 氣；對手兩側都因自身氣緊而不能入子，己方反而可從任一側提子。</p>
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
-          <span class="question-tag" id="golden-chicken-tag">1 / 4 · tesuji mechanism</span>
+          <span class="question-tag" id="golden-chicken-tag">1 / 4 · 手筋機制</span>
           <h3 id="golden-chicken-title">找讓 1 氣變 2 氣的一路立</h3>
           <p id="golden-chicken-prompt"></p>
           <div class="classic-rule"><strong>這一區怎麼判定</strong><span>系統會檢查：原本這串棋只剩一氣；正確的「立」不會立刻提子；落子後留下兩口氣，而對手兩邊都不能直接下；接著己方在任一側都能提兩子。這裡只判第一手是否符合這個手筋，不代表所有實戰中的金雞獨立都長得一樣。</span></div>
@@ -303,7 +303,7 @@
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
-          <span class="question-tag" id="big-pigs-mouth-tag">1 / 4 · exact source case</span>
+          <span class="question-tag" id="big-pigs-mouth-tag">1 / 4 · 固定來源局面</span>
           <h3 id="big-pigs-mouth-title">固定實戰局面的第一手</h3>
           <p id="big-pigs-mouth-prompt"></p>
           <div class="classic-rule"><strong>這一區怎麼判定</strong><span>判定仍以完整 19×19 來源局面為準，畫面只是把角部放大給你看。這裡只判來源測試指定的第一手，以及旋轉後的對應位置；不表示 R1 是所有大豬嘴（J Group）的共同答案，也不表示所有標準棋形與後續變化都已整理完成。</span></div>
@@ -319,7 +319,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="大豬嘴來源局面練習棋盤">
-          <div class="card-top"><span>19 × 19 source · cropped viewport</span><span class="board-status"><i></i> exact first-move oracle</span></div>
+          <div class="card-top"><span>19 × 19 來源局面 · 角部放大</span><span class="board-status"><i></i> 固定第一手判定</span></div>
           <div id="big-pigs-mouth-board" class="board classic-board" tabindex="0" role="application" aria-label="大豬嘴固定來源局面；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="big-pigs-mouth-cursor-status">方向鍵移動 · Enter 落子</span><span id="big-pigs-mouth-side">○ 白棋</span></div>
         </section>
@@ -372,7 +372,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="刀把五 A/B 短讀棋盤">
-          <div class="card-top"><span>7 × 7 short read</span><span class="board-status"><i></i> 3-move branch</span></div>
+          <div class="card-top"><span>7 × 7 短讀練習</span><span class="board-status"><i></i> 三手主要變化</span></div>
           <div id="read-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五短讀棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="read-cursor-status">方向鍵移動 · Enter 落子</span><span id="read-side">○ 白棋</span></div>
         </section>
@@ -381,13 +381,13 @@
 
     <section class="bulky-reduction" aria-labelledby="bulky-reduction-title">
       <div class="classic-atlas-head">
-        <span class="question-tag">條件分支 · zero outside liberties</span>
+        <span class="question-tag">條件分支 · 沒有外氣</span>
         <h2 id="bulky-reduction-title">刀把五：手抜き後如何縮成方四</h2>
         <p>這一層只在「守方沒有外氣，而且連續不在局部應手」時成立。白棋先佔共同急所後，你要補滿 2×2 核心的其餘三點；完成後系統會自動重播黑棋唯一的提子。</p>
       </div>
       <div class="bulky-practice-grid">
         <section class="question-card">
-          <span class="question-tag" id="reduction-tag">1 / 2 · sealed local branch</span>
+          <span class="question-tag" id="reduction-tag">1 / 2 · 完全包圍的局部變化</span>
           <h3 id="reduction-title">填滿 2×2 核心</h3>
           <p id="reduction-prompt"></p>
           <div class="classic-rule"><strong>本區成立條件</strong><span>守方整串沒有外氣；這裡的「手拔」只表示外面的落子不改變這個局部。如果外面還有氣，這個局部判定就不適用。</span></div>
@@ -403,7 +403,7 @@
           </div>
         </section>
         <section class="board-card" aria-label="刀把五 sealed reduction 棋盤">
-          <div class="card-top"><span>7 × 7 sealed branch</span><span class="board-status"><i></i> no outside liberties</span></div>
+          <div class="card-top"><span>7 × 7 完全包圍變化</span><span class="board-status"><i></i> 沒有外氣</span></div>
           <div id="reduction-board" class="board classic-board" tabindex="0" role="application" aria-label="7 路刀把五縮眼練習棋盤；方向鍵移動，Enter 或 Space 落子"></div>
           <div class="board-foot"><span id="reduction-cursor-status">方向鍵移動 · Enter 落子</span><span>○ 白棋縮眼</span></div>
         </section>
