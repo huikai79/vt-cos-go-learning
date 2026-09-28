@@ -4,8 +4,8 @@ const crypto = require("node:crypto");
 const Extraction = require("./classic-geometry-extraction.js");
 const Oracle = require("./classic-geometry-reference-oracle.js");
 
-const VERSION = "classic-reference-html-sgf-v2";
-const COMPARISON_CONTRACT_ID = "corner-defender-connected-group-normalized-v2";
+const VERSION = "classic-reference-html-sgf-v3";
+const COMPARISON_CONTRACT_ID = "corner-defender-connected-group-normalized-v3";
 const MAX_HTML_BYTES = 2_000_000;
 const MAX_SGF_BYTES = 1_000_000;
 
@@ -236,10 +236,12 @@ function buildObservationFromHtml({
   if (!selected.ok) return selected;
   const normalized=normalizeCornerPoints(selected.points,corner,setup.boardSize);
   if (!normalized.ok) return normalized;
-  const resolvedToPlay = toPlay || setup.toPlay || "unspecified";
-  if (!["black","white","unspecified"].includes(resolvedToPlay)) return fail("toPlay invalid");
+  const requestedToPlay = toPlay || setup.toPlay || "unspecified";
+  if (!["black","white","unspecified"].includes(requestedToPlay)) return fail("toPlay invalid");
 
-  const sourceDigest=sha256(html);
+  // This contract compares geometry identity, not whose turn it is.
+  // Use the embedded SGF bytes as immutable geometry provenance; surrounding HTML is dynamic.
+  const sourceDigest=sha256(embedded.sgf);
   const observation={
     id:"reference-html-sgf-observation",
     sourceId,
@@ -256,7 +258,7 @@ function buildObservationFromHtml({
     context:{
       boardContext:"corner",
       boundary:[...NORMALIZED_CORNER_BOUNDARY],
-      toPlay:resolvedToPlay,
+      toPlay:"unspecified",
       role:"defender_group"
     }
   };
