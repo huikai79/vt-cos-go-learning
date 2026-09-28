@@ -200,3 +200,6 @@ test("全球圍棋觀察是公開研究入口，但不進 learner runtime", () =
   assert.doesNotMatch(html, /src="(?:app|scheduler|learner-progress|learning-metrics|practice-events|live-evidence)\\.js/);
   assert.match(html, /研究資料不評分學習者/);
 });
+
+
+test("SGF decision review runtime 與 negative test 列入公開發佈清單",()=>{for(const file of ["advanced-decision-review-events.js","advanced-decision-review.js","tests/advanced-decision-review.test.cjs"])assert.ok(manifest.publicFiles.includes(file),file);});

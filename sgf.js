@@ -47,13 +47,14 @@
     if (tree.children.length > 1) fail("目前不支援含分支變化的棋譜");
     return [...tree.nodes, ...(tree.children.length ? mainline(tree.children[0]) : [])];
   }
-  function point(value) {
-    if (!/^[a-i]{2}$/.test(value || "")) return null;
-    return [value.charCodeAt(0) - 97, value.charCodeAt(1) - 97];
+  function point(value, size = 9) {
+    if (!/^[a-z]{2}$/.test(value || "")) return null;
+    const parsed = [value.charCodeAt(0) - 97, value.charCodeAt(1) - 97];
+    return parsed[0] < size && parsed[1] < size ? parsed : null;
   }
-  function setup(board, node, name, color) {
+  function setup(board, node, name, color, size = 9) {
     for (const value of node[name] || []) {
-      const p = point(value); if (!p) fail(`${name} 的座標不支援`);
+      const p = point(value, size); if (!p) fail(`${name} 的座標不支援`);
       if (board[p[1]][p[0]] !== 0) fail("佈局棋子重疊");
       board[p[1]][p[0]] = color;
     }
@@ -70,34 +71,42 @@
     }
     return mainline(tree);
   }
-  function parseSgf(text) {
+  function replaySgf(text, allowedSizes, unsupportedMessage) {
     const nodes = parseSgfNodes(text);
-    const size = (nodes[0] && nodes[0].SZ && nodes[0].SZ[0]) || "19";
-    if (size !== "9") fail("目前只支援 9 路棋譜");
-    let board = boardFromStones([]); let previousBoard = null; let moveNumber = 0; const moves = [];
+    const rawSize = (nodes[0] && nodes[0].SZ && nodes[0].SZ[0]) || "19";
+    const size = Number(rawSize);
+    if (!Number.isInteger(size) || !allowedSizes.includes(size)) fail(unsupportedMessage);
+    let board = boardFromStones([], size); let previousBoard = null; let moveNumber = 0; const moves = [];
     for (let nodeIndex = 0; nodeIndex < nodes.length; nodeIndex += 1) {
-      const node = nodes[nodeIndex]; setup(board, node, "AB", BLACK); setup(board, node, "AW", WHITE);
+      const node = nodes[nodeIndex]; setup(board, node, "AB", BLACK, size); setup(board, node, "AW", WHITE, size);
       if (node.B && node.W) fail("同一節點不能同時包含黑棋與白棋著手");
       const property = node.B ? "B" : node.W ? "W" : null;
       if (!property) continue;
       moveNumber += 1;
       if (node[property].length !== 1) fail(`第 ${moveNumber} 手的著手資料不完整`);
       const value = node[property][0];
-      const move = point(value);
+      const move = point(value, size);
       if (!move) {
         if (value !== "") fail(`第 ${moveNumber} 手的座標不支援`);
         previousBoard = board.map((row) => row.slice());
-        continue; // pass 無法建立局部落子題，但仍保留原局手數。
+        continue; // pass 保留原局手數，但不建立可落子的決策點。
       }
       const color = property === "B" ? BLACK : WHITE;
       const before = board.map((row) => row.slice());
+      const koPreviousBoard = previousBoard ? previousBoard.map((row) => row.slice()) : null;
       const result = playMove(board, move[0], move[1], color, { previousBoard });
       if (!result.legal) fail(`第 ${moveNumber} 手不合法：${result.reason}`);
-      moves.push({ number: moveNumber, nodeIndex, color, point: move, before, result });
+      moves.push({ number: moveNumber, nodeIndex, color, point: move, before, koPreviousBoard, result });
       previousBoard = before;
       board = result.board;
     }
-    return { boardSize: 9, nodes, moves };
+    return { boardSize: size, nodes, moves };
+  }
+  function parseSgf(text) {
+    return replaySgf(text, [9], "目前只支援 9 路棋譜");
+  }
+  function parseDecisionReviewSgf(text) {
+    return replaySgf(text, [19], "決策點複盤目前只支援 19 路棋譜");
   }
   function stonesFromBoard(board) {
     const stones = [];
@@ -120,6 +129,57 @@
     }
     return keys.size;
   }
+  function makeDecisionReviewExperience(text, moveNumber = 1, sourceName = "匯入的 19 路棋譜") {
+    const game = parseDecisionReviewSgf(text);
+    const move = game.moves.find((item) => item.number === moveNumber);
+    if (!move) fail(`找不到第 ${moveNumber} 手可建立決策點複盤`);
+    const sourceId = sourceFingerprint(text);
+    const stones = stonesFromBoard(move.before);
+    const positionMaterial = JSON.stringify({
+      boardSize: game.boardSize,
+      moveNumber: move.number,
+      nodeIndex: move.nodeIndex,
+      playerColor: move.color,
+      stones
+    });
+    const positionFingerprint = sourceFingerprint(positionMaterial);
+    return {
+      id: `decision-review-${sourceId}-${move.nodeIndex}`,
+      version: "sgf-decision-review-item-v1",
+      purpose: "advanced_sgf_decision_review",
+      taskMode: "全盤決策點複盤",
+      boardSize: 19,
+      evaluationRole: "practice",
+      evaluationContext: "sgf_decision_review",
+      evidenceUse: "advanced_sgf_review_practice_only",
+      formalEligible: false,
+      transferLevel: null,
+      claimScope: "historical_move_comparison",
+      scoringClaim: "compares_candidate_with_original_sgf_move_not_best_move",
+      responseMode: "free_legal_board_candidate",
+      candidateSetVersion: "all-rules-legal-moves-v1",
+      scoringContractVersion: "sgf-decision-review-historical-comparison-v1",
+      evidenceTaxonomyVersion: "sgf-decision-review-evidence-v1",
+      sourcePositionVersion: "sgf-source-position-v1",
+      rulesContractVersion: "go-core-simple-ko-v1",
+      analysisEngine: null,
+      exposureState: "original_hidden",
+      playerColor: move.color,
+      stones,
+      originalMove: move.point.slice(),
+      koPreviousBoard: move.koPreviousBoard ? move.koPreviousBoard.map((row) => row.slice()) : null,
+      source: {
+        type: "sgf",
+        sourceId,
+        sourceName,
+        moveNumber: move.number,
+        nodeIndex: move.nodeIndex,
+        boardSize: 19,
+        positionFingerprint
+      }
+    };
+  }
+
   function makeLocalExercise(text, moveNumber = 1, sourceName = "匯入的棋譜") {
     const game = parseSgf(text); const move = game.moves.find((item) => item.number === moveNumber);
     if (!move) fail(`找不到第 ${moveNumber} 手可建立局部題`);
@@ -144,7 +204,7 @@
       }
     };
   }
-  const api = { MAX_SGF_FILE_BYTES, parseSgfNodes, parseSgf, makeLocalExercise, sourceFingerprint };
+  const api = { MAX_SGF_FILE_BYTES, parseSgfNodes, parseSgf, parseDecisionReviewSgf, makeDecisionReviewExperience, makeLocalExercise, sourceFingerprint };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.GoSgf = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -161,3 +161,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 刪除不再使用的 `assets/homepage/evidence-still-judge.webp`，formal candidate asset set 升至 v6，candidate 更新為 `formal-teaching-candidate-2026-09-28-n`，fingerprint `fnv1a32-js16-8479d7d0`。
 - Core 主 CTA、Core 1–15 三階段入口、Advanced 獨立 practice-only 路線、研究來源預設收合等既有 IA 不變；不修改 scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
 - 證據邊界：M4 只修正首頁語義／資產一致性與工程契約；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-29 Change note｜SGF Decision Review v1 shared parser candidate refreeze
+
+- **共享 critical asset：** `sgf.js` 新增獨立 19×19 decision-review parser／contract；既有 Core 9×9 `parseSgf()` historical recall API 保持。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-o`；fingerprint `fnv1a32-js16-edb91303`；asset set v6、UI version 仍 `learner-flow-v53`。
+- **狀態不升格：** R1a 外部回條、三位 target novice usability、真人 keyboard／screen reader spot check 仍缺；formal teaching = `BLOCKED`，formal evaluation = `BLOCKED`，learning effect = `NOT_MEASURED`。
