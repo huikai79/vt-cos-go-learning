@@ -116,7 +116,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katago-bridge-smok
   -KataGoModel "C:\path\to\model.bin.gz"
 ```
 
-腳本現在會依序驗證 `/v1/move` 與 `/v1/compare`。兩段都成功後，才會寫入本機 `.local-evidence/katago-smoke-receipt.json`，並立刻用 `scripts/verify-katago-smoke-receipt.cjs` 驗證。receipt 綁定目前 repository commit、關鍵 contract 檔 SHA-256、KataGo executable／config／model SHA-256、engine version 與兩端點結果；若 contract 後續改動，舊 receipt 會變 stale。receipt 不公開、不保存本機完整路徑或引擎檔案內容。只有兩段 smoke 與 receipt verifier 都 PASS，才能把「本機 KataGo bridge 真機 smoke」與「Decision Point Comparison 真機 smoke」記為 PASS。缺檔、無法確認 engine version、bridge 未啟動、KataGo failure、候選不完整、HTTP/JSON failure、receipt stale 或超時都維持 FAIL／ERROR，不以 heuristic bot 代替。
+腳本現在要求 **clean checkout**，先以 KataGo 官方 `version` 子命令取得實際 engine identity，再依序驗證 `/v1/move` 與 `/v1/compare`。兩段都成功後，才會寫入本機 `.local-evidence/katago-smoke-receipt.json`，並立刻用 `scripts/verify-katago-smoke-receipt.cjs` 驗證。receipt 綁定目前 repository commit、四個 comparison contract 檔 SHA-256、KataGo executable／config／model SHA-256、engine/model identity、runtime 與兩端點結果；不保存本機完整路徑或引擎檔案內容。若 commit 或任一 contract 後續改動，舊 receipt 立即 stale。只有兩段 smoke 與 receipt verifier 都 PASS，才能把「本機 KataGo bridge 真機 smoke」與「Decision Point Comparison 真機 smoke」記為 PASS。缺檔、tracked files 有未提交修改、無法取得 engine version、bridge 未啟動、KataGo failure、候選不完整、HTTP/JSON failure、receipt stale 或超時都維持 FAIL／ERROR，不以 heuristic bot 代替。\n\n若只要重驗既有本機回條：\n\n```powershell\nnode scripts/verify-katago-smoke-receipt.cjs .local-evidence\\katago-smoke-receipt.json\n```\n\nCI 只驗 receipt contract、verifier 與 PowerShell 語法；GitHub runner 沒有這台機器的實際 KataGo executable/config/model，因此 CI PASS 不等於真引擎 PASS。
 
 2026-09-21 的規則、題庫、排程、SGF、trial、狀態與 Chrome 測試均通過。新增反證測試會比較驗收正答與錯答後的棋盤快照、驗證同題先錯後對仍保留首答錯誤、檢查固定應用呈現分母、v3 至 v6→v7 遷移、兩輪內容插題後的索引保存及保留題匯出遮蔽。這些結果只保留為工程證據。
 
