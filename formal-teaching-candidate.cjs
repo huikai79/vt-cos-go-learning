@@ -4,10 +4,14 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const PROTOCOL_ID = "go-formal-teaching-candidate-v1";
-const ASSET_SET_VERSION = 1;
+const ASSET_SET_VERSION = 2;
 const ASSET_PATHS = Object.freeze([
   "index.html",
   "styles.css",
+  "assets/homepage/hero-board.svg",
+  "assets/homepage/stage-basic.svg",
+  "assets/homepage/stage-local.svg",
+  "assets/homepage/stage-global.svg",
   "go.js",
   "content.js",
   "phase2-foundation-bank.js",
