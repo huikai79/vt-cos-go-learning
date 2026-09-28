@@ -783,7 +783,7 @@
       $("flower-six-feedback").className = "feedback error";
       $("flower-six-feedback").textContent = flowerSixHintShown
         ? "還不是。重新看看每個眼位直接連著幾個眼位；只有一個點同時連著四個眼位。"
-        : "這一點不是兩個突出點的根部。不要記座標，請重新看六點 adjacency。";
+        : "這一點不是兩個突出點的根部。不要記座標，請重新看六個眼位彼此怎麼連接。";
     }
   }
 
@@ -982,8 +982,8 @@
     } else {
       $("big-pigs-mouth-feedback").className="feedback error";
       $("big-pigs-mouth-feedback").textContent=bigPigsMouthHintShown
-        ? "還不是。只針對這個 exact source case，重新看目前角部一線附近可做活的第一手。"
-        : "這手合法，但不是 upstream regression 對此 exact source case 指定的 expected move。";
+        ? "還不是。只針對這個固定來源局面，重新看目前角部一線附近可做活的第一手。"
+        : "這手合法，但不是來源測試資料為這個固定局面記錄的預期著手。";
     }
   }
 
@@ -1142,7 +1142,7 @@
     readHintShown = false;
     readCursor = candidates[0].slice();
     $("read-tag").textContent = (readIndex+1) + " / " + ShortRead.items.length + " · 第 3 手";
-    $("read-title").textContent = readIndex === 0 ? "補另一個 A/B 點" : "換一條 A/B 應手再讀";
+    $("read-title").textContent = readIndex === 0 ? "補另一個互補位置" : "換另一個互補位置再讀";
     $("read-prompt").textContent = item.prompt;
     $("read-feedback").className = "feedback";
     $("read-feedback").textContent = "";
