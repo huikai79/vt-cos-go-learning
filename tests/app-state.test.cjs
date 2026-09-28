@@ -433,10 +433,10 @@ test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且
   elements.board.listeners.click({ target: pointTarget({ x: "4", y: "5" }, "[data-x]") });
   assert.equal(elements["sgf-review"].hidden, false);
   elements["sgf-review-status-input"].value = "original_confirmed";
-  elements["sgf-acceptable-answer-input"].value = "人工複盤後確認原著可接受。";
+  elements["sgf-acceptable-answer-input"].value = "人工複盤後確認原棋譜著手可接受。";
   elements["sgf-next-cue-input"].value = "先數中央的氣。";
   elements["sgf-review-save-button"].listeners.click();
-  assert.match(elements["sgf-review-status"].textContent, /已確認原著可接受/);
+  assert.match(elements["sgf-review-status"].textContent, /已確認原棋譜著手可接受/);
   saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.equal(saved.localExercises.length, 1);
   assert.equal(saved.localExercises[0].linkedSkill, "一手提子");
@@ -458,7 +458,7 @@ test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且
   assert.match(notes, /先看中央的氣/);
   assert.match(notes, /預期白棋會先補氣/);
   assert.match(notes, /原局面（9 路）：黑/);
-  assert.match(notes, /人工複盤後確認原著可接受/);
+  assert.match(notes, /人工複盤後確認原棋譜著手可接受/);
 });
 
 test("瀏覽器儲存失敗時不會把 SGF 反思誤報為已保存", () => {
