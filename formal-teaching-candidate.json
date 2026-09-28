@@ -1,13 +1,17 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-28-c",
-  "frozenAt": "2026-09-28T08:40:55+08:00",
-  "assetSetVersion": 1,
-  "assetFingerprint": "fnv1a32-js16-714c8365",
+  "candidateId": "formal-teaching-candidate-2026-09-28-d",
+  "frozenAt": "2026-09-28T12:17:00+08:00",
+  "assetSetVersion": 2,
+  "assetFingerprint": "fnv1a32-js16-b35e6d23",
   "assetPaths": [
     "index.html",
     "styles.css",
+    "assets/homepage/hero-board.svg",
+    "assets/homepage/stage-basic.svg",
+    "assets/homepage/stage-local.svg",
+    "assets/homepage/stage-global.svg",
     "go.js",
     "content.js",
     "phase2-foundation-bank.js",
@@ -31,5 +35,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "只凍結正式 usability 五項 critical tasks 與 accessibility spot check 所依賴的 Core learner-facing surface；本輪把首頁棋盤視覺改為 deterministic inline SVG、補上課程三階段與延後／新棋形學習循環的可縮放圖示，並將 learner-flow 升至 v47。此次只改 learner-facing 視覺與資訊呈現，不改 scoring、scheduler、event schema、evidence taxonomy、題目答案或正式評量語義。"
+  "scopeNote": "只凍結正式 usability 五項 critical tasks 與 accessibility spot check 所依賴的 Core learner-facing surface；v48 修正 v47 過度改版：恢復原本 Hero、三個課程階段與三項學習證據的資訊架構，只在既定位置加入四個獨立棋盤插畫資產。插畫資產現納入 candidate fingerprint；不改 scoring、scheduler、event schema、evidence taxonomy、題目答案或正式評量語義。"
 }
