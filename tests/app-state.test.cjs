@@ -34,12 +34,14 @@ class Element {
     this.hidden = false;
     this.disabled = false;
     this.style = {};
+    this.attributes = {};
     this.classList = { toggle() {}, contains() { return false; } };
   }
 
   addEventListener(type, callback) { this.listeners[type] = callback; }
   querySelectorAll() { return []; }
-  setAttribute() {}
+  setAttribute(name, value) { this.attributes[name] = String(value); }
+  getAttribute(name) { return Object.prototype.hasOwnProperty.call(this.attributes, name) ? this.attributes[name] : null; }
   showModal() { this.open = true; }
   close() { this.open = false; }
   click() { if (this.onClick) this.onClick(); }
