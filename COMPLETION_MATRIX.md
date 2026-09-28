@@ -4,7 +4,7 @@
 - **實作：** 原著揭露後才出現選用 KataGo 比較；第一候選必須合法且與原著不同。SGF 的規則／貼目若缺失或不支援，分析保持 unavailable，除非使用者明確補上。
 - **engine contract：** root search 只允許 learner first candidate 與 original game move；固定保存 rules、komi、maxVisits、PV、provider／engine／model version、position fingerprint 與兩手排序。
 - **authority：** 結果只標 `bounded_search_estimate_only`；不建立正誤、mastery、transfer、KC、scheduler、T2/T3 或 formal evaluation。
-- **negative tests：** 缺 rules／komi、midgame setup、same move、partial engine output、player mismatch、provider failure、KataGo 未設定均 fail closed；沒有 heuristic fallback。
+- **negative tests：** 缺 rules／komi、midgame setup、same move、partial engine output、player mismatch、provider failure、KataGo 未設定均 fail closed；沒有 heuristic fallback。既有 Windows 真機 smoke 腳本已延伸到 `/v1/compare`，但本輪 CI 沒有實際 KataGo executable/model，因此真機 comparison smoke 仍是 `NOT_TESTED`。
 - **語義：** learner-facing 只寫「這次搜尋較偏向哪一手」「不代表另一手一定錯」，內部 contract ID 不直接顯示給學習者。
 - **formal candidate：** 本輪未修改既有 formal Core critical asset set；candidate `formal-teaching-candidate-2026-09-29-p` 不重凍結，真人 gate 狀態不變。
 - **rollback：** 移除 comparison UI／provider／event stream 與 bridge `/v1/compare`，Decision Review v1 historical comparison 可獨立保留。
