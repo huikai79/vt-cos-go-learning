@@ -335,7 +335,7 @@
         save(); ensureLiveAssessment();
       } catch (error) {
         event("computer_provider_error", { actor: "computer", providerKind: opponentMode, reason: error.message || "unknown" });
-        showFeedback(`電腦對手目前無法取得下一手（${error.message}）。這回合已停止，系統不會隨便替它下一手。`, "error");
+        showFeedback("電腦對手目前無法取得下一手。這回合已停止，系統不會隨便替它下一手。", "error");
       } finally { botPending = false; render(); }
     }, 180);
   }
@@ -361,10 +361,10 @@
     if (!result.ok) { showFeedback(result.error || "操作失敗。", "error"); return false; }
     game = result.game; event(auditType, details); const saved = save(); render();
     if (liveEvidenceFailure) {
-    showFeedback(`棋局可以繼續，但這次的實戰學習紀錄沒有成功保存（${liveEvidenceFailure}）。本次不會顯示成已更新進度。`, "error");
+    showFeedback("棋局可以繼續，但這次的實戰學習紀錄沒有成功保存。本次不會顯示成已更新進度。", "error");
     liveEvidenceFailure = "";
   } else if (practiceEventFailure) {
-      showFeedback(`${details.successMessage || "操作完成。"} 但練習事件未保存（${practiceEventFailure}）；本次不會假裝已回流學習紀錄。`, "error");
+      showFeedback(`${details.successMessage || "操作完成。"} 但這次的練習紀錄沒有成功保存；本次不會顯示成已更新學習紀錄。`, "error");
       practiceEventFailure = "";
     } else if (saved) showFeedback(details.successMessage || "已保存。", details.tone || "success");
     return true;
