@@ -1,6 +1,7 @@
 "use strict";
 const fs = require("node:fs");
 const path = require("node:path");
+const crypto = require("node:crypto");
 const PROTOCOL_ID = "go-formal-teaching-candidate-v1";
 const ASSET_SET_VERSION = 3;
 const ASSET_PATHS = Object.freeze([
@@ -43,16 +44,21 @@ function fnv1a32Js16(text) {
   }
   return hash >>> 0;
 }
+function gitBlobSha(content) {
+  const bytes = Buffer.isBuffer(content) ? content : Buffer.from(String(content), "utf8");
+  const header = Buffer.from("blob " + bytes.length + "\0", "utf8");
+  return crypto.createHash("sha1").update(header).update(bytes).digest("hex");
+}
 function fingerprintEntries(entries) {
   const material = entries.map(({ path: assetPath, content }) =>
-    assetPath + "\0" + normalizeText(content) + "\0"
+    assetPath + "\0" + gitBlobSha(content) + "\0"
   ).join("");
   return "fnv1a32-js16-" + fnv1a32Js16(material).toString(16).padStart(8, "0");
 }
 function readAssetEntries(rootDir = __dirname, assetPaths = ASSET_PATHS) {
   return assetPaths.map((assetPath) => ({
     path: assetPath,
-    content: fs.readFileSync(path.join(rootDir, assetPath), "utf8")
+    content: fs.readFileSync(path.join(rootDir, assetPath))
   }));
 }
 function currentFingerprint(rootDir = __dirname, assetPaths = ASSET_PATHS) {
@@ -103,6 +109,7 @@ module.exports = {
   ASSET_PATHS,
   normalizeText,
   fnv1a32Js16,
+  gitBlobSha,
   fingerprintEntries,
   readAssetEntries,
   currentFingerprint,
