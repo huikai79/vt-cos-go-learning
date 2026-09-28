@@ -1096,7 +1096,7 @@
     const problem = current();
     if (problem.type === "move") {
       $("answer-area").innerHTML = `<span class="move-guide">點選棋盤，或用方向鍵逐點移動，再按 Enter／空白鍵落子。<br>答錯可再試；需要時可先看提示。</span>`;
-      $("board-instruction").textContent = "點選落子；鍵盤可用方向鍵移動，Enter／Space 落子";
+      $("board-instruction").textContent = "點選落子；鍵盤可用方向鍵移動，Enter／空白鍵落子";
       $("answer-policy").textContent = state.externalMode === "evaluation"
         ? "點選後會立即記錄首答，完成整批前不顯示正誤。"
         : state.externalMode === "local_sgf"
@@ -1114,7 +1114,7 @@
     }
     if (problem.type === "spot") {
       $("answer-area").innerHTML = `<span class="move-guide">點選棋盤上的位置，或用方向鍵移動後按 Enter／空白鍵選擇。<br>這題只判定題幹指定的局部觀察點，不代表全局唯一最佳手。</span>`;
-      $("board-instruction").textContent = "點選要比較的位置；鍵盤可用方向鍵移動，Enter／Space 選擇";
+      $("board-instruction").textContent = "點選要比較的位置；鍵盤可用方向鍵移動，Enter／空白鍵選擇";
       $("answer-policy").textContent = "選擇位置後會立即作答；答錯可以再試。";
       $("board-card").setAttribute("aria-label", "可選擇位置的局部棋盤示意");
       return;
