@@ -35,7 +35,18 @@ class Element {
     this.disabled = false;
     this.style = {};
     this.attributes = {};
-    this.classList = { toggle() {}, contains() { return false; } };
+    const classes = new Set();
+    this.classList = {
+      add(...tokens) { tokens.forEach((token) => classes.add(token)); },
+      remove(...tokens) { tokens.forEach((token) => classes.delete(token)); },
+      toggle(token, force) {
+        if (force === true) { classes.add(token); return true; }
+        if (force === false) { classes.delete(token); return false; }
+        if (classes.has(token)) { classes.delete(token); return false; }
+        classes.add(token); return true;
+      },
+      contains(token) { return classes.has(token); }
+    };
   }
 
   addEventListener(type, callback) { this.listeners[type] = callback; }
