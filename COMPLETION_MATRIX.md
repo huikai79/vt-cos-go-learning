@@ -737,3 +737,11 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **不可破壞 invariant：** 不改 item／KC／scoring、first response／retry、scheduler、storage schema、holdout 曝光、formal evaluation、live eligibility／scoring 或 evidence taxonomy。
 - **驗收：** 回歸測試必須確認首頁仍有 4 個 Hero 步驟、3 個 learning-evidence card、3 個課程階段、375px 無橫向溢出，以及 root／`#core` routing 不變。
 - **證據邊界：** 這是視覺與資訊架構修正；正式教學仍 `BLOCKED`，formal evaluation 仍 `BLOCKED`，learning effect 仍 `NOT_MEASURED`。
+
+## 2026-09-28 Change note｜History Explore v6 圖像導覽
+
+- **為何現在加入：** 使用者明確要求把本輪產生的歷史／制度／棋理圖像放入 History Explore；v5 的「不新增 AI 時代素材」壓縮線因此改為「四個核心問題與既有歷史因果主線不擴張，但可加入有清楚證據邊界的概念型圖像延伸」。這是呈現層調整，不把圖像升格成新史料或新因果證據。
+- **實作：** 頁首加入盤制演變導覽；19×19 問題加入 17→19 路視覺摘要；規則問題加入座子／固定起始配置與空盤開局對照；另以獨立「圖像延伸」放入貼目與 AI 棋理重估概念圖。五張圖都使用專案生成資產與 `figure/figcaption`，避免把插畫外觀誤認成歷史實物。
+- **證據邊界：** 17→19 圖的結論仍受本頁既有來源與未知限制約束；貼目圖中的 6.5／7.5 只作規則差異示例；AI 圖只區分規則與棋理評估，不把 AI estimate 當唯一教學答案。沒有新增 learner state、KC、scheduler、T0–T3、scoring 或 formal evaluation authority。
+- **Candidate／gate：** `history.html`、`history.css` 與其圖片不在 Core formal-teaching critical asset set，因此不因本輪重凍結 candidate；正式教學仍 `BLOCKED`、formal evaluation 仍不可用、learning effect 仍 `NOT_MEASURED`。
+- **驗收：** History regression 必須確認五資產、alt／caption 邊界、hero eager priority、其他圖 lazy loading；release manifest 與 served-content marker 同步 v6。工程 PASS 只代表資產、版面與發布契約成立，不代表新增歷史主張已獲外部學術審查。
