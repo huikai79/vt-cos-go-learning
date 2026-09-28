@@ -403,3 +403,12 @@
 - 名型 atlas 是 reference surface；practice 仍保留首答前的名稱線索控制。切換到 atlas 是使用者明確查詢行為，不回寫 learner state／scheduler，也不改該題 exposure／formal eligibility。
 - 第一階段只改 IA，不把十多個已各自有 bounded scoring contract 的 practice 強行重構成單一 engine。若日後 practice 維護重複成為實際 bottleneck，再另做資料驅動共用舞台。
 - UI 自動測試通過只證明 mode routing、隱藏／顯示與 existing reveal invariant；真人是否更容易找到目標仍標 NOT_TESTED。
+
+
+## 2026-09-29 Decision note｜L Group mark-semantics human gate
+
+- 任何「L Group／隅のL字型」來源先標 `labelScope`：`target_group`、`marked_subset` 或 `position_only`；不得從 position label 自動補成 group/core identity。
+- 恩田烈彦專業講座加入 `position_only` boundary evidence：它能支持「這類較大角部局面被教材稱為 L 字型」，不能支持或反駁 4-stone core。
+- IGOcompany 四個方框目前同樣維持 `position_only + NEEDS_HUMAN_REVIEW`；只有通過 `lgroup-mark-semantics-review-v1` 的獨立真人回條才能改成 `marked_subset` evidence。
+- 回條若判 `marks_define_named_l_core`：可把該 source 升為第二條 independent decisive research support，但仍不得 canonical promote；若 `marks_have_other_semantics` 則拒絕此 source 的 core interpretation；若 `unclear_from_source` 則維持現況。
+- 在 receipt 出現前，aggregate 固定 `INSUFFICIENT`。不要再以更多同義來源、collection 題目或 position-only 圖片湊 evidence count。
