@@ -383,3 +383,10 @@
 - IGOcompany 圖雖有 source-native 四子方框 L pattern，但 mark semantics 尚未獨立覆核，只能 supporting / `NEEDS_HUMAN_REVIEW`。
 - aggregate 仍 `INSUFFICIENT`；禁止 canonical promotion、playable scoring 或 learner-runtime wiring。
 - 下一步只接受：人工覆核日本 mark semantics，或另一條 independent direct base-shape source；不再用 Tsumego 15362 的 unmarked larger group 湊 core match。
+
+## 2026-09-29 Decision note｜Classic shapes IA gate
+
+- 「棋形練習」與「世界名型對照」在同一入口下分成 sibling modes：`#practice` / `#atlas`。atlas 的可達性不再依賴 practice 區塊總高度。
+- 名型 atlas 是 reference surface；practice 仍保留首答前的名稱線索控制。切換到 atlas 是使用者明確查詢行為，不回寫 learner state／scheduler，也不改該題 exposure／formal eligibility。
+- 第一階段只改 IA，不把十多個已各自有 bounded scoring contract 的 practice 強行重構成單一 engine。若日後 practice 維護重複成為實際 bottleneck，再另做資料驅動共用舞台。
+- UI 自動測試通過只證明 mode routing、隱藏／顯示與 existing reveal invariant；真人是否更容易找到目標仍標 NOT_TESTED。
