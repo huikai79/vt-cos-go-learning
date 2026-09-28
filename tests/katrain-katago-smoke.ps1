@@ -28,6 +28,7 @@ function Get-SearchRoots {
       throw "KaTrainRoot does not exist: $KaTrainRoot"
     }
     Add-Root $roots (Resolve-Path -LiteralPath $KaTrainRoot).Path
+    return @($roots)
   }
 
   Get-Process -ErrorAction SilentlyContinue |
@@ -173,7 +174,7 @@ if ($ResolveOnly) {
     kataGoModel = $modelFile
     kaTrainConfig = $configPath
   } | ConvertTo-Json -Compress
-  exit 0
+  return
 }
 
 Write-Host "Starting the repository smoke contract..."
