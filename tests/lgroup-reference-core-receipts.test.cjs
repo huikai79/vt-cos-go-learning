@@ -30,8 +30,10 @@ test("core hypothesis source receipts 不保存來源幾何",()=>{
 
 test("BGA 是 seed，OGS 是一條 independent decisive MATCH",()=>{
   assert.equal(bga.selectionBasis,Contract.SELECTION_BASIS.ENTIRE_TARGET_GROUP);
+  assert.equal(bga.labelScope,Contract.LABEL_SCOPE.TARGET_GROUP);
   assert.equal(bga.contractStatus,Contract.STATUS.MATCH);
   assert.equal(ogs.selectionBasis,Contract.SELECTION_BASIS.ENTIRE_TARGET_GROUP);
+  assert.equal(ogs.labelScope,Contract.LABEL_SCOPE.TARGET_GROUP);
   assert.equal(ogs.contractStatus,Contract.STATUS.MATCH);
   assert.equal(aggregate.candidateDependentEvidenceChains.includes(bga.evidenceChain),true);
   assert.deepEqual(aggregate.independentDecisiveEvidenceChains,[ogs.evidenceChain]);
@@ -42,16 +44,20 @@ test("BGA 是 seed，OGS 是一條 independent decisive MATCH",()=>{
 
 test("日本來源的 source-native marks 未經語義覆核，不得算第二張 decisive vote",()=>{
   assert.equal(jp.selectionBasis,Contract.SELECTION_BASIS.SOURCE_NATIVE_MARKED_SUBSET);
+  assert.equal(jp.labelScope,Contract.LABEL_SCOPE.POSITION_ONLY);
   assert.equal(jp.selectionInterpretationReviewed,false);
+  assert.equal(jp.reviewProtocolId,"lgroup-mark-semantics-review-v1");
   assert.equal(jp.contractStatus,Contract.STATUS.NEEDS_HUMAN_REVIEW);
-  assert.deepEqual(aggregate.supportingNonDecisiveEvidenceChains,[jp.evidenceChain]);
-  assert.equal(aggregate.supportingNonDecisiveEvidenceUnits,1);
+  assert.ok(aggregate.supportingNonDecisiveEvidenceChains.includes(jp.evidenceChain));
+  assert.ok(aggregate.supportingNonDecisiveEvidenceChains.includes("onda-corner-l-shape-video-2024"));
+  assert.equal(aggregate.supportingNonDecisiveEvidenceUnits,2);
 });
 
 test("Tsumego 15362 的較大未標記 defender group 不屬此 core contract eligibility",()=>{
   const result=Contract.evaluate({
     points:[[0,4],[1,4],[2,4],[3,4],[3,3],[3,2],[3,1],[3,0]],
     selectionBasis:Contract.SELECTION_BASIS.ENTIRE_TARGET_GROUP,
+    labelScope:Contract.LABEL_SCOPE.TARGET_GROUP,
     sourceDirectlyLabelsLGroup:true
   });
   assert.equal(result.status,Contract.STATUS.DIFFERENT);
@@ -59,7 +65,18 @@ test("Tsumego 15362 的較大未標記 defender group 不屬此 core contract el
   const invented=Contract.evaluate({
     points:[[2,4],[3,4],[3,3],[3,2]],
     selectionBasis:"inferred_subset",
+    labelScope:Contract.LABEL_SCOPE.MARKED_SUBSET,
     sourceDirectlyLabelsLGroup:true
   });
   assert.equal(invented.status,Contract.STATUS.INVALID);
+});
+
+
+test("恩田來源是 position-only boundary，不得算 core MATCH 或 DIFFERENT",()=>{
+  const onda=load("onda-corner-l-position-v1.json");
+  assert.equal(onda.labelScope,Contract.LABEL_SCOPE.POSITION_ONLY);
+  assert.equal(onda.contractStatus,Contract.STATUS.NEEDS_HUMAN_REVIEW);
+  assert.equal(onda.decisive,false);
+  assert.equal(onda.canonicalPromotionAllowed,false);
+  sanitized(onda);
 });
