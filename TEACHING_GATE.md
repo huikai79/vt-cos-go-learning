@@ -213,3 +213,12 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **新 candidate：** `formal-teaching-candidate-2026-09-29-r`，fingerprint `fnv1a32-js16-d741fac9`，沿用 asset set version 6。
 - **不變範圍：** 題目答案、KC、scheduler、scoring、event schema、evidence taxonomy、ontology、decision-review event semantics 與 formal evaluation authority 未改。
 - **證據邊界：** 本次只改善 presentation boundary 與回歸防護，不產生 R1a、真人 usability、accessibility、formal evaluation 或 learning-effect 證據；正式教學仍依既有 gate 判定。
+
+
+## 2026-09-29 Change note｜Math Explore 首頁入口後重新凍結 candidate
+
+- 首頁既有 Explore 區增加 `math.html` 低優先入口，因此 `index.html` critical surface 發生變化；candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-s`，fingerprint `fnv1a32-js16-14856586`。
+- `math.html` 本身是 research/content Explore 頁，不載入 learner runtime；不改五項 critical tasks、題目、scoring、scheduler、learner events、KC、T2/T3 或 formal evaluation。
+- HKBU 2024 七人質性研究已明確降格為感知策略連結線索，不作實測 transfer evidence。
+- 重新凍結不產生真人證據；R1a、至少三位 target novice usability 與真人 accessibility spot check 仍缺，因此正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
+
