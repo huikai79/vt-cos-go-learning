@@ -785,3 +785,11 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **反證／驗收：** 首頁不得再出現重複 `.course-entry-grid`；桌面三入口、四格循環、375px 單欄無橫向溢出；`data-site-intro-unit="10"` 必須進 `#core` 並選中第 11 單元；Advanced 仍保持獨立 practice-only。
 - **candidate：** `formal-teaching-candidate-2026-09-28-f`，fingerprint `fnv1a32-js16-bbbe09bc`，asset set version 4；第四張 learning-cycle WebP 納入 frozen surface。
 - **證據邊界：** 正式教學仍 `BLOCKED`、formal evaluation 仍 `BLOCKED`、learning effect 仍 `NOT_MEASURED`；mockup 對齊與 CI PASS 只支持 learner-facing 工程契約。
+
+## 2026-09-28 Change note｜首頁 Hero 無字棋盤主視覺
+
+- **變更：** 保留既有首頁資訊架構、主標題、CTA、四步學習流程與三階段入口，只替換 `assets/homepage/hero.webp` 為無內嵌文字的棋盤編輯式插畫；`index.html` 同步修正圖片尺寸與中性替代文字。
+- **目的：** 讓首頁標題與按鈕仍由 HTML 承擔語意與響應式排版，圖片只負責建立「先觀察棋形，再落子」的視覺情境，避免圖片文字與頁面主標題重複。
+- **Authority boundary：** 圖中的棋盤與金色標記是概念視覺，不作 rules engine、scoring contract、答案、KC、scheduler、learner state 或 formal evaluation 真值。
+- **Formal candidate：** critical learner surface 因 Hero 資產與其 HTML metadata 改變，重新凍結為 `formal-teaching-candidate-2026-09-28-h`，fingerprint `fnv1a32-js16-1e54e467`；事件 `ui_version` 維持 `learner-flow-v50`，因本輪沒有改作答、事件或排程語義。
+- **證據邊界：** 此變更只支持首頁視覺資產已更新；是否更容易理解、是否提高開始課程率或學習成效均尚未由真人證據驗證。正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。

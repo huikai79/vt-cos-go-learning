@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-28-g",
-  "frozenAt": "2026-09-28T15:27:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-28-h",
+  "frozenAt": "2026-09-28T18:17:00+08:00",
   "assetSetVersion": 4,
-  "assetFingerprint": "fnv1a32-js16-18e9e191",
+  "assetFingerprint": "fnv1a32-js16-1e54e467",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -39,5 +39,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v51：完成全站 learner-facing language sweep，清理首頁、進階訓練、名型館、歷史探索、實戰棋盤、可閱讀匯出與 R1 審查介面的中英混寫與工程語言外洩。Core critical surface 僅改顯示文字與可閱讀匯出；不改題目答案、KC、scheduler、scoring、事件 schema、evidence taxonomy、ontology 或 formal evaluation 語義。"
+  "scopeNote": "learner-flow-v50：延續既有首頁資訊架構與事件語義，只把首頁 Hero 換成無內嵌文字的棋盤編輯式插畫，並同步圖片尺寸與中性替代文字。生成圖只作視覺／概念提示，不作 rules engine、scoring、答案或 formal evaluation 真值；其餘 critical learner surface 不變。"
 }
