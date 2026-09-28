@@ -11,9 +11,9 @@ try {
   $userDir = Join-Path $tempRoot ".katrain"
 
   New-Item -ItemType Directory -Force -Path $kataGoDir,$modelDir,$userDir | Out-Null
-  Set-Content -LiteralPath (Join-Path $kataGoDir "katago.exe") -Value "fixture" -Encoding Ascii
-  Set-Content -LiteralPath (Join-Path $kataGoDir "analysis_config.cfg") -Value "fixture" -Encoding Ascii
-  Set-Content -LiteralPath (Join-Path $modelDir "fixture-model.bin.gz") -Value "fixture" -Encoding Ascii
+  Set-Content -LiteralPath (Join-Path $kataGoDir "katago.exe") -Value "exe-fixture" -Encoding Ascii
+  Set-Content -LiteralPath (Join-Path $kataGoDir "analysis_config.cfg") -Value "config-fixture" -Encoding Ascii
+  Set-Content -LiteralPath (Join-Path $modelDir "fixture-model.bin.gz") -Value "model-fixture" -Encoding Ascii
 
   @{
     engine = @{
@@ -26,12 +26,17 @@ try {
   $json = & $wrapper -KaTrainConfig (Join-Path $userDir "config.json") -KaTrainRoot $appRoot -ResolveOnly
   $resolved = $json | ConvertFrom-Json
 
-  $expectedExe = (Resolve-Path -LiteralPath (Join-Path $kataGoDir "katago.exe")).Path
-  $expectedConfig = (Resolve-Path -LiteralPath (Join-Path $kataGoDir "analysis_config.cfg")).Path
-  $expectedModel = (Resolve-Path -LiteralPath (Join-Path $modelDir "fixture-model.bin.gz")).Path
-  if ($resolved.kataGoExe -ne $expectedExe) { throw "bundled exe resolution mismatch" }
-  if ($resolved.kataGoConfig -ne $expectedConfig) { throw "bundled config resolution mismatch" }
-  if ($resolved.kataGoModel -ne $expectedModel) { throw "bundled model resolution mismatch" }
+  if (-not (Test-Path -LiteralPath $resolved.kataGoExe -PathType Leaf)) { throw "resolved bundled exe does not exist" }
+  if (-not (Test-Path -LiteralPath $resolved.kataGoConfig -PathType Leaf)) { throw "resolved bundled config does not exist" }
+  if (-not (Test-Path -LiteralPath $resolved.kataGoModel -PathType Leaf)) { throw "resolved bundled model does not exist" }
+
+  if ((Get-Content -LiteralPath $resolved.kataGoExe -Raw).Trim() -ne "exe-fixture") { throw "bundled exe resolution mismatch" }
+  if ((Get-Content -LiteralPath $resolved.kataGoConfig -Raw).Trim() -ne "config-fixture") { throw "bundled config resolution mismatch" }
+  if ((Get-Content -LiteralPath $resolved.kataGoModel -Raw).Trim() -ne "model-fixture") { throw "bundled model resolution mismatch" }
+
+  if ($resolved.kataGoExe -notmatch "[\\/]katrain[\\/]KataGo[\\/]katago\.exe$") { throw "bundled exe suffix mismatch" }
+  if ($resolved.kataGoConfig -notmatch "[\\/]katrain[\\/]KataGo[\\/]analysis_config\.cfg$") { throw "bundled config suffix mismatch" }
+  if ($resolved.kataGoModel -notmatch "[\\/]katrain[\\/]models[\\/]fixture-model\.bin\.gz$") { throw "bundled model suffix mismatch" }
 
   $secondPackage = Join-Path $appRoot "second\katrain\KataGo"
   New-Item -ItemType Directory -Force -Path $secondPackage | Out-Null
