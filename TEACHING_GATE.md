@@ -100,3 +100,11 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **資產變更：** 移除 v48 自製的四個簡化 SVG，改用前面已確認風格的 Hero、三階段與三項 assessment 共 7 個 WebP。binary asset fingerprint 改以 Git blob content hash 納入 FNV material，避免二進位圖檔被 UTF-8 解碼破壞指紋語義。
 - **Authority boundary：** 生成圖只作視覺／概念提示；不作 rules engine、scoring contract、答案或 formal evaluation 真值。Hero 中未經規則驗證的手寫「提子」句已從正式資產裁除。
 - **證據邊界：** 尚無正式三位 target novice usability evidence 或真人 accessibility spot check；正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
+
+
+## 2026-09-28 Change note｜v50 mockup-aligned homepage candidate
+
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-f`，fingerprint `fnv1a32-js16-bbbe09bc`，asset set version = 4，UI version = `learner-flow-v50`。
+- **learner-facing change：** 首頁依已確認 mockup 重排資訊層級與入口；新增第 11 單元直接入口與第四張 learning-cycle 圖，因此 critical surface 重新凍結。
+- **語義邊界：** 第四格「仍能自己判斷」只是前三項 evidence 的 learner-facing summary；沒有改 evidence taxonomy、qualified opportunity、scoring、scheduler、mastery 或 formal evaluation。
+- **現況：** 尚無此 candidate 的三位 target novice usability evidence 或真人 accessibility spot check；正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。

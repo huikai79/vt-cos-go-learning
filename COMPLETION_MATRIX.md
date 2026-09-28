@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v5`
-- `ui_version`: `learner-flow-v49`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v50`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -39,7 +39,7 @@
 | standardized T3 固定應用探測 | 5 個減少技能線索的固定局面；Evidence Taxonomy v2 以 `evaluationContext=standardized` 與 live T3 分開 | SGF、試行、UI 與 evidence-taxonomy contract 測試 | 工程 | 條件通過；只支持既定局部 scoring contract，不代表全局判斷或 live 實戰遷移 |
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
-| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：先以零基礎 Core 為主要路徑，再在首屏後直接提供核心課程與獨立進階訓練兩個入口；Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、進階入口與無橫向溢出反證 | 工程 | `learner-flow-v49` 條件通過；首頁資訊架構維持原本四步 Hero、三個課程階段與三項學習證據，改用先前已確認風格的獨立生成插畫資產：Hero 1 張、三階段 3 張、學習證據 3 張；首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
+| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：Hero 仍以零基礎 Core 為主要 CTA，首屏後由「基礎建立／局部與棋局判斷／全局與綜合應用」三階段直接承擔學習入口；基礎進 Core、局部可進獨立 advanced practice、全局可直達 Core 第 11 單元。Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、進階入口與無橫向溢出反證 | 工程 | `learner-flow-v50` 條件通過；首頁以已確認 mockup 作版面基準：桌面導覽、較大的 Hero 圖、三階段直接作學習入口、四格學習循環、研究動作卡、歷史／能力雙欄與 FAQ；第四格只作 outcome summary，不新增 learner evidence 語義。首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v5 答案盲審流程條件通過；fingerprint 同時綁定 reviewer-visible `prompt`／`focus` 與 family／skill／scoring identity；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
@@ -774,3 +774,14 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **尚未升格成 geometry evidence：** 本輪 PDF screenshot 讀取因工具 cache miss 失敗，因此沒有從 Figure 1 擷取或猜測任何座標；也沒有建立 `comparisonContractId`。不得用文字描述取代 diagram geometry。
 - **Evidence separation：** Tsumego Hero receipt 與 BGA Figure 1 現在是兩條獨立 source-to-concept 鏈，但只有前者已 deterministic parse embedded SGF；兩者仍不是兩份可聚合的 decisive reference-oracle reports。
 - **下一個解除條件：** 對 BGA Figure 1 做 rights-safe reference-only structured observation，並先確認與第一來源採同一 geometry representation contract；若 representation 不同，禁止聚合。
+
+
+## 2026-09-28 Change note｜v50 以已確認 mockup 作首頁版面基準
+
+- **目標行為：** 第一張 mockup 正式成為首頁 desktop information architecture / visual hierarchy 基準；文字、路由與產品能力仍以目前 repo current truth 為準。
+- **改動：** Hero 左文右圖比例拉回 mockup；桌面 header 新增「課程特色／學習路徑／常見問題」錨點導覽；移除重複的 Core／Advanced 兩張入口區，改由「基礎建立／局部與棋局判斷／全局與綜合應用」三張卡直接承擔入口；學習循環改成 mockup 的四格；研究設計保留四張動作卡；歷史與完成後能力改成雙欄；新增由既有內容整理的 FAQ。
+- **路由：** 基礎建立沿用核心課程 CTA；局部判斷連到既有 `advanced.html` practice-only 頁；全局綜合入口可直接開核心第 11 單元，仍走既有 Core workspace 與 lesson-intro lifecycle。
+- **Evidence invariant：** 第 4 格「仍能自己判斷」標記為 `data-evidence-role="summary"`，只總結首答／延後／新棋形三條既有證據，不建立第四種 evidence、mastery、KC 或 scoring 語義。
+- **反證／驗收：** 首頁不得再出現重複 `.course-entry-grid`；桌面三入口、四格循環、375px 單欄無橫向溢出；`data-site-intro-unit="10"` 必須進 `#core` 並選中第 11 單元；Advanced 仍保持獨立 practice-only。
+- **candidate：** `formal-teaching-candidate-2026-09-28-f`，fingerprint `fnv1a32-js16-bbbe09bc`，asset set version 4；第四張 learning-cycle WebP 納入 frozen surface。
+- **證據邊界：** 正式教學仍 `BLOCKED`、formal evaluation 仍 `BLOCKED`、learning effect 仍 `NOT_MEASURED`；mockup 對齊與 CI PASS 只支持 learner-facing 工程契約。
