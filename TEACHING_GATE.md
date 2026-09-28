@@ -79,7 +79,7 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 ## 2026-09-28 Change note｜首頁棋盤視覺整合後重新凍結 candidate
 
 - **變更：** 首頁 Hero 新增精確的 9 路「氣與提子」SVG 示意；核心課程三階段加入一致的小棋盤縮圖；「怎樣才算真的學會」加入首次作答、延後再做、新棋形、仍能自行判斷四格視覺。所有棋形直接由 HTML/SVG 定義，不把生成式圖片當棋盤真值。
-- **新 candidate：** `formal-teaching-candidate-2026-09-28-c`，fingerprint 為 `fnv1a32-js16-fb71c26a`；UI version 為 `learner-flow-v47`。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-c`，fingerprint 為 `fnv1a32-js16-714c8365`；UI version 為 `learner-flow-v47`。
 - **理由：** `index.html`、`styles.css` 與 `app.js` 都屬 formal usability critical learner surface；即使底層 scoring 與事件語義不變，視覺與閱讀順序改動後仍必須重新凍結。
 - **不變範圍：** 題目、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、formal evaluation 與 learner state 語義未改。
 - **證據邊界：** 這次只能支持 learner-facing 視覺已更新並可由回歸測試檢查；目前仍沒有正式三位 target novice usability evidence 或真人 accessibility spot check，因此正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
