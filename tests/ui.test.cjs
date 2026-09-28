@@ -870,8 +870,8 @@ async function main() {
         beforeReveal,
         afterReveal: document.querySelector('#decision-review-feedback').textContent,
         types: raw.events.map((event) => event.type),
-        candidate: {legal:candidate.legal, originalMove:candidate.originalMove, matchesOriginal:candidate.matchesOriginal, exposed:candidate.originalExposed, correct: candidate.correct},
-        reveal: {originalMove:reveal.originalMove, matches:reveal.firstCandidateMatchesOriginal, exposed:reveal.originalExposed, correct: reveal.correct},
+        candidate: {legal:candidate.legal, originalMove:candidate.originalMove, matchesOriginal:candidate.matchesOriginal, exposed:candidate.originalExposed, hasCorrect:Object.prototype.hasOwnProperty.call(candidate,'correct')},
+        reveal: {originalMove:reveal.originalMove, matches:reveal.firstCandidateMatchesOriginal, exposed:reveal.originalExposed, hasCorrect:Object.prototype.hasOwnProperty.call(reveal,'correct')},
         reflectionDisabled: document.querySelector('#decision-review-reflection').disabled
       };
     })()`);
@@ -880,8 +880,8 @@ async function main() {
     assert.match(decisionReview.afterReveal, /與原著不同/);
     assert.match(decisionReview.afterReveal, /不是錯手判定/);
     assert.deepEqual(decisionReview.types, ["review_presented", "candidate_first", "original_revealed"]);
-    assert.deepEqual(decisionReview.candidate, {legal:true, originalMove:null, matchesOriginal:null, exposed:false, correct:undefined});
-    assert.deepEqual(decisionReview.reveal, {originalMove:[16,15], matches:false, exposed:true, correct:undefined});
+    assert.deepEqual(decisionReview.candidate, {legal:true, originalMove:null, matchesOriginal:null, exposed:false, hasCorrect:false});
+    assert.deepEqual(decisionReview.reveal, {originalMove:[16,15], matches:false, exposed:true, hasCorrect:false});
     assert.equal(decisionReview.reflectionDisabled, false);
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
     const advancedOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
