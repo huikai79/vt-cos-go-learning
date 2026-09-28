@@ -627,7 +627,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.webp/);
   assert.equal((html.match(/class="intro-path-image"/g) || []).length, 3);
   assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 4);
-  const evidenceSection = html.match(/<div class="intro-evidence-grid">([\s\S]*?)<\/div>/)?.[1] || "";
+  const evidenceSection = html.match(/<div class="[^"]*intro-evidence-grid[^"]*">([\s\S]*?)<\/div>/)?.[1] || "";
   assert.equal((evidenceSection.match(/<article/g) || []).length, 4);
   assert.match(evidenceSection, /data-evidence-role="summary"/);
   assert.match(html, /data-site-intro-unit="10"/);
