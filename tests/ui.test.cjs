@@ -238,7 +238,7 @@ async function main() {
     })()`);
     assert.deepEqual(finalLessonDemo.before, {lesson: "從一局找到下一個課題", step: "第 1 / 2 步", hidden: false, label: "複盤時先標記原本的轉折手"});
     assert.equal(finalLessonDemo.after.step, "第 2 / 2 步");
-    assert.match(finalLessonDemo.after.caption, /比較原著手|候選方向/);
+    assert.match(finalLessonDemo.after.caption, /比較原棋譜著手|候選方向/);
     await evaluate(socket, "(() => { const select = document.querySelector('#unit-select'); select.value = '0'; select.dispatchEvent(new Event('change', {bubbles: true})); document.querySelector('[data-lesson=\"0\"]').click(); })()");
     let response = await evaluate(socket, `document.querySelector('[data-answer="4"]').click(); (() => { const feedback = document.querySelector('#feedback'); return {feedback: feedback.textContent, feedbackClass: feedback.className, feedbackTitle: feedback.querySelector('.feedback-title')?.textContent, feedbackBadge: feedback.querySelector('.feedback-badge')?.textContent, explanation: feedback.querySelector('.answer-explanation')?.textContent, takeawayHidden: document.querySelector('.takeaway').hidden, nextDisabled: document.querySelector('#next-button').disabled, progress: document.querySelector('#progress-count').textContent}; })()`);
     assert.match(response.feedback, /答對了/);
@@ -396,7 +396,7 @@ async function main() {
     assert.match(dueReview.number, /間隔練習/);
     await delay(30);
     assert.equal(await evaluate(socket, "document.activeElement.id"), "question-prompt");
-    const phase4 = await evaluate(socket, `document.querySelector('#tools-menu').open = true; document.querySelector('#application-button').click(); const application = {number: document.querySelector('#question-number').textContent, tag: document.querySelector('#question-tag').textContent, why: document.querySelector('#learning-why').textContent, toolsClosed: !document.querySelector('#tools-menu').open, focused: document.activeElement.id}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sample-sgf-button').click(); const picker = {open: document.querySelector('#sgf-picker-dialog').open, choices: document.querySelector('#sgf-picker-move').options.length}; document.querySelector('#sgf-picker-confirm-button').click(); const candidate = document.querySelector('#sgf-candidate-input'); const reason = document.querySelector('#sgf-reason-input'); const expectedResponse = document.querySelector('#sgf-opponent-response-input'); candidate.value = '第 5 行第 5 列'; reason.value = '先確認中央氣數'; expectedResponse.value = '預期白棋會先補氣'; document.querySelector('#sgf-reflection-save-button').click(); const local = {number: document.querySelector('#question-number').textContent, player: document.querySelector('#player-color').textContent, status: document.querySelector('#sgf-reflection-status').textContent}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sgf-review-status-input').value = 'original_confirmed'; document.querySelector('#sgf-acceptable-answer-input').value = '人工複盤確認原著可接受'; document.querySelector('#sgf-review-save-button').click(); const review = document.querySelector('#sgf-review-status').textContent; ({application, picker, local, review, feedback: document.querySelector('#feedback').textContent})`);
+    const phase4 = await evaluate(socket, `document.querySelector('#tools-menu').open = true; document.querySelector('#application-button').click(); const application = {number: document.querySelector('#question-number').textContent, tag: document.querySelector('#question-tag').textContent, why: document.querySelector('#learning-why').textContent, toolsClosed: !document.querySelector('#tools-menu').open, focused: document.activeElement.id}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sample-sgf-button').click(); const picker = {open: document.querySelector('#sgf-picker-dialog').open, choices: document.querySelector('#sgf-picker-move').options.length}; document.querySelector('#sgf-picker-confirm-button').click(); const candidate = document.querySelector('#sgf-candidate-input'); const reason = document.querySelector('#sgf-reason-input'); const expectedResponse = document.querySelector('#sgf-opponent-response-input'); candidate.value = '第 5 行第 5 列'; reason.value = '先確認中央氣數'; expectedResponse.value = '預期白棋會先補氣'; document.querySelector('#sgf-reflection-save-button').click(); const local = {number: document.querySelector('#question-number').textContent, player: document.querySelector('#player-color').textContent, status: document.querySelector('#sgf-reflection-status').textContent}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sgf-review-status-input').value = 'original_confirmed'; document.querySelector('#sgf-acceptable-answer-input').value = '人工複盤確認原棋譜著手可接受'; document.querySelector('#sgf-review-save-button').click(); const review = document.querySelector('#sgf-review-status').textContent; ({application, picker, local, review, feedback: document.querySelector('#feedback').textContent})`);
     assert.match(phase4.application.number, /局面應用練習/);
     assert.equal(phase4.application.tag, "局面應用練習");
     assert.match(phase4.application.why, /固定局面應用練習/);
@@ -407,8 +407,8 @@ async function main() {
     assert.match(phase4.local.number, /棋譜單點復盤/);
     assert.equal(phase4.local.player, "● 黑棋");
     assert.match(phase4.local.status, /作答前保存/);
-    assert.match(phase4.review, /已確認原著可接受/);
-    assert.match(phase4.feedback, /與原著一致/);
+    assert.match(phase4.review, /已確認原棋譜著手可接受/);
+    assert.match(phase4.feedback, /與原棋譜一致/);
     const localSgfExport = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__localSgfBlob = blob; return 'blob:local-sgf'; }; URL.revokeObjectURL = () => {}; HTMLAnchorElement.prototype.click = function () { window.__localSgfName = this.download; }; document.querySelector('#sgf-export-button').click(); return {name: window.__localSgfName, text: await window.__localSgfBlob.text()}; })()`);
     assert.match(localSgfExport.name, /^局部復盤_sgf-[0-9a-f]{8}_第1手\.sgf$/);
     assert.match(localSgfExport.text, /^\(;GM\[1\]FF\[4\]CA\[UTF-8\]SZ\[9\]AB/);
@@ -877,7 +877,7 @@ async function main() {
     })()`);
     assert.match(decisionReview.source, /decision-review\.sgf/);
     assert.match(decisionReview.beforeReveal, /候選已保存/);
-    assert.match(decisionReview.afterReveal, /和原著不同|與原著不同/);
+    assert.match(decisionReview.afterReveal, /和原棋譜著手不同|與原棋譜著手不同/);
     assert.match(decisionReview.afterReveal, /不是錯手判定/);
     assert.deepEqual(decisionReview.types, ["review_presented", "candidate_first", "original_revealed"]);
     assert.deepEqual(decisionReview.candidate, {legal:true, originalMove:null, matchesOriginal:null, exposed:false, hasCorrect:false});
@@ -1366,7 +1366,7 @@ async function main() {
         nextDisabled: document.querySelector('#big-pigs-mouth-next').disabled
       };
     })()`);
-    assert.match(bigPigsMouthWrong.feedback, /不是 upstream regression/);
+    assert.match(bigPigsMouthWrong.feedback, /不是來源測試資料/);
     assert.equal(bigPigsMouthWrong.revealHidden, true);
     assert.equal(bigPigsMouthWrong.nextDisabled, true);
 
