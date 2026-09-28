@@ -850,3 +850,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - 刪除不再使用的 `assets/homepage/evidence-still-judge.webp`，formal candidate asset set 升至 v6，candidate 更新為 `formal-teaching-candidate-2026-09-28-n`，fingerprint `fnv1a32-js16-8479d7d0`。
 - Core 主 CTA、Core 1–15 三階段入口、Advanced 獨立 practice-only 路線、研究來源預設收合等既有 IA 不變；不修改 scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
 - 證據邊界：M4 只修正首頁語義／資產一致性與工程契約；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-28 Change note｜首頁圖片資產完整性回歸保護
+
+- **問題來源：** M4 已修正 Hero DOM 指向不存在的 `hero.webp` 與已移除的第四 evidence 圖；但若日後只更新 HTML、release manifest 或 formal candidate 其中一邊，仍可能再次出現「repo 有圖但頁面指錯路徑」或「頁面引用未納入發布／candidate」的漂移。
+- **新增驗證：** `tests/homepage-assets.test.cjs` 會從 `index.html` 擷取所有 `assets/homepage/` 圖片，逐一檢查檔案存在、PNG／WebP 基本檔頭與非空內容，並要求引用集合與 `release-manifest.json`、`formal-teaching-candidate.cjs` 的首頁資產集合完全一致。
+- **反證：** 缺檔、錯副檔名／損壞檔頭、DOM 指向未發布資產、candidate 追蹤已不再顯示的首頁圖，任一情況都會使 CI fail closed。
+- **不變範圍：** 本輪不改 learner-facing 畫面、題目、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation，因此不重新凍結 candidate。
+- **證據邊界：** 此測試只驗證靜態圖片資產與發布／candidate 契約一致，不證明圖片語意正確、真人理解或教學成效。
