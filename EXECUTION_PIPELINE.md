@@ -344,3 +344,11 @@
 - **尚未通過：** source observation → representation assignment → candidate geometry comparison。`comparisonContractId` 未定時禁止呼叫成正式 L Group MATCH/DIFFERENT evidence。
 - **不得灌票：** 同一 collection／同一 editorial source 的多題只算同一 evidence chain；鏡像、不同 URL、不同 digest 也不能提升 independence。
 - **第二來源停止線：** suite-level 描述（例如『L groups covered』）不足以把未標名的 SGF 自動指定成 L Group；需要 direct locator 或可審查的 source-to-geometry mapping。
+
+
+## 2026-09-28 Decision note｜BGA Figure 1 intake gate
+
+- 已有 direct locator：British Go Journal 116〈Counting Liberties: The L group〉Figure 1；正文直接把該 Figure 稱為 L group。
+- 尚缺 structured observation：未可靠取得 Figure 1 座標前，只能算 documentary source-to-concept evidence，不能產生 shape MATCH/DIFFERENT。
+- 任何後續 extraction 必須 reference-only、不可把受權利限制的原圖直接 shipping；持久化仍只允許 sanitized receipt/report。
+- 只有 BGA 與 Tsumego Hero 都被轉成相同 `comparisonContractId` 的 decisive reports 後，才允許進 `aggregatePersistableReports`。
