@@ -648,12 +648,13 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
   assert.match(html, /styles\.css\?v=learner-flow-v53/);
-  assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.webp/);
+  assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
   assert.equal((html.match(/class="intro-path-image"/g) || []).length, 3);
-  assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 4);
+  assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 3);
   const evidenceSection = html.match(/<div class="[^"]*intro-evidence-grid[^"]*">([\s\S]*?)<\/div>/)?.[1] || "";
-  assert.equal((evidenceSection.match(/<article/g) || []).length, 4);
-  assert.match(evidenceSection, /data-evidence-role="summary"/);
+  assert.equal((evidenceSection.match(/<article/g) || []).length, 3);
+  assert.doesNotMatch(evidenceSection, /data-evidence-role="summary"/);
+  assert.match(html, /class="intro-evidence-outcome"[^>]*><strong>真正要看的結果：<\/strong>隔一段時間或換新棋形後，仍能自己判斷/);
   assert.match(html, /data-site-intro-unit="5"/);
   assert.match(html, /data-site-intro-unit="10"/);
   assert.equal((html.match(/>從這裡開始 <span aria-hidden="true">→<\/span><\/button>/g) || []).length, 2);
