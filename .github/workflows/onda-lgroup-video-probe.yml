@@ -1,0 +1,80 @@
+name: onda-lgroup-video-probe
+
+on:
+  push:
+    branches:
+      - research/onda-lgroup-video-probe-2026-09-29
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+
+      - name: Fetch source page and extract embed metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/onda-probe
+          curl -L --fail --retry 3 --user-agent "vt-cos-go-learning-reference-research/1.0" \
+            "https://note.com/go_pro275_denen/n/n299c0c730c08" \
+            -o /tmp/onda-probe/page.html
+          sha256sum /tmp/onda-probe/page.html | tee /tmp/onda-probe/page-sha256.txt
+          python3 - <<'PY'
+          import re, html, json, pathlib
+          text=pathlib.Path('/tmp/onda-probe/page.html').read_text(encoding='utf-8', errors='replace')
+          urls=[]
+          for pat in [
+              r'https://www\.youtube\.com/embed/[A-Za-z0-9_-]+',
+              r'https://www\.youtube\.com/watch\?v=[A-Za-z0-9_-]+',
+              r'https://youtu\.be/[A-Za-z0-9_-]+'
+          ]:
+              urls += re.findall(pat, html.unescape(text))
+          urls=sorted(set(urls))
+          pathlib.Path('/tmp/onda-probe/embed-urls.json').write_text(json.dumps(urls,ensure_ascii=False,indent=2))
+          print(json.dumps(urls,ensure_ascii=False))
+          if not urls:
+              raise SystemExit('no youtube embed found')
+          ids=[]
+          for u in urls:
+              m=re.search(r'(?:embed/|v=|youtu\.be/)([A-Za-z0-9_-]+)',u)
+              if m: ids.append(m.group(1))
+          pathlib.Path('/tmp/onda-probe/video-ids.txt').write_text('\n'.join(sorted(set(ids)))+'\n')
+          PY
+
+      - name: Fetch public video thumbnail
+        shell: bash
+        run: |
+          set -euo pipefail
+          id="$(head -n 1 /tmp/onda-probe/video-ids.txt)"
+          test -n "$id"
+          for name in maxresdefault hqdefault; do
+            if curl -L --fail --retry 2 "https://i.ytimg.com/vi/$id/$name.jpg" -o "/tmp/onda-probe/$name.jpg"; then
+              file "/tmp/onda-probe/$name.jpg"
+              sha256sum "/tmp/onda-probe/$name.jpg"
+            fi
+          done
+          cat > /tmp/onda-probe/provenance.txt <<EOF
+          article=https://note.com/go_pro275_denen/n/n299c0c730c08
+          claim=隅のL字型をマスターしよう
+          purpose=temporary reference-only source-to-geometry review
+          persisted_to_repo=false
+          retention_days=1
+          EOF
+
+      - name: Remove page HTML before upload
+        shell: bash
+        run: rm -f /tmp/onda-probe/page.html
+
+      - name: Upload temporary research artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: onda-lgroup-video-probe
+          path: /tmp/onda-probe/
+          retention-days: 1
+          if-no-files-found: error
