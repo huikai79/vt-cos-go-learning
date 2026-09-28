@@ -60,3 +60,38 @@ test("窄版模式與練習快速導覽可降為單欄",()=>{
   assert.match(css,/@media\(max-width:640px\)[\s\S]*\.classic-mode-nav\{grid-template-columns:1fr\}/);
   assert.match(css,/@media\(max-width:390px\)[\s\S]*\.classic-practice-jumps\{grid-template-columns:1fr\}/);
 });
+
+test("applyMode 實際只顯示選定 panel，並同步 aria-current 與 skip link",()=>{
+  const attrs=(initial={})=>({
+    dataset:{...initial},
+    hidden:false,
+    map:new Map(),
+    setAttribute(k,v){this.map.set(k,v);},
+    removeAttribute(k){this.map.delete(k);}
+  });
+  const practicePanel=attrs({classicModePanel:"practice"});
+  const atlasPanel=attrs({classicModePanel:"atlas"});
+  const practiceLink=attrs({classicModeLink:"practice"});
+  const atlasLink=attrs({classicModeLink:"atlas"});
+  const skip={href:"",textContent:""};
+  const doc={
+    body:{dataset:{}},
+    querySelectorAll(selector){
+      if(selector==="[data-classic-mode-panel]") return [practicePanel,atlasPanel];
+      if(selector==="[data-classic-mode-link]") return [practiceLink,atlasLink];
+      return [];
+    },
+    querySelector(selector){ return selector===".skip-link" ? skip : null; },
+    getElementById(){ return null; }
+  };
+
+  const mode=Mode.applyMode(doc,"#atlas");
+  assert.equal(mode,Mode.MODES.ATLAS);
+  assert.equal(doc.body.dataset.classicMode,"atlas");
+  assert.equal(practicePanel.hidden,true);
+  assert.equal(atlasPanel.hidden,false);
+  assert.equal(practiceLink.map.has("aria-current"),false);
+  assert.equal(atlasLink.map.get("aria-current"),"page");
+  assert.equal(skip.href,"#classic-atlas-title");
+  assert.equal(skip.textContent,"跳到世界名型對照");
+});
