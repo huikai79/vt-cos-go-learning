@@ -107,7 +107,22 @@
 
 ### Windows 本機 KataGo bridge smoke
 
-Move Provider 的 CI contract 通過後，真正的 Windows KataGo executable 全鏈路仍需在有 KataGo、config 與 model 的本機執行一次：
+Move Provider 的 CI contract 通過後，真正的 Windows KataGo executable 全鏈路仍需在有 KataGo、config 與 model 的本機執行一次。
+
+若電腦使用 KaTrain 1.20.0，可先用自動發現 wrapper。它讀取 `~/.katrain/config.json` 的 engine 設定；自訂的絕對路徑直接沿用，bundled engine 則只在 KaTrain 程式目錄與常見安裝目錄尋找 `katrain\KataGo\katago.exe`。找不到或同一搜尋範圍出現多套 bundled engine 時會停止，不自行選一套：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katrain-katago-smoke.ps1
+```
+
+若 KaTrain 是解壓在自訂資料夾，補一個 root 即可：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katrain-katago-smoke.ps1 `
+  -KaTrainRoot "D:\你的\KaTrain資料夾"
+```
+
+只有自動發現失敗時，才需要手動指定三個檔案：
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katago-bridge-smoke.ps1 `
