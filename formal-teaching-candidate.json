@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-28-i",
-  "frozenAt": "2026-09-28T21:30:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-28-sgf-review-a",
+  "frozenAt": "2026-09-28T23:55:00+08:00",
   "assetSetVersion": 5,
-  "assetFingerprint": "fnv1a32-js16-11135c45",
+  "assetFingerprint": "fnv1a32-js16-4c1549b6",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -39,5 +39,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v53：M2 Learning Workspace / Course Navigation。分離目前課程與單元瀏覽語義；Unit browsing 不切換 lesson 或建立 learner event，mobile 導航採可展開區域；到期／錯題只在非零時出現。保留 Global Go Observatory publication boundary、M1 feedback separation、first response／retry、scoring、scheduler、事件 schema、evidence taxonomy 與 formal evaluation masking。"
+  "scopeNote": "learner-flow-v53 + SGF Decision Review v1。共享 sgf.js 新增獨立 19×19 decision-review parser／contract；既有 Core 9×9 parseSgf 與 single-move historical recall 行為保持原 API。Advanced 新功能 practice-only，不改 scoring、scheduler、KC、T2/T3 或 formal evaluation。"
 }
