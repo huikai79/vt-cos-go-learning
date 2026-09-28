@@ -71,13 +71,13 @@ test("SGF 重播拒絕簡單劫的立即回提", () => {
   assert.throws(() => parseSgf(immediateKoRecapture), /簡單劫/);
 });
 
-test("SGF 單點復盤只比較原著一致性，不把它標成最佳手或 T3", () => {
+test("SGF 單點復盤只比較原棋譜一致性，不把它標成最佳手或 T3", () => {
   const fs = require("node:fs");
   const path = require("node:path");
   const appSource = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   const htmlSource = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
-  assert.match(appSource, /feedback-title">與原著一致</);
-  assert.match(appSource, /feedback-title">與原著不同</);
+  assert.match(appSource, /feedback-title">與原棋譜一致</);
+  assert.match(appSource, /feedback-title">與原棋譜不同</);
   assert.match(appSource, /不會直接改變能力紀錄、複習安排或正式評量/);
   assert.match(htmlSource, /棋譜單點復盤/);
   assert.match(htmlSource, /不是整盤連續猜手/);
