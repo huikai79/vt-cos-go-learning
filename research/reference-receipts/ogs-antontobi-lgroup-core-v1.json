@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "lgroup-reference-core-source-receipt-v1",
+  "authority": "reference_source_receipt_only",
+  "sourceId": "ogs-antontobi-lgroup-2022",
+  "sourceLocator": "https://forums.online-go.com/t/puzzle-collection-to-practice-killing-the-l-group/42983",
+  "sourceDigest": "sha256:88c19bd54fe2dd0693590543cecb60d144accd2657a89e59bdffacd0394015ee",
+  "sourceDigestScope": "source_image_bytes",
+  "evidenceChain": "ogs-antontobi-lgroup-2022",
+  "locator": "post 1 / directly-labelled source image",
+  "directLabel": "This arrangement of white stones is called the L group",
+  "selectionBasis": "entire_target_group",
+  "selectionInterpretationReviewed": true,
+  "candidateConceptId": "bga-bgj116-lgroup-core-seed-v1",
+  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v1",
+  "contractStatus": "REFERENCE_CORE_MATCH",
+  "geometryPersisted": false,
+  "rawSourcePersisted": false,
+  "canonicalPromotionAllowed": false,
+  "rightsStatus": "reference_only"
+}
