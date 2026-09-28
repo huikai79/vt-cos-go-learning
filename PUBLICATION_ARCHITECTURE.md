@@ -11,7 +11,7 @@
 
 `Go_Learning_Prototype` 是獨立 repository `huikai79/vt-cos-go-learning` 的根目錄。父層 `VT-Workflow`、`gtp_logs/`、個人匯出、局部復盤與 R1 回條不屬於公開產品。公開檔案的唯一機器可讀清單是 `release-manifest.json`；人工操作清單是 `RELEASE_CHECKLIST.md`。
 
-網站採無建置步驟的靜態發布：GitHub Pages 從 `main` 分支的 repository root 提供主學習入口 `index.html`、practice-only `classic-shapes.html`、`live-game.html` 與 reviewer-only `r1-review.html`，`.nojekyll` 關閉 Jekyll 處理。所有 runtime 路徑維持相對路徑，因此可同時支援直接開檔、網域根目錄與 `/repository-name/` 子路徑。專案不加入自訂 GitHub Actions workflow，減少不必要的 token、secret 與第三方 Action 攻擊面。
+網站採無建置步驟的靜態發布：GitHub Pages 從 `main` 分支的 repository root 提供主學習入口 `index.html`、獨立研究頁 `global-go-observatory.html`、practice-only `classic-shapes.html`、`live-game.html` 與 reviewer-only `r1-review.html`，`.nojekyll` 關閉 Jekyll 處理。全球圍棋觀察只屬 Research Evidence，不載入 learner runtime，也不寫入 KC、scoring、scheduler、learner state 或 formal evaluation。所有 runtime 路徑維持相對路徑，因此可同時支援直接開檔、網域根目錄與 `/repository-name/` 子路徑。專案不加入自訂 GitHub Actions workflow，減少不必要的 token、secret 與第三方 Action 攻擊面。
 
 GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=true`，所以 GitHub 會把相同自訂網域與 HTTPS 行為套用到本 project site。正式入口是 `https://huikai.com.kg/vt-cos-go-learning/`；預設入口 `https://huikai79.github.io/vt-cos-go-learning/` 會以 301 轉向正式入口。2026-09-21 已確認前者 HTTPS 200、兩個 HTTP 入口轉向 HTTPS，且由預設入口啟動的完整 Edge UI suite 通過。project repository 本身沒有 CNAME，其 Pages API 的 `https_enforced` 因而仍為 `false`；手動在 project 層開啟時會回覆 `The certificate does not exist yet`。HTTPS 的實際控制層在帳號 user site，不得把 project 層旗標誤記成已啟用。
 
@@ -60,3 +60,12 @@ GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=t
 - **不變 invariant：** 內建 heuristic 仍是零安裝預設；provider 只提候選，play 仍經 rules engine；任何 provider failure 保持 ERROR、不 fallback；不在前端保存 API key。
 - **部署邊界：** 本次沒有建立雲端 KataGo service，因此不能宣稱「所有 Pages 訪客已有 KataGo」。要達成該能力，仍需另部署、驗證及維運 HTTPS KataGo API。
 - **Rollback：** 回復 UI copy／placeholder 即可；不涉及 storage、event、KC、scheduler、scoring 或 formal evaluation migration。
+
+
+## 2026-09-28 Change note｜Global Go Observatory v0.1
+
+- **目的：** 將本輪跨國圍棋人口／活動研究整理成獨立公開研究頁，而不是把不同統計口徑混成首頁世界排名。
+- **公開入口：** `global-go-observatory.html`；首頁只增加低干擾「全球觀察」連結。研究頁不載入 learner runtime。
+- **資料契約：** 第一版只把 European Go Database 的年度 active players 作同源跨國排名；中國、韓國、日本、臺灣、新加坡、泰國、法國、馬來西亞採國家資料卡，逐筆標示調查／行政紀錄／協會估算／UNKNOWN。
+- **Research governance：** provenance、支持與不支持範圍、source independence、license／redistribution 與 known unknowns 保存於 `research/global-go-observatory-v1.md`。外部研究不升格為 learner evidence 或 teaching authority。
+- **Rollback：** 移除研究頁、樣式、首頁入口、research record 與 manifest／test 對應項目即可；無 learner storage migration。
