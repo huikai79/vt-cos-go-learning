@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v5`
-- `ui_version`: `learner-flow-v48`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v49`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -39,7 +39,7 @@
 | standardized T3 固定應用探測 | 5 個減少技能線索的固定局面；Evidence Taxonomy v2 以 `evaluationContext=standardized` 與 live T3 分開 | SGF、試行、UI 與 evidence-taxonomy contract 測試 | 工程 | 條件通過；只支持既定局部 scoring contract，不代表全局判斷或 live 實戰遷移 |
 | SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
-| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：先以零基礎 Core 為主要路徑，再在首屏後直接提供核心課程與獨立進階訓練兩個入口；Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、進階入口與無橫向溢出反證 | 工程 | `learner-flow-v48` 條件通過；已撤回 v47 對 Hero 與學習證據結構的額外改版，恢復原本四步 Hero、三個課程階段與三項學習證據，只在 Hero 與三階段卡片加入獨立棋盤插畫；首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
+| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：先以零基礎 Core 為主要路徑，再在首屏後直接提供核心課程與獨立進階訓練兩個入口；Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、進階入口與無橫向溢出反證 | 工程 | `learner-flow-v49` 條件通過；首頁資訊架構維持原本四步 Hero、三個課程階段與三項學習證據，改用先前已確認風格的獨立生成插畫資產：Hero 1 張、三階段 3 張、學習證據 3 張；首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v5 答案盲審流程條件通過；fingerprint 同時綁定 reviewer-visible `prompt`／`focus` 與 family／skill／scoring identity；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
@@ -737,3 +737,13 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **不可破壞 invariant：** 不改 item／KC／scoring、first response／retry、scheduler、storage schema、holdout 曝光、formal evaluation、live eligibility／scoring 或 evidence taxonomy。
 - **驗收：** 回歸測試必須確認首頁仍有 4 個 Hero 步驟、3 個 learning-evidence card、3 個課程階段、375px 無橫向溢出，以及 root／`#core` routing 不變。
 - **證據邊界：** 這是視覺與資訊架構修正；正式教學仍 `BLOCKED`，formal evaluation 仍 `BLOCKED`，learning effect 仍 `NOT_MEASURED`。
+
+
+## 2026-09-28 Correction note｜v49 使用前面已確認的原生成配圖
+
+- **掃描結果：** 前面已確定的視覺方向是「現代棋譜編輯插畫」：暖米白、墨綠、暖金、木質棋盤、少量有教學功能的棋盤視覺；Hero 使用完整「棋盤＋四步流程」插畫，三個課程階段各一張棋盤縮圖，「怎樣才算真的學會」維持既有三項並各配首次作答／延後再做／新棋形插畫。整頁 mockup 只作方向稿，不直接嵌入。
+- **v48 缺口：** 雖已恢復原資訊架構，但仍使用另外重畫的簡化 SVG，因此質感、比例、棋盤表現與已確認生成稿不一致。
+- **v49 修正：** 正式改用前面實際生成的獨立圖，轉為壓縮 WebP。Hero 圖保留棋盤與「看懂／落子／回饋／換新棋形」流程，並裁掉未經 rules-backed 驗證的手寫棋理句；三階段與三項學習證據圖只作 learner-facing illustration，不取得 rules／scoring authority。
+- **結構 invariant：** Hero 主文、CTA、Core／Advanced 入口、三張課程階段卡、三張 assessment card、root／`#core` routing 均不改；不得新增第四個 assessment card。
+- **candidate：** `formal-teaching-candidate-2026-09-28-e`；asset set version 3；7 個 WebP 納入 binary-safe candidate fingerprint。
+- **證據邊界：** 正式教學仍 `BLOCKED`；formal evaluation 仍 `BLOCKED`；learning effect 仍 `NOT_MEASURED`。
