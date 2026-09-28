@@ -74,6 +74,12 @@ svg .board-hit{fill:transparent;cursor:pointer}svg .board-hit:hover{fill:#ffffff
 .feedback.answer-result.success .feedback-badge{background:#1f6a3b;color:#fff}
 .feedback.answer-result.error{background:#fff4ec;border-color:#d79a75;color:#7f371f}
 .feedback.answer-result.error .feedback-badge{background:#a94f2d;color:#fff}
+.answer-card .feedback:empty{display:none}
+.aux-feedback{box-sizing:border-box;max-width:42em;margin-top:12px;padding:12px 14px;border:1px solid;border-radius:9px;font-size:1rem;line-height:1.65}
+.aux-feedback[hidden]{display:none}
+.hint-feedback{background:#f5f7ee;border-color:#bdcda8;color:#35543b}
+.interaction-feedback{background:#fff8e9;border-color:#d7bb7a;color:#6f5520}
+.system-status{background:#fff1e8;border-color:#d39a74;color:#743d25}
 .subtle-button,.primary-button{font-size:.875rem;min-height:44px}
 .subtle-button{color:#315c3e}
 .takeaway span{font-size:.875rem;color:#3d6547}
@@ -277,4 +283,37 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
   .intro-evidence-flow article::after{display:none!important}
   .intro-path-card>.intro-path-image{max-height:190px}
   .intro-evidence-image{height:150px;max-height:150px}
+}
+
+
+/* M2 course navigation: current context first, browsing second, diagnostics disclosed. */
+.current-course-context{display:grid;gap:3px;margin-top:14px;padding:11px 12px;border-left:3px solid #e7b764;background:#294535;border-radius:0 8px 8px 0}
+.current-course-context span{font-size:.75rem;color:#b9cfbd}
+.current-course-context strong{font-size:.9375rem;line-height:1.45;color:#fffdf4}
+.course-nav-toggle{display:none;width:100%;min-height:44px;margin-top:10px;border:1px solid #708978;border-radius:8px;background:#294735;color:#fff;text-align:left;padding:9px 11px;font:inherit;font-weight:650}
+.course-navigation{display:block}
+.today-navigation{margin:14px 0 4px;padding-top:12px;border-top:1px solid #45604d}
+.today-navigation .side-label{margin:0 0 7px}
+.sidebar-task-link{width:100%;min-height:44px;border:0;border-radius:8px;background:transparent;color:#eef6ed;text-align:left;padding:8px 10px;font:inherit}
+.sidebar-task-link:hover{background:#385744}
+.sidebar-task-link span{float:right;color:#f3cd83;font-weight:700}
+.advanced-sidebar-tools{margin-top:13px;border-top:1px solid #45604d;padding-top:11px;color:#d5e4d8}
+.advanced-sidebar-tools summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:.875rem;font-weight:650}
+.advanced-sidebar-links button{width:100%;min-height:44px;border:1px solid #708978;border-radius:8px;background:#294735;color:#fff;font:inherit}
+.current-label{display:inline-block;margin-left:5px;padding:1px 5px;border-radius:999px;background:#e7b764;color:#21392d;font-size:.6875rem;vertical-align:middle}
+@media(max-width:760px){
+  .sidebar{position:relative;top:auto;height:auto;overflow:visible}
+  .sidebar>.brand{margin-bottom:7px}
+  .sidebar>.side-label{display:block;margin:0;color:#d0e2d3}
+  .current-course-context{margin-top:5px;padding:7px 10px}
+  .progress-card{margin-top:7px}
+  .course-nav-toggle{display:block}
+  .course-navigation{display:none;padding-top:9px}
+  .course-navigation.is-open{display:block}
+  .course-navigation .course-label{display:block;margin:4px 0 7px}
+  .course-navigation #lesson-nav{display:grid;gap:5px;overflow:visible;padding:0}
+  .course-navigation .nav-unit{display:grid;gap:5px}
+  .course-navigation .lesson-link{width:100%;min-width:0;min-height:44px}
+  .course-navigation .lesson-copy small{display:block}
+  .course-navigation .unit-actions{margin-top:8px}
 }

@@ -139,9 +139,9 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 題目、scoring、scheduler、first response／retry、事件 schema、evidence taxonomy 與 formal evaluation 語義未改；目前仍缺 R1a 外部回條、三位 target novice usability 與真人 accessibility spot check，正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。
 
 
-## 2026-09-28 Change note｜全球圍棋觀察入口後重新凍結 candidate
+## 2026-09-28 Change note｜M2 Learning Workspace / Course Navigation
 
-- **變更：** 首頁導覽新增 `global-go-observatory.html` 的低干擾「全球觀察」入口，`index.html`／`app.js` 因此升至 `learner-flow-v51`。研究頁本身是獨立靜態 Research Evidence，不載入 learner runtime，也不列入 formal candidate critical asset set。
-- **新 candidate：** `formal-teaching-candidate-2026-09-28-k`；fingerprint：`fnv1a32-js16-54e6c884`；asset set version 維持 5。
-- **不變範圍：** 題目、答案、KC、scoring、scheduler、first response／retry、事件 schema、evidence taxonomy、learner state 與 formal evaluation 語義未改。
-- **證據邊界：** 重新凍結只證明 critical learner surface 的版本一致性；目前仍缺 R1a 外部回條、三位 target novice usability 與真人 accessibility spot check，因此正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
+- `learner-flow-v53` 將目前課程位置、單元瀏覽、今日入口與進階工具分層；桌面保留 sidebar，375px 將課程目錄收合到「課程與單元」。
+- 選擇 Unit 只改變瀏覽中的課程目錄，不改目前 lesson、題目或 learner event；只有點選實際 lesson 才切換學習內容。
+- 到期複習／錯題只有非零時才出現在 sidebar 的「今天」區塊；不以 0 題製造假的今日任務。
+- 此變更不修改 scoring、first-response/retry、scheduler policy、storage/event schema、evidence taxonomy 或 formal evaluation masking。工程測試不等於真人 usability 證據。
