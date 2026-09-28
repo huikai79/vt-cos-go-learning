@@ -1,3 +1,12 @@
+2026-09-29 Change note｜SGF Decision Review v1
+
+- **formal candidate refreeze：** `formal-teaching-candidate-2026-09-28-o`／`fnv1a32-js16-edb91303`；只因共享 `sgf.js` critical asset bytes 改變，不代表真人證據增加。
+- **learning-loop bottleneck：** Advanced 已有局部多手 reading 與 19×19 自由 practice，但缺「全盤局面 → learner candidate → 可回看 artifact → 後續外部比較」的 Response/Evidence 橋接。
+- **實作：** 19×19 單一主線 SGF 可選任意可落子手數；原著揭露前保存 first candidate 與 retry，揭露後只比較 historical move；可保存 post-reveal reflection。
+- **不可破壞：** Core 9×9 SGF API／語義保留；原著不同不等於錯手；不產生 mastery／transfer／T3／formal evaluation；KataGo 無 scoring authority。
+- **negative tests：** 候選事件若提前帶 original move／comparison 必須 fail；comparison event 不得產生 correct／mastery；malformed store fail closed。
+- **rollback：** 移除新的 advanced decision-review UI／event stream，回復 SGF 共用 parser 擴充；既有事件 key 不需 migration。
+
 # 完成矩陣：悟之一手
 
 更新日期：2026-09-28  
@@ -37,7 +46,7 @@
 | 穩定修正距離與再犯間隔 | 已由合格、無提示機會重算；SCD 須通過約 24 小時與 7 天的非 holdout T2，正式變形庫已有 T2 流程題；介面及兩種匯出均顯示資料不足或目前下限 | `learning-metrics.test.cjs`、`app-state.test.cjs`、UI 測試 | 工程 | 條件通過；尚無真人延後結果，指標效度未驗 |
 | 延後與未見題 | 一般匯出仍遮蔽公開保留組答案；48 題原 formal holdout 已因公開原始碼全部退役 | 排程、狀態、試行、公開契約與 UI 測試 | 工程 | 流程條件通過；正式未見驗收須另建從未公開的新題庫 |
 | standardized T3 固定應用探測 | 5 個減少技能線索的固定局面；Evidence Taxonomy v2 以 `evaluationContext=standardized` 與 live T3 分開 | SGF、試行、UI 與 evidence-taxonomy contract 測試 | 工程 | 條件通過；只支持既定局部 scoring contract，不代表全局判斷或 live 實戰遷移 |
-| SGF 實戰回流 | 可選單一主線 9 路棋譜的任意可落子著手、保存原判斷並匯出 KaTrain 交接 SGF | `sgf.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；pass 不建立落子題，且未確認錯誤原因或最佳手 |
+| SGF 實戰回流／決策點複盤 | Core 保留單一主線 9 路任意可落子著手的 historical recall；Advanced 新增 19×19 SGF Decision Review v1：選手數、原著隱藏、保存第一候選／retry、揭露原著比較與可選復盤備註；source position／item／candidate-set／scoring／rules／taxonomy／exposure 均版本化 | `sgf.test.cjs`、`advanced-decision-review.test.cjs`、發布邊界與 CI | 工程／practice artifact | 條件通過僅表示可追溯 practice workflow；與原著不同不是錯手，原著不是唯一最佳手；不更新 KC／scheduler／T2-T3／formal evaluation |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
 | 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：Hero 仍以零基礎 Core 為主要 CTA，首屏後由「基礎建立／局部與棋局判斷／全局與綜合應用」三階段直接承擔核心課程入口；基礎進 Core、局部直達 Core 第 6 單元、全局直達 Core 第 11 單元。Advanced 維持獨立路線，不屬於單元 1–15，也不再冒充三階段中的局部入口。Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、Core 第 6／11 單元直達與無橫向溢出反證 | 工程 | `learner-flow-v53` 條件通過；三張階段卡只代表 Core 1–15，Advanced 另列為獨立進階訓練。首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
