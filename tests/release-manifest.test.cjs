@@ -154,6 +154,13 @@ test("世界名型 ontology、geometry registry 與 compatibility catalog 都列
   assert.ok(manifest.publicFiles.includes("research/reference-receipts/tsumego-hero-lgroup-15362-oracle-v3.json"));
   assert.ok(manifest.publicFiles.includes("research/reference-receipts/lgroup-defender-aggregate-2026-09-29.json"));
   assert.ok(manifest.publicFiles.includes("tests/lgroup-reference-comparison.test.cjs"));
+  assert.ok(manifest.publicFiles.includes("classic-lgroup-reference-core-contract.js"));
+  assert.ok(manifest.publicFiles.includes("tests/classic-lgroup-reference-core-contract.test.cjs"));
+  assert.ok(manifest.publicFiles.includes("research/reference-receipts/bga-bgj116-lgroup-core-v1.json"));
+  assert.ok(manifest.publicFiles.includes("research/reference-receipts/ogs-antontobi-lgroup-core-v1.json"));
+  assert.ok(manifest.publicFiles.includes("research/reference-receipts/igocompany-corner-l-core-v1.json"));
+  assert.ok(manifest.publicFiles.includes("research/reference-receipts/lgroup-core-aggregate-2026-09-29.json"));
+  assert.ok(manifest.publicFiles.includes("tests/lgroup-reference-core-receipts.test.cjs"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
   assert.ok(manifest.hosting.entrypoints.includes("classic-shapes.html"));
 });

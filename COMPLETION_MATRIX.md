@@ -882,3 +882,16 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Aggregation：** BGA chain 是 candidate seed，依 oracle v3 排除；目前只剩 Tsumego 一條 independent decisive unit，因此 aggregate = `INSUFFICIENT`、`canonicalPromotionAllowed=false`。
 - **下一步：** 研究更適合 family identity 的 representation（例如來源明示的 base shape／eye-space／enclosed region／mechanism），或取得第三條直接、可結構化且不依賴 BGA seed 的來源；任何新 representation 必須另建 `comparisonContractId`，不得與 defender-group v3 混聚合。
 - **不變：** playable content、scoring、learner state、KC、scheduler、T0–T3、R1、formal evaluation 全部不變。
+
+
+## 2026-09-29 Decision note｜L-tetromino core hypothesis v1：一條獨立 decisive support，仍不足升格
+
+- **重新框架：** Tsumego 15362 已反證 exact defender connected group 不是 family-wide invariant。下一個候選改成更窄的「來源直接標示／原生標記的 4-stone L-tetromino core」，不把較大 group 任意裁四子。
+- **Contract：** `lgroup-source-marked-l-tetromino-core-v1` 是 `research_hypothesis_only`。只接受：(1) source 直接把整個 target group 綁到 L Group，且 group 恰為四子；或 (2) source-native marked subset 恰為四子，但後者若標記語義未經獨立人工覆核，只回 `NEEDS_HUMAN_REVIEW`。
+- **BGA seed：** BGJ116 Figure 1 作 candidate seed；其 evidence chain 必須排除，不能同時當 independent validation。
+- **第一條獨立支持：** OGS 2022 帖文正文直接寫「This arrangement of white stones is called the L group」，其 source image 的整個白方 target group 是四子 L-tetromino；reference-only receipt = `REFERENCE_CORE_MATCH`。
+- **日本 supporting observation：** IGOcompany 2024 文章直接把右上局面稱「隅のL字型」且「白先白死」；原圖有四顆 source-native 方框白子呈 L-tetromino，但文章沒有說明方框語義，因此只記 `NEEDS_HUMAN_REVIEW`，不算第二張 decisive vote。
+- **Aggregation：** BGA seed 排除後目前只有 OGS 一條 independent decisive MATCH；日本 observation 只 supporting，因此 aggregate = `INSUFFICIENT`、`canonicalPromotionAllowed=false`。
+- **Tsumego stop line：** 15362 的較大未標記 defender group 不符合 core contract eligibility；不得從中搜尋任何四子 L subset 來事後製造 MATCH。
+- **下一個解除條件：** 對日本 source-native 方框語義取得獨立人工覆核，或找到另一條直接標示 base L Group 且整個 target group 為四子的獨立來源。達成前不把 core hypothesis 寫入 canonical geometry registry／playable content。
+- **不變：** learner state、KC、scheduler、scoring、T0–T3、R1、formal evaluation 全部不變。

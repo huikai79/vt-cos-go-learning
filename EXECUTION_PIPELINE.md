@@ -372,3 +372,12 @@
 - 不得用「同一 collection 再挑一題」作事後救援；若改用 base-shape、eye-space、enclosed-region 或 mechanism representation，必須先定義新 contract，再依事前 locator／selection rule 重新取證。
 - embedded SGF digest 是 geometry provenance；整頁 HTML digest 只可作 page-level 診斷，不作 geometry source version。
 - BGA seed chain 不算 independent confirmation；目前 aggregation 維持 `INSUFFICIENT`。下一步優先找第三條直接 diagram/SGF source，或建立有來源支持的新 representation hypothesis。
+
+
+## 2026-09-29 Decision note｜L Group core hypothesis gate
+
+- `lgroup-source-marked-l-tetromino-core-v1` 只處理 source-direct / source-native-marked 的四子 L core；不允許從較大未標記 group 推測 subset。
+- BGA Figure 1 = seed，不算 independent vote；OGS 直接標示 arrangement = L group，作第一條 independent decisive MATCH。
+- IGOcompany 圖雖有 source-native 四子方框 L pattern，但 mark semantics 尚未獨立覆核，只能 supporting / `NEEDS_HUMAN_REVIEW`。
+- aggregate 仍 `INSUFFICIENT`；禁止 canonical promotion、playable scoring 或 learner-runtime wiring。
+- 下一步只接受：人工覆核日本 mark semantics，或另一條 independent direct base-shape source；不再用 Tsumego 15362 的 unmarked larger group 湊 core match。
