@@ -30,35 +30,18 @@ jobs:
           echo "pdf_sha256=$(sha256sum /tmp/bgj116.pdf | awk '{print $1}')" >> "$GITHUB_ENV"
           pdfinfo /tmp/bgj116.pdf | sed -n '1,20p'
 
-      - name: Locate L Group article candidate pages
+      - name: Render all pages for visual article location
         shell: bash
         run: |
           set -euo pipefail
           pages=$(pdfinfo /tmp/bgj116.pdf | awk '/^Pages:/ {print $2}')
-          : > /tmp/candidates.txt
           mkdir -p /tmp/bga-probe
-          for n in $(seq 1 "$pages"); do
-            pdftotext -layout -f "$n" -l "$n" /tmp/bgj116.pdf /tmp/page.txt
-            if grep -Eqi "Richard[[:space:]]+Hunter|Counting[[:space:]]+Libert|L[ -]?group|libert" /tmp/page.txt; then
-              echo "$n" >> /tmp/candidates.txt
-              echo "=== PDF page $n ==="
-              grep -Ein -C 3 "Richard[[:space:]]+Hunter|Counting[[:space:]]+Libert|L[ -]?group|libert" /tmp/page.txt || true
-              cp /tmp/page.txt "/tmp/bga-probe/page-$n.txt"
-              pdftoppm -png -r 220 -f "$n" -l "$n" -singlefile                 /tmp/bgj116.pdf "/tmp/bga-probe/page-$n"
-            fi
-          done
-          test -s /tmp/candidates.txt
-          tr '\n' ',' < /tmp/candidates.txt | sed 's/,$//' | xargs -I{} echo "candidate_pdf_pages={}" >> "$GITHUB_ENV"
-
-      - name: Record temporary artifact provenance
-        shell: bash
-        run: |
-          set -euo pipefail
+          pdftoppm -png -r 110 -f 1 -l "$pages" /tmp/bgj116.pdf /tmp/bga-probe/page
           cat > /tmp/bga-probe/provenance.txt <<EOF
           source=https://www.britgo.org/files/bgj/bgj116.pdf
           pdf_sha256=$pdf_sha256
-          candidate_pdf_pages=$candidate_pdf_pages
-          purpose=temporary reference-only human verification
+          pages=$pages
+          purpose=temporary reference-only visual article location
           persisted_to_repo=false
           retention_days=1
           EOF
