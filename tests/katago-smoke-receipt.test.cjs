@@ -1,6 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const path = require("node:path");
+const fs = require("node:fs");
 const Receipt = require("../katago-smoke-receipt.cjs");
 const Comparison = require("../decision-comparison.js");
 
@@ -38,7 +39,7 @@ function baseReceipt() {
     status: "PASS",
     generatedAt: "2026-09-29T01:02:03.1234567Z",
     platform: "windows",
-    repositoryCommit: "a".repeat(40),
+    repositoryCommit: Receipt.repositoryCommit(root),
     contractFiles: Receipt.contractFileHashes(root),
     engine: {
       version: "1.18.1",
@@ -111,7 +112,11 @@ test("receipt rejects forbidden learning inference fields in engine result", () 
   }
 });
 
-test("receipt rejects stale contract hashes", () => {
+test("receipt rejects old commit and stale contract hashes", () => {
+  const oldCommit = baseReceipt();
+  oldCommit.repositoryCommit = "0".repeat(40);
+  assert.equal(Receipt.verifyAgainstRepository(oldCommit, root), "katago_smoke_receipt_commit_mismatch");
+
   const receipt = baseReceipt();
   receipt.contractFiles["decision-comparison.js"] = "f".repeat(64);
   assert.equal(Receipt.verifyAgainstRepository(receipt, root), "katago_smoke_receipt_stale:decision-comparison.js");
@@ -121,4 +126,15 @@ test("receipt rejects malformed comparison identity instead of accepting a visua
   const receipt = baseReceipt();
   receipt.comparisonResult.positionFingerprint = "other-position";
   assert.match(Receipt.validateReceipt(receipt), /^katago_smoke_comparison_result_invalid:comparison_result_identity_mismatch$/);
+});
+
+
+test("PowerShell smoke obtains real engine version and keeps absolute engine paths out of receipt fields", () => {
+  const script = fs.readFileSync(path.join(root, "tests", "katago-bridge-smoke.ps1"), "utf8");
+  assert.match(script, /& \$resolvedExe version/);
+  assert.match(script, /status --porcelain --untracked-files=no/);
+  assert.match(script, /executableName = \[System\.IO\.Path\]::GetFileName\(\$resolvedExe\)/);
+  assert.match(script, /executableSha256 = \(Get-FileHash/);
+  assert.doesNotMatch(script, /executablePath\s*=/i);
+  assert.match(script, /verify-katago-smoke-receipt\.cjs/);
 });
