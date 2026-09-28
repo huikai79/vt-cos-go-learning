@@ -840,6 +840,49 @@ async function main() {
       {familyId:"snapback", variantId:"seed", axes:["baseline"]},
       {familyId:"snapback", variantId:"seed", axes:["baseline"]}
     ]);
+    const decisionReviewLoaded = await evaluate(socket, `(() => {
+      const input = document.querySelector('#decision-review-file');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['(;GM[1]FF[4]SZ[19];B[pd];W[dd];B[qp])'], 'decision-review.sgf', {type:'application/x-go-sgf'}));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change', {bubbles:true}));
+      return true;
+    })()`);
+    assert.equal(decisionReviewLoaded, true);
+    for (let retry = 0; retry < 30; retry += 1) {
+      if (await evaluate(socket, "document.querySelector('#decision-review-move').options.length > 1")) break;
+      await delay(100);
+    }
+    const decisionReview = await evaluate(socket, `(() => {
+      const select = document.querySelector('#decision-review-move');
+      select.value = '3';
+      select.dispatchEvent(new Event('change', {bubbles:true}));
+      const point = document.querySelector('#decision-review-board [data-review-x="4"][data-review-y="4"]');
+      if (!point) throw new Error('decision review point missing');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const beforeReveal = document.querySelector('#decision-review-feedback').textContent;
+      document.querySelector('#decision-review-reveal').click();
+      const raw = JSON.parse(localStorage.getItem('go-advanced-decision-review-events-v1'));
+      const candidate = raw.events.find((event) => event.type === 'candidate_first');
+      const reveal = raw.events.find((event) => event.type === 'original_revealed');
+      return {
+        source: document.querySelector('#decision-review-source').textContent,
+        beforeReveal,
+        afterReveal: document.querySelector('#decision-review-feedback').textContent,
+        types: raw.events.map((event) => event.type),
+        candidate: {legal:candidate.legal, originalMove:candidate.originalMove, matchesOriginal:candidate.matchesOriginal, exposed:candidate.originalExposed, correct: candidate.correct},
+        reveal: {originalMove:reveal.originalMove, matches:reveal.firstCandidateMatchesOriginal, exposed:reveal.originalExposed, correct: reveal.correct},
+        reflectionDisabled: document.querySelector('#decision-review-reflection').disabled
+      };
+    })()`);
+    assert.match(decisionReview.source, /decision-review\.sgf/);
+    assert.match(decisionReview.beforeReveal, /候選已保存/);
+    assert.match(decisionReview.afterReveal, /與原著不同/);
+    assert.match(decisionReview.afterReveal, /不是錯手判定/);
+    assert.deepEqual(decisionReview.types, ["review_presented", "candidate_first", "original_revealed"]);
+    assert.deepEqual(decisionReview.candidate, {legal:true, originalMove:null, matchesOriginal:null, exposed:false, correct:undefined});
+    assert.deepEqual(decisionReview.reveal, {originalMove:[16,15], matches:false, exposed:true, correct:undefined});
+    assert.equal(decisionReview.reflectionDisabled, false);
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
     const advancedOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
     assert.ok(advancedOverflow.scrollWidth <= advancedOverflow.width + 1, `advanced mobile horizontal overflow: ${JSON.stringify(advancedOverflow)}`);
