@@ -859,3 +859,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - 刪除不再使用的 `assets/homepage/evidence-still-judge.webp`，formal candidate asset set 升至 v6，candidate 更新為 `formal-teaching-candidate-2026-09-28-n`，fingerprint `fnv1a32-js16-8479d7d0`。
 - Core 主 CTA、Core 1–15 三階段入口、Advanced 獨立 practice-only 路線、研究來源預設收合等既有 IA 不變；不修改 scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
 - 證據邊界：M4 只修正首頁語義／資產一致性與工程契約；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-29 Correction note｜首頁三項 evidence 與研究動作卡版面收斂
+
+- **Johari 檢討：** 上一輪正確辨認 evidence 已從四項收斂為三項，以及 32px science icon 不需要獨占一列；盲點是只根據單張截圖推論 breakpoint，沒有先核對 current main 與 formal candidate。實際 current CSS 仍保留舊四格時代的 `max-width:1000px → 2 欄` 規則，造成三項 evidence 在平板／窄桌面形成 2+1 空洞。
+- **修正：** 移除 evidence 的 1000px 兩欄中介狀態；桌面／平板保持三欄流程，到既有 760px mobile breakpoint 才改單欄。箭頭因此也保持 1→2→3 的連續流程。
+- **Science cards：** 32px 圖示與小標題改為同一列，說明文字維持下一列，減少無意義垂直空間；四張卡的內容與順序不變。
+- **不變範圍：** 不改 index.html 文案、圖片、題目、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
+- **Candidate boundary：** `styles.css` 是 formal candidate critical asset，因此合併前必須重新計算 fingerprint／更新 candidate；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
