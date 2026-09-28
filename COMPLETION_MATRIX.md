@@ -766,3 +766,11 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Evidence independence：** 同一 Tsumego Hero collection 252 的其他 45 題仍屬同一 evidence chain，不可拿另一題湊成第二條獨立 evidence unit。
 - **第二來源查核：** GNU Go 的公開文件只在 suite 層說 L groups 有相當 regression coverage；目前查到的 `ld*.sgf` 沒有足以把特定檔案直接標成 L Group 的 provenance，因此暫不計為第二條 geometry evidence chain。
 - **下一個解除條件：** 找到一個來源直接把具體 diagram/SGF 與 L Group identity 綁定，且 representation 可明確定義；或先建立經獨立來源支持的 L Group comparison contract。未達成前不產生 MATCH/DIFFERENT report。
+
+
+## 2026-09-28 Decision note｜BGA Figure 1 直接 source-to-concept 鏈已找到，geometry extraction 仍 BLOCKED
+
+- **第二條獨立 documentary chain：** British Go Journal 116 的 Richard Hunter〈Counting Liberties: The L group〉正文直接指出 Figure 1 是 L group，並明述該角部黑棋即使先手也不能活。這比索引層級更強，因為名稱與具體 Figure locator 已直接綁定。
+- **尚未升格成 geometry evidence：** 本輪 PDF screenshot 讀取因工具 cache miss 失敗，因此沒有從 Figure 1 擷取或猜測任何座標；也沒有建立 `comparisonContractId`。不得用文字描述取代 diagram geometry。
+- **Evidence separation：** Tsumego Hero receipt 與 BGA Figure 1 現在是兩條獨立 source-to-concept 鏈，但只有前者已 deterministic parse embedded SGF；兩者仍不是兩份可聚合的 decisive reference-oracle reports。
+- **下一個解除條件：** 對 BGA Figure 1 做 rights-safe reference-only structured observation，並先確認與第一來源採同一 geometry representation contract；若 representation 不同，禁止聚合。
