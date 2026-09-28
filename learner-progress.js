@@ -52,13 +52,13 @@
   function label(state) {
     const labels = {
       insufficient_evidence: "資料不足",
-      needs_more_practice_evidence: "仍需更多可比較練習／實戰證據",
+      needs_more_practice_evidence: "仍需更多可比較的練習與實戰紀錄",
       delayed_t2_and_live_observed: "延後複習與實戰都有紀錄",
       delayed_t2_observed_live_pending: "延後複習已有紀錄；實戰待觀察",
       live_observed_t2_pending: "實戰已有紀錄；延後複習待觀察",
       mixed_live_evidence: "實戰表現不一致",
       accumulating_live_evidence: "實戰紀錄累積中",
-      practice_evidence_only: "目前只有練習證據"
+      practice_evidence_only: "目前只有練習紀錄"
     };
     return labels[state] || state;
   }
@@ -77,19 +77,19 @@
     }
     const distinctSessionsWithFirstResponse = sessionIds.size;
     let stage = "not_started";
-    let label = "尚未開始掃描 9×9 人機回合";
+    let label = "尚未開始記錄 9×9 人機實戰";
     if (assessedHumanTurns > 0 && eligibleOpportunities === 0) {
       stage = "scanning_no_eligible";
-      label = "已開始整盤掃描，但尚未出現 v1 合格局部機會";
+      label = "已開始記錄整盤實戰，但還沒有出現符合目前條件的局部機會";
     } else if (eligibleOpportunities > 0 && firstResponses === 0) {
       stage = "eligible_waiting_response";
-      label = "已出現合格局部機會，但尚無首答";
+      label = "已出現符合條件的局部機會，但還沒有第一次作答";
     } else if (firstResponses > 0 && distinctSessionsWithFirstResponse < 2) {
       stage = "collecting_single_session";
-      label = "已開始收集合格首答；目前仍只來自單一棋局";
+      label = "已開始記錄符合條件的第一次作答；目前仍只來自一盤棋";
     } else if (distinctSessionsWithFirstResponse >= 2) {
       stage = "collecting_multi_session";
-      label = "已跨不同棋局收集合格首答";
+      label = "已在不同棋局中記錄符合條件的第一次作答";
     }
     return {
       stage,
