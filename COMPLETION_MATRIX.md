@@ -832,3 +832,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **反證／驗收：** UI regression 實際點擊第 6 與第 11 單元入口，確認都進入 `#core`、選中正確單元並開啟該單元短講；另確認首頁仍可到達 `advanced.html`，但該連結不在三階段卡內。
 - **不變範圍：** 題目、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 與 formal evaluation 語義不變。這只修正資訊架構，不證明真人更容易選對入口。
 - **Formal candidate：** learner-facing critical surface 改變，重新凍結為 `formal-teaching-candidate-2026-09-28-m`，fingerprint `fnv1a32-js16-0314dd59`；UI version 維持 `learner-flow-v53`，因本輪未改 learner event schema 或 scoring 語義。
+
+
+## 2026-09-28 Change note｜M3 Return / Review / Progress conformance
+
+- M3 不新增「我的學習」頁、不建立第二套進度 source of truth；沿用 Core workspace 的活動完成量、到期複習與錯題入口。
+- 最新 conformance audit 確認：375px 下即使「課程與單元」保持收合，真正到期的 `今日到期` 仍在 topbar 第一層可見；Core 繼續入口也仍可見，且頁面不得產生水平溢出。
+- 無到期／無錯題時維持既有 fail-closed 行為，不顯示假的「今天」任務；活動完成量只表示完成題數，不升格為 mastery。
+- 本輪只增加 regression coverage 與文件；不修改 learner-facing critical asset、scoring、scheduler、first-response/retry、event schema、evidence taxonomy 或 formal evaluation，因此不重新凍結 formal candidate。
+- 證據邊界：這只證明既有 Return / Review / Progress 介面契約在 desktop/mobile 可被自動驗證；真人是否更容易決定「今天先做什麼」仍為 NOT_TESTED。

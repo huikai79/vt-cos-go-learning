@@ -373,6 +373,22 @@ async function main() {
       if (await evaluate(socket, "Boolean(document.querySelector('#due-review-button')?.getAttribute('aria-label'))")) break;
       await delay(100);
     }
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
+    const mobileReturnReview = await evaluate(socket, `(() => {
+      const due = document.querySelector('#due-review-button');
+      const nav = document.querySelector('#course-navigation');
+      const toggle = document.querySelector('#course-nav-toggle');
+      const resume = document.querySelector('#resume-button');
+      return {
+        dueVisible: !due.hidden && getComputedStyle(due).display !== 'none',
+        dueCount: document.querySelector('#due-review-count').textContent,
+        navCollapsed: getComputedStyle(nav).display === 'none' && toggle.getAttribute('aria-expanded') === 'false',
+        resumeVisible: !resume.hidden && getComputedStyle(resume).display !== 'none',
+        overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth
+      };
+    })()`);
+    assert.deepEqual(mobileReturnReview, { dueVisible: true, dueCount: "1", navCollapsed: true, resumeVisible: true, overflow: false });
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const dueReview = await evaluate(socket, `(() => { const button = document.querySelector('#due-review-button'); const before = {hidden: button.hidden, count: document.querySelector('#due-review-count').textContent, label: button.getAttribute('aria-label')}; button.click(); return {...before, number: document.querySelector('#question-number').textContent}; })()`);
     assert.equal(dueReview.hidden, false);
     assert.equal(dueReview.count, "1");
