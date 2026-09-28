@@ -44,7 +44,8 @@ test("首頁以低優先級入口連到歷史探索，主要學習入口維持 m
   assert.ok(home.includes('href="history.html"'));
   assert.match(home, /歷史與典故另外讀，不擋住你的學習主線/);
   assert.equal((home.match(/class="intro-path-card/g) || []).length, 3);
-  assert.match(home, /href="advanced\.html">進入進階訓練/);
+  assert.doesNotMatch(home, /class="[^"]*intro-path-action[^"]*" href="advanced\.html"/);
+  assert.match(home, /data-site-intro-unit="5"/);
   assert.match(home, /data-site-intro-unit="10"/);
 });
 
