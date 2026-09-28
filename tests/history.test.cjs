@@ -73,7 +73,7 @@ test("所有新分頁外部連結都使用 noreferrer，歷史頁沒有 runtime 
   assert.ok(externalTargets.length >= 10);
   assert.ok(externalTargets.every((tag) => /rel="[^"]*noreferrer[^"]*"/.test(tag)));
   assert.doesNotMatch(html, /<script\b/i);
-  assert.match(html, /history\.css\?v=history-explore-v5/);
+  assert.match(html, /history\.css\?v=history-explore-v6/);
 });
 
 test("歷史頁所有已知小字與 evidence badge 維持一般文字 AA 對比安全值", () => {
@@ -119,6 +119,25 @@ test("歷史頁所有已知小字與 evidence badge 維持一般文字 AA 對比
   assert.match(css, /\.source-list span\{[^}]*color:#5f7162/);
 });
 
+test("History Explore v6 五張視覺資產皆有語義邊界與延遲載入契約", () => {
+  for (const asset of [
+    "assets/history/hero-board-evolution.jpg",
+    "assets/history/board-size-17-to-19.jpg",
+    "assets/history/opening-stones-to-empty-board.jpg",
+    "assets/history/komi-first-move.jpg",
+    "assets/history/ai-go-reassessment.jpg"
+  ]) {
+    assert.ok(html.includes(`src="${asset}"`), asset);
+  }
+  assert.match(html, /hero-board-evolution\.jpg"[^>]*fetchpriority="high"/);
+  for (const asset of ["board-size-17-to-19.jpg", "opening-stones-to-empty-board.jpg", "komi-first-move.jpg", "ai-go-reassessment.jpg"]) {
+    assert.match(html, new RegExp(asset.replace(".", "\\.") + '"[^>]*loading="lazy"'));
+  }
+  assert.match(html, /插圖不作為史料證據/);
+  assert.match(html, /6\.5／7\.5 只作示例/);
+  assert.match(html, /不把 AI 評估當成歷史證據或唯一教學答案/);
+});
+
 test("歷史頁尊重 prefers-reduced-motion", () => {
   const css = fs.readFileSync(path.join(root, "history.css"), "utf8");
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{html\{scroll-behavior:auto\}\}/);
@@ -142,9 +161,9 @@ test("歷史 HTML 不得把 escaped newline 當可見文字帶進來源清單", 
 });
 
 
-test("History Explore learner-facing version metadata 一致為 v4", () => {
-  assert.match(html, /history\.css\?v=history-explore-v5/);
-  assert.match(html, /歷史探索 v5/);
+test("History Explore learner-facing version metadata 一致為 v6", () => {
+  assert.match(html, /history\.css\?v=history-explore-v6/);
+  assert.match(html, /歷史探索 v6/);
   assert.doesNotMatch(html, /歷史探索 v1|歷史探索 v2|歷史探索 v3/);
 });
 
@@ -157,7 +176,7 @@ test("孫策呂範棋譜真實性以後世 attribution 與質疑呈現，不冒�
 });
 
 
-test("History Explore v5 不保留泛用來源入口，改用實際 claim-near source", () => {
+test("History Explore v6 不保留泛用來源入口，改用實際 claim-near source", () => {
   assert.doesNotMatch(html, /href="https:\/\/ctext\.org\/"\s/);
   assert.ok(html.includes("https://ctext.org/mengzi/gaozi-i"));
   assert.ok(html.includes("chapter=578656"));
@@ -168,7 +187,7 @@ test("手機 header 即使隱藏進階導覽，頁面仍保留直接回進階訓
   assert.match(html, /href="advanced\.html">回進階訓練<\/a>/);
 });
 
-test("History Explore v5 以望都 132 年作 17 路主要物質錨點，且不誇大為原位或最早", () => {
+test("History Explore v6 以望都 132 年作 17 路主要物質錨點，且不誇大為原位或最早", () => {
   assert.ok(html.includes("https://wenwu.hebei.gov.cn/system/2023/10/16/030257948.shtml"));
   assert.match(html, /132｜東漢望都/);
   assert.match(html, /墓中出土石棋盤，盤面縱橫各 17 道/);
@@ -176,7 +195,7 @@ test("History Explore v5 以望都 132 年作 17 路主要物質錨點，且不�
   assert.doesNotMatch(html, /已知最早的 17 路棋盤/);
 });
 
-test("History Explore v5 將南朝棋學寫成品評與編纂活動，不升格為現代制度化教育", () => {
+test("History Explore v6 將南朝棋學寫成品評與編纂活動，不升格為現代制度化教育", () => {
   assert.match(html, /圍棋州邑/);
   assert.match(html, /登格 278 人/);
   assert.match(html, /宮廷棋手品評與棋書編纂活動相當成熟/);
@@ -185,14 +204,14 @@ test("History Explore v5 將南朝棋學寫成品評與編纂活動，不升格�
   assert.match(html, /不能據此假定 17→19 的答案一定就在失傳書中/);
 });
 
-test("History Explore v5 用角曲四呈現技術知識再現，但拒絕完整傳承鏈", () => {
+test("History Explore v6 用角曲四呈現技術知識再現，但拒絕完整傳承鏈", () => {
   assert.match(html, /角旁曲四，局竟乃亡/);
   assert.match(html, /角盤曲四，局終乃亡/);
   assert.match(html, /征、劫、持/);
   assert.match(html, /不足以證明一條不中斷的完整傳承鏈/);
 });
 
-test("History Explore v5 的 17 路古局缺口維持 scoped negative claim", () => {
+test("History Explore v6 的 17 路古局缺口維持 scoped negative claim", () => {
   assert.match(html, /目前查核範圍內，尚未確認可可靠重建的早期 17 路實戰局面/);
   assert.match(html, /本頁目前查核的主要考古、棋史與傳世棋譜來源中/);
   assert.match(html, /不代表這類證據不存在/);
@@ -204,14 +223,14 @@ test("《讀曲歌》只作南朝歌辭傳統的 17 路補充，不綁定 440 �
   assert.doesNotMatch(html, /440 年仍確定使用17路/);
 });
 
-test("History Explore v5 加入宋代棋譜資料，但不替個別古局人物歸屬背書", () => {
+test("History Explore v6 加入宋代棋譜資料，但不替個別古局人物歸屬背書", () => {
   assert.match(html, /北宋｜《忘憂清樂集》讓證據進入可研究棋譜/);
   assert.match(html, /開始能直接面對具體局面，以及棋譜所標示的人物歸屬/);
   assert.match(html, /不代表書中每一盤所標示的古代人物與年代都已獲得同期證據確認/);
   assert.ok(html.includes("https://www.ndl.go.jp/kaleido/entry/22/3.html"));
 });
 
-test("History Explore v5 用 1949／1989 顯示規則近現代仍持續成文化與修訂", () => {
+test("History Explore v6 用 1949／1989 顯示規則近現代仍持續成文化與修訂", () => {
   assert.match(html, /1949 → 1989｜規則到近現代仍在成文化與修訂/);
   assert.match(html, /1949 年制定的《日本棋院圍棋規約》是日本首次完成的圍棋成文規則/);
   assert.match(html, /1989 年又在相隔 40 年後大幅改定/);
@@ -219,7 +238,7 @@ test("History Explore v5 用 1949／1989 顯示規則近現代仍持續成文化
   assert.ok(html.includes("https://www.nihonkiin.or.jp/match/kiyaku/"));
 });
 
-test("History Explore v5 用新布石區分戰略觀念變化與規則改制", () => {
+test("History Explore v6 用新布石區分戰略觀念變化與規則改制", () => {
   assert.match(html, /1933 → 1934｜規則沒換，布石觀念仍能劇烈改變/);
   assert.match(html, /木谷實與吳清源在 1933 年大手合中持續試驗「新布石」/);
   assert.match(html, /1934 年《新布石法》出版後廣泛流行/);
@@ -227,7 +246,7 @@ test("History Explore v5 用新布石區分戰略觀念變化與規則改制", (
   assert.ok(html.includes("https://www.nihonkiin.or.jp/teach/history/history03.html"));
 });
 
-test("History Explore v5 明確分離棋譜證據、規則條文與戰略理解三種變化", () => {
+test("History Explore v6 明確分離棋譜證據、規則條文與戰略理解三種變化", () => {
   assert.match(html, /留下更可重建的資料/);
   assert.match(html, /把競賽規則寫成條文/);
   assert.match(html, /棋手對最佳戰略的理解改變/);
