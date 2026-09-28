@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "classic-reference-source-receipt-v1",
+  "authority": "reference_source_receipt_only",
+  "sourceId": "tsumego-hero-lgroup-32",
+  "sourceLocator": "https://tsumego.com/15362",
+  "sourceDigest": "sha256:157f93c970c1c38fe18faa06c90c8814700d87e0710e93e5c96467065efbe398",
+  "evidenceChain": "tsumego-hero-lgroup-collection-252",
+  "collectionId": "252",
+  "collectionTitle": "The L Group",
+  "problemLabel": "32/46",
+  "pageClaim": "Black to kill",
+  "embeddedSgfParsed": true,
+  "setupGeometryParsed": true,
+  "embeddedSgfOccurrences": 2,
+  "comparisonContractId": null,
+  "geometryRepresentation": "unassigned",
+  "geometryPersisted": false,
+  "rawSourcePersisted": false,
+  "canonicalPromotionAllowed": false,
+  "rightsStatus": "unknown_reference_only",
+  "capturedAt": "2026-09-28T05:33:22.027Z"
+}
