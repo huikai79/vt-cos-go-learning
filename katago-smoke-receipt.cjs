@@ -24,8 +24,8 @@ function isSha256(value) {
 }
 function isIsoDate(value) {
   if (typeof value !== "string" || !value) return false;
-  const time = Date.parse(value);
-  return Number.isFinite(time) && new Date(time).toISOString() === value;
+  if (!/(Z|[+-]\d{2}:\d{2})$/i.test(value)) return false;
+  return Number.isFinite(Date.parse(value));
 }
 function contractFileHashes(rootDir) {
   const root = path.resolve(rootDir || ".");
