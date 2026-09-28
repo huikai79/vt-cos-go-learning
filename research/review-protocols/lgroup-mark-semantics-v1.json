@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "lgroup-mark-semantics-review-v1",
+  "authority": "human_content_review_only",
+  "source": {
+    "sourceId": "igocompany-corner-l-shape-2024",
+    "sourceLocator": "https://note.com/igocompany_u/n/n3ff43e80bf2f",
+    "sourceDigest": "sha256:15fa3b991b35ce391c6628232d94d09bb5d5a1d0e289789fdfce754f0c58f2ab",
+    "sourceDigestScope": "source_image_bytes",
+    "locator": "article lines 82-93 / first L-shape image"
+  },
+  "question": "Do the four source-native boxed white stones explicitly denote the L-shape/L-group core named by the surrounding source, rather than move order, last move, emphasis, or another teaching annotation?",
+  "allowedJudgments": [
+    "marks_define_named_l_core",
+    "marks_have_other_semantics",
+    "unclear_from_source"
+  ],
+  "requiredReviewerAssertions": [
+    "humanReviewer",
+    "independentOfPriorExtraction",
+    "sourceOpenedDirectly",
+    "reviewedSourceContextNotOnlyScreenshot"
+  ],
+  "promotionBoundary": {
+    "marks_define_named_l_core": "may update this source from position_only/supporting to marked_subset decisive reference evidence after receipt verification; still no canonical promotion",
+    "marks_have_other_semantics": "reject marked-subset interpretation for this source",
+    "unclear_from_source": "keep NEEDS_HUMAN_REVIEW and non-decisive"
+  }
+}
