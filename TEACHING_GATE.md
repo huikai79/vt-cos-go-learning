@@ -121,6 +121,6 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 ## 2026-09-28 Change note｜M1 作答閉環 feedback separation
 
 - **變更：** `learner-flow-v52` 將一般作答結果、提示、棋盤非法操作與本機儲存警告分成四個不同 region；Wrong → Hint 不再覆蓋 answer result，Correct 後不再讓提示與 Next 競爭，非法操作不使用 answer-error 語義。
-- **新 candidate：** `formal-teaching-candidate-2026-09-28-h`，fingerprint `fnv1a32-js16-c28d3665`；critical tasks 不變。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-h`，fingerprint `fnv1a32-js16-f22486b6`；critical tasks 不變。
 - **不可破壞 invariant：** first response／retry、scoring、scheduler、storage schema、event schema、evidence taxonomy、formal evaluation masking 均未改。
 - **證據狀態：** 自動 regression 只支持工程契約；正式三位 target novice usability 與真人 accessibility 仍 `NOT_TESTED`，正式教學維持 `BLOCKED`。
