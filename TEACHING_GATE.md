@@ -92,3 +92,11 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **asset-set 修正：** 首頁四個外部 SVG 現納入 `formal-teaching-candidate.cjs` 的 critical asset 清單；之後若圖片本身改變，也會使 fingerprint 失配並 fail closed。
 - **不變範圍：** scoring、scheduler、event schema、evidence taxonomy、題目答案、learner state 與 formal evaluation 語義未改。
 - **證據邊界：** 尚無正式三位 target novice usability evidence 或真人 accessibility spot check；正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
+
+
+## 2026-09-28 Correction note｜v49 原生成配圖資產納入 frozen candidate
+
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-e`，fingerprint `fnv1a32-js16-cef89aa8`，asset set version = 3，UI version = `learner-flow-v49`。
+- **資產變更：** 移除 v48 自製的四個簡化 SVG，改用前面已確認風格的 Hero、三階段與三項 assessment 共 7 個 WebP。binary asset fingerprint 改以 Git blob content hash 納入 FNV material，避免二進位圖檔被 UTF-8 解碼破壞指紋語義。
+- **Authority boundary：** 生成圖只作視覺／概念提示；不作 rules engine、scoring contract、答案或 formal evaluation 真值。Hero 中未經規則驗證的手寫「提子」句已從正式資產裁除。
+- **證據邊界：** 尚無正式三位 target novice usability evidence 或真人 accessibility spot check；正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
