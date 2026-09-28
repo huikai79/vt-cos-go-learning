@@ -1,0 +1,46 @@
+name: reference-lgroup-probe
+
+on:
+  push:
+    branches:
+      - research/lgroup-reference-probe-2026-09-28
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/lgroup-reference-probe-2026-09-28
+
+      - name: Fetch and parse Tsumego Hero L Group reference
+        run: |
+          node scripts/reference-lgroup-probe.cjs research/reference-receipts/tsumego-hero-lgroup-15362.json
+
+      - name: Verify receipt contains no geometry payload
+        run: |
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const p='research/reference-receipts/tsumego-hero-lgroup-15362.json';
+          const text=fs.readFileSync(p,'utf8');
+          const receipt=JSON.parse(text);
+          if(receipt.authority!=='reference_source_receipt_only') process.exit(1);
+          if(receipt.geometryPersisted!==false || receipt.rawSourcePersisted!==false) process.exit(1);
+          for(const key of ['points','stones','shapeSignature','contextSignature','fingerprint','rawGeometry','rawObservation','sgf']){
+            if(Object.prototype.hasOwnProperty.call(receipt,key)) process.exit(1);
+          }
+          NODE
+
+      - name: Commit sanitized receipt only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/reference-receipts/tsumego-hero-lgroup-15362.json
+          git commit -m "Record sanitized L Group reference receipt"
+          git push
