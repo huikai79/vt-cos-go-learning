@@ -157,7 +157,7 @@
       claimScope: "historical_move_comparison",
       scoringClaim: "compares_candidate_with_original_sgf_move_not_best_move",
       responseMode: "free_legal_board_candidate",
-      candidateSetVersion: "all-rules-legal-moves-v1",
+      candidateSetVersion: "board-intersection-attempts-rules-checked-v1",
       scoringContractVersion: "sgf-decision-review-historical-comparison-v1",
       evidenceTaxonomyVersion: "sgf-decision-review-evidence-v1",
       sourcePositionVersion: "sgf-source-position-v1",

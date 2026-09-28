@@ -1,10 +1,10 @@
 2026-09-29 Change note｜SGF Decision Review v1
 
-- **formal candidate refreeze：** `formal-teaching-candidate-2026-09-28-o`／`fnv1a32-js16-edb91303`；只因共享 `sgf.js` critical asset bytes 改變，不代表真人證據增加。
+- **formal candidate refreeze：** `formal-teaching-candidate-2026-09-29-p`／`fnv1a32-js16-16855e4f`；只因共享 `sgf.js` critical asset bytes 改變，不代表真人證據增加。
 - **learning-loop bottleneck：** Advanced 已有局部多手 reading 與 19×19 自由 practice，但缺「全盤局面 → learner candidate → 可回看 artifact → 後續外部比較」的 Response/Evidence 橋接。
 - **實作：** 19×19 單一主線 SGF 可選任意可落子手數；原著揭露前保存 first candidate 與 retry，揭露後只比較 historical move；可保存 post-reveal reflection。
 - **不可破壞：** Core 9×9 SGF API／語義保留；原著不同不等於錯手；不產生 mastery／transfer／T3／formal evaluation；KataGo 無 scoring authority。
-- **negative tests：** 候選事件若提前帶 original move／comparison 必須 fail；comparison event 不得產生 correct／mastery；malformed store fail closed。
+- **negative tests／browser regression：** 候選事件若提前帶 original move／comparison 必須 fail；comparison event 不得產生 correct／mastery；malformed store fail closed；Windows browser suite 實際匯入 19×19 SGF、提出不同候選、揭露原著，確認不同原著不產生 `correct=false`。
 - **rollback：** 移除新的 advanced decision-review UI／event stream，回復 SGF 共用 parser 擴充；既有事件 key 不需 migration。
 
 # 完成矩陣：悟之一手
