@@ -100,15 +100,22 @@ jobs:
         run: |
           node tests/ui.test.cjs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Parse real KataGo smoke script
+      - name: Parse KataGo smoke scripts
         shell: pwsh
         run: |
-          $errors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path "tests/katago-bridge-smoke.ps1"), [ref]$null, [ref]$errors) | Out-Null
-          if ($errors.Count -gt 0) {
-            $errors | ForEach-Object { Write-Error $_.Message }
-            exit 1
+          foreach ($script in @("tests/katago-bridge-smoke.ps1", "tests/katrain-katago-smoke.ps1", "tests/katrain-smoke-autodiscovery.test.ps1")) {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $script), [ref]$null, [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Error "$script: $($_.Message)" }
+              exit 1
+            }
           }
+      - name: Test KaTrain KataGo autodiscovery
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -File tests/katrain-smoke-autodiscovery.test.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Run Edge smoke
         shell: pwsh
         run: |
