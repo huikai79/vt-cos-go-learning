@@ -626,7 +626,8 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   assert.match(html, /styles\.css\?v=learner-flow-v48/);
   assert.match(html, /class="intro-hero-image"/);
   assert.equal((html.match(/class="intro-path-image"/g) || []).length, 3);
-  assert.equal((html.match(/class="intro-evidence-grid">[\s\S]*?<article>/g) || []).length >= 1, true);
+  const evidenceSection = html.match(/<div class="intro-evidence-grid">([\s\S]*?)<\/div>/)?.[1] || "";
+  assert.equal((evidenceSection.match(/<article>/g) || []).length, 3);
   assert.match(html, /悟之一手 <span class="eyebrow-dot">●<\/span> 個人學習空間/);
   assert.doesNotMatch(html, /PERSONAL GO STUDIO · OFFLINE/);
   assert.match(html, /VT-COS · 個人圍棋練習/);
