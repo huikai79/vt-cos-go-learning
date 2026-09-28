@@ -30,36 +30,34 @@ jobs:
           echo "pdf_sha256=$(sha256sum /tmp/bgj116.pdf | awk '{print $1}')" >> "$GITHUB_ENV"
           pdfinfo /tmp/bgj116.pdf | sed -n '1,20p'
 
-      - name: Locate Counting Liberties article page
+      - name: Locate L Group article candidate pages
         shell: bash
         run: |
           set -euo pipefail
           pages=$(pdfinfo /tmp/bgj116.pdf | awk '/^Pages:/ {print $2}')
-          found=""
+          : > /tmp/candidates.txt
+          mkdir -p /tmp/bga-probe
           for n in $(seq 1 "$pages"); do
-            pdftotext -f "$n" -l "$n" /tmp/bgj116.pdf /tmp/page.txt
-            if grep -qi "Counting Liberties" /tmp/page.txt && grep -qi "L group" /tmp/page.txt; then
-              found="$n"
-              cp /tmp/page.txt /tmp/bgj116-article-page.txt
-              break
+            pdftotext -layout -f "$n" -l "$n" /tmp/bgj116.pdf /tmp/page.txt
+            if grep -Eqi "Richard[[:space:]]+Hunter|Counting[[:space:]]+Libert|L[ -]?group|libert" /tmp/page.txt; then
+              echo "$n" >> /tmp/candidates.txt
+              echo "=== PDF page $n ==="
+              grep -Ein -C 3 "Richard[[:space:]]+Hunter|Counting[[:space:]]+Libert|L[ -]?group|libert" /tmp/page.txt || true
+              cp /tmp/page.txt "/tmp/bga-probe/page-$n.txt"
+              pdftoppm -png -r 220 -f "$n" -l "$n" -singlefile                 /tmp/bgj116.pdf "/tmp/bga-probe/page-$n"
             fi
           done
-          test -n "$found"
-          echo "article_pdf_page=$found" >> "$GITHUB_ENV"
-          echo "Located article on PDF page $found"
-          sed -n '1,120p' /tmp/bgj116-article-page.txt
+          test -s /tmp/candidates.txt
+          tr '\n' ',' < /tmp/candidates.txt | sed 's/,$//' | xargs -I{} echo "candidate_pdf_pages={}" >> "$GITHUB_ENV"
 
-      - name: Render article page for human verification
+      - name: Record temporary artifact provenance
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/bga-probe
-          pdftoppm -png -r 220 -f "$article_pdf_page" -l "$article_pdf_page" -singlefile             /tmp/bgj116.pdf /tmp/bga-probe/article-page
-          cp /tmp/bgj116-article-page.txt /tmp/bga-probe/article-page.txt
           cat > /tmp/bga-probe/provenance.txt <<EOF
           source=https://www.britgo.org/files/bgj/bgj116.pdf
           pdf_sha256=$pdf_sha256
-          pdf_page=$article_pdf_page
+          candidate_pdf_pages=$candidate_pdf_pages
           purpose=temporary reference-only human verification
           persisted_to_repo=false
           retention_days=1
