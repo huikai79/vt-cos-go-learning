@@ -16,6 +16,12 @@ jobs:
       - name: Checkout research branch
         uses: actions/checkout@v4
 
+      - name: Install PDF tools
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+
       - name: Fetch official BGJ 116 PDF
         shell: bash
         run: |
