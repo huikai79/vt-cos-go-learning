@@ -729,3 +729,12 @@ test("M2：沒有到期題或錯題時不顯示假的今天區塊", () => {
   assert.equal(elements["sidebar-due-review-button"].hidden, true);
   assert.equal(elements["sidebar-review-button"].hidden, true);
 });
+
+
+test("M2：答對後 learning flow 仍進入修正／比較階段", () => {
+  const { elements } = createApp();
+  elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "0" }, "[data-lesson]") });
+  elements["answer-area"].listeners.click({ target: pointTarget({ answer: "4" }, "[data-answer]") });
+  assert.equal(elements["learning-step-2"].classList.contains("active"), true);
+  assert.equal(elements["learning-step-1"].classList.contains("active"), false);
+});
