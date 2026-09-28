@@ -43,7 +43,7 @@
       defenderReply: [3,2],
       attackerFollowup: [4,3],
       prompt: "棋形鏡像後，白棋已佔急所；黑棋走其中一個 A/B 應手，白棋要怎麼補另一點？",
-      hint: "先重新找 A/B pair，不要沿用 seed 的座標。",
+      hint: "先重新找 A、B 這對互補位置，不要沿用上一題的座標。",
       success: "對。方向改變後，A/B 的幾何互補關係仍然成立。",
       variationAxes: ["orientation:mirror","defender-reply:A"],
       scoringContractVersion: "classic-bulky-five-short-read-v1"
