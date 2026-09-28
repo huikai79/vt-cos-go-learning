@@ -16,9 +16,10 @@ const MODEL = process.env.VTCOS_KATAGO_MODEL;
 const MAX_BODY = 1024 * 1024;
 const ENGINE_TIMEOUT_MS = Number(process.env.VTCOS_KATAGO_TIMEOUT_MS || 20000);
 const PROVIDER_VERSION = "katago-gtp-bridge-v1";
-const COMPARISON_PROVIDER_VERSION = "katago-analysis-comparison-v1";
 const ENGINE_VERSION = process.env.VTCOS_KATAGO_ENGINE_VERSION || "unknown";
 const Comparison = require("./decision-comparison.js");
+const ComparisonAdapter = require("./katago-comparison-adapter.cjs");
+const COMPARISON_PROVIDER_VERSION = ComparisonAdapter.COMPARISON_PROVIDER_VERSION;
 
 function corsOrigin(req) {
   if (!REMOTE_MODE) return "*";
@@ -39,70 +40,9 @@ function ok(req, res, body) {
 }
 function colorName(color) { return color === 1 ? "B" : color === 2 ? "W" : null; }
 function modelName() { return MODEL ? MODEL.split(/[\\/]/).pop() : null; }
-function comparisonQuery(body) {
-  const error = Comparison.validateRequest(body);
-  if (error) throw new Error(error);
-  const player = colorName(body.toPlay);
-  const allowed = body.candidates.map((candidate) => Comparison.pointToGtp(candidate.point, body.boardSize));
-  return {
-    id: body.requestId,
-    initialStones: body.initialStones.map(([color, point]) => [colorName(color), Comparison.pointToGtp(point, body.boardSize)]),
-    moves: body.moves.map((move) => [colorName(move.color), move.type === "pass" ? "pass" : Comparison.pointToGtp(move.point, body.boardSize)]),
-    rules: body.rules,
-    komi: body.komi,
-    boardXSize: body.boardSize,
-    boardYSize: body.boardSize,
-    maxVisits: body.maxVisits,
-    analysisPVLen: body.analysisPVLen,
-    allowMoves: [{ player, moves: allowed, untilDepth: 1 }]
-  };
-}
-function parseComparisonOutput(body, output) {
-  let parsed;
-  try { parsed = JSON.parse(String(output || "").trim()); } catch (_) { throw new Error("comparison_engine_json_invalid"); }
-  if (!parsed || parsed.id !== body.requestId || parsed.isDuringSearch === true || !Array.isArray(parsed.moveInfos)) throw new Error("comparison_engine_response_invalid");
-  if (!parsed.rootInfo || parsed.rootInfo.currentPlayer !== colorName(body.toPlay)) throw new Error("comparison_engine_player_mismatch");
-  const infoByMove = new Map(parsed.moveInfos.map((info) => [String(info.move || "").toUpperCase(), info]));
-  const candidates = body.candidates.map((candidate) => {
-    const move = Comparison.pointToGtp(candidate.point, body.boardSize);
-    const info = infoByMove.get(move.toUpperCase());
-    if (!info) throw new Error("comparison_candidate_missing_from_engine");
-    return {
-      role: candidate.role,
-      point: candidate.point.slice(),
-      order: Number(info.order),
-      visits: Number(info.visits),
-      scoreLead: Number.isFinite(Number(info.scoreLead)) ? Number(info.scoreLead) : null,
-      winrate: Number.isFinite(Number(info.winrate)) ? Number(info.winrate) : null,
-      pv: Array.isArray(info.pv) ? info.pv.slice(0, body.analysisPVLen).map(String) : []
-    };
-  });
-  const result = {
-    resultVersion: Comparison.RESULT_VERSION,
-    comparisonContractVersion: Comparison.COMPARISON_CONTRACT_VERSION,
-    requestId: body.requestId,
-    sourceId: body.sourceId,
-    positionFingerprint: body.positionFingerprint,
-    boardSize: body.boardSize,
-    rules: body.rules,
-    komi: body.komi,
-    maxVisits: body.maxVisits,
-    analysisPVLen: body.analysisPVLen,
-    searchScope: "root_allow_moves_only",
-    authority: "bounded_search_estimate_only",
-    formalEligible: false,
-    providerVersion: COMPARISON_PROVIDER_VERSION,
-    engineVersion: ENGINE_VERSION,
-    model: modelName() || "unknown",
-    candidates
-  };
-  const error = Comparison.validateResult(result, body);
-  if (error) throw new Error(error);
-  return result;
-}
 function runAnalysisComparison(body) {
   if (!KATAGO || !CONFIG || !MODEL) return Promise.reject(new Error("katago_bridge_not_configured"));
-  const query = comparisonQuery(body);
+  const query = ComparisonAdapter.comparisonQuery(body);
   return new Promise((resolve, reject) => {
     const child = spawn(KATAGO, ["analysis", "-config", CONFIG, "-model", MODEL], { windowsHide: true, stdio: ["pipe", "pipe", "pipe"] });
     let stdout = "", stderr = "", settled = false;
@@ -116,7 +56,7 @@ function runAnalysisComparison(body) {
       if (code !== 0) return reject(new Error("katago_analysis_exit_" + code + ":" + stderr.slice(-300)));
       const lines = stdout.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
       if (!lines.length) return reject(new Error("katago_analysis_empty"));
-      try { resolve(parseComparisonOutput(body, lines[lines.length - 1])); } catch (error) { reject(error); }
+      try { resolve(ComparisonAdapter.parseComparisonOutput(body, lines[lines.length - 1], { providerVersion: COMPARISON_PROVIDER_VERSION, engineVersion: ENGINE_VERSION, model: modelName() || "unknown" })); } catch (error) { reject(error); }
     });
     child.stdin.end(JSON.stringify(query) + "\n");
   });
