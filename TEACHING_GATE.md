@@ -145,3 +145,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 選擇 Unit 只改變瀏覽中的課程目錄，不改目前 lesson、題目或 learner event；只有點選實際 lesson 才切換學習內容。
 - 到期複習／錯題只有非零時才出現在 sidebar 的「今天」區塊；不以 0 題製造假的今日任務。
 - 此變更不修改 scoring、first-response/retry、scheduler policy、storage/event schema、evidence taxonomy 或 formal evaluation masking。工程測試不等於真人 usability 證據。
+
+
+## 2026-09-28 Change note｜SGF Decision Review v1 共享 parser 後重新凍結 candidate
+
+- **共享 critical asset 變更：** `sgf.js` 新增獨立 `parseDecisionReviewSgf()`／19×19 practice contract；既有 Core `parseSgf()` 仍維持 9×9 bounded historical recall API 與 authority boundary。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-sgf-review-a`；fingerprint `fnv1a32-js16-4c1549b6`。Advanced 新頁面本身不升格為 formal teaching evidence；重新凍結是因共享 `sgf.js` 位於既有 critical asset set。
+- **證據邊界：** 目前仍缺 R1a 外部回條、三位 target novice usability 與真人 accessibility spot check；正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。
