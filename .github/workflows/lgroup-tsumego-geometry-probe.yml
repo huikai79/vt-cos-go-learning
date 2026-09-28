@@ -67,12 +67,15 @@ jobs:
 
             const normalized=Adapter.normalizeCornerPoints(best.component,best.corner,setup.boardSize);
             if(!normalized.ok) throw new Error(normalized.errors.join("; "));
-            const digest="sha256:"+crypto.createHash("sha256").update(html,"utf8").digest("hex");
+            const pageDigest="sha256:"+crypto.createHash("sha256").update(html,"utf8").digest("hex");
+            const digest="sha256:"+crypto.createHash("sha256").update(embedded.sgf,"utf8").digest("hex");
             const result={
               schemaVersion:"temporary-reference-geometry-probe-v1",
               sourceId:"tsumego-hero-lgroup-32",
               sourceLocator:url,
               sourceDigest:digest,
+              pageDigest,
+              sourceDigestScope:"embedded_sgf_bytes",
               evidenceChain:"tsumego-hero-lgroup-collection-252",
               pageClaim:"Black to kill",
               targetRole:"defender_group",
