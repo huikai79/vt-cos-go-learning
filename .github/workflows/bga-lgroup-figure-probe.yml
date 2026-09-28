@@ -1,0 +1,68 @@
+name: bga-lgroup-figure-probe
+
+on:
+  push:
+    branches:
+      - research/bga-lgroup-figure-probe-2026-09-29
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+
+      - name: Fetch official BGJ 116 PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 --user-agent "vt-cos-go-learning-reference-research/1.0"             "https://www.britgo.org/files/bgj/bgj116.pdf"             -o /tmp/bgj116.pdf
+          echo "pdf_sha256=$(sha256sum /tmp/bgj116.pdf | awk '{print $1}')" >> "$GITHUB_ENV"
+          pdfinfo /tmp/bgj116.pdf | sed -n '1,20p'
+
+      - name: Locate Counting Liberties article page
+        shell: bash
+        run: |
+          set -euo pipefail
+          pages=$(pdfinfo /tmp/bgj116.pdf | awk '/^Pages:/ {print $2}')
+          found=""
+          for n in $(seq 1 "$pages"); do
+            pdftotext -f "$n" -l "$n" /tmp/bgj116.pdf /tmp/page.txt
+            if grep -qi "Counting Liberties" /tmp/page.txt && grep -qi "L group" /tmp/page.txt; then
+              found="$n"
+              cp /tmp/page.txt /tmp/bgj116-article-page.txt
+              break
+            fi
+          done
+          test -n "$found"
+          echo "article_pdf_page=$found" >> "$GITHUB_ENV"
+          echo "Located article on PDF page $found"
+          sed -n '1,120p' /tmp/bgj116-article-page.txt
+
+      - name: Render article page for human verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/bga-probe
+          pdftoppm -png -r 220 -f "$article_pdf_page" -l "$article_pdf_page" -singlefile             /tmp/bgj116.pdf /tmp/bga-probe/article-page
+          cp /tmp/bgj116-article-page.txt /tmp/bga-probe/article-page.txt
+          cat > /tmp/bga-probe/provenance.txt <<EOF
+          source=https://www.britgo.org/files/bgj/bgj116.pdf
+          pdf_sha256=$pdf_sha256
+          pdf_page=$article_pdf_page
+          purpose=temporary reference-only human verification
+          persisted_to_repo=false
+          retention_days=1
+          EOF
+
+      - name: Upload temporary research artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bga-lgroup-figure-probe
+          path: /tmp/bga-probe/
+          retention-days: 1
+          if-no-files-found: error
