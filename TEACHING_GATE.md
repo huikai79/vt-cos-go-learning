@@ -108,3 +108,11 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **learner-facing change：** 首頁依已確認 mockup 重排資訊層級與入口；新增第 11 單元直接入口與第四張 learning-cycle 圖，因此 critical surface 重新凍結。
 - **語義邊界：** 第四格「仍能自己判斷」只是前三項 evidence 的 learner-facing summary；沒有改 evidence taxonomy、qualified opportunity、scoring、scheduler、mastery 或 formal evaluation。
 - **現況：** 尚無此 candidate 的三位 target novice usability evidence 或真人 accessibility spot check；正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。
+
+
+## 2026-09-28 Change note｜full-site learner-facing language sweep
+
+- **變更：** 完成第二輪全站 learner-facing language sweep，清理首頁、進階訓練、名型館、歷史探索、實戰棋盤、可閱讀 Markdown 匯出與 R1 審查介面的中英混寫與工程語言外洩。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-g`，fingerprint 為 `fnv1a32-js16-18e9e191`；此值由 repository 自己的 `formal-teaching-candidate.cjs` 在 CI 中重算取得。
+- **邊界：** Core critical surface 的變更限於顯示文字與人可閱讀匯出；題目答案、KC、scheduler、scoring、事件 schema、evidence taxonomy、ontology 與 formal evaluation 語義未改。
+- **證據狀態：** 重新凍結 candidate 不會產生真人證據；正式教學仍依 R1a、至少三位 target novice usability 與真人 accessibility spot check 判定，正式評量與學習成效也不因本次語言清理升格。
