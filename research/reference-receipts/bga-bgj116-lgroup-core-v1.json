@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "lgroup-reference-core-source-receipt-v1",
+  "authority": "reference_source_receipt_only",
+  "sourceId": "bga-bgj116-lgroup-figure1-core",
+  "sourceLocator": "https://www.britgo.org/files/bgj/bgj116.pdf",
+  "sourceDigest": "sha256:338acca065e4d88bad737c65f0914e14865f3b6adf85f87eb06502a6f1bd12a8",
+  "sourceDigestScope": "pdf_bytes",
+  "evidenceChain": "bga-richard-hunter-lgroup-bgj116",
+  "locator": "PDF page 17 / printed page 32 / Figure 1",
+  "directLabel": "L group",
+  "selectionBasis": "entire_target_group",
+  "selectionInterpretationReviewed": true,
+  "candidateSeedId": "bga-bgj116-lgroup-core-seed-v1",
+  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v1",
+  "contractStatus": "REFERENCE_CORE_MATCH",
+  "geometryPersisted": false,
+  "rawSourcePersisted": false,
+  "canonicalPromotionAllowed": false,
+  "rightsStatus": "reference_only"
+}
