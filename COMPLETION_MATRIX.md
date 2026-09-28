@@ -747,3 +747,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **結構 invariant：** Hero 主文、CTA、Core／Advanced 入口、三張課程階段卡、三張 assessment card、root／`#core` routing 均不改；不得新增第四個 assessment card。
 - **candidate：** `formal-teaching-candidate-2026-09-28-e`；asset set version 3；7 個 WebP 納入 binary-safe candidate fingerprint。
 - **證據邊界：** 正式教學仍 `BLOCKED`；formal evaluation 仍 `BLOCKED`；learning effect 仍 `NOT_MEASURED`。
+
+
+## 2026-09-28 Decision note｜Reference oracle v2：comparison contract 成為聚合前提
+
+- **發現的盲點：** 同一名型可用 defender stones、eye-space、全局部 stones 等不同 representation 描述。若 report 只記 candidateConceptId，兩條來源即使比較不同 representation，也可能被 aggregation 錯算成一致。
+- **修正：** `classic-geometry-reference-oracle-v2` 要求 metadata/report 必含 `comparisonContractId`。聚合前必須同時一致：`candidateConceptId`、`comparisonContractId`、`requireContext`；任一不同直接 `INVALID`，不計 independent support。
+- **HTML→SGF adapter：** `classic-reference-html-sgf-v1` 只解析已取得 HTML 中的 JSON-string embedded SGF，不 eval JavaScript；目前固定 `corner-defender-connected-group-v1`，只表示比較角部 defender connected group，不表示這就是 L Group canonical identity。
+- **Rights boundary：** 外部 HTML/SGF 只作 `reference_only` memory observation；不把第三方 SGF、points、fingerprint 或 raw observation 寫入 public repo，`canonicalPromotionAllowed=false`。
+- **停止線：** 若後續研究發現應用 eye-space 或其他 representation，必須建立新的 comparison contract；不得與既有 defender-group reports 混合聚合。

@@ -28,6 +28,7 @@ function metadata(overrides={}) {
     sourceDigest:"sha256:external-v1",
     evidenceChain:"reference-chain-a",
     candidateConceptId:"candidate-a",
+    comparisonContractId:"corner-defender-connected-group-v1",
     ...overrides
   };
 }
@@ -129,6 +130,43 @@ test("兩條獨立 evidence chain 一致只形成 reference support，不得 can
   assert.equal(aggregate.direction,Oracle.STATUS.REFERENCE_MATCH);
   assert.equal(aggregate.independentEvidenceUnits,2);
   assert.equal(aggregate.canonicalPromotionAllowed,false);
+});
+
+test("不同 candidate 或 geometry representation contract 不得聚合成一致證據", () => {
+  const a=Oracle.runReferenceOracle({
+    observation:observation(),
+    candidate,
+    metadata:metadata({evidenceChain:"chain-a"})
+  });
+  const differentContract=Oracle.runReferenceOracle({
+    observation:observation({sourceId:"source-b",sourceDigest:"sha256:b"}),
+    candidate,
+    metadata:metadata({
+      sourceId:"source-b",
+      sourceDigest:"sha256:b",
+      evidenceChain:"chain-b",
+      comparisonContractId:"corner-eye-space-v1"
+    })
+  });
+  assert.equal(a.ok,true);
+  assert.equal(differentContract.ok,true);
+  const incompatibleContract=Oracle.aggregatePersistableReports([a.persistable,differentContract.persistable]);
+  assert.equal(incompatibleContract.ok,false);
+  assert.equal(incompatibleContract.status,Oracle.STATUS.INVALID);
+  assert.match(incompatibleContract.errors.join(" "),/incompatible/);
+
+  const differentCandidate=Oracle.runReferenceOracle({
+    observation:observation({sourceId:"source-c",sourceDigest:"sha256:c"}),
+    candidate,
+    metadata:metadata({
+      sourceId:"source-c",
+      sourceDigest:"sha256:c",
+      evidenceChain:"chain-c",
+      candidateConceptId:"candidate-b"
+    })
+  });
+  const incompatibleCandidate=Oracle.aggregatePersistableReports([a.persistable,differentCandidate.persistable]);
+  assert.equal(incompatibleCandidate.status,Oracle.STATUS.INVALID);
 });
 
 test("獨立 reference oracles 衝突時不得選邊", () => {

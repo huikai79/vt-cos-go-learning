@@ -328,3 +328,11 @@
 - **下一個可解除 UNKNOWN 的條件：** 取得同一來源版本、provenance 清楚的實際圖形 observation；若 rights 只允許 reference use，就走 reference-only oracle 並只持久化 sanitized report；若 rights 可重用，再走 extraction independent review → fingerprint。
 - **停止線：** 不再用『都是死棋』『都像小曲尺』『名稱含 small』等語義線索代替 geometry。若未取得圖形，這一研究分支到此停止，不以更多同義搜尋灌高 confidence。
 - **Formal boundary：** 不改 learner state、KC、scheduler、T0–T3、R1、formal teaching candidate 或 formal evaluation。
+
+
+## 2026-09-28 Decision note｜Reference evidence aggregation 先鎖 representation
+
+- external page capture → immutable source digest → embedded SGF parse → explicit representation contract → reference oracle → sanitized report。
+- 任兩份 reference reports 聚合前必須同 candidate、同 `comparisonContractId`、同 context policy；否則 fail closed。
+- `corner-defender-connected-group-v1` 只回答角部 defender connected stones 是否同構且 context 相符；不能替代 eye-space、full-position 或 mechanism comparison。
+- 單一來源只算一條 evidence chain；至少兩條獨立 decisive reports 同方向才是 consistent reference support，而且仍不得 canonical promote。
