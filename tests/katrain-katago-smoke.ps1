@@ -53,19 +53,19 @@ function Get-SearchRoots {
 
 function Find-BundledKataGo {
   param([string[]]$Roots)
-  $matches = New-Object System.Collections.ArrayList
+  $foundExecutables = New-Object System.Collections.ArrayList
   foreach ($root in $Roots) {
     Get-ChildItem -LiteralPath $root -Filter "katago.exe" -File -Recurse -ErrorAction SilentlyContinue |
       Where-Object { $_.FullName -match "[\\/]katrain[\\/]KataGo[\\/]katago\.exe$" } |
       ForEach-Object {
-        if (-not $matches.Contains($_.FullName)) { [void]$matches.Add($_.FullName) }
+        if (-not $foundExecutables.Contains($_.FullName)) { [void]$foundExecutables.Add($_.FullName) }
       }
   }
-  if ($matches.Count -eq 0) { return $null }
-  if ($matches.Count -gt 1) {
-    throw "Found multiple bundled KataGo executables. Re-run with -KaTrainRoot pointing to exactly one KaTrain installation: $($matches -join '; ')"
+  if ($foundExecutables.Count -eq 0) { return $null }
+  if ($foundExecutables.Count -gt 1) {
+    throw "Found multiple bundled KataGo executables. Re-run with -KaTrainRoot pointing to exactly one KaTrain installation: $($foundExecutables -join '; ')"
   }
-  return [string]$matches[0]
+  return [string]$foundExecutables[0]
 }
 
 function Package-Root-From-KataGo {
