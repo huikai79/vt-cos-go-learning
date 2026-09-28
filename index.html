@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="從氣與提子開始，以短教學、落子練習、具體回饋與新棋形，一步一步學圍棋。">
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
   <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v46">
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v47">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -41,7 +41,7 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v46"></script>
+  <script defer src="app.js?v=learner-flow-v47"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
@@ -171,12 +171,30 @@
                 <span><strong>免帳號</strong><small>進度只保存在這台瀏覽器</small></span>
               </div>
             </div>
-            <ol class="intro-loop" aria-label="每次學習的四個步驟">
-              <li><span>1</span><div><strong>看懂</strong><small>一次先抓一個棋盤概念</small></div></li>
-              <li><span>2</span><div><strong>落子</strong><small>自己先做，不先看答案</small></div></li>
-              <li><span>3</span><div><strong>回饋</strong><small>看見哪個棋盤線索值得重算</small></div></li>
-              <li><span>4</span><div><strong>換新棋形</strong><small>隔一段時間再自己判斷</small></div></li>
-            </ol>
+            <div class="intro-hero-visual" aria-label="氣與提子的學習示意">
+              <figure class="intro-hero-board">
+                <svg class="go-visual-svg" viewBox="0 0 200 200" role="img" aria-labelledby="hero-go-title hero-go-desc">
+                  <title id="hero-go-title">白棋只剩最後一口氣的 9 路局部棋形</title>
+                  <desc id="hero-go-desc">中央白棋的上、左、右三口氣已被黑棋佔住，下方金色空點是最後一口氣；黑棋落在該點即可提子。</desc>
+                  <rect class="go-board-base" x="10" y="10" width="180" height="180" rx="13"></rect>
+                  <path class="go-grid" d="M28 28H172 M28 46H172 M28 64H172 M28 82H172 M28 100H172 M28 118H172 M28 136H172 M28 154H172 M28 172H172 M28 28V172 M46 28V172 M64 28V172 M82 28V172 M100 28V172 M118 28V172 M136 28V172 M154 28V172 M172 28V172"></path>
+                  <circle class="go-hoshi" cx="64" cy="64" r="2.8"></circle><circle class="go-hoshi" cx="136" cy="64" r="2.8"></circle><circle class="go-hoshi" cx="64" cy="136" r="2.8"></circle><circle class="go-hoshi" cx="136" cy="136" r="2.8"></circle>
+                  <circle class="go-hint" cx="100" cy="118" r="12"></circle>
+                  <text class="go-hint-label" x="100" y="122">1</text>
+                  <circle class="go-stone go-stone-black" cx="82" cy="100" r="9.2"></circle>
+                  <circle class="go-stone go-stone-black" cx="118" cy="100" r="9.2"></circle>
+                  <circle class="go-stone go-stone-black" cx="100" cy="82" r="9.2"></circle>
+                  <circle class="go-stone go-stone-white" cx="100" cy="100" r="9.2"></circle>
+                </svg>
+                <figcaption><strong>先找最後一口氣</strong><span>先看哪一串只剩最後一口氣，再自己落子，看看棋子會不會被提掉。</span></figcaption>
+              </figure>
+              <ol class="intro-loop" aria-label="每次學習的四個步驟">
+                <li><span>1</span><div><strong>看懂</strong><small>一次先抓一個棋盤概念</small></div></li>
+                <li><span>2</span><div><strong>落子</strong><small>自己先做，不先看答案</small></div></li>
+                <li><span>3</span><div><strong>回饋</strong><small>看見哪個棋盤線索值得重算</small></div></li>
+                <li><span>4</span><div><strong>換新棋形</strong><small>隔一段時間再自己判斷</small></div></li>
+              </ol>
+            </div>
           </section>
 
           <section class="intro-section intro-course-hub" id="learning-entry" aria-labelledby="learning-entry-title">
@@ -211,9 +229,27 @@
               <p>小棋盤只是降低一開始的盤面負擔，不是棋力標籤；你不需要先知道自己幾級。</p>
             </div>
             <div class="intro-path-grid">
-              <article><span>01</span><h4>基礎建立</h4><p>氣、提子、連接與切斷、禁著與劫、眼與基礎死活，最後進入 9 路小局。</p><small>原課綱：初級 · 單元 1–5</small></article>
-              <article><span>02</span><h4>局部與棋局判斷</h4><p>佈局、地與厚勢、攻守與弱棋、死活閱讀、官子與數目，開始比較不同選擇的後果。</p><small>原課綱：中級 · 單元 6–10</small></article>
-              <article><span>03</span><h4>全局與綜合應用</h4><p>全局方向、戰鬥與棄子、劫爭、定石條件與棋譜複盤，把局部技巧放回完整棋局思考。</p><small>原課綱：高級 · 單元 11–15</small></article>
+              <article><span>01</span><div class="intro-path-visual"><svg class="go-visual-svg" viewBox="0 0 200 150" role="img" aria-label="基礎建立：辨認最後一口氣">
+                    <rect class="go-board-base" x="12" y="10" width="176" height="130" rx="11"></rect>
+                    <path class="go-grid" d="M32 25H168 M32 50H168 M32 75H168 M32 100H168 M32 125H168 M32 25V125 M66 25V125 M100 25V125 M134 25V125 M168 25V125"></path>
+                    <circle class="go-hint" cx="100" cy="100" r="12"></circle>
+                    <circle class="go-stone go-stone-black" cx="66" cy="75" r="10"></circle><circle class="go-stone go-stone-black" cx="134" cy="75" r="10"></circle><circle class="go-stone go-stone-black" cx="100" cy="50" r="10"></circle><circle class="go-stone go-stone-white" cx="100" cy="75" r="10"></circle>
+                  </svg></div><h4>基礎建立</h4><p>氣、提子、連接與切斷、禁著與劫、眼與基礎死活，最後進入 9 路小局。</p><small>原課綱：初級 · 單元 1–5</small></article>
+              <article><span>02</span><div class="intro-path-visual"><svg class="go-visual-svg" viewBox="0 0 200 150" role="img" aria-label="局部與棋局判斷：比較攻守候選">
+                    <rect class="go-board-base" x="12" y="10" width="176" height="130" rx="11"></rect>
+                    <path class="go-grid" d="M32 25H168 M32 50H168 M32 75H168 M32 100H168 M32 125H168 M32 25V125 M66 25V125 M100 25V125 M134 25V125 M168 25V125"></path>
+                    <circle class="go-stone go-stone-black" cx="66" cy="50" r="10"></circle><circle class="go-stone go-stone-black" cx="66" cy="75" r="10"></circle><circle class="go-stone go-stone-black" cx="100" cy="100" r="10"></circle>
+                    <circle class="go-stone go-stone-white" cx="100" cy="50" r="10"></circle><circle class="go-stone go-stone-white" cx="100" cy="75" r="10"></circle><circle class="go-stone go-stone-white" cx="134" cy="75" r="10"></circle>
+                    <circle class="go-hint-ring" cx="134" cy="100" r="11"></circle>
+                  </svg></div><h4>局部與棋局判斷</h4><p>佈局、地與厚勢、攻守與弱棋、死活閱讀、官子與數目，開始比較不同選擇的後果。</p><small>原課綱：中級 · 單元 6–10</small></article>
+              <article><span>03</span><div class="intro-path-visual"><svg class="go-visual-svg" viewBox="0 0 200 150" role="img" aria-label="全局與綜合應用：在整盤中判斷方向">
+                    <rect class="go-board-base" x="12" y="10" width="176" height="130" rx="11"></rect>
+                    <path class="go-grid" d="M32 20H168 M32 33H168 M32 46H168 M32 59H168 M32 72H168 M32 85H168 M32 98H168 M32 111H168 M32 124H168 M32 20V124 M49 20V124 M66 20V124 M83 20V124 M100 20V124 M117 20V124 M134 20V124 M151 20V124 M168 20V124"></path>
+                    <circle class="go-hoshi" cx="66" cy="46" r="2.4"></circle><circle class="go-hoshi" cx="134" cy="46" r="2.4"></circle><circle class="go-hoshi" cx="66" cy="98" r="2.4"></circle><circle class="go-hoshi" cx="134" cy="98" r="2.4"></circle>
+                    <circle class="go-stone go-stone-black" cx="49" cy="33" r="7.5"></circle><circle class="go-stone go-stone-white" cx="66" cy="33" r="7.5"></circle><circle class="go-stone go-stone-black" cx="134" cy="33" r="7.5"></circle><circle class="go-stone go-stone-white" cx="151" cy="46" r="7.5"></circle>
+                    <circle class="go-stone go-stone-black" cx="83" cy="72" r="7.5"></circle><circle class="go-stone go-stone-white" cx="117" cy="72" r="7.5"></circle><circle class="go-stone go-stone-white" cx="49" cy="111" r="7.5"></circle><circle class="go-stone go-stone-black" cx="66" cy="98" r="7.5"></circle><circle class="go-stone go-stone-black" cx="151" cy="98" r="7.5"></circle><circle class="go-stone go-stone-white" cx="134" cy="111" r="7.5"></circle>
+                    <circle class="go-hint-ring" cx="117" cy="98" r="9.5"></circle>
+                  </svg></div><h4>全局與綜合應用</h4><p>全局方向、戰鬥與棄子、劫爭、定石條件與棋譜複盤，把局部技巧放回完整棋局思考。</p><small>原課綱：高級 · 單元 11–15</small></article>
             </div>
             <p class="intro-course-count">目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。</p>
           </section>
@@ -224,9 +260,28 @@
               <h3 id="intro-assessment-title">不是看做了幾題，而是看隔一段時間後還能不能自己做</h3>
             </div>
             <div class="intro-evidence-grid">
-              <article><strong>第一次自己作答</strong><p>答案揭露前先保存第一個判斷；重試後答對不會回頭抹掉首答。</p></article>
-              <article><strong>隔一段時間再做</strong><p>重要概念之後會再次出現，避免只因剛看過答案而覺得自己會了。</p></article>
-              <article><strong>換一個沒見過的新棋形</strong><p>改變方向、位置或棋形，並逐步減少題型提示，檢查能不能把原理帶到陌生局面。</p></article>
+              <article><div class="intro-evidence-visual"><svg class="go-visual-svg" viewBox="0 0 160 96" role="img" aria-label="第一次自己作答的棋形示意">
+                    <rect class="go-mini-base" x="8" y="8" width="144" height="80" rx="9"></rect>
+                    <path class="go-mini-grid" d="M28 20H132 M28 40H132 M28 60H132 M28 80H132 M28 20V80 M54 20V80 M80 20V80 M106 20V80 M132 20V80"></path>
+                    <circle class="go-stone go-stone-black" cx="54" cy="40" r="8"></circle><circle class="go-stone go-stone-black" cx="106" cy="40" r="8"></circle><circle class="go-stone go-stone-black" cx="80" cy="20" r="8"></circle><circle class="go-stone go-stone-white" cx="80" cy="40" r="8"></circle>
+                  </svg></div><strong>第一次自己作答</strong><p>答案揭露前先保存第一個判斷；重試後答對不會回頭抹掉首答。</p></article>
+              <article><div class="intro-evidence-visual"><svg class="go-visual-svg" viewBox="0 0 160 96" role="img" aria-label="隔一段時間再做的棋形示意">
+                    <rect class="go-mini-base" x="8" y="8" width="112" height="80" rx="9"></rect>
+                    <path class="go-mini-grid" d="M24 20H104 M24 40H104 M24 60H104 M24 80H104 M24 20V80 M44 20V80 M64 20V80 M84 20V80 M104 20V80"></path>
+                    <circle class="go-hint" cx="64" cy="60" r="9"></circle><circle class="go-stone go-stone-black" cx="44" cy="40" r="7.5"></circle><circle class="go-stone go-stone-black" cx="84" cy="40" r="7.5"></circle><circle class="go-stone go-stone-white" cx="64" cy="40" r="7.5"></circle>
+                    <circle class="go-clock-face" cx="138" cy="28" r="14"></circle><path class="go-clock-hand" d="M138 28V19 M138 28L146 32"></path>
+                  </svg></div><strong>隔一段時間再做</strong><p>重要概念之後會再次出現，避免只因剛看過答案而覺得自己會了。</p></article>
+              <article><div class="intro-evidence-visual"><svg class="go-visual-svg" viewBox="0 0 160 96" role="img" aria-label="換成沒見過的新棋形示意">
+                    <rect class="go-mini-base" x="8" y="8" width="144" height="80" rx="9"></rect>
+                    <path class="go-mini-grid" d="M28 20H132 M28 40H132 M28 60H132 M28 80H132 M28 20V80 M54 20V80 M80 20V80 M106 20V80 M132 20V80"></path>
+                    <circle class="go-stone go-stone-black" cx="80" cy="20" r="8"></circle><circle class="go-stone go-stone-black" cx="80" cy="60" r="8"></circle><circle class="go-stone go-stone-black" cx="106" cy="40" r="8"></circle><circle class="go-stone go-stone-white" cx="80" cy="40" r="8"></circle><circle class="go-hint-ring" cx="54" cy="40" r="9.5"></circle>
+                  </svg></div><strong>換一個沒見過的新棋形</strong><p>改變方向、位置或棋形，並逐步減少題型提示，檢查能不能把原理帶到陌生局面。</p></article>
+              <article><div class="intro-evidence-visual"><svg class="go-visual-svg" viewBox="0 0 160 96" role="img" aria-label="沒有提示仍能自己判斷的示意">
+                    <rect class="go-mini-base" x="8" y="8" width="112" height="80" rx="9"></rect>
+                    <path class="go-mini-grid" d="M24 20H104 M24 40H104 M24 60H104 M24 80H104 M24 20V80 M44 20V80 M64 20V80 M84 20V80 M104 20V80"></path>
+                    <circle class="go-stone go-stone-black" cx="44" cy="40" r="7.5"></circle><circle class="go-stone go-stone-black" cx="84" cy="40" r="7.5"></circle><circle class="go-stone go-stone-black" cx="64" cy="20" r="7.5"></circle><circle class="go-stone go-stone-black" cx="64" cy="60" r="7.5"></circle>
+                    <circle class="go-check-badge" cx="138" cy="48" r="15"></circle><path class="go-check-mark" d="M131 48L136 53L146 42"></path>
+                  </svg></div><strong>仍能自己判斷</strong><p>沒有題型提示也能重新做出合理判斷，才是比剛看過答案更強的保留與應用證據。</p></article>
             </div>
           </section>
 
