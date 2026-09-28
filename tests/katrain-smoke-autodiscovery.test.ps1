@@ -26,9 +26,12 @@ try {
   $json = & $wrapper -KaTrainConfig (Join-Path $userDir "config.json") -KaTrainRoot $appRoot -ResolveOnly
   $resolved = $json | ConvertFrom-Json
 
-  if ($resolved.kataGoExe -ne (Join-Path $kataGoDir "katago.exe")) { throw "bundled exe resolution mismatch" }
-  if ($resolved.kataGoConfig -ne (Join-Path $kataGoDir "analysis_config.cfg")) { throw "bundled config resolution mismatch" }
-  if ($resolved.kataGoModel -ne (Join-Path $modelDir "fixture-model.bin.gz")) { throw "bundled model resolution mismatch" }
+  $expectedExe = (Resolve-Path -LiteralPath (Join-Path $kataGoDir "katago.exe")).Path
+  $expectedConfig = (Resolve-Path -LiteralPath (Join-Path $kataGoDir "analysis_config.cfg")).Path
+  $expectedModel = (Resolve-Path -LiteralPath (Join-Path $modelDir "fixture-model.bin.gz")).Path
+  if ($resolved.kataGoExe -ne $expectedExe) { throw "bundled exe resolution mismatch" }
+  if ($resolved.kataGoConfig -ne $expectedConfig) { throw "bundled config resolution mismatch" }
+  if ($resolved.kataGoModel -ne $expectedModel) { throw "bundled model resolution mismatch" }
 
   $secondPackage = Join-Path $appRoot "second\katrain\KataGo"
   New-Item -ItemType Directory -Force -Path $secondPackage | Out-Null
