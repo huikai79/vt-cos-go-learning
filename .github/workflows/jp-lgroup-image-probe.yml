@@ -1,0 +1,47 @@
+name: jp-lgroup-image-probe
+
+on:
+  push:
+    branches:
+      - research/jp-lgroup-image-probe-2026-09-29
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+
+      - name: Fetch article image
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jp-lgroup-probe
+          curl -L --fail --retry 3 --user-agent "vt-cos-go-learning-reference-research/1.0"             "https://assets.st-note.com/img/1705460035204-wiTFpKHjLe.png?width=1200"             -o /tmp/jp-lgroup-probe/lgroup-source.png
+          sha256sum /tmp/jp-lgroup-probe/lgroup-source.png | tee /tmp/jp-lgroup-probe/image-sha256.txt
+          file /tmp/jp-lgroup-probe/lgroup-source.png
+
+      - name: Record provenance
+        shell: bash
+        run: |
+          cat > /tmp/jp-lgroup-probe/provenance.txt <<'EOF'
+          article=https://note.com/igocompany_u/n/n3ff43e80bf2f
+          article_locator=lines 82-93 / first image after L-shape identification
+          image=https://assets.st-note.com/img/1705460035204-wiTFpKHjLe.png?width=1200
+          claim=隅のL字型 / 白先白死
+          purpose=temporary reference-only visual geometry review
+          persisted_to_repo=false
+          retention_days=1
+          EOF
+
+      - name: Upload temporary research artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jp-lgroup-image-probe
+          path: /tmp/jp-lgroup-probe/
+          retention-days: 1
+          if-no-files-found: error
