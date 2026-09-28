@@ -168,3 +168,10 @@ git status --short --untracked-files=all
 - [x] release contract 與 served-content smoke 都覆蓋 handoff。
 - [x] 真人 evidence example 已綁 current candidate `-b`；CI 防止模板再次漂移。
 - [ ] 外部 reviewer 尚未完成並交回正式 77 題回條；因此 R1a 仍不得標 PASS。
+
+## 2026-09-28 補充｜History Explore v6 圖像導覽候選
+
+- [x] 五張專案生成圖以壓縮 JPEG 納入公開候選：頁首盤制導覽、17→19 路證據摘要、座子／空盤對照、貼目概念、AI 棋理重估概念。
+- [x] 所有圖都以 `figure/figcaption` 標明「視覺摘要／概念圖」邊界；圖像本身不升格為史料證據，貼目數字只作示例，AI 評估不作唯一教學答案。
+- [x] 除頁首圖外皆使用 lazy loading；窄版改單欄，資產已列入 `release-manifest.json` 與 served-content marker。
+- [ ] PR CI 與 Pages served-content 尚待本次候選實際驗證；未合併前不得把 v6 記為 production PASS。
