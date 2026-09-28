@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-28-f",
-  "frozenAt": "2026-09-28T13:22:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-28-g",
+  "frozenAt": "2026-09-28T15:27:00+08:00",
   "assetSetVersion": 4,
-  "assetFingerprint": "fnv1a32-js16-bbbe09bc",
+  "assetFingerprint": "fnv1a32-js16-pending",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -39,5 +39,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v50 以已確認的首頁 mockup 作版面基準：桌面導覽、Hero 比例、三階段直接作為學習入口、四格學習循環、研究動作卡、歷史／能力雙欄與 FAQ。第四格「仍能自己判斷」只作前三項 learner evidence 的 outcome summary，不新增 mastery、evidence taxonomy 或 scoring 語義。局部／全局入口分別連既有 advanced practice 與核心單元 11；不改題目、答案、KC、scheduler、事件或 formal evaluation。"
+  "scopeNote": "learner-flow-v51：完成全站 learner-facing language sweep，清理首頁、進階訓練、名型館、歷史探索、實戰棋盤、可閱讀匯出與 R1 審查介面的中英混寫與工程語言外洩。Core critical surface 僅改顯示文字與可閱讀匯出；不改題目答案、KC、scheduler、scoring、事件 schema、evidence taxonomy、ontology 或 formal evaluation 語義。"
 }
