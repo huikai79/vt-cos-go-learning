@@ -1,3 +1,5 @@
+2026-09-29 Decision Point Comparison v1：19×19 SGF Decision Review 在原著揭露後可選擇比較「第一候選」與「原著」。分析只在規則／貼目明確、第一候選合法且兩手不同時成立；KataGo root search 限制在兩手，結果是 bounded search estimate，不取得 scoring、KC、scheduler、T2/T3 或 formal evaluation authority。provider／engine failure 保持失敗，不以 heuristic 補結果。
+
 2026-09-28 SGF Decision Review v1：Advanced 已有局部 multi-step reading 與 19×19 自由 practice，但兩者之間缺少可回看的全盤 Response。新增 practice-only「19×19 棋譜決策點複盤」：匯入單一主線 19 路 SGF、選一個可落子手數、在原著隱藏時先保存第一候選與 retry，再揭露原著做歷史比較並可留復盤備註。每筆紀錄版本化 source position、item、candidate-set、scoring contract、rules contract、evidence taxonomy 與 exposure state。規則引擎只判候選是否合法；「與原著不同」不是錯手，原著也不是唯一最佳手。此事件流固定 `advanced_sgf_review_practice_only`，不更新 KC／scheduler／T2-T3／formal evaluation；KataGo 若日後加入，只能另作 bounded comparison。舊 9×9 `parseSgf()` 與 single-move historical recall 語義保留。
 
 # 產品開發與驗證流水線
