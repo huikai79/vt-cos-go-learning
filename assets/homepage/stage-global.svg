@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 220" role="img" aria-labelledby="t d">
+<title id="t">全局應用棋盤插畫</title><desc id="d">較完整的九路棋局，用於全局應用課程卡的裝飾示意。</desc><defs>
+  <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dfb8"/><stop offset="1" stop-color="#e8c88e"/></linearGradient>
+  <radialGradient id="blackStone"><stop offset="0" stop-color="#496356"/><stop offset=".68" stop-color="#233a30"/><stop offset="1" stop-color="#17281f"/></radialGradient>
+  <radialGradient id="whiteStone"><stop offset="0" stop-color="#fffefa"/><stop offset=".75" stop-color="#f3f1e9"/><stop offset="1" stop-color="#d8d6ce"/></radialGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#233c29" flood-opacity=".16"/></filter>
+</defs>
+<rect x="24" y="18" width="252" height="184" rx="18" fill="url(#wood)" stroke="#d9b77c" filter="url(#shadow)"/>
+<g fill="none" stroke="#2b4b3a" stroke-width="1.6">
+<path d="M48 38.0H252M48.0 38V182"/><path d="M48 56.0H252M73.5 38V182"/><path d="M48 74.0H252M99.0 38V182"/><path d="M48 92.0H252M124.5 38V182"/><path d="M48 110.0H252M150.0 38V182"/><path d="M48 128.0H252M175.5 38V182"/><path d="M48 146.0H252M201.0 38V182"/><path d="M48 164.0H252M226.5 38V182"/><path d="M48 182.0H252M252.0 38V182"/>
+</g>
+<g fill="#2b4b3a"><circle cx="99" cy="74" r="3"/><circle cx="201" cy="74" r="3"/><circle cx="99" cy="146" r="3"/><circle cx="201" cy="146" r="3"/></g>
+<circle cx="73.5" cy="56" r="9" fill="url(#blackStone)" stroke="#17281f" stroke-width="1.5" filter="url(#shadow)"/><circle cx="99" cy="56" r="9" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/><circle cx="201" cy="56" r="9" fill="url(#blackStone)" stroke="#17281f" stroke-width="1.5" filter="url(#shadow)"/><circle cx="226.5" cy="74" r="9" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/>
+<circle cx="124.5" cy="110" r="9" fill="url(#blackStone)" stroke="#17281f" stroke-width="1.5" filter="url(#shadow)"/><circle cx="175.5" cy="110" r="9" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/><circle cx="73.5" cy="164" r="9" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/><circle cx="99" cy="146" r="9" fill="url(#blackStone)" stroke="#17281f" stroke-width="1.5" filter="url(#shadow)"/><circle cx="226.5" cy="146" r="9" fill="url(#blackStone)" stroke="#17281f" stroke-width="1.5" filter="url(#shadow)"/><circle cx="201" cy="164" r="9" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/>
+<circle cx="175.5" cy="146" r="11" fill="#e8b655" fill-opacity=".76" stroke="#d59a35" stroke-width="2"/>
+</svg>
