@@ -129,6 +129,57 @@
     }
     return keys.size;
   }
+  function makeDecisionReviewExperience(text, moveNumber = 1, sourceName = "匯入的 19 路棋譜") {
+    const game = parseDecisionReviewSgf(text);
+    const move = game.moves.find((item) => item.number === moveNumber);
+    if (!move) fail(`找不到第 ${moveNumber} 手可建立決策點複盤`);
+    const sourceId = sourceFingerprint(text);
+    const stones = stonesFromBoard(move.before);
+    const positionMaterial = JSON.stringify({
+      boardSize: game.boardSize,
+      moveNumber: move.number,
+      nodeIndex: move.nodeIndex,
+      playerColor: move.color,
+      stones
+    });
+    const positionFingerprint = sourceFingerprint(positionMaterial);
+    return {
+      id: `decision-review-${sourceId}-${move.nodeIndex}`,
+      version: "sgf-decision-review-item-v1",
+      purpose: "advanced_sgf_decision_review",
+      taskMode: "全盤決策點複盤",
+      boardSize: 19,
+      evaluationRole: "practice",
+      evaluationContext: "sgf_decision_review",
+      evidenceUse: "advanced_sgf_review_practice_only",
+      formalEligible: false,
+      transferLevel: null,
+      claimScope: "historical_move_comparison",
+      scoringClaim: "compares_candidate_with_original_sgf_move_not_best_move",
+      responseMode: "free_legal_board_candidate",
+      candidateSetVersion: "all-rules-legal-moves-v1",
+      scoringContractVersion: "sgf-decision-review-historical-comparison-v1",
+      evidenceTaxonomyVersion: "sgf-decision-review-evidence-v1",
+      sourcePositionVersion: "sgf-source-position-v1",
+      rulesContractVersion: "go-core-simple-ko-v1",
+      analysisEngine: null,
+      exposureState: "original_hidden",
+      playerColor: move.color,
+      stones,
+      originalMove: move.point.slice(),
+      koPreviousBoard: move.koPreviousBoard ? move.koPreviousBoard.map((row) => row.slice()) : null,
+      source: {
+        type: "sgf",
+        sourceId,
+        sourceName,
+        moveNumber: move.number,
+        nodeIndex: move.nodeIndex,
+        boardSize: 19,
+        positionFingerprint
+      }
+    };
+  }
+
   function makeLocalExercise(text, moveNumber = 1, sourceName = "匯入的棋譜") {
     const game = parseSgf(text); const move = game.moves.find((item) => item.number === moveNumber);
     if (!move) fail(`找不到第 ${moveNumber} 手可建立局部題`);
@@ -153,7 +204,7 @@
       }
     };
   }
-  const api = { MAX_SGF_FILE_BYTES, parseSgfNodes, parseSgf, parseDecisionReviewSgf, makeLocalExercise, sourceFingerprint };
+  const api = { MAX_SGF_FILE_BYTES, parseSgfNodes, parseSgf, parseDecisionReviewSgf, makeDecisionReviewExperience, makeLocalExercise, sourceFingerprint };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.GoSgf = api;
 })(typeof window !== "undefined" ? window : globalThis);
