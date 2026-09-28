@@ -1,3 +1,5 @@
+2026-09-29 Decision Point Comparison v1：19×19 決策點複盤在揭露原著後，可選擇用 KataGo 比較「我的第一候選」與「原著」。只有規則與貼目明確、第一候選合法且兩手不同時才可送出；搜尋只限制在這兩手，結果用自然語句呈現為本次搜尋偏好，不當作標準答案、錯手判定或能力分數。分析失敗不回退成 heuristic，也不影響原本複盤紀錄。
+
 2026-09-29 SGF Decision Review v1：進階頁新增 19×19 單一決策點複盤。先匯入 SGF、選一手、在原著隱藏時提出第一候選，再揭露原著做歷史比較；第一候選、retry、exposure 與版本 metadata 分開保存。這是 practice artifact，不是最佳手評分、transfer 或正式評量。
 
 # VT-COS｜悟之一手：個人圍棋互動課程
@@ -114,7 +116,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katago-bridge-smok
   -KataGoModel "C:\path\to\model.bin.gz"
 ```
 
-只有腳本輸出 `PASS: Windows KataGo bridge returned ...` 才能把「本機 KataGo bridge 真機 smoke」記為 PASS。缺檔、bridge 未啟動、KataGo failure、HTTP/JSON failure 或超時都維持 FAIL／ERROR，不以 heuristic bot 代替。
+腳本現在會依序驗證 `/v1/move` 與 `/v1/compare`。只有兩段都輸出 `PASS:`，才能把「本機 KataGo bridge 真機 smoke」與「Decision Point Comparison 真機 smoke」記為 PASS。缺檔、bridge 未啟動、KataGo failure、候選不完整、HTTP/JSON failure 或超時都維持 FAIL／ERROR，不以 heuristic bot 代替。
 
 2026-09-21 的規則、題庫、排程、SGF、trial、狀態與 Chrome 測試均通過。新增反證測試會比較驗收正答與錯答後的棋盤快照、驗證同題先錯後對仍保留首答錯誤、檢查固定應用呈現分母、v3 至 v6→v7 遷移、兩輪內容插題後的索引保存及保留題匯出遮蔽。這些結果只保留為工程證據。
 

@@ -843,7 +843,7 @@ async function main() {
     const decisionReviewLoaded = await evaluate(socket, `(() => {
       const input = document.querySelector('#decision-review-file');
       const transfer = new DataTransfer();
-      transfer.items.add(new File(['(;GM[1]FF[4]SZ[19];B[pd];W[dd];B[qp])'], 'decision-review.sgf', {type:'application/x-go-sgf'}));
+      transfer.items.add(new File(['(;GM[1]FF[4]SZ[19]RU[Japanese]KM[6.5];B[pd];W[dd];B[qp])'], 'decision-review.sgf', {type:'application/x-go-sgf'}));
       input.files = transfer.files;
       input.dispatchEvent(new Event('change', {bubbles:true}));
       return true;
@@ -877,12 +877,84 @@ async function main() {
     })()`);
     assert.match(decisionReview.source, /decision-review\.sgf/);
     assert.match(decisionReview.beforeReveal, /候選已保存/);
-    assert.match(decisionReview.afterReveal, /與原著不同/);
+    assert.match(decisionReview.afterReveal, /和原著不同|與原著不同/);
     assert.match(decisionReview.afterReveal, /不是錯手判定/);
     assert.deepEqual(decisionReview.types, ["review_presented", "candidate_first", "original_revealed"]);
     assert.deepEqual(decisionReview.candidate, {legal:true, originalMove:null, matchesOriginal:null, exposed:false, hasCorrect:false});
     assert.deepEqual(decisionReview.reveal, {originalMove:[16,15], matches:false, exposed:true, hasCorrect:false});
     assert.equal(decisionReview.reflectionDisabled, false);
+    const comparisonStart = await evaluate(socket, `(() => {
+      const Comparison = window.GoDecisionComparison;
+      window.__originalDecisionComparisonProvider = window.GoDecisionComparisonProvider.requestComparison;
+      window.GoDecisionComparisonProvider.requestComparison = async (request) => ({
+        resultVersion: Comparison.RESULT_VERSION,
+        comparisonContractVersion: Comparison.COMPARISON_CONTRACT_VERSION,
+        requestId: request.requestId,
+        sourceId: request.sourceId,
+        positionFingerprint: request.positionFingerprint,
+        boardSize: 19,
+        rules: request.rules,
+        komi: request.komi,
+        maxVisits: request.maxVisits,
+        analysisPVLen: request.analysisPVLen,
+        searchScope: 'root_allow_moves_only',
+        authority: 'bounded_search_estimate_only',
+        formalEligible: false,
+        providerVersion: 'ui-fixture-v1',
+        engineVersion: '1.18.1',
+        model: 'fixture.bin.gz',
+        candidates: [
+          {role:'learner_first', point:[4,4], order:0, visits:60, scoreLead:1.1, winrate:.54, pv:['E15','Q10']},
+          {role:'original_game', point:[16,15], order:1, visits:40, scoreLead:.4, winrate:.51, pv:['R4','C10']}
+        ]
+      });
+      const button = document.querySelector('#decision-comparison-run');
+      const meta = {
+        rules: document.querySelector('#decision-comparison-rules').value,
+        komi: document.querySelector('#decision-comparison-komi').value,
+        beforeDisabled: button.disabled
+      };
+      button.click();
+      return meta;
+    })()`);
+    assert.equal(comparisonStart.rules, "japanese");
+    assert.equal(comparisonStart.komi, "6.5");
+    assert.equal(comparisonStart.beforeDisabled, false);
+    let comparisonDone = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      comparisonDone = await evaluate(socket, `(() => {
+        const text = document.querySelector('#decision-comparison-result').textContent || '';
+        const raw = localStorage.getItem('go-advanced-decision-comparison-events-v1');
+        if (!raw) return false;
+        const events = JSON.parse(raw).events || [];
+        return text.includes('KataGo 的排序較偏向') && events.some(event => event.type === 'comparison_completed');
+      })()`);
+      if (comparisonDone) break;
+      await delay(50);
+    }
+    assert.equal(comparisonDone, true);
+    const comparisonFlow = await evaluate(socket, `(() => {
+      const raw = JSON.parse(localStorage.getItem('go-advanced-decision-comparison-events-v1'));
+      const completed = raw.events.find(event => event.type === 'comparison_completed');
+      const result = {
+        text: document.querySelector('#decision-comparison-result').textContent,
+        types: raw.events.map(event => event.type),
+        authority: completed.result.authority,
+        hasCorrect: Object.prototype.hasOwnProperty.call(completed.result, 'correct'),
+        hasMastery: Object.prototype.hasOwnProperty.call(completed.result, 'mastery'),
+        formalEligible: completed.formalEligible
+      };
+      window.GoDecisionComparisonProvider.requestComparison = window.__originalDecisionComparisonProvider;
+      delete window.__originalDecisionComparisonProvider;
+      return result;
+    })()`);
+    assert.match(comparisonFlow.text, /KataGo 的排序較偏向你的第一候選/);
+    assert.match(comparisonFlow.text, /不代表另一手一定錯/);
+    assert.deepEqual(comparisonFlow.types, ["comparison_requested", "comparison_completed"]);
+    assert.equal(comparisonFlow.authority, "bounded_search_estimate_only");
+    assert.equal(comparisonFlow.hasCorrect, false);
+    assert.equal(comparisonFlow.hasMastery, false);
+    assert.equal(comparisonFlow.formalEligible, false);
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
     const advancedOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
     assert.ok(advancedOverflow.scrollWidth <= advancedOverflow.width + 1, `advanced mobile horizontal overflow: ${JSON.stringify(advancedOverflow)}`);

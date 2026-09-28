@@ -11,6 +11,9 @@
   <script defer src="go.js"></script>
   <script defer src="sgf.js?v=sgf-decision-review-v1"></script>
   <script defer src="advanced-decision-review-events.js?v=advanced-decision-review-v1"></script>
+  <script defer src="decision-comparison.js?v=decision-comparison-v1"></script>
+  <script defer src="decision-comparison-provider.js?v=decision-comparison-v1"></script>
+  <script defer src="advanced-decision-comparison-events.js?v=decision-comparison-v1"></script>
   <script defer src="advanced-content.js?v=advanced-training-v6"></script>
   <script defer src="advanced-events.js?v=advanced-training-v1"></script>
   <script defer src="advanced-sequence-events.js?v=advanced-sequence-v3"></script>
@@ -167,7 +170,27 @@
           <label for="decision-review-reflection"><strong>復盤備註（揭露後可選）</strong></label>
           <textarea id="decision-review-reflection" rows="4" disabled placeholder="例如：我漏看了哪個方向？原著和我的候選差在哪裡？"></textarea>
           <button class="subtle-button" id="decision-review-save-reflection" type="button" disabled>保存復盤備註</button>
-          <p class="answer-policy">紀錄保存 source position、第一候選、retry、原著揭露時間與版本契約；不更新 KC、複習排程、T2／T3 或正式評量。</p>
+          <details class="decision-comparison-panel" id="decision-comparison-panel">
+            <summary>用 KataGo 再比較這兩手（選用）</summary>
+            <p>這一步只在你已經提出候選、也看過原著之後才會分析。結果是固定搜尋量下的估計，不是「標準答案」。</p>
+            <label for="decision-comparison-rules"><strong>規則</strong></label>
+            <select id="decision-comparison-rules">
+              <option value="">請選擇</option>
+              <option value="japanese">日本規則</option>
+              <option value="chinese">中國規則</option>
+              <option value="aga">AGA 規則</option>
+              <option value="new-zealand">紐西蘭規則</option>
+              <option value="tromp-taylor">Tromp-Taylor</option>
+            </select>
+            <label for="decision-comparison-komi"><strong>貼目</strong></label>
+            <input id="decision-comparison-komi" type="number" step="0.5" min="-400" max="400" inputmode="decimal" placeholder="例如 6.5 或 7.5">
+            <label for="decision-comparison-endpoint"><strong>分析服務</strong></label>
+            <input id="decision-comparison-endpoint" type="url" value="http://127.0.0.1:8765/v1/compare" spellcheck="false">
+            <p id="decision-comparison-setup" class="decision-review-meta">若棋譜有記錄規則與貼目，會自動帶入；資料不足時請手動補上。</p>
+            <button class="subtle-button" id="decision-comparison-run" type="button" disabled>比較我的第一候選與原著</button>
+            <div id="decision-comparison-result" class="decision-comparison-result" role="status" aria-live="polite"></div>
+          </details>
+          <p class="answer-policy">紀錄會保存第一候選、重試、原著揭露與必要版本資訊；KataGo 比較另存為分析參考，不更新 KC、複習排程、T2／T3 或正式評量。</p>
         </div>
         <div class="decision-review-board-wrap">
           <div id="decision-review-board" class="decision-review-board" aria-label="19 路棋譜決策點盤面"></div>

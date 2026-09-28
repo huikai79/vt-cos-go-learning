@@ -1,3 +1,5 @@
+2026-09-29 Decision Point Comparison v1：在 19×19 SGF Decision Review 已能保存第一候選與原著之後，新增選用的 KataGo 兩手比較層。只有原著已揭露、第一候選合法且與原著不同時才可送出；若 SGF 缺規則／貼目則要求使用者補上，不自行猜測。分析固定只允許「第一候選」與「原著」兩手進 root search，保存 rules、komi、visits、engine/model/provider version、PV 與兩手排序；結果固定標記為 bounded search estimate，只作複盤參考，不產生 correct／mastery／transfer，不更新 KC、scheduler、T2/T3 或 formal evaluation。provider／engine／storage failure 維持失敗，不回退 heuristic。learner-facing 文案只說「這次搜尋較偏向哪一手」，不把 engine ranking 寫成標準答案。
+
 # 15 單元課綱與驗證邊界
 
 最新驗收以獨立保留新題與固定應用探測局面為主，自然實戰另列；距離指標作診斷，不要求同步改善。流程檢核題不可兼作獨立成效證據，根因未知不抹除已知錯答。詳見 [整合審查](LEARNING_MODEL_REVIEW.md)。
@@ -47,7 +49,7 @@
 | 讀棋與手筋 | 征子前檢查引征、枷、倒撲、對殺 | 候選、條件、反例與次序的概念判斷 | 已具段位讀棋、能正確讀完任意實戰分支 |
 | 中盤攻防 | 打入／侵消、輕重／手抜き | 把退路、厚弱、救棋成本加入候選比較 | 已能判定全局最佳打入、棄子一定正確 |
 | 官子與全局判斷 | 先手／後手／逆先手、形勢判斷 | 分開點數、行棋權、確定實地與未定風險 | 已能精確數目或形成可靠勝率判斷 |
-| 完整棋局與複盤 | 19×19 全盤 practice＋SGF 決策點複盤 | 可自由對局、保存 SGF，並在單一決策點先提出候選再揭露原著比較 | 只作 historical comparison；原著不等於最佳手，不更新 KC／scheduler／T2-T3／formal evaluation |
+| 完整棋局與複盤 | 19×19 全盤 practice＋SGF 決策點複盤＋選用兩手分析 | 可自由對局、保存 SGF，在單一決策點先提出候選、揭露原著，再於規則／貼目明確時用固定搜尋量比較兩手 | KataGo 只提供 bounded estimate；排序不是標準答案，不更新 KC／scheduler／T2-T3／formal evaluation |
 
 choice-based Experience 仍保留 first response、hint、retry 與 completed event；v6 的棋盤 Response 把倒撲、枷、對殺、征子各保留兩個 practice-only variant，共 8 題，並以 `advanced-fixed-interleave-v1` 固定分兩輪呈現：四個 seed 全部完成後才進四個 variant。第二 variant 至少改一個非單純旋轉的條件：倒撲改回提數與局部棋串、枷改出口幾何、對殺交換 learner 棋色、征子改棋盤大小／路線長度／終點。每題以 `familyId`／`variantId`／`variationAxes` 明示 family 假說，再由 `advanced-sequence-contract.js` 重播 canonical line 與必要 branch。固定交錯只降低相鄰記憶 cue，不是 adaptive scheduler；所有進階 Experience 仍為 `advanced_practice_only`，不進 KC、scheduler、T2／T3 或 formal evaluation；兩題同 family 也不表示難度已可比或已證明 transfer。
 

@@ -53,7 +53,47 @@ try {
     if (-not $response.point -or $response.point.Count -ne 2) { throw "Play action has no valid point" }
     foreach ($v in $response.point) { if ([int]$v -lt 0 -or [int]$v -ge 9) { throw "Move out of range: $($response.point -join ',')" } }
   }
-  Write-Host "PASS: Windows KataGo bridge returned $($response.type); provider=$($response.providerVersion); model=$($response.model)"
+  Write-Host "PASS: Windows KataGo move bridge returned $($response.type); provider=$($response.providerVersion); model=$($response.model)"
+
+  $compareEndpoint = "http://127.0.0.1:$Port/v1/compare"
+  $compareBody = @{
+    contractVersion = "decision-comparison-provider-v1"
+    comparisonContractVersion = "decision-point-comparison-v1"
+    requestId = "windows-smoke-comparison"
+    sourceId = "windows-smoke-sgf"
+    positionFingerprint = "windows-smoke-position"
+    boardSize = 19
+    toPlay = 1
+    rules = "japanese"
+    komi = 6.5
+    maxVisits = 100
+    analysisPVLen = 8
+    historyMode = "root_setup_plus_moves"
+    initialStones = @()
+    moves = @(
+      @{ color = 1; type = "play"; point = @(15,3) },
+      @{ color = 2; type = "play"; point = @(3,3) }
+    )
+    candidates = @(
+      @{ role = "learner_first"; point = @(4,4) },
+      @{ role = "original_game"; point = @(16,15) }
+    )
+    authority = "bounded_search_estimate_only"
+    formalEligible = $false
+  } | ConvertTo-Json -Depth 8
+
+  $comparison = Invoke-RestMethod -Uri $compareEndpoint -Method Post -ContentType "application/json" -Body $compareBody -TimeoutSec 90
+  if ($comparison.resultVersion -ne "decision-comparison-result-v1") { throw "Unexpected comparison resultVersion: $($comparison.resultVersion)" }
+  if ($comparison.providerVersion -ne "katago-analysis-comparison-v1") { throw "Unexpected comparison providerVersion: $($comparison.providerVersion)" }
+  if ($comparison.authority -ne "bounded_search_estimate_only") { throw "Unexpected comparison authority: $($comparison.authority)" }
+  if ($comparison.formalEligible -ne $false) { throw "Comparison must remain formalEligible=false" }
+  if (-not $comparison.candidates -or $comparison.candidates.Count -ne 2) { throw "Comparison did not return exactly two candidates" }
+  $roles = @($comparison.candidates | ForEach-Object { $_.role })
+  if ($roles -notcontains "learner_first" -or $roles -notcontains "original_game") { throw "Comparison candidate roles are incomplete: $($roles -join ',')" }
+  foreach ($candidate in $comparison.candidates) {
+    if ($null -eq $candidate.order -or $null -eq $candidate.visits) { throw "Comparison candidate lacks order/visits" }
+  }
+  Write-Host "PASS: Windows KataGo comparison returned both bounded candidates; provider=$($comparison.providerVersion); engine=$($comparison.engineVersion); model=$($comparison.model)"
   exit 0
 }
 finally {
