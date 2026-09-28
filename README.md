@@ -139,3 +139,8 @@ R0 已通過。R1a 已完成第二套規則實作的 70 題核心唯一解窮舉
 
 
 2026-09-28 首頁 mockup 正式成為版面基準（`learner-flow-v50`）：桌面導覽、Hero 左文右圖比例、三階段直接學習入口、四格學習循環、研究動作卡、歷史／能力雙欄與 FAQ 依已確認 mockup 重建；文字與功能仍以 repo current truth 為準。原本重複的 Core／Advanced 兩卡入口移除。第 4 格「仍能自己判斷」只作前三項 learner evidence 的摘要，不新增 mastery 或 scoring 語義。局部入口沿用獨立 advanced practice，全局入口可直達核心第 11 單元。
+
+
+## 2026-09-28｜全球圍棋觀察 v0.1
+
+新增獨立公開研究頁 `global-go-observatory.html`，把跨國圍棋資料分成學棋流量、年度參與、組織化人口與正式競賽活躍度；只有 European Go Database 的同源 2025 active-player 資料進跨國排名，其餘國家以來源類型與限制標示。馬來西亞缺乏可比較的現行全國人口，因此維持 UNKNOWN。完整 provenance 與支持／不支持範圍見 `research/global-go-observatory-v1.md`。本頁不載入 learner runtime，不更新 KC、scoring、scheduler、learner state 或 formal evaluation。
