@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "lgroup-reference-core-source-receipt-v2",
+  "authority": "reference_source_receipt_only",
+  "sourceId": "onda-corner-l-shape-video-2024",
+  "sourceLocator": "https://note.com/go_pro275_denen/n/n299c0c730c08",
+  "sourceDigest": "sha256:91d1d35024bef3e7b50ce785ab8dbcf70ff79fb6eff6abe6f655c4973550b76f",
+  "sourceDigestScope": "youtube_maxres_thumbnail_bytes",
+  "evidenceChain": "onda-corner-l-shape-video-2024",
+  "locator": "embedded YouTube 2Re6POu51Yg / public maxres thumbnail",
+  "directLabel": "隅のL字型 / 白から打っても活きられません",
+  "selectionBasis": "entire_target_group",
+  "labelScope": "position_only",
+  "selectionInterpretationReviewed": false,
+  "candidateConceptId": "bga-bgj116-lgroup-core-seed-v1",
+  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v2",
+  "contractStatus": "NEEDS_HUMAN_REVIEW",
+  "decisive": false,
+  "boundaryFinding": "A professional corner-L lesson can label the displayed position without identifying a four-stone target group or marked core. Position-level labels must not be counted as core MATCH or DIFFERENT.",
+  "geometryPersisted": false,
+  "rawSourcePersisted": false,
+  "canonicalPromotionAllowed": false,
+  "rightsStatus": "reference_only"
+}
