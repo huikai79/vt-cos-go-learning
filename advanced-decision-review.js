@@ -151,8 +151,8 @@
     $("decision-review-save-reflection").disabled = true;
     $("decision-comparison-result").textContent = "";
     $("decision-comparison-panel").open = false;
-    $("decision-review-feedback").textContent = "先在全盤提出你的第一候選；原著現在還看不到。";
-    $("decision-review-meta").textContent = "第 " + moveNumber + " 手 · 輪到" + (exp.playerColor === 1 ? "黑" : "白") + "棋 · 原著尚未揭露";
+    $("decision-review-feedback").textContent = "先在全盤提出你的第一候選；原棋譜著手現在還看不到。";
+    $("decision-review-meta").textContent = "第 " + moveNumber + " 手 · 輪到" + (exp.playerColor === 1 ? "黑" : "白") + "棋 · 原棋譜著手尚未顯示";
     renderBoard();
     setupComparisonInputs();
     record("review_presented", {
@@ -185,7 +185,7 @@
     const learner = result.candidates.find((item) => item.role === "learner_first");
     const original = result.candidates.find((item) => item.role === "original_game");
     if (!learner || !original) return "這次分析缺少完整候選資料。";
-    const preferred = learner.order < original.order ? "你的第一候選" : original.order < learner.order ? "原著" : "兩手";
+    const preferred = learner.order < original.order ? "你的第一候選" : original.order < learner.order ? "原棋譜著手" : "兩手";
     const pv = learner.order <= original.order ? learner.pv : original.pv;
     let text = "在這次固定搜尋量下，KataGo 的排序較偏向" + preferred + "。";
     text += " 這只是目前模型、規則、貼目與搜尋量下的估計，不代表另一手一定錯。";
@@ -204,7 +204,7 @@
       select.innerHTML = '<option value="">選擇一手</option>' + game.moves.map((move) => '<option value="' + move.number + '">第 ' + move.number + " 手 · " + (move.color === 1 ? "黑" : "白") + "</option>").join("");
       select.disabled = false;
       $("decision-review-source").textContent = file.name + " · " + game.moves.length + " 個可回看的落子點";
-      $("decision-review-feedback").textContent = "已匯入。選一手，在看原著之前先提出自己的候選。";
+      $("decision-review-feedback").textContent = "已匯入。選一手，在看原棋譜著手之前先提出自己的候選。";
     } catch (error) {
       $("decision-review-feedback").textContent = error.message;
       $("decision-review-move").disabled = true;
@@ -236,7 +236,7 @@
     renderBoard(point, null);
     $("decision-review-reveal").disabled = !firstPoint;
     $("decision-review-feedback").textContent = result.legal
-      ? "候選已保存。你可以揭露原著，也可以先再想一手。"
+      ? "候選已保存。你可以顯示原棋譜著手，也可以先再想一手。"
       : "這個位置依目前規則不能下；第一次選擇仍已保留，你可以再試另一手。";
   });
 
@@ -253,15 +253,15 @@
     });
     renderBoard(firstPoint, exp.originalMove);
     if (same) {
-      $("decision-review-feedback").textContent = "你的第一候選和原著相同。這只表示你們下在同一點，不代表這是唯一好手。";
+      $("decision-review-feedback").textContent = "你的第一候選和原棋譜著手相同。這只表示兩者下在同一點，不代表這是唯一好手。";
       $("decision-comparison-result").textContent = "兩手是同一手，不需要再用 KataGo 比較。";
     } else if (firstLegal === false) {
-      $("decision-review-feedback").textContent = "你的第一個位置依規則不能下；原著已顯示。可以從這裡回看自己當時漏掉了什麼。";
+      $("decision-review-feedback").textContent = "你的第一個位置依規則不能下；原棋譜著手已顯示。可以從這裡回看自己當時漏掉了什麼。";
       $("decision-comparison-result").textContent = "第一次選擇不是合法落子，因此不送入候選品質比較。";
     } else {
-      $("decision-review-feedback").textContent = "你的第一候選和原著不同。這不是錯手判定；你可以先自己比較理由，再選擇是否請 KataGo 做有限搜尋。";
+      $("decision-review-feedback").textContent = "你的第一候選和原棋譜著手不同。這不是錯手判定；你可以先自己比較理由，再選擇是否請 KataGo 做有限搜尋。";
     }
-    $("decision-review-meta").textContent = "第 " + exp.source.moveNumber + " 手 · 原著已揭露 · 僅作複盤";
+    $("decision-review-meta").textContent = "第 " + exp.source.moveNumber + " 手 · 原棋譜著手已顯示 · 僅作複盤";
     $("decision-review-reveal").disabled = true;
     $("decision-review-reflection").disabled = false;
     $("decision-review-save-reflection").disabled = false;
