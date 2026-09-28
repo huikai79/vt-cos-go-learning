@@ -142,7 +142,7 @@ async function main() {
         assessmentCards: document.querySelectorAll('.intro-evidence-grid > article').length,
         siteIntroSources: document.querySelectorAll('.intro-source-grid a').length,
         researchOpen: document.querySelector('.intro-research-details').open,
-        curriculumBoundary: document.querySelector('#site-introduction-path .intro-course-count').textContent,
+        curriculumBoundary: document.querySelector('#learning-entry .intro-course-count').textContent,
         courseEntryCards: document.querySelectorAll('.intro-path-card').length,
         evidenceSummaryCards: document.querySelectorAll('[data-evidence-role="summary"]').length,
         advancedHomepageLink: document.querySelector('.course-entry-link[href="advanced.html"]')?.textContent.trim(),
