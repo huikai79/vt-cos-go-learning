@@ -204,3 +204,12 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - learner-facing critical surface 因 styles.css 改動，formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-q`，fingerprint `fnv1a32-js16-681f5de6`；此值來自 PR #94 首輪 CI 對精確 candidate surface 的 fail-closed 重算。
 - 不修改題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 或 formal evaluation 語義；example evidence 僅更新 candidate binding，所有真人 evidence 仍為 false/null，未偽造完成紀錄。
 - 正式教學仍 `BLOCKED`（R1a 外部回條、target novice usability、真人 accessibility 尚未完成）；正式評量仍 `BLOCKED`；學習成效仍 `NOT_MEASURED`。本次 CI 只能驗證工程與 candidate binding 一致性。
+
+
+## 2026-09-29 Change note｜learner-facing language boundary regression
+
+- **變更：** 清理 Global Go Observatory、Advanced decision review、核心 SGF 復盤、Classic Shapes runtime 與 live-game learner-facing 訊息中的工程／研究語境外洩；棋譜實際著手統一稱為「原棋譜著手」。
+- **防復發：** 新增 `tests/learner-language-boundary.test.cjs`，只掃 learner-facing HTML 與已知 runtime 顯示片語；schema、event、raw diagnostic、protocol 與正式外部名稱不納入禁詞判定。
+- **新 candidate：** `formal-teaching-candidate-2026-09-29-r`，fingerprint `fnv1a32-js16-d741fac9`，沿用 asset set version 6。
+- **不變範圍：** 題目答案、KC、scheduler、scoring、event schema、evidence taxonomy、ontology、decision-review event semantics 與 formal evaluation authority 未改。
+- **證據邊界：** 本次只改善 presentation boundary 與回歸防護，不產生 R1a、真人 usability、accessibility、formal evaluation 或 learning-effect 證據；正式教學仍依既有 gate 判定。
