@@ -319,7 +319,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v50");
+  assert.equal(exported.uiVersion, "learner-flow-v49");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -489,7 +489,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v50");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v49");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -623,15 +623,12 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-flow-v50/);
+  assert.match(html, /styles\.css\?v=learner-flow-v49/);
   assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.webp/);
   assert.equal((html.match(/class="intro-path-image"/g) || []).length, 3);
-  assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 4);
-  const evidenceSection = html.match(/<div class="[^"]*intro-evidence-grid[^"]*">([\s\S]*?)<\/div>/)?.[1] || "";
-  assert.equal((evidenceSection.match(/<article/g) || []).length, 4);
-  assert.match(evidenceSection, /data-evidence-role="summary"/);
-  assert.match(html, /data-site-intro-unit="10"/);
-  assert.doesNotMatch(html, /class="course-entry-grid"/);
+  assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 3);
+  const evidenceSection = html.match(/<div class="intro-evidence-grid">([\s\S]*?)<\/div>/)?.[1] || "";
+  assert.equal((evidenceSection.match(/<article>/g) || []).length, 3);
   assert.match(html, /悟之一手 <span class="eyebrow-dot">●<\/span> 個人學習空間/);
   assert.doesNotMatch(html, /PERSONAL GO STUDIO · OFFLINE/);
   assert.match(html, /VT-COS · 個人圍棋練習/);

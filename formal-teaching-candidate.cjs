@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const PROTOCOL_ID = "go-formal-teaching-candidate-v1";
-const ASSET_SET_VERSION = 4;
+const ASSET_SET_VERSION = 3;
 const ASSET_PATHS = Object.freeze([
   "index.html",
   "styles.css",
@@ -14,7 +14,6 @@ const ASSET_PATHS = Object.freeze([
   "assets/homepage/evidence-first.webp",
   "assets/homepage/evidence-delayed.webp",
   "assets/homepage/evidence-new-shape.webp",
-  "assets/homepage/evidence-still-judge.webp",
   "go.js",
   "content.js",
   "phase2-foundation-bank.js",
