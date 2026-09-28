@@ -625,6 +625,8 @@
   }
 
   function dismissLessonIntro() {
+    const dialog = $("lesson-intro-dialog");
+    if (dialog && dialog.open) dialog.close();
     if (!state.externalMode) {
       state.hasStarted = true;
       markCurrentLessonIntroSeen();
@@ -632,8 +634,6 @@
       renderLearningFlow();
       renderProgress();
     }
-    const dialog = $("lesson-intro-dialog");
-    if (dialog && dialog.open) dialog.close();
     revealQuestionStart();
   }
 
