@@ -152,3 +152,12 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **新 candidate：** `formal-teaching-candidate-2026-09-28-m`；fingerprint：`fnv1a32-js16-0314dd59`；asset set version 維持 5，UI version 維持 `learner-flow-v53`.
 - **不變範圍：** Advanced 仍是獨立 practice-only 路線；題目、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 與 formal evaluation 語義未改。
 - **證據邊界：** 此修正不產生 R1a、真人 usability、accessibility 或 learning-effect 證據；正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-28 Change note｜M4 Landing / Homepage conformance
+
+- 首頁 Hero 恢復引用已指定且實際存在的 `assets/homepage/hero.png`；先前 DOM 指向不存在的 `hero.webp`，同時 candidate 卻追蹤 PNG，造成 learner-facing surface 與 fingerprint authority 不一致，現已修正。
+- 「怎樣才算真的學會」只保留三種 learner evidence：第一次自己作答、延後再做、未見新棋形；「仍能自己判斷」改為三項之後的非編號總結句，不再視覺上形成第四 evidence。
+- 刪除不再使用的 `assets/homepage/evidence-still-judge.webp`，formal candidate asset set 升至 v6，candidate 更新為 `formal-teaching-candidate-2026-09-28-n`，fingerprint `fnv1a32-js16-8479d7d0`。
+- Core 主 CTA、Core 1–15 三階段入口、Advanced 獨立 practice-only 路線、研究來源預設收合等既有 IA 不變；不修改 scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
+- 證據邊界：M4 只修正首頁語義／資產一致性與工程契約；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。

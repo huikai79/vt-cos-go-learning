@@ -270,3 +270,12 @@ M1 不重畫整個 workspace；保留桌面棋盤左／問題與作答右，以�
 - 無到期／無錯題時維持既有 fail-closed 行為，不顯示假的「今天」任務；活動完成量只表示完成題數，不升格為 mastery。
 - 本輪只增加 regression coverage 與文件；不修改 learner-facing critical asset、scoring、scheduler、first-response/retry、event schema、evidence taxonomy 或 formal evaluation，因此不重新凍結 formal candidate。
 - 證據邊界：這只證明既有 Return / Review / Progress 介面契約在 desktop/mobile 可被自動驗證；真人是否更容易決定「今天先做什麼」仍為 NOT_TESTED。
+
+
+## 2026-09-28｜M4 Landing / Homepage conformance
+
+- 首頁 Hero 恢復引用已指定且實際存在的 `assets/homepage/hero.png`；先前 DOM 指向不存在的 `hero.webp`，同時 candidate 卻追蹤 PNG，造成 learner-facing surface 與 fingerprint authority 不一致，現已修正。
+- 「怎樣才算真的學會」只保留三種 learner evidence：第一次自己作答、延後再做、未見新棋形；「仍能自己判斷」改為三項之後的非編號總結句，不再視覺上形成第四 evidence。
+- 刪除不再使用的 `assets/homepage/evidence-still-judge.webp`，formal candidate asset set 升至 v6，candidate 更新為 `formal-teaching-candidate-2026-09-28-n`，fingerprint `fnv1a32-js16-8479d7d0`。
+- Core 主 CTA、Core 1–15 三階段入口、Advanced 獨立 practice-only 路線、研究來源預設收合等既有 IA 不變；不修改 scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
+- 證據邊界：M4 只修正首頁語義／資產一致性與工程契約；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
