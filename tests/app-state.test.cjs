@@ -624,7 +624,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
   assert.match(html, /styles\.css\?v=learner-flow-v50/);
-  assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.webp\?v=hero-textfree-v1/);
+  assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
   assert.equal((html.match(/class="intro-path-image"/g) || []).length, 3);
   assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 4);
   const evidenceSection = html.match(/<div class="[^"]*intro-evidence-grid[^"]*">([\s\S]*?)<\/div>/)?.[1] || "";

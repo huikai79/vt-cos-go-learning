@@ -3,11 +3,11 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const PROTOCOL_ID = "go-formal-teaching-candidate-v1";
-const ASSET_SET_VERSION = 4;
+const ASSET_SET_VERSION = 5;
 const ASSET_PATHS = Object.freeze([
   "index.html",
   "styles.css",
-  "assets/homepage/hero.webp",
+  "assets/homepage/hero.png",
   "assets/homepage/stage-basic.webp",
   "assets/homepage/stage-local.webp",
   "assets/homepage/stage-global.webp",
