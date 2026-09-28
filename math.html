@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="悟之一手圍棋 × 數學探索：分清圍棋的直接數學結構、共通認知機制，以及目前仍未證實的數學學習轉移。">
+  <link rel="canonical" href="https://huikai.com.kg/vt-cos-go-learning/math.html">
+  <title>圍棋和數學，到底有多直接？｜悟之一手</title>
+  <link rel="stylesheet" href="history.css?v=history-explore-v5">
+</head>
+<body>
+  <a class="skip-link" href="#math-main">跳到數學探索內容</a>
+  <header class="history-header">
+    <div class="history-header-inner">
+      <a class="history-brand" href="index.html" aria-label="回到悟之一手首頁">
+        <span class="history-brand-mark" aria-hidden="true">●○</span>
+        <span><strong>悟之一手</strong><small>VT-COS · 圍棋 × 數學</small></span>
+      </a>
+      <nav aria-label="網站導覽">
+        <a href="index.html">首頁</a>
+        <a href="index.html#core">核心課程</a>
+        <a href="history.html">歷史探索</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="math-main">
+    <section class="history-hero" aria-labelledby="math-title">
+      <span class="history-kicker">探索圍棋 · 圍棋 × 數學</span>
+      <h1 id="math-title">圍棋和數學，到底有多直接？</h1>
+      <p>直接，而且比「下棋要算很多」更深：活棋、官子與廣義圍棋都能成為正式數學研究對象。但這不等於「學圍棋就會讓一般數學成績提高」。這一頁把數學結構、人的認知與教育上的學習轉移分開。</p>
+      <div class="history-hero-actions">
+        <a class="primary-link" href="#questions">先看四個問題</a>
+        <a class="secondary-link" href="#boundary">先看能說到哪裡</a>
+      </div>
+    </section>
+
+    <section class="history-section evidence-guide" id="boundary" aria-labelledby="boundary-title">
+      <div class="section-head">
+        <span>怎麼讀這一頁</span>
+        <h2 id="boundary-title">「有數學關係」不是同一種主張</h2>
+        <p>以下標籤描述證據支持的層級；不把數學模型、認知相似與學習成效混成同一件事。</p>
+      </div>
+      <div class="badge-grid">
+        <article><span class="evidence-badge confirmed">直接結構</span><p>圍棋問題本身可以被正式數學定義、分析或證明。</p></article>
+        <article><span class="evidence-badge strong">圍棋實驗</span><p>研究直接測量棋手在圍棋任務中的認知表現，但不一定證明訓練因果。</p></article>
+        <article><span class="evidence-badge hypothesis">教育線索</span><p>圍棋活動中出現數學操作，或一般研究支持某種可能的橋接機制。</p></article>
+        <article><span class="evidence-badge unknown">尚未驗證</span><p>目前不足以宣稱「學圍棋會提升一般數學能力」或本站有這種成效。</p></article>
+      </div>
+    </section>
+
+    <section class="history-section" id="questions" aria-labelledby="questions-title">
+      <div class="section-head">
+        <span>四個問題</span>
+        <h2 id="questions-title">先把「數學」與「轉移」拆開</h2>
+      </div>
+
+      <article class="question-block" id="formal-math">
+        <div class="question-topline">
+          <span class="question-number">01</span>
+          <div class="question-badges"><span class="evidence-badge confirmed">直接結構</span></div>
+        </div>
+        <h3>圍棋本身真的是數學研究對象嗎？</h3>
+        <p class="answer-lead">是。這不是比喻。研究者已用圖論處理無條件活棋，用組合博弈論分析官子，也用計算複雜度研究廣義圍棋。</p>
+        <div class="claim-grid">
+          <div><strong>可以說</strong><p>圍棋包含可被正式數學化的離散結構：連通、局部博弈、數值與搜尋問題。</p></div>
+          <div><strong>不能直接說</strong><p>因此每個棋手下棋時都在做同一套形式數學，或數學好就一定棋力高。</p></div>
+        </div>
+        <details>
+          <summary>查看三個直接例子</summary>
+          <div class="detail-body">
+            <p><strong>活棋：</strong>Benson 的研究以 graph-theoretic static analysis 判定一類無條件活棋，並討論它與向前搜尋的關係。</p>
+            <p><strong>官子：</strong>Kao 把局部官子的「平均價值」與「下一手有多急」連到 combinatorial game theory 的 mean 與 temperature。</p>
+            <p><strong>複雜度：</strong>Lichtenstein 與 Sipser 證明一般化到 n×n 的圍棋勝負判定是 PSPACE-hard；這是計算複雜度主張，不代表普通 19×19 每一盤都「無法計算」。</p>
+            <p class="source-line"><a href="https://www.sciencedirect.com/science/article/pii/0020025576900591" target="_blank" rel="noreferrer">Benson｜Life in the Game of Go</a> · <a href="https://www.sciencedirect.com/science/article/pii/S0020025599000948" target="_blank" rel="noreferrer">Kao｜Mean and Temperature Search for Go Endgames</a> · <a href="https://doi.org/10.1145/322186.322201" target="_blank" rel="noreferrer">Lichtenstein &amp; Sipser｜GO Is Polynomial-Space Hard</a></p>
+          </div>
+        </details>
+      </article>
+
+      <article class="question-block" id="cognition">
+        <div class="question-topline">
+          <span class="question-number">02</span>
+          <div class="question-badges"><span class="evidence-badge strong">圍棋實驗</span></div>
+        </div>
+        <h3>棋手說的「算」，主要就是算術嗎？</h3>
+        <p class="answer-lead">不能這樣等同。臺灣一項圍棋認知實驗顯示，不同棋局階段對空間與邏輯推理干擾的反應不同；數學計算干擾相較之下沒有呈現同樣清楚的影響。</p>
+        <div class="claim-grid">
+          <div><strong>較合理的理解</strong><p>棋界的「算」常包含候選手、對手回應、後續狀態與結果比較，更接近 variation search 與 conditional reasoning。</p></div>
+          <div><strong>不要外推</strong><p>這項研究不是在測「數學能力高低是否決定棋力」，也不能證明下棋不需要數量與計算。</p></div>
+        </div>
+        <details>
+          <summary>查看研究限制</summary>
+          <div class="detail-body">
+            <p>陳德祐等人的研究讓 24 位圍棋棋手在解布局、中盤、官子問題時，同時接受空間搜尋、邏輯推理或計算等干擾。結果支持不同階段會動用不同認知資源，但樣本與任務都很特定，不能直接推成一般人的跨領域能力。</p>
+            <p class="source-line"><a href="https://www.cjpsy.com/academicjournaldetail_tw.php?id=2600" target="_blank" rel="noreferrer">《中華心理學刊》｜圍棋布局、中盤、官子階段之認知能力（2019）</a></p>
+          </div>
+        </details>
+      </article>
+
+      <article class="question-block" id="transfer">
+        <div class="question-topline">
+          <span class="question-number">03</span>
+          <div class="question-badges"><span class="evidence-badge hypothesis">教育線索</span><span class="evidence-badge unknown">尚未驗證</span></div>
+        </div>
+        <h3>那麼，學圍棋會讓一般數學表現變好嗎？</h3>
+        <p class="answer-lead">目前不能這樣宣稱。已有研究觀察到圍棋活動中自然出現計數、面積、陣列、乘法與空間思考；但「活動中用了數學」和「圍棋訓練造成一般數學能力提升」是兩個不同命題。</p>
+        <div class="claim-grid">
+          <div><strong>目前有的線索</strong><p>小學課堂與博士研究記錄了圍棋情境裡的數學與空間活動；一般 spatial training 統合分析也顯示，較接近訓練內容的數學結果較可能出現轉移。</p></div>
+          <div><strong>目前缺的證據</strong><p>尚缺足以支持「單純學圍棋 → 廣泛數學提升」的強因果鏈；一般 cognitive-training 文獻也提醒 far transfer 往往很有限。</p></div>
+        </div>
+        <div class="math-note">
+          <strong>上一輪研究的一項修正</strong>
+          <p>香港浸會大學 2024 年博士論文所報告的「微弱到中等」連結，來自七位同時熟悉數學與圍棋者的敘事多案例研究；研究詢問他們感知到的策略連結與預期轉移。它是值得保留的質性線索，但不是學習者實測 transfer effect，不能拿來當成「圍棋能提升數學」的效果量。</p>
+        </div>
+        <details>
+          <summary>查看支持與反證來源</summary>
+          <div class="detail-body">
+            <p>Hawes 等人的 spatial-training meta-analysis 納入 29 項 controlled pre-post studies（N=3,765），平均數學效果量為 Hedges's g = .28；效果會受 near/far transfer 等條件調節。這支持「空間訓練可能影響數學」，但它不是圍棋研究，不能把中間箭頭自行補成「圍棋 → 空間能力 → 數學」。</p>
+            <p>Sala 等人的 second-order meta-analysis 檢查多類 cognitive training，發現 near transfer 較常見；控制 publication bias 與 placebo 後，far-transfer 效果接近零。這是一般性的限制證據，不是專門對圍棋下結論。</p>
+            <p class="source-line"><a href="https://pubmed.ncbi.nlm.nih.gov/35073120/" target="_blank" rel="noreferrer">Hawes et al.｜Spatial Training Meta-analysis</a> · <a href="https://doi.org/10.1525/collabra.203" target="_blank" rel="noreferrer">Sala et al.｜Near and Far Transfer in Cognitive Training</a> · <a href="https://scholars.hkbu.edu.hk/en/studentTheses/connection-between-mathematics-and-go-game-problem-solving-a-know/" target="_blank" rel="noreferrer">Chan｜HKBU Doctoral Thesis</a></p>
+          </div>
+        </details>
+      </article>
+
+      <article class="question-block" id="bridge">
+        <div class="question-topline">
+          <span class="question-number">04</span>
+          <div class="question-badges"><span class="evidence-badge hypothesis">研究假說</span></div>
+        </div>
+        <h3>如果真的想把圍棋變成數學學習媒介，最值得測什麼？</h3>
+        <p class="answer-lead">最值得測的不是「多下棋有沒有神奇遠距轉移」，而是把圍棋裡原本隱含的數學結構明確橋接出去，再用新的、無提示的數學題檢查是否真的遷移。</p>
+        <div class="compare-grid" role="table" aria-label="圍棋與數學橋接研究設計">
+          <div class="compare-head" role="row"><span role="columnheader">條件</span><span role="columnheader">同樣時間下做什麼</span></div>
+          <div role="row"><strong role="cell">A｜Go-only</strong><span role="cell">一般圍棋練習與回饋。</span></div>
+          <div role="row"><strong role="cell">B｜Go + Bridge</strong><span role="cell">同樣圍棋內容，再要求把面積、陣列、連通或數值比較明確轉成數學表示。</span></div>
+          <div role="row"><strong role="cell">C｜Math-only</strong><span role="cell">相同時間直接練對應數學內容，作為強基準。</span></div>
+        </div>
+        <p class="frontier-note">真正的判定要看新的、無提示、可比較數學題，以及延後後是否仍保留；不能用原本練過的棋形、當下答對率或自我感覺替代 transfer。</p>
+      </article>
+    </section>
+
+    <section class="history-section" id="mapping" aria-labelledby="mapping-title">
+      <div class="section-head">
+        <span>結構地圖</span>
+        <h2 id="mapping-title">哪些圍棋活動和數學靠得最近？</h2>
+        <p>這張表描述「關係型態」，不是把每種練習排成效果排行榜。</p>
+      </div>
+      <div class="compare-grid" role="table" aria-label="圍棋活動與數學關係">
+        <div class="compare-head" role="row"><span role="columnheader">圍棋活動</span><span role="columnheader">目前最穩妥的關係描述</span></div>
+        <div role="row"><strong role="cell">計目／面積</strong><span role="cell">直接使用數量、加減、分組、陣列與面積表示；最適合做明確數學橋接。</span></div>
+        <div role="row"><strong role="cell">官子</strong><span role="cell">局部價值與先後手可進入組合博弈論；「數學模型成立」仍不等於「練官子會提高一般數學」。</span></div>
+        <div role="row"><strong role="cell">死活</strong><span role="cell">部分活棋問題可以圖論與搜尋形式化；對學習者的圖論 transfer 尚未驗證。</span></div>
+        <div role="row"><strong role="cell">布局</strong><span role="cell">圍棋實驗支持空間處理的重要性；是否能轉到校內數學仍需直接測。</span></div>
+        <div role="row"><strong role="cell">中盤讀棋</strong><span role="cell">和條件推理、分支搜尋有明顯結構相似；目前主要是共通機制，不是數學成效證據。</span></div>
+        <div role="row"><strong role="cell">手筋／覆盤</strong><span role="cell">可能用到模式、類比、反證與錯誤分析；要產生跨域 transfer，仍需要明確橋接與獨立驗收。</span></div>
+      </div>
+    </section>
+
+    <section class="history-section" id="sources" aria-labelledby="sources-title">
+      <div class="section-head">
+        <span>來源與邊界</span>
+        <h2 id="sources-title">研究來源不是產品成效證明</h2>
+        <p>本頁把來源用在它真正能支持的範圍內；沒有把一般空間訓練、棋手研究或質性訪談升格成本站的學習效果。</p>
+      </div>
+      <p class="source-audit-date">本頁來源最後查核：2026-09-29</p>
+      <ul class="source-list">
+        <li><a href="https://www.sciencedirect.com/science/article/pii/0020025576900591" target="_blank" rel="noreferrer">Benson (1976)｜Life in the Game of Go</a><span>支持無條件活棋可用圖論靜態分析處理；不支持學圍棋會提升圖論能力。</span></li>
+        <li><a href="https://www.sciencedirect.com/science/article/pii/S0020025599000948" target="_blank" rel="noreferrer">Kao (2000)｜Mean and Temperature Search for Go Endgames</a><span>支持官子與組合博弈論 mean／temperature 的正式連結。</span></li>
+        <li><a href="https://doi.org/10.1145/322186.322201" target="_blank" rel="noreferrer">Lichtenstein &amp; Sipser (1980)｜GO Is Polynomial-Space Hard</a><span>支持廣義 n×n 圍棋勝負判定的計算複雜度結果。</span></li>
+        <li><a href="https://www.cjpsy.com/academicjournaldetail_tw.php?id=2600" target="_blank" rel="noreferrer">陳德祐等（2019）｜圍棋三階段認知能力</a><span>支持布局、中盤、官子在空間／推理干擾下呈現不同表現；不是一般數學成效研究。</span></li>
+        <li><a href="https://eric.ed.gov/?id=ED669148" target="_blank" rel="noreferrer">Yu (2021)｜Spatial Thinking and the Learning of Mathematics in the Game of Go</a><span>分析圍棋學習中嵌入的空間與數學活動；不單獨證明廣泛數學 transfer。</span></li>
+        <li><a href="https://doi.org/10.62578/586566" target="_blank" rel="noreferrer">Wu &amp; Guo (2024)｜Go Game and Mathematics Learning</a><span>探索三年級課堂中自然出現的計數、數感與乘法等活動；研究定位為 explorative。</span></li>
+        <li><a href="https://scholars.hkbu.edu.hk/en/studentTheses/connection-between-mathematics-and-go-game-problem-solving-a-know/" target="_blank" rel="noreferrer">Chan (2024)｜Mathematics and Go Problem-solving</a><span>七位雙領域熟手的敘事多案例研究；「微弱到中等」是感知策略連結／預期轉移，不是實測效果量。</span></li>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/35073120/" target="_blank" rel="noreferrer">Hawes, Gilligan-Lee &amp; Mix (2022)｜Spatial Training Meta-analysis</a><span>支持一般空間訓練與數學表現的條件式轉移；不是圍棋專用證據。</span></li>
+        <li><a href="https://doi.org/10.1525/collabra.203" target="_blank" rel="noreferrer">Sala et al. (2019)｜Near and Far Transfer in Cognitive Training</a><span>提供遠距 transfer 的一般限制證據；不應解讀成「已證明圍棋沒有任何數學效益」。</span></li>
+      </ul>
+    </section>
+
+    <section class="history-cta" aria-label="回到圍棋學習">
+      <div><span>這是閱讀探索，不是數學成效承諾</span><h2>想學棋，就回到棋盤。</h2><p>本頁不寫入學習進度、不更新 KC 或複習排程，也不構成正式評量或學習成效證據。</p></div>
+      <div class="history-cta-actions">
+        <a class="primary-link" href="index.html#core">回核心課程</a>
+        <a class="secondary-link" href="history.html">看歷史探索</a>
+        <a class="secondary-link" href="advanced.html">回進階訓練</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>VT-COS｜悟之一手 · 圍棋 × 數學探索 v1</p>
+    <p>Research/Content Evidence 與 Learner Evidence 分開；目前不宣稱本站能提升一般數學能力。</p>
+  </footer>
+</body>
+</html>
