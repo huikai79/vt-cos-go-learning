@@ -870,3 +870,15 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **停止線：** 即使下一個 Tsumego Hero reference 與 BGA-seeded L-tetromino MATCH，也只形成一條獨立 validation；BGA seed 本身被排除，因此 aggregate 仍應 `INSUFFICIENT`，不得寫成兩條獨立一致證據，更不得 canonical promote。
 - **不變：** learner state、KC、scheduler、scoring、T0–T3、R1、formal evaluation 與 playable catalog 均不變。
 - **Rollback：** 回復 oracle v2 與 HTML-SGF adapter v1 即可；無 learner data migration。
+
+
+## 2026-09-29 Decision note｜Tsumego 15362 對 BGA Figure 1：defender-group contract 得到 DIFFERENT
+
+- **真實 observation：** Tsumego Hero `The L Group 32/46` 再次以 deterministic embedded SGF probe 取得；來源題面為 `Black to kill`，唯一最近角部白方 defender connected component 可穩定選出。原始 SGF、stones、points 與 fingerprint 只存在 1-day research artifact，不進 main。
+- **Source digest 修正：** 同一題連續抓取時整頁 HTML digest 會變，但 embedded SGF digest 連續兩次固定為 `sha256:301320106eb00da20cb4f7447faa568db2853a1a1ddd4911d5efa0d13b910ce6`。因此 HTML-SGF adapter v3 改以 embedded SGF bytes 作 geometry `sourceDigest`；無關 HTML 變化不得製造假版本。
+- **Contract v3：** `corner-defender-connected-group-normalized-v3` 只比較角落正規化後的 defender connected shape + board role/context；absolute `toPlay` 不屬 geometry identity，固定為 `unspecified`。
+- **實際結果：** Tsumego 15362 與 BGA BGJ116 Figure 1 的 BGA-seeded defender geometry 在此 contract 下為 `REFERENCE_DIFFERENT`，`sameShape=false`、`sameContext=true`。這只否定「兩個 source case 的 defender connected stones 完全同形」，**不否定兩個來源都把其案例放在 L Group 教學脈絡**。
+- **重要修正：** exact defender connected stones 目前不能視為 L Group family-wide identity invariant；Tsumego 題庫可能包含 L Group 的變形／衍生局面。不得把這個 DIFFERENT 偷換成來源衝突，也不得挑另一題只為得到 MATCH。
+- **Aggregation：** BGA chain 是 candidate seed，依 oracle v3 排除；目前只剩 Tsumego 一條 independent decisive unit，因此 aggregate = `INSUFFICIENT`、`canonicalPromotionAllowed=false`。
+- **下一步：** 研究更適合 family identity 的 representation（例如來源明示的 base shape／eye-space／enclosed region／mechanism），或取得第三條直接、可結構化且不依賴 BGA seed 的來源；任何新 representation 必須另建 `comparisonContractId`，不得與 defender-group v3 混聚合。
+- **不變：** playable content、scoring、learner state、KC、scheduler、T0–T3、R1、formal evaluation 全部不變。
