@@ -23,7 +23,15 @@ class Element {
     this.listeners = {};
     this.className = "";
     this.textContent = "";
+    Object.defineProperty(this, "innerHTML", {
+      get: () => this._innerHTML || "",
+      set: (value) => {
+        this._innerHTML = value;
+        this.textContent = String(value).replace(/<[^>]*>/g, "");
+      }
+    });
     this.innerHTML = "";
+    this.hidden = false;
     this.disabled = false;
     this.style = {};
     this.classList = { toggle() {}, contains() { return false; } };
@@ -158,7 +166,7 @@ test("損壞 JSON 與欄位型別異常不會阻止課程啟動", () => {
   const malformed = createApp({}, { rawStorage: { [STORAGE_KEY]: "{broken" } });
   assert.equal(malformed.elements["question-title"].textContent, "中央的一顆棋");
   assert.equal(JSON.parse(malformed.storage.get("go-learning-prototype-recovery-v1")).rawValue, "{broken");
-  assert.match(malformed.elements.feedback.textContent, /復原副本/);
+  assert.match(malformed.elements["system-status"].textContent, /復原副本/);
 
   const wrongShape = createApp({
     [STORAGE_KEY]: {
@@ -444,7 +452,7 @@ test("瀏覽器儲存失敗時不會把 SGF 反思誤報為已保存", () => {
   elements["sgf-candidate-input"].value = "中央候選手";
   elements["sgf-reflection-save-button"].listeners.click();
   assert.match(elements["sgf-reflection-status"].textContent, /未保存/);
-  assert.match(elements.feedback.textContent, /無法寫入瀏覽器儲存空間/);
+  assert.match(elements["system-status"].textContent, /無法寫入瀏覽器儲存空間/);
   assert.equal(storage.has(STORAGE_KEY), false);
 });
 
@@ -623,7 +631,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-flow-v50/);
+  assert.match(html, /styles\.css\?v=learner-flow-v52/);
   assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.webp/);
   assert.equal((html.match(/class="intro-path-image"/g) || []).length, 3);
   assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 4);
