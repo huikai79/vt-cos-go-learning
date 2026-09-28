@@ -1,3 +1,10 @@
+2026-09-29 Decision note｜Go × Mathematics Explore 保持 research-only
+
+- 多語／跨來源研究確認圍棋有直接形式數學結構，但「Go training → general mathematics improvement」仍為 UNKNOWN。
+- HKBU 2024 七人質性案例研究只支持感知到的策略連結，不作 transfer effect；一般 spatial-training 與 cognitive far-transfer 研究只作機制／邊界證據。
+- `math.html` 是 Explore reading surface：不接 learner state、KC、scheduler、scoring、T2/T3 或 formal evaluation。
+- 若未來真的測 transfer，先比較 Go-only、Go + explicit bridge、Math-only，在新的無提示、可比較且延後的數學 outcome 上驗收；未出現 learner bottleneck 前不把 Math Lens 升為 Core 功能。
+
 2026-09-29 KaTrain Smoke Autodiscovery v1：Real KataGo receipt gate 已 ready，但 Windows 使用者仍需人工提供 executable/config/model 三條路徑。KaTrain 1.20.0 官方設定以 `~/.katrain/config.json` 保存 engine 設定，bundled Windows engine 使用 `katrain/KataGo/katago.exe`、分析設定預設 `katrain/KataGo/analysis_config.cfg`、模型使用 `katrain/models/...` package resource。新增 `tests/katrain-katago-smoke.ps1`：優先讀 user config；自訂 absolute path 直接採用；bundled resource 只在明確 `-KaTrainRoot`、正在執行的 KaTrain 目錄或有限常見安裝根下尋找 exact suffix。找不到、相對 custom path 無法安全解析、或同一 root 出現多個 bundled KataGo 都 fail closed。wrapper 最終只呼叫既有 `katago-bridge-smoke.ps1`，不建立第二套 receipt/scoring/engine contract。Windows CI 用 synthetic KaTrain layout 的 `-ResolveOnly` 測試成功解析與 ambiguity rejection；這仍不是 real-engine evidence，狀態維持 `READY_FOR_LOCAL_RUN / BLOCKED_ON_LOCAL_RECEIPT`。
 
 2026-09-29 Real KataGo Smoke Receipt v1：Decision Point Comparison 的下一個 gate 不再用 CI adapter 測試冒充真引擎證據。Windows `tests/katago-bridge-smoke.ps1` 現在要求 clean checkout，先以官方 `katago version` 取得 engine identity，再實跑 `/v1/move` 與 `/v1/compare`；兩者都通過後才產生本機 `.local-evidence/katago-smoke-receipt.json`。receipt 綁 repository commit、四個 contract file SHA-256、KataGo executable/config/model SHA-256、engine/model identity、runtime、comparison request/result；不保存絕對檔案路徑。公開 repo 只保留 receipt schema/verifier/tests，實際 receipt 被 gitignore/release boundary 排除。任何 commit 或 contract file 改變都使舊 receipt stale；`correct`／`mastery`／`transferLevel` 污染會 fail closed。CI 只驗 receipt contract、verifier、PowerShell syntax，沒有真 KataGo binary/model 時狀態必須保持 `READY_FOR_LOCAL_RUN / BLOCKED_ON_LOCAL_RECEIPT`，不得升格為 real-engine PASS。
