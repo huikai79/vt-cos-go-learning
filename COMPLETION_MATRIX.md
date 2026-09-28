@@ -1,3 +1,14 @@
+2026-09-29 Change note｜Real KataGo Smoke Receipt v1
+
+- **bottleneck：** `/v1/compare` 的 contract、adapter、browser flow 與 fail-closed 行為已由 CI 驗證，但 CI 沒有實際 KataGo executable/config/model，因此仍缺「真引擎照目前 contract 回兩個候選」的可重算證據。
+- **實作：** Windows smoke 現要求 clean checkout，真跑 `/v1/move` 與 `/v1/compare`；全部通過後才寫 `.local-evidence/katago-smoke-receipt.json`。
+- **receipt identity：** 綁 repo HEAD、contract file hashes、KataGo version、executable/config/model hashes、model filename、runtime 與兩端點結果；不保存絕對 engine path。
+- **verifier：** receipt commit 或任一 contract file 不等於目前 repo 即 stale；unknown engine、model mismatch、comparison identity mismatch、`correct/mastery/transferLevel` 污染全部 fail closed。
+- **public/private boundary：** receipt contract／verifier／tests 可公開；實際本機 receipt 排除於 Git 與 release。
+- **目前狀態：** `READY_FOR_LOCAL_RUN / BLOCKED_ON_LOCAL_RECEIPT`。CI PASS 只能證明驗證流程可執行，不能證明真 KataGo 已通過。
+- **升格條件：** 在 clean Windows checkout 實際執行 smoke，並由 `scripts/verify-katago-smoke-receipt.cjs` 對同一 HEAD 回 PASS。
+- **rollback：** 移除 receipt module/verifier 與 smoke 的 receipt 段，原本 `/v1/move`、`/v1/compare` runtime 不受影響。
+
 2026-09-29 Change note｜KataGo real-engine receipt v1
 
 - **bottleneck：** Decision Point Comparison v1 的 contract／adapter／browser flow 已通過 CI，但 CI 沒有實際 KataGo executable、config 與 model；因此仍缺一份能證明「這組公開 contract 曾由真引擎完整跑通」的可重算本機證據。
