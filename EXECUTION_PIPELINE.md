@@ -354,3 +354,12 @@
 - 尚缺 structured observation：未可靠取得 Figure 1 座標前，只能算 documentary source-to-concept evidence，不能產生 shape MATCH/DIFFERENT。
 - 任何後續 extraction 必須 reference-only、不可把受權利限制的原圖直接 shipping；持久化仍只允許 sanitized receipt/report。
 - 只有 BGA 與 Tsumego Hero 都被轉成相同 `comparisonContractId` 的 decisive reports 後，才允許進 `aggregatePersistableReports`。
+
+
+## 2026-09-29 Decision note｜Candidate provenance gate
+
+- reference candidate 必須記住其建立所依賴的 evidence chain；該 chain 在 aggregation 時排除，不得同時當 seed 與 independent confirmation。
+- 角部 defender-group comparison 統一使用 `corner-defender-connected-group-normalized-v2`：先把來源角落正規化成 common local corner frame，再比較 shape + context。
+- defender connected stones、eye-space、full-position、mechanism 是不同 representation；只有同一 `comparisonContractId` 的 reports 才可聚合。
+- BGA Figure 1 可作 candidate seed／source-to-concept evidence；下一條 Tsumego Hero deterministic SGF observation 才能作第一條 independent geometry validation。
+- 至少還需要另一條不依賴 BGA seed 的 independent decisive chain，才可能形成 `CONSISTENT_REFERENCE_SUPPORT`；即便形成，仍維持 `canonicalPromotionAllowed=false`。
