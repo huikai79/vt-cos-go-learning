@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "lgroup-reference-core-aggregate-v1",
+  "authority": "reference_research_only",
+  "candidateConceptId": "bga-bgj116-lgroup-core-seed-v1",
+  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v1",
+  "candidateDependentEvidenceChains": [
+    "bga-richard-hunter-lgroup-bgj116"
+  ],
+  "independentDecisiveEvidenceChains": [
+    "ogs-antontobi-lgroup-2022"
+  ],
+  "supportingNonDecisiveEvidenceChains": [
+    "igocompany-corner-l-shape-2024"
+  ],
+  "status": "INSUFFICIENT",
+  "independentDecisiveEvidenceUnits": 1,
+  "supportingNonDecisiveEvidenceUnits": 1,
+  "excludedCandidateDependentEvidenceUnits": 1,
+  "direction": "REFERENCE_CORE_MATCH",
+  "canonicalPromotionAllowed": false,
+  "interpretation": "The four-stone L-tetromino core hypothesis has one independent decisive reference match beyond its BGA seed. A Japanese source shows a source-native marked L-tetromino pattern inside a directly-labelled corner L-shape position, but its marking semantics have not been independently reviewed, so it is not counted as a decisive validation."
+}
