@@ -146,7 +146,20 @@ jobs:
               url: new URL(`index.html?deploy=${deploySha}`, base),
               checks: [
                 'href="history.html"',
+                'href="global-go-observatory.html">全球觀察</a>',
                 '歷史與典故另外讀，不擋住你的學習主線'
+              ]
+            },
+            {
+              name: "global-go-observatory",
+              url: new URL(`global-go-observatory.html?deploy=${deploySha}`, base),
+              checks: [
+                'global-go-observatory.css?v=global-go-observatory-v1',
+                '2025 歐洲 EGD 年度活躍棋手 Top 10',
+                '以下不是排名',
+                '馬來西亞',
+                '現況未知',
+                '資料查核：2026-09-28'
               ]
             },
             {

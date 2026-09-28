@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-28-j",
-  "frozenAt": "2026-09-28T20:39:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-28-k",
+  "frozenAt": "2026-09-28T21:02:00+08:00",
   "assetSetVersion": 5,
-  "assetFingerprint": "fnv1a32-js16-59c14d2e",
+  "assetFingerprint": "fnv1a32-js16-54e6c884",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -39,5 +39,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v50：依使用者明示要求，首頁 Hero 改用其提供圖片重製的 960×720 PNG（assets/homepage/hero.png），並移除舊 hero.webp 引用。圖內四步文字與手寫「這步提子，因為已經沒有氣了」只作 learner-facing 視覺／概念說明，未由本輪 rules engine 或 scoring contract 驗證，不取得棋盤真值、答案或 formal evaluation authority；其餘作答、事件、scheduler、KC 與 evidence taxonomy 語義不變。"
+  "scopeNote": "learner-flow-v51：首頁導覽只新增獨立 Research Evidence 頁「全球觀察」入口，並同步 cache-busting／uiVersion；global-go-observatory.html 不載入 learner runtime，也不進 formal candidate asset set。題目、答案、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 與 formal evaluation 語義不變；研究資料不得寫入學習評分。"
 }
