@@ -53,7 +53,7 @@ test("日本來源的 source-native marks 未經語義覆核，不得算第二�
   assert.equal(aggregate.supportingNonDecisiveEvidenceUnits,2);
 });
 
-test("Tsumego 15362 的較大未標記 defender group 不屬此 core contract eligibility",()=>{
+test("較大的 direct target-group label 可判 DIFFERENT，但不得從中發明四子 subset",()=>{
   const result=Contract.evaluate({
     points:[[0,4],[1,4],[2,4],[3,4],[3,3],[3,2],[3,1],[3,0]],
     selectionBasis:Contract.SELECTION_BASIS.ENTIRE_TARGET_GROUP,
@@ -62,6 +62,15 @@ test("Tsumego 15362 的較大未標記 defender group 不屬此 core contract el
   });
   assert.equal(result.status,Contract.STATUS.DIFFERENT);
   assert.equal(result.decisive,true);
+  const positionOnly=Contract.evaluate({
+    points:[[0,4],[1,4],[2,4],[3,4],[3,3],[3,2],[3,1],[3,0]],
+    selectionBasis:Contract.SELECTION_BASIS.ENTIRE_TARGET_GROUP,
+    labelScope:Contract.LABEL_SCOPE.POSITION_ONLY,
+    sourceDirectlyLabelsLGroup:true
+  });
+  assert.equal(positionOnly.status,Contract.STATUS.NEEDS_HUMAN_REVIEW);
+  assert.equal(positionOnly.decisive,false);
+
   const invented=Contract.evaluate({
     points:[[2,4],[3,4],[3,3],[3,2]],
     selectionBasis:"inferred_subset",
