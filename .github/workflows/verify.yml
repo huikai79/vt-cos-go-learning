@@ -162,6 +162,7 @@ jobs:
               url: new URL(`index.html?deploy=${deploySha}`, base),
               checks: [
                 'href="history.html"',
+                'href="math.html"',
                 'href="global-go-observatory.html">全球觀察</a>',
                 '歷史與典故另外讀，不擋住你的學習主線'
               ]
@@ -204,6 +205,16 @@ jobs:
                 '目前查核範圍內，尚未確認可可靠重建的早期 17 路實戰局面',
                 '本頁來源最後查核：2026-09-28',
                 'href="advanced.html">回進階訓練</a>'
+              ]
+            },
+            {
+              name: "math",
+              url: new URL(`math.html?deploy=${deploySha}`, base),
+              checks: [
+                '圍棋 × 數學探索 v1',
+                '不是學習者實測 transfer effect',
+                '目前不宣稱本站能提升一般數學能力',
+                '本頁來源最後查核：2026-09-29'
               ]
             },
             {
