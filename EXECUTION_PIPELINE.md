@@ -336,3 +336,11 @@
 - 任兩份 reference reports 聚合前必須同 candidate、同 `comparisonContractId`、同 context policy；否則 fail closed。
 - `corner-defender-connected-group-v1` 只回答角部 defender connected stones 是否同構且 context 相符；不能替代 eye-space、full-position 或 mechanism comparison。
 - 單一來源只算一條 evidence chain；至少兩條獨立 decisive reports 同方向才是 consistent reference support，而且仍不得 canonical promote。
+
+
+## 2026-09-28 Decision note｜L Group source receipt gate
+
+- **已通過：** public page identity → immutable digest → embedded SGF parse → setup parse → sanitized source receipt。
+- **尚未通過：** source observation → representation assignment → candidate geometry comparison。`comparisonContractId` 未定時禁止呼叫成正式 L Group MATCH/DIFFERENT evidence。
+- **不得灌票：** 同一 collection／同一 editorial source 的多題只算同一 evidence chain；鏡像、不同 URL、不同 digest 也不能提升 independence。
+- **第二來源停止線：** suite-level 描述（例如『L groups covered』）不足以把未標名的 SGF 自動指定成 L Group；需要 direct locator 或可審查的 source-to-geometry mapping。
