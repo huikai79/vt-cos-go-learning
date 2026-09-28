@@ -7,7 +7,7 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v16">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v17">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="classic-shapes-ontology.js?v=classic-shape-ontology-v5"></script>
@@ -39,7 +39,7 @@
   <script defer src="classic-shape-read.js?v=classic-shape-read-v1"></script>
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v22"></script>
+  <script defer src="classic-shapes-mode.js?v=classic-shapes-mode-v1"></script>\n  <script defer src="classic-shapes.js?v=classic-shapes-v22"></script>
 </head>
 <body class="classic-shapes-page">
   <a class="skip-link" href="#classic-main">跳到練習</a>
@@ -54,6 +54,36 @@
       <p>同一個經典棋形，在不同語言裡可能有不同名稱。本頁以繁體中文說明，必要時保留常見外文名稱，讓你能對照其他教材。</p>
       <div class="classic-boundary"><strong>這一頁怎麼算</strong><span>這裡主要用來認識經典棋形與練習第一手判斷，不會直接用來判定你的棋力。部分棋形目前只檢查第一手是否合理，還不是完整的死活答案樹；尚未完成規則核對的棋形則不評分。這些練習也不會影響核心課程進度、複習安排或正式評量。</span></div>
     </header>
+
+    <nav class="classic-mode-nav" aria-label="世界死活名型館模式">
+      <a class="classic-mode-link" href="#practice" data-classic-mode-link="practice">
+        <strong>棋形練習</strong>
+        <span>先看棋形、作答，再揭示名稱</span>
+      </a>
+      <a class="classic-mode-link" href="#atlas" data-classic-mode-link="atlas">
+        <strong>世界名型對照</strong>
+        <span>查中文、日文、韓文、英文名稱與來源狀態</span>
+      </a>
+    </nav>
+
+    <section id="practice" class="classic-mode-panel" data-classic-mode-panel="practice" aria-labelledby="classic-practice-mode-title">
+      <div class="classic-mode-intro">
+        <span class="question-tag">Practice · 不影響核心課程進度</span>
+        <h2 id="classic-practice-mode-title" tabindex="-1">棋形練習</h2>
+        <p>練習會持續增加，但不需要一路往下找。可用下方描述性入口直接跳到想練的結構；名型名稱仍依各題原本規則在適當時機揭示。</p>
+      </div>
+      <nav class="classic-practice-jumps" aria-label="棋形練習快速導覽">
+        <a href="#straight-three-track-title">三點直形</a>
+        <a href="#bent-three-practice-title">三點 L 形</a>
+        <a href="#four-space-status-title">四目活死</a>
+        <a href="#pyramid-four-practice-title">四點 T 形</a>
+        <a href="#cross-practice-title">五點十字</a>
+        <a href="#bulky-practice-title">五目急所與短讀</a>
+        <a href="#flower-six-practice-title">六點眼形</a>
+        <a href="#golden-chicken-practice-title">雙重氣緊</a>
+        <a href="#big-pigs-mouth-practice-title">角部 J 形</a>
+        <a href="#contrast-practice-title">混合辨形</a>
+      </nav>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
       <span class="question-tag">直三專用 · 4 段探索</span>
@@ -441,10 +471,12 @@
       </div>
     </section>
 
-    <section class="classic-atlas" aria-labelledby="classic-atlas-title">
+    </section>
+
+    <section id="atlas" class="classic-atlas classic-mode-panel" data-classic-mode-panel="atlas" aria-labelledby="classic-atlas-title">
       <div class="classic-atlas-head">
         <span class="question-tag">多語圖鑑 · 不評分</span>
-        <h2 id="classic-atlas-title">世界名型對照</h2>
+        <h2 id="classic-atlas-title" tabindex="-1">世界名型對照</h2>
         <p>「中文既有名」「候選別名」「描述性翻譯」「本輪未找到固定中文名」與跨語對應分開記錄。沒有可靠幾何與來源的一對一關係，就不硬翻成既定術語。</p>
       </div>
       <div class="classic-filter-row" id="classic-filter-row" aria-label="名型分類篩選"></div>
