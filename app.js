@@ -1656,6 +1656,9 @@
     event.preventDefault();
     dismissLessonIntro();
   });
+  $("lesson-intro-dialog").addEventListener("close", () => {
+    if (!state.lessonIntroPending && !siteIntroductionOpen) revealQuestionStart();
+  });
   $("learning-flow-button").addEventListener("click", () => {
     const dialog = $("learning-flow-dialog");
     if (dialog && typeof dialog.showModal === "function") dialog.showModal();
