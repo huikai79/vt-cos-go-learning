@@ -377,7 +377,7 @@
 ## 2026-09-29 Decision note｜L Group core hypothesis gate
 
 - `lgroup-source-marked-l-tetromino-core-v1` 只處理 source-direct / source-native-marked 的四子 L core；不允許從較大未標記 group 推測 subset。
-- BGA Figure 1 = seed，不算 independent vote；OGS 直接標示 arrangement = L group，作第一條 independent decisive MATCH。citeturn417516view0
-- IGOcompany 圖雖有 source-native 四子方框 L pattern，但 mark semantics 尚未獨立覆核，只能 supporting / `NEEDS_HUMAN_REVIEW`。citeturn812774view1
+- BGA Figure 1 = seed，不算 independent vote；OGS 直接標示 arrangement = L group，作第一條 independent decisive MATCH。
+- IGOcompany 圖雖有 source-native 四子方框 L pattern，但 mark semantics 尚未獨立覆核，只能 supporting / `NEEDS_HUMAN_REVIEW`。
 - aggregate 仍 `INSUFFICIENT`；禁止 canonical promotion、playable scoring 或 learner-runtime wiring。
 - 下一步只接受：人工覆核日本 mark semantics，或另一條 independent direct base-shape source；不再用 Tsumego 15362 的 unmarked larger group 湊 core match。
