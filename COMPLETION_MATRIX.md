@@ -793,3 +793,10 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Authority boundary：** 圖中的棋盤與金色標記是概念視覺，不作 rules engine、scoring contract、答案、KC、scheduler、learner state 或 formal evaluation 真值。
 - **Formal candidate：** critical learner surface 因 Hero 資產與其 HTML metadata 改變，重新凍結為 `formal-teaching-candidate-2026-09-28-h`，fingerprint `fnv1a32-js16-1e54e467`；事件 `ui_version` 維持 `learner-flow-v50`，因本輪沒有改作答、事件或排程語義。
 - **證據邊界：** 此變更只支持首頁視覺資產已更新；是否更容易理解、是否提高開始課程率或學習成效均尚未由真人證據驗證。正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+## 2026-09-28 Change note｜Hero 圖片 cache-busting
+
+- **問題：** 新 Hero 已部署，但部分手機瀏覽器仍沿用舊的 `assets/homepage/hero.webp` 快取，因此使用者看到的仍是舊版四步文字 Hero。
+- **最小修正：** 不改圖片內容與首頁資訊架構，只把 Hero URL 改為 `assets/homepage/hero.webp?v=hero-textfree-v1`，讓瀏覽器視為新資源請求；同步更新 UI regression 對該 URL 的斷言。
+- **Formal candidate：** `index.html` 屬 critical learner surface，因此重新凍結為 `formal-teaching-candidate-2026-09-28-i`，fingerprint `fnv1a32-js16-04a05a28`；事件 `ui_version` 保持 `learner-flow-v50`，因作答、事件與排程語義未變。
+- **證據邊界：** 此修正只處理前端資產快取一致性，不證明真人理解、可用性或學習成效；正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。

@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-28-h",
-  "frozenAt": "2026-09-28T18:17:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-28-i",
+  "frozenAt": "2026-09-28T19:21:00+08:00",
   "assetSetVersion": 4,
-  "assetFingerprint": "fnv1a32-js16-1e54e467",
+  "assetFingerprint": "fnv1a32-js16-04a05a28",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -39,5 +39,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v50：延續既有首頁資訊架構與事件語義，只把首頁 Hero 換成無內嵌文字的棋盤編輯式插畫，並同步圖片尺寸與中性替代文字。生成圖只作視覺／概念提示，不作 rules engine、scoring、答案或 formal evaluation 真值；其餘 critical learner surface 不變。"
+  "scopeNote": "learner-flow-v50：只對首頁 Hero 圖片 URL 加入明確 cache-busting query，確保瀏覽器重新抓取已核准的無文字棋盤插畫；畫面內容、題目、scoring、scheduler、事件、evidence taxonomy 與 formal evaluation 語義不變。"
 }

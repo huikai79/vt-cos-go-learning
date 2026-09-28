@@ -123,3 +123,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 新 candidate：`formal-teaching-candidate-2026-09-28-h`；fingerprint：`fnv1a32-js16-1e54e467`。
 - 生成圖只作 learner-facing 視覺／概念提示，不取得棋盤真值 authority。
 - 目前仍沒有此 candidate 的三位 target novice usability evidence 或真人 accessibility spot check；R1a 外部回條也仍待完成，因此正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。
+
+## 2026-09-28 Change note｜Hero cache-busting 後重新凍結 candidate
+
+- Hero 圖片網址加入 `?v=hero-textfree-v1`，避免瀏覽器沿用舊 Hero 快取；圖片本體與 learner-facing 語意未改。
+- 新 candidate：`formal-teaching-candidate-2026-09-28-i`；fingerprint：`fnv1a32-js16-04a05a28`。
+- 題目、答案、scoring、scheduler、事件 schema、evidence taxonomy 與 formal evaluation 語義未改。
+- 目前仍缺 R1a 外部回條、三位 target novice usability 與真人 accessibility spot check；正式教學維持 `BLOCKED`，正式評量維持 `BLOCKED`，學習成效維持 `NOT_MEASURED`。
