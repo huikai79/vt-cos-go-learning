@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v5`
-- `ui_version`: `learner-flow-v50`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v53`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -809,9 +809,18 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **證據邊界：** 此變更只支持指定 PNG 已成為首頁 Hero；是否更易理解、內容棋理是否完全正確、是否改善開始課程率或學習成效均未由本輪證據驗證。正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
 
 
+## 2026-09-28 Change note｜Global Go Observatory v0.1
+
+- **Johari 修正：** 上一輪「研究資料適合上網站」方向成立，但原判斷沒有先處理兩個盲點：首頁已屬 frozen formal-usability critical surface；Research Evidence 也不能因公開展示而取得 learner runtime authority。故不把大量研究資料塞入首頁，也不新建 Research DB。
+- **實作：** 新增獨立 `global-go-observatory.html`／`global-go-observatory.css` 與 `research/global-go-observatory-v1.md`。首頁只新增「全球觀察」導覽入口，UI 升至 `learner-flow-v51`。第一版以 EGD 2025 annual active players 作同源排名；不同定義的中國、韓國、日本、臺灣、新加坡、泰國、法國與馬來西亞改用資料卡，逐筆保留來源類型、年份與限制。
+- **不可破壞 invariant：** 研究頁不載入 learner runtime；不改 learner state、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、formal evaluation 或題目資格。馬來西亞現行全國人口維持 `UNKNOWN`，不以 2016 舊估計冒充 2026。
+- **驗證契約：** `tests/global-go-observatory.test.cjs` 檢查口徑分離、UNKNOWN fail-closed、來源 locator 與 Research→Teaching 不升格；release manifest／served-content gate 同步覆蓋新入口。首頁 critical surface 因導覽改動重新凍結為 `formal-teaching-candidate-2026-09-28-i`（`fnv1a32-js16-54e6c884`）。
+- **證據邊界：** 網站公開只代表研究資料已按目前來源整理與可追溯，不證明全球人口統計完整，也不改正式教學 `BLOCKED`、正式評量 `BLOCKED`、學習成效 `NOT_MEASURED`。
+
+
 ## 2026-09-28 Change note｜M2 Learning Workspace / Course Navigation
 
 - `learner-flow-v53` 將目前課程位置、單元瀏覽、今日入口與進階工具分層；桌面保留 sidebar，375px 將課程目錄收合到「課程與單元」。
 - 選擇 Unit 只改變瀏覽中的課程目錄，不改目前 lesson、題目或 learner event；只有點選實際 lesson 才切換學習內容。
 - 到期複習／錯題只有非零時才出現在 sidebar 的「今天」區塊；不以 0 題製造假的今日任務。
-- 此變更不修改 scoring、first-response/retry、scheduler policy、storage/event schema、evidence taxonomy 或 formal evaluation masking。工程測試不等於真人 usability 證據。
+- 此變更不修改 scoring、first-response/retry、scheduler policy、storage/event schema、evidence taxonomy 或 formal evaluation masking。正式 usability 仍 NOT_TESTED；正式教學仍 `BLOCKED`；學習成效未量測。
