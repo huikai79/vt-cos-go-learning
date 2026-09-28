@@ -59,7 +59,10 @@ class Element {
 }
 
 function pointTarget(dataset, selector) {
-  return { closest(requested) { return requested === selector ? { dataset } : null; } };
+  const target = new Element();
+  target.dataset = dataset;
+  target.closest = (requested) => requested === selector ? target : null;
+  return target;
 }
 
 function createApp(saved = {}, options = {}) {
