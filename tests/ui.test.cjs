@@ -883,9 +883,9 @@ async function main() {
     assert.deepEqual(decisionReview.candidate, {legal:true, originalMove:null, matchesOriginal:null, exposed:false, hasCorrect:false});
     assert.deepEqual(decisionReview.reveal, {originalMove:[16,15], matches:false, exposed:true, hasCorrect:false});
     assert.equal(decisionReview.reflectionDisabled, false);
-    const comparisonFlow = await evaluate(socket, `(async () => {
+    const comparisonStart = await evaluate(socket, `(() => {
       const Comparison = window.GoDecisionComparison;
-      const originalProvider = window.GoDecisionComparisonProvider.requestComparison;
+      window.__originalDecisionComparisonProvider = window.GoDecisionComparisonProvider.requestComparison;
       window.GoDecisionComparisonProvider.requestComparison = async (request) => ({
         resultVersion: Comparison.RESULT_VERSION,
         comparisonContractVersion: Comparison.COMPARISON_CONTRACT_VERSION,
@@ -908,20 +908,35 @@ async function main() {
           {role:'original_game', point:[16,15], order:1, visits:40, scoreLead:.4, winrate:.51, pv:['R4','C10']}
         ]
       });
-      const rules = document.querySelector('#decision-comparison-rules').value;
-      const komi = document.querySelector('#decision-comparison-komi').value;
       const button = document.querySelector('#decision-comparison-run');
-      const beforeDisabled = button.disabled;
+      const meta = {
+        rules: document.querySelector('#decision-comparison-rules').value,
+        komi: document.querySelector('#decision-comparison-komi').value,
+        beforeDisabled: button.disabled
+      };
       button.click();
-      for (let i = 0; i < 30; i += 1) {
-        if ((document.querySelector('#decision-comparison-result').textContent || '').includes('KataGo 的排序較偏向')) break;
-        await new Promise(resolve => setTimeout(resolve, 20));
-      }
+      return meta;
+    })()`);
+    assert.equal(comparisonStart.rules, "japanese");
+    assert.equal(comparisonStart.komi, "6.5");
+    assert.equal(comparisonStart.beforeDisabled, false);
+    let comparisonDone = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      comparisonDone = await evaluate(socket, `(() => {
+        const text = document.querySelector('#decision-comparison-result').textContent || '';
+        const raw = localStorage.getItem('go-advanced-decision-comparison-events-v1');
+        if (!raw) return false;
+        const events = JSON.parse(raw).events || [];
+        return text.includes('KataGo 的排序較偏向') && events.some(event => event.type === 'comparison_completed');
+      })()`);
+      if (comparisonDone) break;
+      await delay(50);
+    }
+    assert.equal(comparisonDone, true);
+    const comparisonFlow = await evaluate(socket, `(() => {
       const raw = JSON.parse(localStorage.getItem('go-advanced-decision-comparison-events-v1'));
       const completed = raw.events.find(event => event.type === 'comparison_completed');
-      window.GoDecisionComparisonProvider.requestComparison = originalProvider;
-      return {
-        rules, komi, beforeDisabled,
+      const result = {
         text: document.querySelector('#decision-comparison-result').textContent,
         types: raw.events.map(event => event.type),
         authority: completed.result.authority,
@@ -929,10 +944,10 @@ async function main() {
         hasMastery: Object.prototype.hasOwnProperty.call(completed.result, 'mastery'),
         formalEligible: completed.formalEligible
       };
+      window.GoDecisionComparisonProvider.requestComparison = window.__originalDecisionComparisonProvider;
+      delete window.__originalDecisionComparisonProvider;
+      return result;
     })()`);
-    assert.equal(comparisonFlow.rules, "japanese");
-    assert.equal(comparisonFlow.komi, "6.5");
-    assert.equal(comparisonFlow.beforeDisabled, false);
     assert.match(comparisonFlow.text, /KataGo 的排序較偏向你的第一候選/);
     assert.match(comparisonFlow.text, /不代表另一手一定錯/);
     assert.deepEqual(comparisonFlow.types, ["comparison_requested", "comparison_completed"]);
