@@ -9,7 +9,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v5`
-- `ui_version`: `learner-flow-v50`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v51`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -807,3 +807,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Authority boundary：** PNG 內含「看懂／落子／回饋／換新棋形」以及手寫「這步提子，因為已經沒有氣了」。這些是 learner-facing 插畫文字；本輪沒有用 rules engine 重建該圖片棋形，也沒有把手寫句升格為 scoring、答案、KC 或 formal evaluation 真值。若日後要把該棋形當正式教學答案，需另走內容／棋理驗證。
 - **Formal candidate：** asset set 升至 v5，重新凍結為 `formal-teaching-candidate-2026-09-28-j`，fingerprint `fnv1a32-js16-59c14d2e`；事件 `ui_version` 維持 `learner-flow-v50`，因作答生命週期、事件與排程語義未改。
 - **證據邊界：** 此變更只支持指定 PNG 已成為首頁 Hero；是否更易理解、內容棋理是否完全正確、是否改善開始課程率或學習成效均未由本輪證據驗證。正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-28 Change note｜Global Go Observatory v0.1
+
+- **Johari 修正：** 上一輪「研究資料適合上網站」方向成立，但原判斷沒有先處理兩個盲點：首頁已屬 frozen formal-usability critical surface；Research Evidence 也不能因公開展示而取得 learner runtime authority。故不把大量研究資料塞入首頁，也不新建 Research DB。
+- **實作：** 新增獨立 `global-go-observatory.html`／`global-go-observatory.css` 與 `research/global-go-observatory-v1.md`。首頁只新增「全球觀察」導覽入口，UI 升至 `learner-flow-v51`。第一版以 EGD 2025 annual active players 作同源排名；不同定義的中國、韓國、日本、臺灣、新加坡、泰國、法國與馬來西亞改用資料卡，逐筆保留來源類型、年份與限制。
+- **不可破壞 invariant：** 研究頁不載入 learner runtime；不改 learner state、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、formal evaluation 或題目資格。馬來西亞現行全國人口維持 `UNKNOWN`，不以 2016 舊估計冒充 2026。
+- **驗證契約：** `tests/global-go-observatory.test.cjs` 檢查口徑分離、UNKNOWN fail-closed、來源 locator 與 Research→Teaching 不升格；release manifest／served-content gate 同步覆蓋新入口。首頁 critical surface 因導覽改動重新凍結為 `formal-teaching-candidate-2026-09-28-k`（`fnv1a32-js16-54e6c884`）。
+- **證據邊界：** 網站公開只代表研究資料已按目前來源整理與可追溯，不證明全球人口統計完整，也不改正式教學 `BLOCKED`、正式評量 `BLOCKED`、學習成效 `NOT_MEASURED`。
