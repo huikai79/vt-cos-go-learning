@@ -1,8 +1,8 @@
 {
-  "schemaVersion": "lgroup-reference-core-aggregate-v1",
+  "schemaVersion": "lgroup-reference-core-aggregate-v2",
   "authority": "reference_research_only",
   "candidateConceptId": "bga-bgj116-lgroup-core-seed-v1",
-  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v1",
+  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v2",
   "candidateDependentEvidenceChains": [
     "bga-richard-hunter-lgroup-bgj116"
   ],
@@ -10,13 +10,14 @@
     "ogs-antontobi-lgroup-2022"
   ],
   "supportingNonDecisiveEvidenceChains": [
-    "igocompany-corner-l-shape-2024"
+    "igocompany-corner-l-shape-2024",
+    "onda-corner-l-shape-video-2024"
   ],
   "status": "INSUFFICIENT",
   "independentDecisiveEvidenceUnits": 1,
-  "supportingNonDecisiveEvidenceUnits": 1,
+  "supportingNonDecisiveEvidenceUnits": 2,
   "excludedCandidateDependentEvidenceUnits": 1,
   "direction": "REFERENCE_CORE_MATCH",
   "canonicalPromotionAllowed": false,
-  "interpretation": "The four-stone L-tetromino core hypothesis has one independent decisive reference match beyond its BGA seed. A Japanese source shows a source-native marked L-tetromino pattern inside a directly-labelled corner L-shape position, but its marking semantics have not been independently reviewed, so it is not counted as a decisive validation."
+  "interpretation": "The four-stone L-tetromino core hypothesis has one independent decisive reference match beyond its BGA seed. IGOcompany and Onda provide position-level Japanese L-shape evidence, but neither currently binds a four-stone core decisively: IGOcompany mark semantics require independent human review, while Onda labels the displayed position without identifying a four-stone target group. Position-only sources must not be counted as core MATCH or DIFFERENT."
 }
