@@ -579,4 +579,4 @@ History Explore 的證據呈現遵守「claim → evidence unit → source recor
 
 - 「基礎建立／局部與棋局判斷／全局與綜合應用」分別對應 Core 單元 1–5、6–10、11–15；三張卡的操作入口必須回到同一 Core runtime。
 - 局部階段入口固定到第 6 單元；全局階段入口固定到第 11 單元。這是導覽 shortcut，不表示前置能力已自動滿足，也不改課程完成或評分資料。
-- `advanced.html` 是 Core 後續的獨立 practice-only Experience，不屬於 1–15，也不得再以「單元 6–10」卡片作入口。
+- `advanced.html` 是 Core 後續的獨立 practice-only Experience，不屬於 1–15，也不得再以「單元 6–10」卡片作入口；是否另設首頁獨立入口，與 Core 三階段導覽分開處理。

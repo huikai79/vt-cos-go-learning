@@ -831,4 +831,4 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **修正：** 三張卡全部只導向 Core：基礎建立 → Core 起點；局部與棋局判斷 → 第 6 單元（`data-site-intro-unit="5"`）；全局與綜合應用 → 第 11 單元（`data-site-intro-unit="10"`）。Advanced 保留為獨立 practice-only 路線，首頁改由課程數量說明中的次要連結提供。
 - **反證／驗收：** UI regression 實際點擊第 6 與第 11 單元入口，確認都進入 `#core`、選中正確單元並開啟該單元短講；另確認首頁仍可到達 `advanced.html`，但該連結不在三階段卡內。
 - **不變範圍：** 題目、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 與 formal evaluation 語義不變。這只修正資訊架構，不證明真人更容易選對入口。
-- **Formal candidate：** learner-facing critical surface 改變，重新凍結為 `formal-teaching-candidate-2026-09-28-m`，fingerprint `fnv1a32-js16-f591f013`；UI version 維持 `learner-flow-v53`，因本輪未改 learner event schema 或 scoring 語義。
+- **Formal candidate：** learner-facing critical surface 改變，重新凍結為 `formal-teaching-candidate-2026-09-28-m`，fingerprint `fnv1a32-js16-0314dd59`；UI version 維持 `learner-flow-v53`，因本輪未改 learner event schema 或 scoring 語義。

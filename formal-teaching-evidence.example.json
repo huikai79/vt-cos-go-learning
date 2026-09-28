@@ -29,7 +29,7 @@
         "blockingIssues": [],
         "evidenceReference": null,
         "candidateId": "formal-teaching-candidate-2026-09-28-m",
-        "candidateFingerprint": "fnv1a32-js16-f591f013"
+        "candidateFingerprint": "fnv1a32-js16-0314dd59"
       },
       {
         "participantCode": "novice-02",
@@ -44,7 +44,7 @@
         "blockingIssues": [],
         "evidenceReference": null,
         "candidateId": "formal-teaching-candidate-2026-09-28-m",
-        "candidateFingerprint": "fnv1a32-js16-f591f013"
+        "candidateFingerprint": "fnv1a32-js16-0314dd59"
       },
       {
         "participantCode": "novice-03",
@@ -59,12 +59,12 @@
         "blockingIssues": [],
         "evidenceReference": null,
         "candidateId": "formal-teaching-candidate-2026-09-28-m",
-        "candidateFingerprint": "fnv1a32-js16-f591f013"
+        "candidateFingerprint": "fnv1a32-js16-0314dd59"
       }
     ],
     "observationProtocol": "Observe each participant separately. Mark a task true only after that participant completes it without the observer taking over. Keep failures/abandonment in the record. All participants must use the exact same frozen formal teaching candidate ID/fingerprint.",
     "candidateId": "formal-teaching-candidate-2026-09-28-m",
-    "candidateFingerprint": "fnv1a32-js16-f591f013"
+    "candidateFingerprint": "fnv1a32-js16-0314dd59"
   },
   "accessibility": {
     "completedAt": null,
@@ -77,7 +77,7 @@
     "openBlockingIssues": null,
     "evidenceReference": null,
     "candidateId": "formal-teaching-candidate-2026-09-28-m",
-    "candidateFingerprint": "fnv1a32-js16-f591f013"
+    "candidateFingerprint": "fnv1a32-js16-0314dd59"
   },
   "formalEvaluation": {
     "privateUnexposedHoldoutEstablished": false,
@@ -85,5 +85,5 @@
     "evidenceReference": null
   },
   "candidateId": "formal-teaching-candidate-2026-09-28-m",
-  "candidateFingerprint": "fnv1a32-js16-f591f013"
+  "candidateFingerprint": "fnv1a32-js16-0314dd59"
 }

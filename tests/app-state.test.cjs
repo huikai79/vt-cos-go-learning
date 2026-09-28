@@ -656,8 +656,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   assert.match(evidenceSection, /data-evidence-role="summary"/);
   assert.match(html, /data-site-intro-unit="5"/);
   assert.match(html, /data-site-intro-unit="10"/);
-  assert.match(html, /從單元 6 開始/);
-  assert.match(html, /從單元 11 開始/);
+  assert.equal((html.match(/>從這裡開始 <span aria-hidden="true">→<\/span><\/button>/g) || []).length, 2);
   assert.doesNotMatch(html, /class="course-entry-grid"/);
   assert.match(html, /悟之一手 <span class="eyebrow-dot">●<\/span> 個人學習空間/);
   assert.doesNotMatch(html, /PERSONAL GO STUDIO · OFFLINE/);

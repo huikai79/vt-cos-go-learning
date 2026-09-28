@@ -4,7 +4,7 @@
   "candidateId": "formal-teaching-candidate-2026-09-28-m",
   "frozenAt": "2026-09-28T22:18:00+08:00",
   "assetSetVersion": 5,
-  "assetFingerprint": "fnv1a32-js16-f591f013",
+  "assetFingerprint": "fnv1a32-js16-0314dd59",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -39,5 +39,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v53：修正首頁 Core 三階段入口；局部與棋局判斷直達 Core 第 6 單元，全局與綜合應用明示直達 Core 第 11 單元，三張卡只代表單元 1–15。advanced.html 維持獨立 practice-only 次要入口，不屬於 Core 1–15。保留 M2 workspace navigation、M1 feedback separation、Global Go Observatory publication boundary；題目、答案、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 與 formal evaluation 語義不變。"
+  "scopeNote": "learner-flow-v53：修正首頁 Core 三階段入口；局部與棋局判斷直達 Core 第 6 單元，全局與綜合應用直達 Core 第 11 單元，三張卡只代表單元 1–15，按鈕文案維持一致的「從這裡開始」。advanced.html 維持獨立 practice-only 路線，不屬於 Core 1–15，也不佔用三張 Core 階段卡。保留 M2 workspace navigation、M1 feedback separation、Global Go Observatory publication boundary；題目、答案、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 與 formal evaluation 語義不變。"
 }

@@ -149,6 +149,6 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 ## 2026-09-28 Change note｜Core 三階段入口修正後重新凍結 candidate
 
 - **變更：** 首頁「局部與棋局判斷」由獨立 `advanced.html` 改為 Core 第 6 單元；「全局與綜合應用」明示由 Core 第 11 單元開始。三張階段卡因此與單元 1–5／6–10／11–15 標示一致。
-- **新 candidate：** `formal-teaching-candidate-2026-09-28-m`；fingerprint：`fnv1a32-js16-f591f013`；asset set version 維持 5，UI version 維持 `learner-flow-v53`.
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-m`；fingerprint：`fnv1a32-js16-0314dd59`；asset set version 維持 5，UI version 維持 `learner-flow-v53`.
 - **不變範圍：** Advanced 仍是獨立 practice-only 路線；題目、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 與 formal evaluation 語義未改。
 - **證據邊界：** 此修正不產生 R1a、真人 usability、accessibility 或 learning-effect 證據；正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
