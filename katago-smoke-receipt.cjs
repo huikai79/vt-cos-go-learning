@@ -12,6 +12,7 @@ const CONTRACT_FILES = Object.freeze([
   "katago-bridge.cjs",
   "decision-comparison.js",
   "katago-comparison-adapter.cjs",
+  "katago-smoke-receipt.cjs",
   "tests/katago-bridge-smoke.ps1"
 ]);
 const MOVE_PROVIDER_VERSION = "katago-gtp-bridge-v1";
