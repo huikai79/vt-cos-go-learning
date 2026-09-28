@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "lgroup-reference-core-source-receipt-v1",
+  "schemaVersion": "lgroup-reference-core-source-receipt-v2",
   "authority": "reference_source_receipt_only",
   "sourceId": "ogs-antontobi-lgroup-2022",
   "sourceLocator": "https://forums.online-go.com/t/puzzle-collection-to-practice-killing-the-l-group/42983",
@@ -11,10 +11,11 @@
   "selectionBasis": "entire_target_group",
   "selectionInterpretationReviewed": true,
   "candidateConceptId": "bga-bgj116-lgroup-core-seed-v1",
-  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v1",
+  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v2",
   "contractStatus": "REFERENCE_CORE_MATCH",
   "geometryPersisted": false,
   "rawSourcePersisted": false,
   "canonicalPromotionAllowed": false,
-  "rightsStatus": "reference_only"
+  "rightsStatus": "reference_only",
+  "labelScope": "target_group"
 }
