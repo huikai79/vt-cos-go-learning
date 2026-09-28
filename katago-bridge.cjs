@@ -16,6 +16,9 @@ const MODEL = process.env.VTCOS_KATAGO_MODEL;
 const MAX_BODY = 1024 * 1024;
 const ENGINE_TIMEOUT_MS = Number(process.env.VTCOS_KATAGO_TIMEOUT_MS || 20000);
 const PROVIDER_VERSION = "katago-gtp-bridge-v1";
+const COMPARISON_PROVIDER_VERSION = "katago-analysis-comparison-v1";
+const ENGINE_VERSION = process.env.VTCOS_KATAGO_ENGINE_VERSION || "unknown";
+const Comparison = require("./decision-comparison.js");
 
 function corsOrigin(req) {
   if (!REMOTE_MODE) return "*";
@@ -35,6 +38,89 @@ function ok(req, res, body) {
   res.end(JSON.stringify(body));
 }
 function colorName(color) { return color === 1 ? "B" : color === 2 ? "W" : null; }
+function modelName() { return MODEL ? MODEL.split(/[\\/]/).pop() : null; }
+function comparisonQuery(body) {
+  const error = Comparison.validateRequest(body);
+  if (error) throw new Error(error);
+  const player = colorName(body.toPlay);
+  const allowed = body.candidates.map((candidate) => Comparison.pointToGtp(candidate.point, body.boardSize));
+  return {
+    id: body.requestId,
+    initialStones: body.initialStones.map(([color, point]) => [colorName(color), Comparison.pointToGtp(point, body.boardSize)]),
+    moves: body.moves.map((move) => [colorName(move.color), move.type === "pass" ? "pass" : Comparison.pointToGtp(move.point, body.boardSize)]),
+    rules: body.rules,
+    komi: body.komi,
+    boardXSize: body.boardSize,
+    boardYSize: body.boardSize,
+    maxVisits: body.maxVisits,
+    analysisPVLen: body.analysisPVLen,
+    allowMoves: [{ player, moves: allowed, untilDepth: 1 }]
+  };
+}
+function parseComparisonOutput(body, output) {
+  let parsed;
+  try { parsed = JSON.parse(String(output || "").trim()); } catch (_) { throw new Error("comparison_engine_json_invalid"); }
+  if (!parsed || parsed.id !== body.requestId || parsed.isDuringSearch === true || !Array.isArray(parsed.moveInfos)) throw new Error("comparison_engine_response_invalid");
+  if (!parsed.rootInfo || parsed.rootInfo.currentPlayer !== colorName(body.toPlay)) throw new Error("comparison_engine_player_mismatch");
+  const infoByMove = new Map(parsed.moveInfos.map((info) => [String(info.move || "").toUpperCase(), info]));
+  const candidates = body.candidates.map((candidate) => {
+    const move = Comparison.pointToGtp(candidate.point, body.boardSize);
+    const info = infoByMove.get(move.toUpperCase());
+    if (!info) throw new Error("comparison_candidate_missing_from_engine");
+    return {
+      role: candidate.role,
+      point: candidate.point.slice(),
+      order: Number(info.order),
+      visits: Number(info.visits),
+      scoreLead: Number.isFinite(Number(info.scoreLead)) ? Number(info.scoreLead) : null,
+      winrate: Number.isFinite(Number(info.winrate)) ? Number(info.winrate) : null,
+      pv: Array.isArray(info.pv) ? info.pv.slice(0, body.analysisPVLen).map(String) : []
+    };
+  });
+  const result = {
+    resultVersion: Comparison.RESULT_VERSION,
+    comparisonContractVersion: Comparison.COMPARISON_CONTRACT_VERSION,
+    requestId: body.requestId,
+    sourceId: body.sourceId,
+    positionFingerprint: body.positionFingerprint,
+    boardSize: body.boardSize,
+    rules: body.rules,
+    komi: body.komi,
+    maxVisits: body.maxVisits,
+    analysisPVLen: body.analysisPVLen,
+    searchScope: "root_allow_moves_only",
+    authority: "bounded_search_estimate_only",
+    formalEligible: false,
+    providerVersion: COMPARISON_PROVIDER_VERSION,
+    engineVersion: ENGINE_VERSION,
+    model: modelName() || "unknown",
+    candidates
+  };
+  const error = Comparison.validateResult(result, body);
+  if (error) throw new Error(error);
+  return result;
+}
+function runAnalysisComparison(body) {
+  if (!KATAGO || !CONFIG || !MODEL) return Promise.reject(new Error("katago_bridge_not_configured"));
+  const query = comparisonQuery(body);
+  return new Promise((resolve, reject) => {
+    const child = spawn(KATAGO, ["analysis", "-config", CONFIG, "-model", MODEL], { windowsHide: true, stdio: ["pipe", "pipe", "pipe"] });
+    let stdout = "", stderr = "", settled = false;
+    const timer = setTimeout(() => { if (!settled) { settled = true; child.kill(); reject(new Error("katago_timeout")); } }, ENGINE_TIMEOUT_MS);
+    child.stdout.on("data", (chunk) => { stdout += chunk.toString("utf8"); });
+    child.stderr.on("data", (chunk) => { stderr += chunk.toString("utf8"); });
+    child.on("error", (error) => { if (!settled) { settled = true; clearTimeout(timer); reject(error); } });
+    child.on("close", (code) => {
+      if (settled) return;
+      settled = true; clearTimeout(timer);
+      if (code !== 0) return reject(new Error("katago_analysis_exit_" + code + ":" + stderr.slice(-300)));
+      const lines = stdout.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+      if (!lines.length) return reject(new Error("katago_analysis_empty"));
+      try { resolve(parseComparisonOutput(body, lines[lines.length - 1])); } catch (error) { reject(error); }
+    });
+    child.stdin.end(JSON.stringify(query) + "\n");
+  });
+}
 function gtpCoord(point, size) {
   const letters = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
   return letters[point[0]] + String(size - point[1]);
@@ -102,23 +188,36 @@ function runKatago(body) {
 const server = http.createServer((req, res) => {
   const origin = corsOrigin(req);
   if (REMOTE_MODE && req.headers.origin && !origin) return fail(req, res, 403, "origin_not_allowed");
-  if (req.method === "GET" && req.url === "/health") return ok(req, res, { status: KATAGO && CONFIG && MODEL ? "ready" : "not_configured", providerVersion: PROVIDER_VERSION });
+  if (req.method === "GET" && req.url === "/health") return ok(req, res, { status: KATAGO && CONFIG && MODEL ? "ready" : "not_configured", providerVersion: PROVIDER_VERSION, comparisonProviderVersion: COMPARISON_PROVIDER_VERSION });
   if (req.method === "OPTIONS") {
     if (!origin) return fail(req, res, 403, "origin_not_allowed");
     res.writeHead(204, { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Vary": "Origin" });
     return res.end();
   }
-  if (req.method !== "POST" || req.url !== "/v1/move") return fail(req, res, 404, "not_found");
+  const isMoveRequest = req.method === "POST" && req.url === "/v1/move";
+  const isComparisonRequest = req.method === "POST" && req.url === "/v1/compare";
+  if (!isMoveRequest && !isComparisonRequest) return fail(req, res, 404, "not_found");
   if (activeRequests >= MAX_CONCURRENT) return fail(req, res, 429, "busy");
   let raw = "";
   req.on("data", (chunk) => { raw += chunk; if (raw.length > MAX_BODY) req.destroy(); });
   req.on("end", async () => {
     let body;
-    try { body = validateRequest(JSON.parse(raw)); } catch (error) { return fail(req, res, 400, error.message); }
+    try {
+      const parsed = JSON.parse(raw);
+      body = isComparisonRequest ? parsed : validateRequest(parsed);
+      if (isComparisonRequest) {
+        const error = Comparison.validateRequest(body);
+        if (error) throw new Error(error);
+      }
+    } catch (error) { return fail(req, res, 400, error.message); }
     activeRequests += 1;
     try {
-      const action = await runKatago(body);
-      ok(req, res, { ...action, providerVersion: PROVIDER_VERSION, model: MODEL ? MODEL.split(/[\\/]/).pop() : null });
+      if (isComparisonRequest) {
+        ok(req, res, await runAnalysisComparison(body));
+      } else {
+        const action = await runKatago(body);
+        ok(req, res, { ...action, providerVersion: PROVIDER_VERSION, model: modelName() });
+      }
     } catch (error) { fail(req, res, 502, error.message || "katago_failure"); }
     finally { activeRequests -= 1; }
   });
@@ -128,6 +227,6 @@ if (REMOTE_MODE && ALLOWED_ORIGINS.size === 0) {
   process.stderr.write("VTCOS_KATAGO_ALLOW_REMOTE=1 requires VTCOS_KATAGO_ALLOWED_ORIGINS.\n");
   process.exitCode = 2;
 } else server.listen(PORT, HOST, () => {
-  process.stdout.write(`VT-COS KataGo bridge listening on http://${HOST}:${PORT}/v1/move\n`);
+  process.stdout.write(`VT-COS KataGo bridge listening on http://${HOST}:${PORT}/v1/move and /v1/compare\n`);
   if (!KATAGO || !CONFIG || !MODEL) process.stdout.write("Set VTCOS_KATAGO_EXE, VTCOS_KATAGO_CONFIG and VTCOS_KATAGO_MODEL before requesting a move.\n");
 });
