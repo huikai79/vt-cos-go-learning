@@ -486,7 +486,7 @@ test("刀把五 short-read 對非 A/B 回應、錯誤 complement 與舊座標 fa
 });
 
 test("刀把五 short-read UI 明示只覆蓋 A/B 主分支，未列分支保持 UNKNOWN", () => {
-  assert.match(html, /刀把五：A\/B 互補短讀/);
+  assert.match(html, /刀把五：互補位置短讀/);
   assert.match(html, /只判目前資料支持的兩條主要變化/);
   assert.match(html, /沒有列出的其他變化先保留未知/);
   assert.match(js, /GoClassicShapeReadContract/);
