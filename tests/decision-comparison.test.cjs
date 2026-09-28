@@ -36,10 +36,10 @@ test("missing or unsupported SGF rules/komi do not silently invent analysis cond
 
 test("midgame setup is rejected instead of flattened into a fake move history",()=>{
  const text="(;GM[1]FF[4]SZ[19]RU[Japanese]KM[6.5];B[pd];AW[qq];W[dd];B[qp])";
- const p=Comparison.extractAnalysisPosition(text,4);
+ const p=Comparison.extractAnalysisPosition(text,3);
  assert.equal(p.historySupported,false);
  assert.ok(p.reasons.includes("midgame_setup_unsupported"));
- assert.throws(()=>Comparison.buildRequest(text,4,[4,4],{requestId:"bad"}),/midgame_setup_unsupported/);
+ assert.throws(()=>Comparison.buildRequest(text,3,[4,4],{requestId:"bad"}),/midgame_setup_unsupported/);
 });
 
 test("same learner and original move is not sent as a fake comparison",()=>{
