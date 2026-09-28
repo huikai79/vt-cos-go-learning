@@ -859,3 +859,14 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - 刪除不再使用的 `assets/homepage/evidence-still-judge.webp`，formal candidate asset set 升至 v6，candidate 更新為 `formal-teaching-candidate-2026-09-28-n`，fingerprint `fnv1a32-js16-8479d7d0`。
 - Core 主 CTA、Core 1–15 三階段入口、Advanced 獨立 practice-only 路線、研究來源預設收合等既有 IA 不變；不修改 scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
 - 證據邊界：M4 只修正首頁語義／資產一致性與工程契約；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-29 Decision note｜Candidate-dependent evidence guard + normalized corner contract
+
+- **BGA Figure 1 structured observation：** 官方 British Go Journal 116 PDF（SHA-256 `338acca065e4d88bad737c65f0914e14865f3b6adf85f87eb06502a6f1bd12a8`）已在 temporary research workflow 中 render-first 人工核對；Figure 1 的 defender connected group 可可靠辨認為四子 L-tetromino。來源圖、PDF 與來源座標均不進 main/public repo，rights 仍只作 `reference_only`。
+- **修正前提：** 先前「六點」類描述可能是 eye-space／其他 representation；不能與 defender connected stones 混用。新 `corner-defender-connected-group-normalized-v2` 只比較 defender connected group，不代表 eye-space、full-position、死活機制或 canonical family identity。
+- **角落正規化：** external SGF 的 top-left／top-right／bottom-left／bottom-right 都先映射到同一 local corner frame，再以 `boundary=["bottom","left"]` 做 strict context compare；避免同形只因棋盤角落不同被誤判 DIFFERENT。
+- **循環證據防護：** 若 candidate geometry 是由某 evidence chain 種出，該 chain 必須列入 `candidateDependentEvidenceChains`，不得回頭計為獨立 validation vote。aggregation 只對剩餘 independent units 計算 decisive support。
+- **停止線：** 即使下一個 Tsumego Hero reference 與 BGA-seeded L-tetromino MATCH，也只形成一條獨立 validation；BGA seed 本身被排除，因此 aggregate 仍應 `INSUFFICIENT`，不得寫成兩條獨立一致證據，更不得 canonical promote。
+- **不變：** learner state、KC、scheduler、scoring、T0–T3、R1、formal evaluation 與 playable catalog 均不變。
+- **Rollback：** 回復 oracle v2 與 HTML-SGF adapter v1 即可；無 learner data migration。

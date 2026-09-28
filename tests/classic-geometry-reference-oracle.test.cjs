@@ -187,3 +187,33 @@ test("獨立 reference oracles 衝突時不得選邊", () => {
   assert.equal(aggregate.status,Oracle.STATUS.CONFLICTING_REFERENCE_ORACLES);
   assert.equal(aggregate.canonicalPromotionAllowed,false);
 });
+
+
+test("candidate-dependent evidence chain 不得回頭替自己的 candidate 灌票", () => {
+  const seed=Oracle.runReferenceOracle({
+    observation:observation(),
+    candidate,
+    metadata:metadata({evidenceChain:"seed-chain"})
+  });
+  const independent=Oracle.runReferenceOracle({
+    observation:observation({sourceId:"source-b",sourceDigest:"sha256:b"}),
+    candidate,
+    metadata:metadata({sourceId:"source-b",sourceDigest:"sha256:b",evidenceChain:"independent-chain"})
+  });
+  assert.equal(seed.ok,true);
+  assert.equal(independent.ok,true);
+
+  const guarded=Oracle.aggregatePersistableReports(
+    [seed.persistable,independent.persistable],
+    {candidateDependentEvidenceChains:["seed-chain"]}
+  );
+  assert.equal(guarded.ok,false);
+  assert.equal(guarded.status,Oracle.STATUS.INSUFFICIENT);
+  assert.equal(guarded.independentEvidenceUnits,1);
+  assert.equal(guarded.decisiveEvidenceUnits,1);
+  assert.equal(guarded.excludedCandidateDependentEvidenceUnits,1);
+
+  const unguarded=Oracle.aggregatePersistableReports([seed.persistable,independent.persistable]);
+  assert.equal(unguarded.ok,true);
+  assert.equal(unguarded.status,Oracle.STATUS.CONSISTENT_REFERENCE_SUPPORT);
+});

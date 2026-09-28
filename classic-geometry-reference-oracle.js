@@ -132,7 +132,12 @@
     return report.evidenceChain;
   }
 
-  function aggregatePersistableReports(reports) {
+  function aggregatePersistableReports(reports,{candidateDependentEvidenceChains=[]}={}) {
+    const dependentChains = new Set(
+      Array.isArray(candidateDependentEvidenceChains)
+        ? candidateDependentEvidenceChains.filter((value)=>typeof value==="string" && value)
+        : []
+    );
     const list=Array.isArray(reports) ? reports : [];
     const valid=[];
     const errors=[];
@@ -164,15 +169,17 @@
       if (!unique.has(key)) unique.set(key,report);
     }
     const units=[...unique.values()];
-    const decisive=units.filter((report)=>[STATUS.REFERENCE_MATCH,STATUS.REFERENCE_DIFFERENT].includes(report.status));
+    const independentUnits=units.filter((report)=>!dependentChains.has(report.evidenceChain));
+    const decisive=independentUnits.filter((report)=>[STATUS.REFERENCE_MATCH,STATUS.REFERENCE_DIFFERENT].includes(report.status));
     const statuses=new Set(decisive.map((report)=>report.status));
     if (statuses.size>1) {
       return {
         ok:false,
         status:STATUS.CONFLICTING_REFERENCE_ORACLES,
         errors:["independent reference oracles disagree"],
-        independentEvidenceUnits:units.length,
+        independentEvidenceUnits:independentUnits.length,
         decisiveEvidenceUnits:decisive.length,
+        excludedCandidateDependentEvidenceUnits:units.length-independentUnits.length,
         canonicalPromotionAllowed:false
       };
     }
@@ -182,8 +189,9 @@
         status:STATUS.CONSISTENT_REFERENCE_SUPPORT,
         direction:decisive[0].status,
         errors:[],
-        independentEvidenceUnits:units.length,
+        independentEvidenceUnits:independentUnits.length,
         decisiveEvidenceUnits:decisive.length,
+        excludedCandidateDependentEvidenceUnits:units.length-independentUnits.length,
         canonicalPromotionAllowed:false
       };
     }
@@ -191,14 +199,15 @@
       ok:false,
       status:STATUS.INSUFFICIENT,
       errors:["fewer than two independent decisive reference evidence units"],
-      independentEvidenceUnits:units.length,
+      independentEvidenceUnits:independentUnits.length,
       decisiveEvidenceUnits:decisive.length,
+      excludedCandidateDependentEvidenceUnits:units.length-independentUnits.length,
       canonicalPromotionAllowed:false
     };
   }
 
   return Object.freeze({
-    version:"classic-geometry-reference-oracle-v2",
+    version:"classic-geometry-reference-oracle-v3",
     STATUS,
     FORBIDDEN_PERSISTED_KEYS,
     validateMetadata,

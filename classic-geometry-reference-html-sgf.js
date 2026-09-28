@@ -4,17 +4,12 @@ const crypto = require("node:crypto");
 const Extraction = require("./classic-geometry-extraction.js");
 const Oracle = require("./classic-geometry-reference-oracle.js");
 
-const VERSION = "classic-reference-html-sgf-v1";
-const COMPARISON_CONTRACT_ID = "corner-defender-connected-group-v1";
+const VERSION = "classic-reference-html-sgf-v2";
+const COMPARISON_CONTRACT_ID = "corner-defender-connected-group-normalized-v2";
 const MAX_HTML_BYTES = 2_000_000;
 const MAX_SGF_BYTES = 1_000_000;
 
-const CORNER_BOUNDARIES = Object.freeze({
-  "top-left": Object.freeze(["top","left"]),
-  "top-right": Object.freeze(["top","right"]),
-  "bottom-left": Object.freeze(["bottom","left"]),
-  "bottom-right": Object.freeze(["bottom","right"])
-});
+const NORMALIZED_CORNER_BOUNDARY = Object.freeze(["bottom","left"]);
 
 function ok(value) { return {ok:true,errors:[],...value}; }
 function fail(...errors) { return {ok:false,errors:errors.flat().filter(Boolean)}; }
@@ -213,6 +208,20 @@ function selectCornerGroup(stones,{targetColor,corner,boardSize}) {
   return ok({points:scored[0].component});
 }
 
+function normalizeCornerPoints(points,corner,boardSize) {
+  if (!Array.isArray(points) || !Number.isInteger(boardSize)) return fail("corner normalization input invalid");
+  const mapped = points.map(([x,y]) => {
+    if (corner === "top-left") return [x,y];
+    if (corner === "top-right") return [boardSize-1-x,y];
+    if (corner === "bottom-left") return [x,boardSize-1-y];
+    if (corner === "bottom-right") return [boardSize-1-x,boardSize-1-y];
+    return null;
+  });
+  if (mapped.some((point)=>point===null)) return fail("corner invalid");
+  return ok({points:mapped});
+}
+
+
 function buildObservationFromHtml({
   html,sourceId,sourceLocator,evidenceChain,candidateConceptId,targetColor,corner,toPlay
 }={}) {
@@ -225,6 +234,8 @@ function buildObservationFromHtml({
   if (!setup.ok) return setup;
   const selected=selectCornerGroup(setup.stones,{targetColor,corner,boardSize:setup.boardSize});
   if (!selected.ok) return selected;
+  const normalized=normalizeCornerPoints(selected.points,corner,setup.boardSize);
+  if (!normalized.ok) return normalized;
   const resolvedToPlay = toPlay || setup.toPlay || "unspecified";
   if (!["black","white","unspecified"].includes(resolvedToPlay)) return fail("toPlay invalid");
 
@@ -240,11 +251,11 @@ function buildObservationFromHtml({
     reviewKey:VERSION,
     deterministicSource:true,
     boardSize:setup.boardSize,
-    points:selected.points,
+    points:normalized.points,
     stones:[],
     context:{
       boardContext:"corner",
-      boundary:[...CORNER_BOUNDARIES[corner]],
+      boundary:[...NORMALIZED_CORNER_BOUNDARY],
       toPlay:resolvedToPlay,
       role:"defender_group"
     }
@@ -288,6 +299,7 @@ module.exports=Object.freeze({
   parseSetupGeometry,
   connectedComponents,
   selectCornerGroup,
+  normalizeCornerPoints,
   buildObservationFromHtml,
   runSanitizedReferenceOracle
 });
