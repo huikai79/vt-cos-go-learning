@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 220" role="img" aria-labelledby="t d">
+<title id="t">基礎建立棋盤插畫</title><desc id="d">局部黑白棋形，用於基礎建立課程卡的裝飾示意。</desc><defs>
+  <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dfb8"/><stop offset="1" stop-color="#e8c88e"/></linearGradient>
+  <radialGradient id="blackStone"><stop offset="0" stop-color="#496356"/><stop offset=".68" stop-color="#233a30"/><stop offset="1" stop-color="#17281f"/></radialGradient>
+  <radialGradient id="whiteStone"><stop offset="0" stop-color="#fffefa"/><stop offset=".75" stop-color="#f3f1e9"/><stop offset="1" stop-color="#d8d6ce"/></radialGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#233c29" flood-opacity=".16"/></filter>
+</defs>
+<rect x="24" y="18" width="252" height="184" rx="18" fill="url(#wood)" stroke="#d9b77c" filter="url(#shadow)"/>
+<g fill="none" stroke="#2b4b3a" stroke-width="2"><path d="M48 40H252M48 75H252M48 110H252M48 145H252M48 180H252M48 40V180M99 40V180M150 40V180M201 40V180M252 40V180"/></g>
+<circle cx="150" cy="75" r="12" fill="url(#blackStone)" stroke="#17281f" stroke-width="1.5" filter="url(#shadow)"/><circle cx="150" cy="110" r="12" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/><circle cx="99" cy="145" r="12" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/><circle cx="150" cy="145" r="12" fill="url(#blackStone)" stroke="#17281f" stroke-width="1.5" filter="url(#shadow)"/><circle cx="201" cy="145" r="12" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/><circle cx="150" cy="180" r="12" fill="url(#whiteStone)" stroke="#d7d4cb" stroke-width="1.5" filter="url(#shadow)"/>
+</svg>
