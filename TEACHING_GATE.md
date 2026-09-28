@@ -83,3 +83,12 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **理由：** `index.html`、`styles.css` 與 `app.js` 都屬 formal usability critical learner surface；即使底層 scoring 與事件語義不變，視覺與閱讀順序改動後仍必須重新凍結。
 - **不變範圍：** 題目、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、formal evaluation 與 learner state 語義未改。
 - **證據邊界：** 這次只能支持 learner-facing 視覺已更新並可由回歸測試檢查；目前仍沒有正式三位 target novice usability evidence 或真人 accessibility spot check，因此正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
+
+
+## 2026-09-28 Correction note｜v48 恢復首頁既有資訊架構後重新凍結
+
+- **變更：** 撤回 v47 超出授權的 learner-facing 結構改動；恢復原本 Hero 四步、三個課程階段與三項學習證據，只保留四個獨立棋盤插畫資產。
+- **新 candidate：** `formal-teaching-candidate-2026-09-28-d`，fingerprint 為 `fnv1a32-js16-b35e6d23`，asset set version = 2，UI version = `learner-flow-v48`。
+- **asset-set 修正：** 首頁四個外部 SVG 現納入 `formal-teaching-candidate.cjs` 的 critical asset 清單；之後若圖片本身改變，也會使 fingerprint 失配並 fail closed。
+- **不變範圍：** scoring、scheduler、event schema、evidence taxonomy、題目答案、learner state 與 formal evaluation 語義未改。
+- **證據邊界：** 尚無正式三位 target novice usability evidence 或真人 accessibility spot check；正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
