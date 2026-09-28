@@ -1,0 +1,103 @@
+name: lgroup-tsumego-geometry-probe
+
+on:
+  push:
+    branches:
+      - research/lgroup-tsumego-geometry-probe-2026-09-29
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+
+      - name: Fetch source and derive source-native corner component
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/lgroup-probe
+          node - <<'NODE'
+          const fs=require("node:fs");
+          const crypto=require("node:crypto");
+          const Adapter=require("./classic-geometry-reference-html-sgf.js");
+
+          const url="https://tsumego.com/15362";
+          const corners=["top-left","top-right","bottom-left","bottom-right"];
+          const cornerCoord=(corner,n)=>({
+            "top-left":[0,0],
+            "top-right":[n-1,0],
+            "bottom-left":[0,n-1],
+            "bottom-right":[n-1,n-1]
+          })[corner];
+
+          (async()=>{
+            const response=await fetch(url,{headers:{"user-agent":"vt-cos-go-learning-reference-research/1.0"}});
+            if(!response.ok) throw new Error("HTTP "+response.status);
+            const html=await response.text();
+            for(const expected of ["The L Group","32/46","Black to kill"]){
+              if(!html.includes(expected)) throw new Error("source identity missing: "+expected);
+            }
+            const embedded=Adapter.extractEmbeddedSgf(html);
+            if(!embedded.ok) throw new Error(embedded.errors.join("; "));
+            const setup=Adapter.parseSetupGeometry(embedded.sgf);
+            if(!setup.ok) throw new Error(setup.errors.join("; "));
+
+            const whites=setup.stones.filter(s=>s.color==="white").map(s=>s.point);
+            const components=Adapter.connectedComponents(whites);
+            if(!components.length) throw new Error("no white defender components");
+
+            const scored=[];
+            for(const component of components){
+              for(const corner of corners){
+                const [cx,cy]=cornerCoord(corner,setup.boardSize);
+                const distance=Math.min(...component.map(([x,y])=>Math.abs(x-cx)+Math.abs(y-cy)));
+                scored.push({corner,distance,size:component.length,component});
+              }
+            }
+            scored.sort((a,b)=>a.distance-b.distance || b.size-a.size || a.corner.localeCompare(b.corner));
+            const best=scored[0];
+            const tied=scored.filter(x=>x.distance===best.distance && x.size===best.size);
+            const uniqueComponents=new Set(tied.map(x=>JSON.stringify(x.component.slice().sort())));
+            if(tied.length>1 && uniqueComponents.size>1) throw new Error("global nearest defender component is ambiguous");
+
+            const normalized=Adapter.normalizeCornerPoints(best.component,best.corner,setup.boardSize);
+            if(!normalized.ok) throw new Error(normalized.errors.join("; "));
+            const digest="sha256:"+crypto.createHash("sha256").update(html,"utf8").digest("hex");
+            const result={
+              schemaVersion:"temporary-reference-geometry-probe-v1",
+              sourceId:"tsumego-hero-lgroup-32",
+              sourceLocator:url,
+              sourceDigest:digest,
+              evidenceChain:"tsumego-hero-lgroup-collection-252",
+              pageClaim:"Black to kill",
+              targetRole:"defender_group",
+              targetColor:"white",
+              boardSize:setup.boardSize,
+              setupToPlay:setup.toPlay,
+              selectedCorner:best.corner,
+              nearestDistance:best.distance,
+              componentSize:best.size,
+              normalizedPoints:normalized.points,
+              comparisonContractId:Adapter.COMPARISON_CONTRACT_ID,
+              rightsStatus:"reference_only",
+              rawHtmlPersisted:false,
+              sgfPersisted:false,
+              canonicalPromotionAllowed:false
+            };
+            fs.writeFileSync("/tmp/lgroup-probe/geometry.json",JSON.stringify(result,null,2)+"\n");
+            console.log(JSON.stringify({...result,normalizedPoints:"[temporary artifact only]"},null,2));
+          })().catch(err=>{ console.error(err); process.exit(1); });
+          NODE
+
+      - name: Upload temporary reference geometry
+        uses: actions/upload-artifact@v4
+        with:
+          name: lgroup-tsumego-geometry-probe
+          path: /tmp/lgroup-probe/geometry.json
+          retention-days: 1
+          if-no-files-found: error
