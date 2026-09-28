@@ -153,7 +153,16 @@ test("世界名型 ontology、geometry registry 與 compatibility catalog 都列
 
 test("歷史探索頁與樣式列入公開靜態入口，但不進 learner runtime", () => {
   assert.ok(manifest.hosting.entrypoints.includes("history.html"));
-  for (const file of ["history.html", "history.css", "tests/history.test.cjs"]) {
+  for (const file of [
+    "history.html",
+    "history.css",
+    "assets/history/hero-board-evolution.jpg",
+    "assets/history/board-size-17-to-19.jpg",
+    "assets/history/opening-stones-to-empty-board.jpg",
+    "assets/history/komi-first-move.jpg",
+    "assets/history/ai-go-reassessment.jpg",
+    "tests/history.test.cjs"
+  ]) {
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
@@ -166,7 +175,7 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /served-pages-content:/);
   assert.match(workflow, /github\.event_name == 'push'/);
   assert.match(workflow, /needs:\s*[\s\S]*node-contracts[\s\S]*sabaki-sgf-oracle[\s\S]*windows-ui-and-boundary/);
-  assert.match(workflow, /history\.css\?v=history-explore-v5/);
+  assert.match(workflow, /history\.css\?v=history-explore-v6/);
   assert.match(workflow, /兩個 72 不能當成同一條歷史因果證據/);
   assert.match(workflow, /132｜東漢望都/);
   assert.match(workflow, /1949 → 1989｜規則到近現代仍在成文化與修訂/);
