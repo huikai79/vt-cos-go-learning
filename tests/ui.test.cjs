@@ -335,8 +335,8 @@ async function main() {
     assert.match(notes.text, /已完成：7 \/ 106/);
     assert.match(notes.text, /待複習：0 題/);
     assert.match(notes.text, /指定棋形的練習紀錄，不是獨立保留題或實戰成效/);
-    assert.match(notes.text, /capture-last-liberty-v1 v1/);
-    assert.match(notes.text, /\| .* \| capture-last-liberty-v1 \| u1-06 \| 首次作答 \| 未提示 \| 錯誤 \|/);
+    assert.match(notes.text, /指定棋串的一手提子：可比較機會/);
+    assert.match(notes.text, /\| .* \| 指定棋串的一手提子 \| 中央提一顆 \| 首次作答 \| 未提示 \| 錯誤 \|/);
     assert.match(notes.text, /## 錯誤修正診斷/);
     assert.match(notes.text, /不代表已確認心理或認知根因/);
     const scheduled = await evaluate(socket, `document.querySelector('#scheduled-practice-button').click(); ({number: document.querySelector('#question-number').textContent, prompt: document.querySelector('#question-prompt').textContent, why: document.querySelector('#learning-why').textContent})`);
