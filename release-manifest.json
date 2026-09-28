@@ -134,6 +134,7 @@
     "index.html",
     "katago-bridge.cjs",
     "katago-comparison-adapter.cjs",
+    "katago-smoke-receipt.cjs",
     "learner-progress.js",
     "learning-metrics.js",
     "live-evidence.js",
@@ -167,6 +168,7 @@
     "research/reference-receipts/tsumego-hero-lgroup-15362.json",
     "scheduler.js",
     "scripts/build-r1-review-bank.cjs",
+    "scripts/verify-katago-smoke-receipt.cjs",
     "sgf.js",
     "styles.css",
     "teaching-gate-verify.cjs",
@@ -189,6 +191,7 @@
     "tests/history.test.cjs",
     "tests/katago-bridge-smoke.ps1",
     "tests/katago-hosted.test.cjs",
+    "tests/katago-smoke-receipt.test.cjs",
     "tests/learner-progress.test.cjs",
     "tests/learning-metrics.test.cjs",
     "tests/lesson-content.test.cjs",
@@ -222,6 +225,7 @@
     "局部復盤_*.sgf",
     "R1_獨立審題草稿.json",
     "R1_獨立審題回條.json",
-    "formal-teaching-evidence.json"
+    "formal-teaching-evidence.json",
+    ".local-evidence/"
   ]
 }
