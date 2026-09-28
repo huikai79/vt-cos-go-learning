@@ -213,3 +213,11 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **新 candidate：** `formal-teaching-candidate-2026-09-29-r`，fingerprint `fnv1a32-js16-d741fac9`，沿用 asset set version 6。
 - **不變範圍：** 題目答案、KC、scheduler、scoring、event schema、evidence taxonomy、ontology、decision-review event semantics 與 formal evaluation authority 未改。
 - **證據邊界：** 本次只改善 presentation boundary 與回歸防護，不產生 R1a、真人 usability、accessibility、formal evaluation 或 learning-effect 證據；正式教學仍依既有 gate 判定。
+
+
+## 2026-09-29 Change note｜Homepage outcome decoration removal refreeze
+
+- 移除「完成核心課程，大約會到哪裡」卡片右上角純裝飾黑白棋子 pseudo-elements；不補替代圖示，不改文字或 DOM 結構。
+- 以最新 main 為基底的 PR #98 首輪 CI fail-closed 重算 critical surface fingerprint 為 `fnv1a32-js16-026cf74f`；formal candidate 因此重新凍結為 `formal-teaching-candidate-2026-09-29-s`。
+- example evidence 僅同步 candidate binding，真人 usability/accessibility 仍保持 false/null；不建立或偽造真人證據。
+- 題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 與 formal evaluation 語義不變。正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
