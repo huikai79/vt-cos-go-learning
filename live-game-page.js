@@ -246,7 +246,7 @@
   }
   function moveLabel(move) {
     const prefix = `${move.number}. ${colorLabel(move.color)}`;
-    return move.type === "pass" ? `${prefix} Pass` : `${prefix} ${coordName(move.point[0], move.point[1])}${move.captured && move.captured.length ? ` · 提 ${move.captured.length}` : ""}`;
+    return move.type === "pass" ? `${prefix} 停一手` : `${prefix} ${coordName(move.point[0], move.point[1])}${move.captured && move.captured.length ? ` · 提 ${move.captured.length}` : ""}`;
   }
   function renderChrome() {
     const size = game.boardSize, profile = currentProfile();
@@ -295,7 +295,7 @@
     $("scoring-panel").hidden = game.status !== "scoring"; $("result-panel").hidden = game.status !== "finished";
     $("score-lines").innerHTML = game.status === "scoring" ? scoreLineHtml(Live.currentScore(game)) : "";
     $("result-text").textContent = game.status === "finished" ? Live.resultText(game) : "";
-    $("board-help").textContent = game.status === "playing" ? (isComputerTurn() ? "電腦正在選擇合法練習手；完成後會自動輪到你。" : `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／Space 落子。`) : game.status === "scoring" ? "兩次 Pass 後進入終局確認。點棋串切換死子標記；系統不自動判死活。" : game.boardSize === 9 ? "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。" : game.boardSize === 19 ? "棋局已結束。可匯出 SGF 交給 KaTrain／其他棋譜工具複盤；本站課程端的單點重建目前仍只支援 9×9。" : "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。";
+    $("board-help").textContent = game.status === "playing" ? (isComputerTurn() ? "電腦正在選擇合法練習手；完成後會自動輪到你。" : `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／空白鍵落子。`) : game.status === "scoring" ? "雙方連續各停一手後進入終局確認。點棋串切換死子標記；系統不自動判死活。" : game.boardSize === 9 ? "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。" : game.boardSize === 19 ? "棋局已結束。可匯出 SGF 交給 KaTrain／其他棋譜工具複盤；本站課程端的單點重建目前仍只支援 9×9。" : "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。";
     const recentMoves = game.moves.slice(-30);
     $("move-log").innerHTML = recentMoves.length ? recentMoves.map((move) => `<li class="${move.type === "pass" ? "pass" : ""}">${moveLabel(move)}</li>`).join("") : "<li>尚未落子。</li>";
   }
@@ -325,7 +325,7 @@
           const result = Live.pass(game); if (!result.ok) throw new Error(result.error || "provider_pass_failed");
           game = result.game; closeAssessmentAfterTurn();
           event("computer_pass", { actor: "computer", color, botVersion: providerVersion, selectionReason: opponentMode, model: action.model || null });
-          showFeedback(result.game.status === "scoring" ? "對手 Pass；雙方已連續 Pass，請確認終局。" : "對手 Pass。", "success");
+          showFeedback(result.game.status === "scoring" ? "對手停一手；雙方已連續停一手，請確認終局。" : "對手停一手。", "success");
         } else if (action.type === "resign") {
           const result = Live.resign(game); if (!result.ok) throw new Error(result.error || "provider_resign_failed");
           game = result.game; closeAssessmentAfterTurn();
@@ -434,7 +434,7 @@
     ensureLiveAssessment();
     const color = game.toPlay, result = Live.pass(game);
     recordLiveResponse({ action: "pass", point: null, legal: result.ok === true, reason: result.ok ? null : result.error || "pass_failed" });
-    if (applyResult(result, "pass", { actor: isComputerMode() ? "human" : "local_player", color, successMessage: result.ok && result.game.status === "scoring" ? "雙方連續 Pass，請確認死子與終局分數。" : `${colorLabel(color)}棋 Pass。` })) { closeAssessmentAfterTurn(); scheduleComputerTurn(); }
+    if (applyResult(result, "pass", { actor: isComputerMode() ? "human" : "local_player", color, successMessage: result.ok && result.game.status === "scoring" ? "雙方連續 Pass，請確認死子與終局分數。" : `${colorLabel(color)}棋停一手。` })) { closeAssessmentAfterTurn(); scheduleComputerTurn(); }
   });
   $("undo-button").addEventListener("click", () => {
     if (botPending) return;
@@ -503,8 +503,8 @@ ${previewText}
       status.textContent = `連線成功 · 回傳 ${action.type}`;
       status.className = "success";
     } catch (error) {
-      const hint = opponentMode === "katago" ? "；本機 KataGo 需要先啟動 localhost bridge" : "；遠端模式需要可由此網頁存取的 HTTPS API";
-      status.textContent = `連線失敗 · ${error.message || "unknown"}${hint}`;
+      const hint = opponentMode === "katago" ? "；本機 KataGo 需要先啟動本機連接程式" : "；遠端模式需要可由此網頁存取的 HTTPS API";
+      status.textContent = `連線失敗 · ${error.message || "未知錯誤"}${hint}`;
       status.className = "error";
     }
   });
