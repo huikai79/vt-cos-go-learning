@@ -44,14 +44,19 @@ function fnv1a32Js16(text) {
   }
   return hash >>> 0;
 }
-function gitBlobSha(content) {
+function canonicalAssetBytes(assetPath, content) {
   const bytes = Buffer.isBuffer(content) ? content : Buffer.from(String(content), "utf8");
+  if (/\.(?:webp|png|jpe?g|gif|avif)$/i.test(assetPath)) return bytes;
+  return Buffer.from(bytes.toString("utf8").replace(/\r\n/g, "\n"), "utf8");
+}
+function gitBlobSha(content, assetPath = "") {
+  const bytes = canonicalAssetBytes(assetPath, content);
   const header = Buffer.from("blob " + bytes.length + "\0", "utf8");
   return crypto.createHash("sha1").update(header).update(bytes).digest("hex");
 }
 function fingerprintEntries(entries) {
   const material = entries.map(({ path: assetPath, content }) =>
-    assetPath + "\0" + gitBlobSha(content) + "\0"
+    assetPath + "\0" + gitBlobSha(content, assetPath) + "\0"
   ).join("");
   return "fnv1a32-js16-" + fnv1a32Js16(material).toString(16).padStart(8, "0");
 }
@@ -109,6 +114,7 @@ module.exports = {
   ASSET_PATHS,
   normalizeText,
   fnv1a32Js16,
+  canonicalAssetBytes,
   gitBlobSha,
   fingerprintEntries,
   readAssetEntries,
