@@ -1210,7 +1210,7 @@ async function main() {
         nextDisabled: document.querySelector('#big-pigs-mouth-next').disabled
       };
     })()`);
-    assert.match(bigPigsMouthCorrect.feedback, /MIT regression/);
+    assert.match(bigPigsMouthCorrect.feedback, /MIT 測試資料/);
     assert.equal(bigPigsMouthCorrect.revealHidden, false);
     assert.equal(bigPigsMouthCorrect.name, "大豬嘴／J Group");
     assert.equal(bigPigsMouthCorrect.nextDisabled, false);
