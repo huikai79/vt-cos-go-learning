@@ -150,6 +150,10 @@ test("世界名型 ontology、geometry registry 與 compatibility catalog 都列
   assert.ok(manifest.publicFiles.includes("tests/classic-geometry-reference-html-sgf.test.cjs"));
   assert.ok(manifest.publicFiles.includes("research/reference-receipts/tsumego-hero-lgroup-15362.json"));
   assert.ok(manifest.publicFiles.includes("tests/lgroup-reference-receipt.test.cjs"));
+  assert.ok(manifest.publicFiles.includes("research/reference-receipts/bga-bgj116-lgroup-figure1.json"));
+  assert.ok(manifest.publicFiles.includes("research/reference-receipts/tsumego-hero-lgroup-15362-oracle-v3.json"));
+  assert.ok(manifest.publicFiles.includes("research/reference-receipts/lgroup-defender-aggregate-2026-09-29.json"));
+  assert.ok(manifest.publicFiles.includes("tests/lgroup-reference-comparison.test.cjs"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
   assert.ok(manifest.hosting.entrypoints.includes("classic-shapes.html"));
 });

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "classic-reference-aggregation-receipt-v1",
+  "authority": "reference_research_only",
+  "candidateConceptId": "bga-bgj116-figure1-defender-seed-v1",
+  "comparisonContractId": "corner-defender-connected-group-normalized-v3",
+  "candidateDependentEvidenceChains": [
+    "bga-richard-hunter-lgroup-bgj116"
+  ],
+  "independentEvidenceChains": [
+    "tsumego-hero-lgroup-collection-252"
+  ],
+  "status": "INSUFFICIENT",
+  "independentEvidenceUnits": 1,
+  "decisiveEvidenceUnits": 1,
+  "excludedCandidateDependentEvidenceUnits": 1,
+  "independentDirection": "REFERENCE_DIFFERENT",
+  "canonicalPromotionAllowed": false,
+  "interpretation": "Tsumego Hero problem 32 differs from the BGA Figure 1 defender-group seed under this representation. This does not negate either source's L Group labeling; it shows that exact defender connected stones are not yet established as a family-wide identity invariant."
+}

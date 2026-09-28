@@ -363,3 +363,12 @@
 - defender connected stones、eye-space、full-position、mechanism 是不同 representation；只有同一 `comparisonContractId` 的 reports 才可聚合。
 - BGA Figure 1 可作 candidate seed／source-to-concept evidence；下一條 Tsumego Hero deterministic SGF observation 才能作第一條 independent geometry validation。
 - 至少還需要另一條不依賴 BGA seed 的 independent decisive chain，才可能形成 `CONSISTENT_REFERENCE_SUPPORT`；即便形成，仍維持 `canonicalPromotionAllowed=false`。
+
+
+## 2026-09-29 Decision note｜L Group defender-group hypothesis failed as family-wide invariant
+
+- BGA Figure 1 seed → normalized defender-group hypothesis；Tsumego Hero 32 → deterministic SGF observation。
+- 在 `corner-defender-connected-group-normalized-v3` 下結果為 `REFERENCE_DIFFERENT`。這是一個有效反證：不可把 exact defender connected stones 當成整個 L Group family 的已驗 identity。
+- 不得用「同一 collection 再挑一題」作事後救援；若改用 base-shape、eye-space、enclosed-region 或 mechanism representation，必須先定義新 contract，再依事前 locator／selection rule 重新取證。
+- embedded SGF digest 是 geometry provenance；整頁 HTML digest 只可作 page-level 診斷，不作 geometry source version。
+- BGA seed chain 不算 independent confirmation；目前 aggregation 維持 `INSUFFICIENT`。下一步優先找第三條直接 diagram/SGF source，或建立有來源支持的新 representation hypothesis。

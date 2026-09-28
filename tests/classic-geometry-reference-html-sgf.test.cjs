@@ -28,7 +28,7 @@ function input(overrides={}) {
 
 const candidate = {
   points:[[5,5],[6,5],[7,5],[7,6]],
-  context:{boardContext:"corner",boundary:["bottom","left"],toPlay:"black",role:"defender_group"}
+  context:{boardContext:"corner",boundary:["bottom","left"],toPlay:"unspecified",role:"defender_group"}
 };
 
 test("從 HTML 的 options.sgf2 / Blob 只接受同一份 JSON SGF literal", () => {
@@ -80,8 +80,27 @@ test("target color 的最近角部連通塊可轉成 reference-only observation"
   assert.equal(result.observation.deterministicSource,true);
   assert.deepEqual(result.observation.points.sort(),[[0,0],[1,0],[2,0],[2,1]].sort());
   assert.deepEqual(result.observation.context.boundary,["bottom","left"]);
+  assert.equal(result.observation.context.toPlay,"unspecified");
   assert.equal(result.metadata.sourceDigest.startsWith("sha256:"),true);
-  assert.equal(result.metadata.comparisonContractId,"corner-defender-connected-group-normalized-v2");
+  assert.equal(result.metadata.comparisonContractId,"corner-defender-connected-group-normalized-v3");
+});
+
+test("相同 embedded SGF 不受無關 HTML 包裝變動影響 sourceDigest", () => {
+  const a=Adapter.buildObservationFromHtml(input({html:`<div>dynamic-a</div><script>options.sgf2 = ${encoded};</script>`}));
+  const b=Adapter.buildObservationFromHtml(input({html:`<div>dynamic-b-${Date.now()}</div><script>options.sgf2 = ${encoded};</script>`}));
+  assert.equal(a.ok,true);
+  assert.equal(b.ok,true);
+  assert.equal(a.metadata.sourceDigest,b.metadata.sourceDigest);
+});
+
+test("geometry identity contract 不把 absolute toPlay 當成棋形差異", () => {
+  const black=Adapter.buildObservationFromHtml(input({toPlay:"black"}));
+  const white=Adapter.buildObservationFromHtml(input({toPlay:"white"}));
+  assert.equal(black.ok,true);
+  assert.equal(white.ok,true);
+  assert.equal(black.observation.context.toPlay,"unspecified");
+  assert.equal(white.observation.context.toPlay,"unspecified");
+  assert.deepEqual(black.observation.context,white.observation.context);
 });
 
 test("四個角的局部座標都 normalize 成同一 bottom-left representation", () => {

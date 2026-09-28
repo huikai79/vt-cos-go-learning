@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "classic-reference-oracle-report-v1",
+  "authority": "reference_oracle_only",
+  "status": "REFERENCE_DIFFERENT",
+  "sourceId": "tsumego-hero-lgroup-32",
+  "sourceLocator": "https://tsumego.com/15362",
+  "sourceDigest": "sha256:301320106eb00da20cb4f7447faa568db2853a1a1ddd4911d5efa0d13b910ce6",
+  "evidenceChain": "tsumego-hero-lgroup-collection-252",
+  "candidateConceptId": "bga-bgj116-figure1-defender-seed-v1",
+  "comparisonContractId": "corner-defender-connected-group-normalized-v3",
+  "requireContext": true,
+  "sameShape": false,
+  "sameContext": true,
+  "canonicalPromotionAllowed": false
+}
