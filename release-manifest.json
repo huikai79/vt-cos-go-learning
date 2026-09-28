@@ -198,6 +198,7 @@
     "tests/katago-smoke-receipt.test.cjs",
     "tests/katrain-katago-smoke.ps1",
     "tests/katrain-smoke-autodiscovery.test.ps1",
+    "tests/learner-language-boundary.test.cjs",
     "tests/learner-progress.test.cjs",
     "tests/learning-metrics.test.cjs",
     "tests/lesson-content.test.cjs",

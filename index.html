@@ -132,8 +132,8 @@
               </section>
               <section class="tool-group" aria-labelledby="sgf-tools-title">
                 <h2 id="sgf-tools-title">棋譜單點復盤</h2>
-                <div class="tool-item"><button id="sample-sgf-button" type="button">開啟示範棋譜</button><p>選一手 9 路棋譜，先回想並下出原著手，再揭曉棋譜內容比較；這是單手重建，不是整盤連續猜手，也不是最佳手評分。</p></div>
-                <div class="tool-item"><label class="tool-upload" for="sgf-file-input">匯入自己的 SGF</label><p>讀取這台電腦上的單一主線 9 路 SGF，選一手做原著重建與反思。</p></div>
+                <div class="tool-item"><button id="sample-sgf-button" type="button">開啟示範棋譜</button><p>選一手 9 路棋譜，先回想並下出原棋譜著手，再揭曉棋譜內容比較；這是單手重建，不是整盤連續猜手，也不是最佳手評分。</p></div>
+                <div class="tool-item"><label class="tool-upload" for="sgf-file-input">匯入自己的 SGF</label><p>讀取這台電腦上的單一主線 9 路 SGF，選一手做原棋譜重建與反思。</p></div>
                 <input id="sgf-file-input" type="file" accept=".sgf,application/x-go-sgf,text/plain" hidden>
               </section>
               <details class="tool-disclosure" id="advanced-tools">
@@ -397,21 +397,21 @@
               <p class="sgf-reflection-status" id="sgf-reflection-status" role="status" aria-live="polite"></p>
             </section>
             <section class="sgf-review" id="sgf-review" hidden aria-labelledby="sgf-review-title">
-              <h4 id="sgf-review-title">看見原著後，補上確認 <span>選填</span></h4>
-              <p>原著手已由棋譜保存；只有在你用外部分析或人工複盤確認後，才標示可接受答案。未確認時請保留「尚未確認」。</p>
+              <h4 id="sgf-review-title">看見原棋譜著手後，補上確認 <span>選填</span></h4>
+              <p>原棋譜著手已由棋譜保存；只有在你用外部分析或人工複盤確認後，才標示可接受答案。未確認時請保留「尚未確認」。</p>
               <label for="sgf-review-status-input">可接受答案的確認狀態</label>
               <select id="sgf-review-status-input">
                 <option value="unconfirmed">尚未確認</option>
-                <option value="original_confirmed">已確認原著可接受</option>
+                <option value="original_confirmed">已確認原棋譜著手可接受</option>
                 <option value="alternative_confirmed">已確認另一候選可接受</option>
               </select>
               <label for="sgf-acceptable-answer-input">經確認的可接受答案或分析依據</label>
-              <textarea id="sgf-acceptable-answer-input" rows="3" maxlength="500" placeholder="例如：人工複盤後確認原著可吃子；或記下分析來源"></textarea>
+              <textarea id="sgf-acceptable-answer-input" rows="3" maxlength="500" placeholder="例如：人工複盤後確認原棋譜著手可接受；或記下分析來源"></textarea>
               <label for="sgf-next-cue-input">下次看到相似局面時的提醒</label>
               <textarea id="sgf-next-cue-input" rows="2" maxlength="300" placeholder="例如：先數外氣，再決定是否打吃"></textarea>
               <button class="subtle-button" id="sgf-review-save-button" type="button">保存確認紀錄</button>
               <button class="subtle-button" id="sgf-export-button" type="button">匯出這筆 SGF 復盤，交給 KaTrain 分析</button>
-              <p class="field-help" id="sgf-export-help">會下載保留局面、原著手與你的復盤紀錄的 SGF；可用 KaTrain 開啟，這裡不會自動判定好壞。</p>
+              <p class="field-help" id="sgf-export-help">會下載保留局面、原棋譜著手與你的復盤紀錄的 SGF；可用 KaTrain 開啟，這裡不會自動判定好壞。</p>
               <p class="sgf-review-status" id="sgf-review-status" role="status" aria-live="polite"></p>
             </section>
             <div id="system-status" class="aux-feedback system-status" role="alert" hidden></div>
@@ -504,8 +504,8 @@
     </div>
   </dialog>
   <dialog class="evaluation-dialog" id="sgf-picker-dialog" aria-labelledby="sgf-picker-title">
-    <h2 id="sgf-picker-title">選擇要單點重建的原著</h2>
-    <p>選一手後，系統只顯示該手之前的局面。請憑記憶下出棋譜原著；一致或不同只描述歷史著手重建，原著不等於唯一最佳手。</p>
+    <h2 id="sgf-picker-title">選擇要單點重建的原棋譜著手</h2>
+    <p>選一手後，系統只顯示該手之前的局面。請憑記憶下出原棋譜著手；一致或不同只描述歷史著手重建，原棋譜著手不等於唯一最佳手。</p>
     <label class="dialog-field" for="sgf-picker-move">原局著手</label>
     <select id="sgf-picker-move"></select>
     <div class="dialog-actions">

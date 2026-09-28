@@ -127,7 +127,7 @@ test("每課都有精簡關鍵詞定義，避免核心術語只靠上下文猜",
   assert.ok(lessons[7].terms.some((entry) => entry.term === "假眼"));
   assert.ok(lessons[13].terms.some((entry) => entry.term === "目"));
   assert.ok(lessons[15].terms.some((entry) => entry.term === "棄子"));
-  assert.ok(lessons[18].terms.some((entry) => entry.term === "原著手"));
+  assert.ok(lessons[18].terms.some((entry) => entry.term === "原棋譜著手"));
 });
 
 test("關鍵抽象概念使用多步對照，而不是只用一張結果圖", () => {
