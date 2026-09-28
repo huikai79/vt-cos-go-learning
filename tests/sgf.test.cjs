@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { parseSgf, makeLocalExercise, sourceFingerprint } = require("../sgf.js");
+const { parseSgf, parseDecisionReviewSgf, makeDecisionReviewExperience, makeLocalExercise, sourceFingerprint } = require("../sgf.js");
 const { sampleSgf, fixedApplicationProbes } = require("../phase4-content.js");
 
 test("9 路 SGF 可重播並取出原局著手為局部複習題", () => {
@@ -89,3 +89,6 @@ test("SGF 對檔案大小、節點數與巢狀深度設限", () => {
   assert.throws(() => parseSgf(`(;GM[1]SZ[9]${";C[x]".repeat(10_001)})`), /節點過多/);
   assert.throws(() => parseSgf(`${"(".repeat(130)};GM[1]SZ[9]${")".repeat(130)}`), /巢狀過深/);
 });
+
+
+test("19 路 decision review 使用獨立 parser 與版本化 practice contract",()=>{const text="(;GM[1]SZ[19];B[pd];W[dd];B[qp])";const game=parseDecisionReviewSgf(text);assert.equal(game.boardSize,19);assert.equal(game.moves.length,3);assert.throws(()=>parseSgf(text),/只支援 9 路/);assert.throws(()=>parseDecisionReviewSgf("(;GM[1]SZ[9];B[dd])"),/只支援 19 路/);const exp=makeDecisionReviewExperience(text,3,"十九路");assert.equal(exp.boardSize,19);assert.equal(exp.formalEligible,false);assert.equal(exp.transferLevel,null);assert.equal(exp.candidateSetVersion,"all-rules-legal-moves-v1");assert.equal(exp.scoringContractVersion,"sgf-decision-review-historical-comparison-v1");assert.match(exp.scoringClaim,/not_best_move/);assert.equal(exp.exposureState,"original_hidden");assert.equal(exp.source.moveNumber,3);assert.ok(exp.source.positionFingerprint);});
