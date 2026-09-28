@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v50";
+  const uiVersion = "learner-flow-v49";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -584,17 +584,6 @@
     }
     if (state.lessonIntroPending && !state.reviewMode) showLessonIntroDialog();
     else revealQuestionStart();
-  }
-
-  function leaveSiteIntroductionAtUnit(unitIndex) {
-    if (!Number.isInteger(unitIndex) || unitIndex < 0 || unitIndex >= units.length) return;
-    const targetIndex = problems.findIndex((problem) =>
-      Number.isInteger(problem.lesson) && lessons[problem.lesson] && lessons[problem.lesson].unit === unitIndex
-    );
-    if (targetIndex < 0) return;
-    startProblem(targetIndex, "navigation", true, true, true);
-    setSiteIntroduction(false, false);
-    showLessonIntroDialog();
   }
 
   function showLessonIntroDialog() {
@@ -1607,10 +1596,6 @@
   });
   if (typeof document.querySelectorAll === "function") {
     document.querySelectorAll("[data-site-intro-start]").forEach((button) => button.addEventListener("click", leaveSiteIntroductionForLearning));
-    document.querySelectorAll("[data-site-intro-unit]").forEach((button) => button.addEventListener("click", () => {
-      const unitIndex = Number(button.dataset.siteIntroUnit);
-      leaveSiteIntroductionAtUnit(unitIndex);
-    }));
   }
   $("lesson-intro-button").addEventListener("click", showLessonIntroDialog);
   $("lesson-intro-dismiss-button").addEventListener("click", dismissLessonIntro);
