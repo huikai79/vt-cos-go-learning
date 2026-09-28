@@ -1,0 +1,47 @@
+name: ogs-lgroup-image-probe
+
+on:
+  push:
+    branches:
+      - research/ogs-lgroup-image-probe-2026-09-29
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+
+      - name: Fetch directly-labelled L Group image
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/ogs-lgroup-probe
+          curl -L --fail --retry 3 --user-agent "vt-cos-go-learning-reference-research/1.0"             "https://ogs-forums.s3.dualstack.us-east-1.amazonaws.com/original/3X/a/5/a53cef2eb87e1418a0725190a867cb021f97bdcb.png"             -o /tmp/ogs-lgroup-probe/lgroup-source.png
+          sha256sum /tmp/ogs-lgroup-probe/lgroup-source.png | tee /tmp/ogs-lgroup-probe/image-sha256.txt
+          file /tmp/ogs-lgroup-probe/lgroup-source.png
+
+      - name: Record provenance
+        shell: bash
+        run: |
+          cat > /tmp/ogs-lgroup-probe/provenance.txt <<'EOF'
+          article=https://forums.online-go.com/t/puzzle-collection-to-practice-killing-the-l-group/42983
+          article_locator=post 1 / lines 8-14
+          image=https://ogs-forums.s3.dualstack.us-east-1.amazonaws.com/original/3X/a/5/a53cef2eb87e1418a0725190a867cb021f97bdcb.png
+          claim=This arrangement of white stones is called the L group
+          purpose=temporary reference-only visual geometry review
+          persisted_to_repo=false
+          retention_days=1
+          EOF
+
+      - name: Upload temporary research artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ogs-lgroup-image-probe
+          path: /tmp/ogs-lgroup-probe/
+          retention-days: 1
+          if-no-files-found: error
