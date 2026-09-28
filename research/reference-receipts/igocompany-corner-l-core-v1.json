@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "lgroup-reference-core-source-receipt-v1",
+  "schemaVersion": "lgroup-reference-core-source-receipt-v2",
   "authority": "reference_source_receipt_only",
   "sourceId": "igocompany-corner-l-shape-2024",
   "sourceLocator": "https://note.com/igocompany_u/n/n3ff43e80bf2f",
@@ -11,10 +11,12 @@
   "selectionBasis": "source_native_marked_subset",
   "selectionInterpretationReviewed": false,
   "candidateConceptId": "bga-bgj116-lgroup-core-seed-v1",
-  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v1",
+  "comparisonContractId": "lgroup-source-marked-l-tetromino-core-v2",
   "contractStatus": "NEEDS_HUMAN_REVIEW",
   "geometryPersisted": false,
   "rawSourcePersisted": false,
   "canonicalPromotionAllowed": false,
-  "rightsStatus": "reference_only"
+  "rightsStatus": "reference_only",
+  "labelScope": "position_only",
+  "reviewProtocolId": "lgroup-mark-semantics-review-v1"
 }

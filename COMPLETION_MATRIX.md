@@ -929,3 +929,15 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **negative test：** `#atlas` 必須只顯示 atlas；練習深連結仍判作 practice；mode script 禁止 learner/storage/scoring authority；既有 `classic-reveal` 作答後揭名腳本仍存在。
 - **rollback：** 移除 `classic-shapes-mode.js`、mode nav/panel wrapper 與新增 CSS，即回復原長頁；無資料 migration。
 - **證據邊界：** 這是資訊架構工程修正；只可支持可直接抵達 atlas 與頁面不再因 practice 增長而推遠，不證明真人查找更快、理解更好或學習效果提升。
+
+
+## 2026-09-29 Decision note｜L Group core label-scope v2 + human review gate
+
+- **新反證邊界：** 日本職業棋士恩田烈彦的「隅のL字型をマスターしよう」講座縮圖直接標示「隅のL字型／白から打っても活きられません」，但顯示的是整體角部局面，沒有 source-native 四子 core 標記。這證明「position 被稱為 L 字型」不能自動當成「某四子 group／subset 就是 L core」。
+- **Contract v2：** `lgroup-source-marked-l-tetromino-core-v2` 新增 `labelScope = target_group | marked_subset | position_only`。只有 `target_group` 或經獨立覆核的 `marked_subset` 可 decisive；`position_only` 一律 `NEEDS_HUMAN_REVIEW`，不得算 MATCH／DIFFERENT。
+- **既有 evidence 重綁：** BGA 與 OGS = `target_group`；IGOcompany 由先前 implicit marked-subset 假設修正為 `position_only`，其四個方框語義仍未知，不能算第二張 decisive vote。
+- **人工覆核入口：** 新增 `lgroup-mark-semantics-review-v1` protocol、回條範本與 `lgroup-mark-review-verify.cjs`。回條綁定 IGOcompany source image digest，要求真人、獨立於先前 extraction、直接開原始來源並檢查全文脈絡。
+- **允許判斷：** `marks_define_named_l_core`／`marks_have_other_semantics`／`unclear_from_source`。只有前兩者且 receipt 驗證通過才是 decisive human content review；`unclear` 維持非 decisive。
+- **Aggregation：** BGA seed 排除；OGS 仍是唯一 independent decisive MATCH；IGOcompany 與 Onda 都只 supporting non-decisive，因此 aggregate 仍 `INSUFFICIENT`、`canonicalPromotionAllowed=false`。
+- **搜尋停止線：** 本輪多語搜尋沒有找到第二條同等直接、可結構化且獨立的 4-stone core 來源；繼續加同義搜尋的資訊增益已低於人工釐清既有 source-native marks。下一步改等 verified human receipt，不再靠搜尋數量推高信心。
+- **不變：** canonical geometry、playable content、scoring、KC、scheduler、learner state、T0–T3、R1、formal evaluation 全部不變。

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "lgroup-mark-semantics-review-v1",
+  "draft": true,
+  "reviewedAt": "2026-09-29T00:00:00Z",
+  "reviewer": {
+    "code": "replace-with-reviewer-code",
+    "experience": "describe relevant Go/content-review experience",
+    "humanReviewer": true,
+    "independentOfPriorExtraction": true,
+    "sourceOpenedDirectly": true,
+    "reviewedSourceContextNotOnlyScreenshot": true
+  },
+  "source": {
+    "sourceId": "igocompany-corner-l-shape-2024",
+    "sourceDigest": "sha256:15fa3b991b35ce391c6628232d94d09bb5d5a1d0e289789fdfce754f0c58f2ab"
+  },
+  "judgment": "unclear_from_source",
+  "evidenceNotes": "State what in the original article/image establishes or fails to establish the meaning of the boxes.",
+  "sourceEvidenceReference": "original article section / image context",
+  "claimBoundaryConfirmed": true,
+  "canonicalPromotionAllowed": false
+}
