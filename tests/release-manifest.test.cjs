@@ -161,6 +161,11 @@ test("世界名型 ontology、geometry registry 與 compatibility catalog 都列
   assert.ok(manifest.publicFiles.includes("research/reference-receipts/igocompany-corner-l-core-v1.json"));
   assert.ok(manifest.publicFiles.includes("research/reference-receipts/lgroup-core-aggregate-2026-09-29.json"));
   assert.ok(manifest.publicFiles.includes("tests/lgroup-reference-core-receipts.test.cjs"));
+  assert.ok(manifest.publicFiles.includes("research/reference-receipts/onda-corner-l-position-v1.json"));
+  assert.ok(manifest.publicFiles.includes("research/review-protocols/lgroup-mark-semantics-v1.json"));
+  assert.ok(manifest.publicFiles.includes("research/review-templates/lgroup-mark-semantics-receipt.example.json"));
+  assert.ok(manifest.publicFiles.includes("lgroup-mark-review-verify.cjs"));
+  assert.ok(manifest.publicFiles.includes("tests/lgroup-mark-review.test.cjs"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-catalog.js"));
   assert.ok(manifest.publicFiles.includes("classic-shapes-mode.js"));
   assert.ok(manifest.publicFiles.includes("tests/classic-shapes-mode.test.cjs"));
