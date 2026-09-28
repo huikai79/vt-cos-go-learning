@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-28-k",
-  "frozenAt": "2026-09-28T21:02:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-28-i",
+  "frozenAt": "2026-09-28T21:30:00+08:00",
   "assetSetVersion": 5,
-  "assetFingerprint": "fnv1a32-js16-54e6c884",
+  "assetFingerprint": "fnv1a32-js16-11135c45",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -39,5 +39,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v51：首頁導覽只新增獨立 Research Evidence 頁「全球觀察」入口，並同步 cache-busting／uiVersion；global-go-observatory.html 不載入 learner runtime，也不進 formal candidate asset set。題目、答案、scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 與 formal evaluation 語義不變；研究資料不得寫入學習評分。"
+  "scopeNote": "learner-flow-v53：M2 Learning Workspace / Course Navigation。分離目前課程與單元瀏覽語義；Unit browsing 不切換 lesson 或建立 learner event，mobile 導航採可展開區域；到期／錯題只在非零時出現。保留 Global Go Observatory publication boundary、M1 feedback separation、first response／retry、scoring、scheduler、事件 schema、evidence taxonomy 與 formal evaluation masking。"
 }

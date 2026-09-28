@@ -105,6 +105,28 @@ async function evaluate(socket, expression) {
 }
 
 async function main() {
+  const m2Html = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
+  const m2Css = fs.readFileSync(path.resolve(__dirname, "../styles.css"), "utf8");
+  const m2App = fs.readFileSync(path.resolve(__dirname, "../app.js"), "utf8");
+  assert.match(m2Html, /id="course-nav-toggle"[^>]*aria-expanded="false"[^>]*aria-controls="course-navigation"/);
+  assert.match(m2Html, /id="current-course-context"/);
+  assert.match(m2Html, /id="today-navigation"[^>]*hidden/);
+  assert.match(m2App, /const currentLessonIndex = problems\[state\.index\]\.lesson/);
+  assert.match(m2App, /state\.navUnitIndex/);
+  assert.match(m2Css, /\.course-navigation\.is-open\{display:block\}/);
+  const sourceHtml = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
+  const sourceCss = fs.readFileSync(path.resolve(__dirname, "../styles.css"), "utf8");
+  const sourceApp = fs.readFileSync(path.resolve(__dirname, "../app.js"), "utf8");
+  assert.match(sourceHtml, /id="system-status"[^>]*role="alert"[^>]*hidden/);
+  assert.match(sourceHtml, /id="feedback"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.match(sourceHtml, /id="interaction-feedback"[^>]*role="status"[^>]*aria-live="polite"[^>]*hidden/);
+  assert.match(sourceHtml, /id="hint-feedback"[^>]*role="status"[^>]*aria-live="polite"[^>]*hidden/);
+  assert.match(sourceCss, /\.hint-feedback\{[^}]*background:/);
+  assert.match(sourceCss, /\.interaction-feedback\{[^}]*background:/);
+  assert.match(sourceCss, /\.system-status\{[^}]*background:/);
+  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", current\(\)\.hint\)/);
+  assert.match(sourceApp, /showAuxiliaryFeedback\("interaction-feedback", result\.reason\)/);
+  assert.doesNotMatch(sourceApp, /\$\("feedback"\)\.textContent = current\(\)\.hint/);
   assert.ok(browser, "Chrome or Edge is required for this local UI test");
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), "go-learning-ui-"));
   const child = spawn(browser, ["--headless=new", "--disable-gpu", "--no-first-run", "--disable-extensions", "--disable-background-mode", "--remote-debugging-pipe", `--user-data-dir=${profile}`, page], { stdio: ["ignore", "ignore", "pipe", "pipe", "pipe"] });
@@ -173,7 +195,7 @@ async function main() {
         stageBadge: document.querySelector('#learning-stage-badge').textContent
       };
     })()`);
-    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "從 0 開始，先學氣與提子，再走進 9 路棋局。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 4, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 1, advancedHomepageLink: "進入進階訓練 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, termCount: "（1 個）", firstTerm: "氣", legendItems: 4, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", heroImage: "assets/homepage/hero.png", pathImages: 3, evidenceImages: 4, stageBadge: "目前 1/5 · 先看懂" });
+    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "從 0 開始，先學氣與提子，再走進 9 路棋局。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 4, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 1, advancedHomepageLink: "進入進階訓練 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, termCount: "（1 個）", firstTerm: "氣", legendItems: 4, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", heroImage: "assets/homepage/hero.webp", pathImages: 3, evidenceImages: 4, stageBadge: "目前 1/5 · 先看懂" });
     const screenshotDirectory = process.env.GO_UI_SCREENSHOT_DIR;
     if (screenshotDirectory) {
       assert.ok(fs.existsSync(screenshotDirectory), "screenshot directory must already exist");
@@ -193,7 +215,7 @@ async function main() {
     assert.deepEqual(landingStart, { siteIntroHidden: true, introOpen: true, introTitle: "現在先學：認識氣", hash: "#core" });
     const steppedDemo = await evaluate(socket, `(() => { const before = {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, previousDisabled: document.querySelector('#teaching-demo-previous').disabled}; document.querySelector('#teaching-demo-next').click(); return {before, after: {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, nextDisabled: document.querySelector('#teaching-demo-next').disabled}}; })()`);
     assert.deepEqual(steppedDemo, { before: {step: "第 1 / 2 步", caption: "先看角上的黑棋：棋盤外不是交叉點，所以不算氣。", previousDisabled: true}, after: {step: "第 2 / 2 步", caption: "只剩右邊和下邊兩個盤內空點，因此這顆棋有 2 口氣；斜角不算。", nextDisabled: true} });
-    const started = await evaluate(socket, `(() => { document.querySelector('#lesson-intro-start-button').click(); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, takeawayHidden: document.querySelector('.takeaway').hidden}; })()`);
+    const started = await evaluate(socket, `(async () => { document.querySelector('#lesson-intro-start-button').click(); await new Promise((resolve) => requestAnimationFrame(() => resolve())); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, takeawayHidden: document.querySelector('.takeaway').hidden}; })()`);
     assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-prompt", activeFlow: "learning-step-1", seen: [0], takeawayHidden: true });
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
     assert.deepEqual(flowDialog, { inlineFlow: false, open: true, closed: true });
@@ -270,7 +292,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v51"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v53"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -387,7 +409,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v51");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v53");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -404,9 +426,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v51");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v53");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v51");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v53");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");

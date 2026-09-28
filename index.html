@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="從氣與提子開始，以短教學、落子練習、具體回饋與新棋形，一步一步學圍棋。">
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
   <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v51">
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v53">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -41,58 +41,74 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v51"></script>
+  <script defer src="app.js?v=learner-flow-v53"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand"><span class="brand-mark" aria-hidden="true">●○</span><span>悟之一手<small>VT-COS · 個人圍棋練習</small></span></div>
-      <div class="side-label">你的圍棋學習地圖</div>
-      <h1>每一手，<br>都更懂圍棋。</h1>
-      <p class="side-intro">短教學、立刻練習、具體回饋，再用延後的新棋形檢查是否仍能自己解出來。進度只存於這台瀏覽器。</p>
+      <div class="side-label">核心課程</div>
+      <div class="current-course-context" aria-label="目前課程位置">
+        <span>目前</span>
+        <strong id="current-course-context">第 1 單元 · 課程 1</strong>
+      </div>
       <div class="progress-card">
         <div class="progress-head"><span>課程完成</span><strong id="progress-count">0 / 106</strong></div>
         <div class="progress-track"><div id="progress-bar"></div></div>
         <small id="progress-caption">先從第一題開始</small>
       </div>
-      <details class="diagnostic-card">
-        <summary>實戰練習紀錄</summary>
-        <p id="live-practice-summary">尚無人機實戰紀錄。</p>
-        <small>保留人機實戰中的練習紀錄；不會只看勝負或電腦的下法來判定你的能力。</small>
-      </details>
-      <details class="diagnostic-card">
-        <summary>實戰證據進度</summary>
-        <p id="live-evidence-summary">尚無可判定的 9×9 人機實戰證據。</p>
-        <small>只計入事先符合判定條件、且能由規則引擎客觀評分的局部機會；這不是熟練程度百分比。</small>
-      </details>
-      <details class="diagnostic-card">
-        <summary>整合學習證據</summary>
-        <p id="integrated-progress-summary">尚無足夠的可比較證據。</p>
-        <small>把課程練習、延後複習與實戰表現分開保存後一起查看；目前不把它當成熟練程度分數，也不會直接改變複習安排。</small>
-      </details>
-      <details class="diagnostic-card">
-        <summary>錯誤修正診斷</summary>
-        <p id="diagnostic-summary">尚無可比較的首答紀錄。</p>
-        <small>依同一技能的未提示首答分組；只描述題目結果，不判定心理根因。</small>
-      </details>
-      <div class="side-label level-label">15 單元核心課程</div>
-      <div class="level-path" aria-label="課程層次；不等同棋力級位">
-        <span id="level-beginner"><strong>基礎建立</strong><small>原課綱初級 · 單元 1–5 · 規則到 9 路</small></span>
-        <span id="level-intermediate"><strong>局部與棋局判斷</strong><small>原課綱中級 · 單元 6–10 · 讀棋、攻守與官子</small></span>
-        <span id="level-advanced"><strong>全局與綜合應用</strong><small>原課綱高級 · 單元 11–15 · 取捨、戰鬥與複盤</small></span>
+      <button id="course-nav-toggle" class="course-nav-toggle" type="button" aria-expanded="false" aria-controls="course-navigation">課程與單元 <span aria-hidden="true">⌄</span></button>
+      <div id="course-navigation" class="course-navigation">
+        <div class="side-label course-label">查看單元</div>
+        <div class="course-picker">
+          <label for="unit-select">選擇單元</label>
+          <select id="unit-select" aria-label="選擇要查看的課程單元"></select>
+        </div>
+        <p class="course-hint" id="course-hint">選擇單元只會查看目錄；點課名後才切換目前課程。</p>
+        <nav id="lesson-nav" aria-label="本單元課程"></nav>
+        <div class="unit-actions" aria-label="切換要查看的課程單元">
+          <button id="previous-unit-button" type="button">← 上一單元</button>
+          <button id="next-unit-button" type="button">下一單元 →</button>
+        </div>
+        <div id="today-navigation" class="today-navigation" hidden>
+          <div class="side-label">今天</div>
+          <button class="sidebar-task-link" id="sidebar-due-review-button" type="button" hidden>到期複習 <span id="sidebar-due-review-count">0</span></button>
+          <button class="sidebar-task-link" id="sidebar-review-button" type="button" hidden>錯題重做 <span id="sidebar-review-count">0</span></button>
+        </div>
+        <details class="advanced-sidebar-tools">
+          <summary>進階設定與資料</summary>
+          <div class="advanced-sidebar-links">
+            <div class="side-label level-label">15 單元核心課程</div>
+            <div class="level-path" aria-label="課程層次；不等同棋力級位">
+              <span id="level-beginner"><strong>基礎建立</strong><small>原課綱初級 · 單元 1–5 · 規則到 9 路</small></span>
+              <span id="level-intermediate"><strong>局部與棋局判斷</strong><small>原課綱中級 · 單元 6–10 · 讀棋、攻守與官子</small></span>
+              <span id="level-advanced"><strong>全局與綜合應用</strong><small>原課綱高級 · 單元 11–15 · 取捨、戰鬥與複盤</small></span>
+            </div>
+            <details class="diagnostic-card">
+              <summary>實戰練習紀錄</summary>
+              <p id="live-practice-summary">尚無人機實戰紀錄。</p>
+              <small>保留人機實戰中的練習紀錄；不會只看勝負或電腦的下法來判定你的能力。</small>
+            </details>
+            <details class="diagnostic-card">
+              <summary>實戰證據進度</summary>
+              <p id="live-evidence-summary">尚無可判定的 9×9 人機實戰證據。</p>
+              <small>只計入事先符合判定條件、且能由規則引擎客觀評分的局部機會；這不是熟練程度百分比。</small>
+            </details>
+            <details class="diagnostic-card">
+              <summary>整合學習證據</summary>
+              <p id="integrated-progress-summary">尚無足夠的可比較證據。</p>
+              <small>把課程練習、延後複習與實戰表現分開保存後一起查看；目前不把它當成熟練程度分數，也不會直接改變複習安排。</small>
+            </details>
+            <details class="diagnostic-card">
+              <summary>錯誤修正診斷</summary>
+              <p id="diagnostic-summary">尚無可比較的首答紀錄。</p>
+              <small>依同一技能的未提示首答分組；只描述題目結果，不判定心理根因。</small>
+            </details>
+            <button id="sidebar-tools-button" type="button">開啟工具與資料</button>
+          </div>
+        </details>
       </div>
-      <div class="side-label course-label">課程目錄</div>
-      <div class="course-picker">
-        <label for="unit-select">選擇單元</label>
-        <select id="unit-select" aria-label="選擇課程單元"></select>
-      </div>
-      <div class="unit-actions" aria-label="切換課程單元">
-        <button id="previous-unit-button" type="button">← 上一單元</button>
-        <button id="next-unit-button" type="button">下一單元 →</button>
-      </div>
-      <p class="course-hint" id="course-hint">選擇單元後，再點課名開啟。</p>
-      <nav id="lesson-nav" aria-label="課程目錄"></nav>
       <div class="sidebar-bottom"><span id="unit-meta">第 1 單元 · 氣與吃子</span><span>9 路棋盤</span></div>
     </aside>
 
@@ -103,7 +119,7 @@
           <button class="text-button about-course-action" id="about-course-button" type="button">課程首頁</button>
           <button class="primary-top-action" id="resume-button" type="button">開始第 1 題</button>
           <button class="due-review-action" id="due-review-button" type="button" hidden>今日到期 <span id="due-review-count">0</span></button>
-          <button class="text-button" id="review-button" type="button">複習錯題 <span id="review-count">0</span></button>
+          <button class="text-button" id="review-button" type="button" hidden>複習錯題 <span id="review-count">0</span></button>
           <details class="tools-menu" id="tools-menu">
             <summary>工具與資料 <span aria-hidden="true">⌄</span></summary>
             <div class="tools-panel">
@@ -180,7 +196,7 @@
               </div>
             </div>
             <figure class="intro-hero-art">
-              <img class="intro-hero-image" src="assets/homepage/hero.png" alt="九路棋盤風格插畫，金色標記強調一個觀察落點" width="960" height="720">
+              <img class="intro-hero-image" src="assets/homepage/hero.webp" alt="九路棋盤與看懂、落子、回饋、換新棋形四步學習流程插畫" width="640" height="387">
               <ol class="intro-loop intro-loop-sr" aria-label="每次學習的四個步驟">
                 <li><span>1</span><div><strong>看懂</strong><small>一次先抓一個棋盤概念</small></div></li>
                 <li><span>2</span><div><strong>落子</strong><small>自己先做，不先看答案</small></div></li>
@@ -403,7 +419,10 @@
               <p class="field-help" id="sgf-export-help">會下載保留局面、原著手與你的復盤紀錄的 SGF；可用 KaTrain 開啟，這裡不會自動判定好壞。</p>
               <p class="sgf-review-status" id="sgf-review-status" role="status" aria-live="polite"></p>
             </section>
+            <div id="system-status" class="aux-feedback system-status" role="alert" hidden></div>
             <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+            <div id="interaction-feedback" class="aux-feedback interaction-feedback" role="status" aria-live="polite" hidden></div>
+            <div id="hint-feedback" class="aux-feedback hint-feedback" role="status" aria-live="polite" hidden></div>
             <div class="question-actions">
               <button class="subtle-button" id="hint-button" type="button">給我一點提示</button>
               <button class="primary-button" id="next-button" type="button" disabled>下一題 <span aria-hidden="true">→</span></button>

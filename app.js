@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v51";
+  const uiVersion = "learner-flow-v53";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -180,6 +180,7 @@
       }));
       storageWriteFailed = false;
       storageWarningMessage = "";
+      clearAuxiliaryFeedback("system-status");
       return true;
     }
     catch (_) {
@@ -282,15 +283,28 @@
     target.textContent = `${readiness ? "資料收集：" + readiness.label + "。" : ""}${skillText}`;
   }
 
+  function clearAuxiliaryFeedback(id) {
+    const target = $(id);
+    if (!target) return;
+    target.hidden = true;
+    target.textContent = "";
+  }
+
+  function showAuxiliaryFeedback(id, message) {
+    const target = $(id);
+    if (!target) return;
+    target.textContent = message || "";
+    target.hidden = !message;
+  }
+
   function showStorageWarning() {
-    const feedback = $("feedback");
-    if (!feedback) return;
+    const status = $("system-status");
+    if (!status) return;
+    clearAuxiliaryFeedback("system-status");
     if (storageWriteFailed) {
-      feedback.className = "feedback error";
-      feedback.textContent = storageWarningMessage;
+      showAuxiliaryFeedback("system-status", storageWarningMessage);
     } else if (storageRecoveryNotice) {
-      feedback.className = "feedback error";
-      feedback.textContent = storageRecoveryNotice;
+      showAuxiliaryFeedback("system-status", storageRecoveryNotice);
       storageRecoveryNotice = "";
     }
   }
@@ -611,6 +625,8 @@
   }
 
   function dismissLessonIntro() {
+    const dialog = $("lesson-intro-dialog");
+    if (dialog && dialog.open) dialog.close();
     if (!state.externalMode) {
       state.hasStarted = true;
       markCurrentLessonIntroSeen();
@@ -618,8 +634,6 @@
       renderLearningFlow();
       renderProgress();
     }
-    const dialog = $("lesson-intro-dialog");
-    if (dialog && dialog.open) dialog.close();
     revealQuestionStart();
   }
 
@@ -848,17 +862,20 @@
   function renderNav() {
     const unitIndex = state.navUnitIndex;
     const unit = units[unitIndex];
+    const currentLessonIndex = problems[state.index].lesson;
+    const currentLesson = lessons[currentLessonIndex];
+    const currentUnitIndex = currentLesson.unit;
+    $("current-course-context").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
     $("unit-select").innerHTML = units.map((item, index) => `<option value="${index}" ${index === unitIndex ? "selected" : ""}>第 ${index + 1} 單元 · ${escapeHtml(item.title)}</option>`).join("");
     $("unit-select").value = String(unitIndex);
     $("previous-unit-button").disabled = unitIndex === 0;
     $("next-unit-button").disabled = unitIndex === units.length - 1;
-    $("unit-meta").textContent = `${state.externalMode ? "目前課程：" : "第 " + (unitIndex + 1) + " 單元 · "}${state.externalMode ? `第 ${unitIndex + 1} 單元 · ` : ""}${unit.title}`;
-    $("lesson-nav").innerHTML = `<div class="nav-unit"><div class="nav-unit-title">第 ${unitIndex + 1} 單元 · ${escapeHtml(unit.title)}</div>${lessons.map((lesson, index) => {
-      const active = !state.externalMode && current().lesson === index;
-      return lesson.unit === unitIndex ? `<button type="button" class="lesson-link ${active ? "active" : ""}" ${active ? 'aria-current="page"' : ""} data-lesson="${index}"><span class="lesson-index">${String(index + 1).padStart(2, "0")}</span><span class="lesson-copy"><strong>${escapeHtml(lesson.title)}</strong><small>${escapeHtml(lesson.subtitle)}</small></span></button>` : "";
+    $("unit-meta").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
+    $("lesson-nav").innerHTML = `<div class="nav-unit"><div class="nav-unit-title">${unitIndex === currentUnitIndex ? "本單元課程" : "查看第 " + (unitIndex + 1) + " 單元 · " + escapeHtml(unit.title)}</div>${lessons.map((lesson, index) => {
+      const active = !state.externalMode && currentLessonIndex === index;
+      return lesson.unit === unitIndex ? `<button type="button" class="lesson-link ${active ? "active" : ""}" ${active ? 'aria-current="page"' : ""} data-lesson="${index}"><span class="lesson-index">${String(index + 1).padStart(2, "0")}</span><span class="lesson-copy"><strong>${escapeHtml(lesson.title)}${active ? ' <span class="current-label">目前</span>' : ""}</strong><small>${escapeHtml(lesson.subtitle)}</small></span></button>` : "";
     }).join("")}</div>`;
   }
-
   function renderLearningFlow() {
     let activeStep = 1;
     let now = "不看答案，先自己數氣、找候選手或落子。";
@@ -1156,8 +1173,12 @@
     $("takeaway").hidden = true;
     $("feedback").className = "feedback";
     $("feedback").textContent = "";
+    clearAuxiliaryFeedback("interaction-feedback");
+    clearAuxiliaryFeedback("hint-feedback");
+    $("hint-button").hidden = false;
     $("hint-button").textContent = "給我一點提示";
     $("hint-button").disabled = state.externalMode === "evaluation";
+    $("answer-policy").hidden = false;
     $("next-button").disabled = true;
     const nextCourseProblem = !state.scheduledProblem && state.index < problems.length - 1 ? problems[state.index + 1] : null;
     const nextLesson = nextCourseProblem ? lessons[nextCourseProblem.lesson] : null;
@@ -1190,9 +1211,14 @@
     $("review-count").textContent = state.missed.size;
     $("review-button").disabled = state.missed.size === 0;
     $("review-button").hidden = state.missed.size === 0;
+    $("sidebar-review-count").textContent = state.missed.size;
+    $("sidebar-review-button").hidden = state.missed.size === 0;
     const dueCount = phase2Problems.filter((problem) => problem.pool !== "holdout" && state.scheduler.reviews[problem.id] && state.scheduler.reviews[problem.id].dueAt <= Date.now()).length;
     $("due-review-count").textContent = dueCount;
     $("due-review-button").hidden = dueCount === 0;
+    $("sidebar-due-review-count").textContent = dueCount;
+    $("sidebar-due-review-button").hidden = dueCount === 0;
+    $("today-navigation").hidden = dueCount === 0 && state.missed.size === 0;
     $("due-review-button").setAttribute("aria-label", `今日有 ${dueCount} 題到期複習`);
     $("scheduled-practice-button").textContent = dueCount ? `複習今日到期（${dueCount}）` : "開始間隔練習";
     $("scheduled-practice-description").textContent = dueCount
@@ -1234,6 +1260,7 @@
     }
     const isFirstAnswer = state.answersThisTurn === 0;
     state.answersThisTurn += 1;
+    clearAuxiliaryFeedback("interaction-feedback");
     if (state.externalMode === "evaluation") {
       state.trial = Trial.recordAnswer(state.trial, state.evaluationBatch, problem, correct, answerValue, elapsedMs(), Date.now(), { uiVersion });
       state.solved = true;
@@ -1284,6 +1311,9 @@
         ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原著一致</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`
         : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">答對了</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
       $("next-button").disabled = false;
+      $("hint-button").hidden = true;
+      $("answer-policy").hidden = true;
+      clearAuxiliaryFeedback("hint-feedback");
       renderBoard();
       for (const button of $("answer-area").querySelectorAll("button")) button.disabled = true;
     } else {
@@ -1316,10 +1346,10 @@
     if (problem.type !== "move") return;
     const result = playMove(state.board, x, y, current().playerColor || BLACK);
     if (!result.legal) {
-      $("feedback").className = "feedback error";
-      $("feedback").textContent = result.reason;
+      showAuxiliaryFeedback("interaction-feedback", result.reason);
       return;
     }
+    clearAuxiliaryFeedback("interaction-feedback");
     const correct = goalReached(problem, state.board, result, [x, y]);
     if (correct && state.externalMode !== "evaluation") {
       state.board = result.board;
@@ -1549,7 +1579,10 @@
     const x = Number(point.dataset.x);
     const y = Number(point.dataset.y);
     if (state.externalMode !== "evaluation") setBoardCursor(x, y, false);
-    if (point.dataset.occupied === "true") return;
+    if (point.dataset.occupied === "true") {
+      showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+      return;
+    }
     onMove(x, y);
   });
   $("board").addEventListener("keydown", (event) => {
@@ -1563,14 +1596,16 @@
     }
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      if (point.dataset.occupied === "true") return;
+      if (point.dataset.occupied === "true") {
+        showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+        return;
+      }
       onMove(Number(point.dataset.x), Number(point.dataset.y));
     }
   });
   $("hint-button").addEventListener("click", () => {
     if (state.solved || state.hintShown || state.externalMode === "evaluation") return;
-    $("feedback").className = "feedback";
-    $("feedback").textContent = current().hint;
+    showAuxiliaryFeedback("hint-feedback", current().hint);
     state.hintShown = true;
     markCurrentLessonIntroSeen();
     recordEvent("hint", {
@@ -1621,13 +1656,28 @@
     event.preventDefault();
     dismissLessonIntro();
   });
+  $("lesson-intro-dialog").addEventListener("close", () => {
+    if (!state.lessonIntroPending && !siteIntroductionOpen) revealQuestionStart();
+  });
   $("learning-flow-button").addEventListener("click", () => {
     const dialog = $("learning-flow-dialog");
     if (dialog && typeof dialog.showModal === "function") dialog.showModal();
     else if (dialog) dialog.setAttribute("open", "");
   });
   $("learning-flow-close-button").addEventListener("click", () => $("learning-flow-dialog").close());
-  $("unit-select").addEventListener("change", (event) => selectUnit(Number(event.target.value)));
+  $("course-nav-toggle").addEventListener("click", () => {
+    const navigation = $("course-navigation");
+    const expanded = $("course-nav-toggle").getAttribute("aria-expanded") === "true";
+    $("course-nav-toggle").setAttribute("aria-expanded", expanded ? "false" : "true");
+    navigation.classList.toggle("is-open", !expanded);
+  });
+  $("sidebar-due-review-button").addEventListener("click", () => $("due-review-button").click());
+  $("sidebar-review-button").addEventListener("click", () => $("review-button").click());
+  $("sidebar-tools-button").addEventListener("click", () => {
+    const tools = $("tools-menu");
+    if (tools) tools.open = true;
+  });
+    $("unit-select").addEventListener("change", (event) => selectUnit(Number(event.target.value)));
   $("previous-unit-button").addEventListener("click", () => selectUnit(Math.max(0, state.navUnitIndex - 1)));
   $("next-unit-button").addEventListener("click", () => selectUnit(Math.min(units.length - 1, state.navUnitIndex + 1)));
   $("review-button").addEventListener("click", () => {
