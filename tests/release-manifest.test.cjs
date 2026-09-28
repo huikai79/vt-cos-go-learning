@@ -224,3 +224,12 @@ test("KataGo 真機 smoke verifier 公開，但本機 receipt 排除發布",()=>
   assert.ok(manifest.excludedPatterns.includes(".local-evidence/"));
   assert.equal(manifest.publicFiles.some(file=>file.startsWith(".local-evidence/")),false);
 });
+
+
+test("KataGo 真引擎 receipt contract 可公開，但實際本機回條必須排除", () => {
+  for (const file of ["katago-smoke-receipt.cjs", "scripts/verify-katago-smoke-receipt.cjs", "tests/katago-smoke-receipt.test.cjs"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+  assert.ok(manifest.excludedPatterns.includes(".local-evidence/"));
+  assert.equal(manifest.publicFiles.some((file) => file.startsWith(".local-evidence/")), false);
+});
