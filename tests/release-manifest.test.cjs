@@ -217,3 +217,10 @@ test("SGF decision review runtime 與 negative test 列入公開發佈清單",()
 
 
 test("decision comparison runtime 與 contract tests 列入公開發佈清單",()=>{for(const file of ["decision-comparison.js","decision-comparison-provider.js","advanced-decision-comparison-events.js","katago-comparison-adapter.cjs","tests/decision-comparison.test.cjs"])assert.ok(manifest.publicFiles.includes(file),file);});
+
+
+test("KataGo 真機 smoke verifier 公開，但本機 receipt 排除發布",()=>{
+  for(const file of ["katago-smoke-receipt.cjs","scripts/verify-katago-smoke-receipt.cjs","tests/katago-smoke-receipt.test.cjs"]) assert.ok(manifest.publicFiles.includes(file),file);
+  assert.ok(manifest.excludedPatterns.includes(".local-evidence/"));
+  assert.equal(manifest.publicFiles.some(file=>file.startsWith(".local-evidence/")),false);
+});
