@@ -28,7 +28,7 @@ function input(overrides={}) {
 
 const candidate = {
   points:[[5,5],[6,5],[7,5],[7,6]],
-  context:{boardContext:"corner",boundary:["left","top"],toPlay:"black",role:"defender_group"}
+  context:{boardContext:"corner",boundary:["bottom","left"],toPlay:"black",role:"defender_group"}
 };
 
 test("從 HTML 的 options.sgf2 / Blob 只接受同一份 JSON SGF literal", () => {
@@ -79,9 +79,21 @@ test("target color 的最近角部連通塊可轉成 reference-only observation"
   assert.equal(result.observation.method,"sgf_parse");
   assert.equal(result.observation.deterministicSource,true);
   assert.deepEqual(result.observation.points.sort(),[[0,0],[1,0],[2,0],[2,1]].sort());
-  assert.deepEqual(result.observation.context.boundary,["top","left"]);
+  assert.deepEqual(result.observation.context.boundary,["bottom","left"]);
   assert.equal(result.metadata.sourceDigest.startsWith("sha256:"),true);
-  assert.equal(result.metadata.comparisonContractId,"corner-defender-connected-group-v1");
+  assert.equal(result.metadata.comparisonContractId,"corner-defender-connected-group-normalized-v2");
+});
+
+test("四個角的局部座標都 normalize 成同一 bottom-left representation", () => {
+  const size=19;
+  const seed=[[1,2],[2,2],[3,2],[3,1]];
+  assert.deepEqual(Adapter.normalizeCornerPoints(seed,"top-left",size).points,seed);
+  const topRight=seed.map(([x,y])=>[size-1-x,y]);
+  const bottomLeft=seed.map(([x,y])=>[x,size-1-y]);
+  const bottomRight=seed.map(([x,y])=>[size-1-x,size-1-y]);
+  assert.deepEqual(Adapter.normalizeCornerPoints(topRight,"top-right",size).points,seed);
+  assert.deepEqual(Adapter.normalizeCornerPoints(bottomLeft,"bottom-left",size).points,seed);
+  assert.deepEqual(Adapter.normalizeCornerPoints(bottomRight,"bottom-right",size).points,seed);
 });
 
 test("角部 group selector 同距同大小時必須拒絕猜測", () => {
@@ -109,7 +121,7 @@ test("reference oracle 最終只輸出 sanitized report，不洩漏 SGF/points/f
 test("context 不同時 strict oracle 仍回 DIFFERENT，不因 shape 同形放寬", () => {
   const wrong={
     points:[[5,5],[6,5],[7,5],[7,6]],
-    context:{boardContext:"corner",boundary:["right","top"],toPlay:"black",role:"defender_group"}
+    context:{boardContext:"corner",boundary:["top","right"],toPlay:"black",role:"defender_group"}
   };
   const result=Adapter.runSanitizedReferenceOracle({...input(),candidate:wrong,requireContext:true});
   assert.equal(result.ok,true);
