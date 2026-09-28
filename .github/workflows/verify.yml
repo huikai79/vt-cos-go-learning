@@ -171,7 +171,7 @@ jobs:
                 'go-r1-independent-content-review-v5',
                 'fnv1a32-c34ef6a4',
                 'href="r1-review.html"',
-                '不要瀏覽本專案 repository'
+                '請先不要瀏覽本專案的 GitHub 原始碼庫'
               ]
             }
           ];
