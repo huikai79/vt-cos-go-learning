@@ -151,6 +151,16 @@ jobs:
               ]
             },
             {
+              name: "advanced",
+              url: new URL(`advanced.html?deploy=${deploySha}`, base),
+              checks: [
+                '19×19 棋譜決策點複盤',
+                'advanced-decision-review-events.js?v=advanced-decision-review-v1',
+                'advanced-decision-review.js?v=advanced-decision-review-v1',
+                '不把原著當唯一最佳手'
+              ]
+            },
+            {
               name: "global-go-observatory",
               url: new URL(`global-go-observatory.html?deploy=${deploySha}`, base),
               checks: [
