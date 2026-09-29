@@ -43,7 +43,7 @@
 
 ## 新增 Experience 工作線｜Core 後續進階訓練
 
-進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。依使用者決策，R1a、三位 target novice usability 與真人 accessibility spot check 延後到最後階段；在此之前所有相關狀態維持 BLOCKED／NOT_TESTED，不以工程替代真人證據。v5 將倒撲／枷／對殺／征子各做成兩個 multi-step practice variant；每題必須有唯一 `familyId/variantId` 與明示 `variationAxes`，第二題至少改一個非單純旋轉的作答條件。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。這些 family 只用於 practice 與後續診斷。learner-facing 棋盤題在完成前不得顯示 family ID、完整題名、術語或「這是前題變形」等關係 cue。現行 `advanced-fixed-interleave-v1` 是固定 baseline：先依序完成四個 family seed，再依序完成四個 variant，一次只開放下一個 policy position；不得把這個固定交錯寫成 adaptive scheduler。`advanced-sequence-events-v3` 保存當時的 family／variant／variation axes、`presentationPolicyVersion`、`policyPosition` 與首答；v1／v2 歷史事件各由 legacy reader 保留，不補寫新 policy 語義。family transition 除 seed 早於 variant 與兩邊首答外，還須由 policy gate 確認其他三個 family 已介入，否則保持 `INSUFFICIENT_DATA`；任何情況都不產生 mastery 或 transfer claim。不得在缺少真人 first-response／難度資料時升格為 KC、transfer 證據或平行題等難。任何進階項目若要進 scheduler、T2/T3 或 formal evaluation，仍須回到 evidence-integrity 與內容效度 gate。
+進階訓練可在開發期與 formative observation 中迭代，但不改變正式 gate 順序。依使用者決策，R1a 題庫審查、19 課短講外部棋理審查、三位 target novice usability 與真人 accessibility spot check 延後到最後階段；在此之前所有相關狀態維持 BLOCKED／NOT_TESTED，不以工程替代真人證據。v5 將倒撲／枷／對殺／征子各做成兩個 multi-step practice variant；每題必須有唯一 `familyId/variantId` 與明示 `variationAxes`，第二題至少改一個非單純旋轉的作答條件。棋盤 sequence 必須先由 rules engine 驗證合法性與提子，再由 `advanced-sequence-contract.js` 重播 canonical line；若題型存在明顯主要分支，至少加入 branch QA。這些 family 只用於 practice 與後續診斷。learner-facing 棋盤題在完成前不得顯示 family ID、完整題名、術語或「這是前題變形」等關係 cue。現行 `advanced-fixed-interleave-v1` 是固定 baseline：先依序完成四個 family seed，再依序完成四個 variant，一次只開放下一個 policy position；不得把這個固定交錯寫成 adaptive scheduler。`advanced-sequence-events-v3` 保存當時的 family／variant／variation axes、`presentationPolicyVersion`、`policyPosition` 與首答；v1／v2 歷史事件各由 legacy reader 保留，不補寫新 policy 語義。family transition 除 seed 早於 variant 與兩邊首答外，還須由 policy gate 確認其他三個 family 已介入，否則保持 `INSUFFICIENT_DATA`；任何情況都不產生 mastery 或 transfer claim。不得在缺少真人 first-response／難度資料時升格為 KC、transfer 證據或平行題等難。任何進階項目若要進 scheduler、T2/T3 或 formal evaluation，仍須回到 evidence-integrity 與內容效度 gate。
 
 ## 優先順序與閘門
 
@@ -77,12 +77,12 @@
 **通過條件：** 兩批資料可重算，沒有非預定回饋、答案洩漏或資料缺漏。輸出只描述各技能的觀察值與負擔。  
 **停止線：** 任一批看過保留題、題目修訂、遮蔽失敗、時間異常或資料缺漏，該批標為失效，不用敘事補救。
 
-### 4｜必要外部證據：R1a 獨立內容審題
+### 4｜必要外部證據：題庫與短講分開審查
 
-**原因：** 題庫、答案與自動測試共享定義，不能自行證明內容效度。  
-**動作：** 由未參與編題、且不是目前學習者的圍棋審查者填寫 77 題 reviewer-only 回條；每題必須有一致／需修／歧義／多解狀態。學習者介面不得連到審題頁。  
-**通過條件：** 審查母體均有獨立狀態，歧義與多解題不作正式候選。通過只記為單一外部內容審查證據。  
-**停止線：** 若答案或技能邊界被推翻，升題目／技能版本，保留歷史資料，不回溯升格任何 pilot 資料。
+**原因：** 題庫、答案、短講與自動測試都來自專案自身，不能由同一套工程驗證自行證明內容效度；77 題題庫 R1a 也不涵蓋 19 課 short talk。  
+**動作：** 由未參與相應內容編寫、且不是目前學習者的圍棋審查者完成兩份獨立回條：① 77 題 reviewer-only R1a，每題標一致／需修／歧義／多解；② 19 課 `go-independent-lesson-content-review-v1`，逐課核對 text／takeaway／terms／demoSteps 並標 `consistent`／`needs_fix`／`ambiguous`。題庫審查頁不得由學習者入口導入。  
+**通過條件：** 兩份回條都需通過各自 verifier；任一題或任一課有未解異議，正式教學 gate 保持 BLOCKED。兩者都只記為單一外部內容審查證據，不代表 learner comprehension。  
+**停止線：** 若題目答案／技能邊界或短講棋理被推翻，升相應版本、重新凍結受影響 candidate 並重做該內容回條；保留歷史資料，不回溯升格任何 pilot 或舊真人證據。
 
 ### 4b｜保持未知：R1b 平行題可比性
 
@@ -94,7 +94,7 @@
 **進入條件：** learner-facing 核心流程已相對收斂，準備解除 `TEACHING_GATE`；先凍結同一個 candidate 的 UI version、content version、critical tasks 與 pass/fail criteria。  
 **動作：** 依 `TEACHING_GATE.md` 由至少三位唯一 target novice 各自完成五項關鍵任務，另做真人鍵盤／螢幕閱讀器 spot check。  
 **證據規則：** 開發期間的 formative observation 不得補進這三位正式分母。若正式觀察後因 blocking issue 修改了會影響 critical task 的 learner-facing 行為，受影響的正式觀察需在新 candidate 重做；不得把修改前後版本靜默合併。  
-**通過條件：** `teaching-gate-verify.cjs` 在同一 candidate 的 R1a 與真人證據上回傳正式教學 `PASS`；這仍不代表正式評量或學習成效。
+**通過條件：** `teaching-gate-verify.cjs` 在同一 candidate 上同時取得題庫 R1a、19 課短講外部棋理回條與真人證據後回傳正式教學 `PASS`；這仍不代表正式評量或學習成效。
 
 ### 5｜最後才做：R3 實戰回流與 R4 方案比較
 
@@ -119,7 +119,8 @@
 |---|---|---|
 | 自動測試與瀏覽器流程 | 功能、資料格式與指定互動可運作 | 初學者覺得順手，或能學會圍棋 |
 | 個人 pilot v3 | 此人在此裝置上的流程、返回、負擔與資料完整性 | 正式未見、題目有效、能力提升、保留或遷移 |
-| R1a 單一外部內容審查 | 題目答案、歧義、多解與技能邊界取得一位外部審查者核對 | 平行題等難、完整內容效度或教學因果成效 |
+| R1a 題庫單一外部內容審查 | 題目答案、歧義、多解與技能邊界取得一位外部審查者核對 | 19 課短講正確性、平行題等難、完整內容效度或教學因果成效 |
+| 19 課短講單一外部內容審查 | short-talk text／takeaway／terms／demoSteps 逐課取得外部棋理核對 | 初學者能理解、UI 可用性或學習成效 |
 | R1b 結構配對 | 已知題目特徵相近 | 實際難度已等值 |
 | 多批條件一致的追蹤 | 個人範圍內的描述性趨勢 | 一般化到其他使用者 |
 
@@ -441,3 +442,8 @@
 - **Public/Private Hard Wall：** 真正 private 題目、答案與 manifest 只能放在 `.private-evaluation/`，該目錄同時加入 Git ignore 與 release exclusion；公開 repo 只保存 verifier 與 synthetic tests。
 - **gate hardening：** `teaching-gate-verify.cjs` 不再接受單純手填 private-holdout boolean 作 formal evaluation 證據；必須另有同次本機 verifier 的有效結果。R1b 仍是獨立條件，不能由 private pool 存在自動升格。
 - **目前狀態不變：** 本輪沒有建立任何真正 private evaluation item／manifest，也沒有真人資料；`replacementPrivateHoldout=not_established`、R1b=`not_established`、formal evaluation=`BLOCKED`、learning effect=`NOT_MEASURED`。formal teaching candidate 不需重凍結，因 learner-facing critical surface 未變。
+## 2026-09-29 Change note｜Short Talk UX v2 post-audit execution rule
+
+- Short Talk v55 修正 mobile CSS cascade，新增 Modal-open 320px／200% text、焦點分支、one-step demo 與 v4→v5 seen migration regressions。
+- formal teaching gate 升為 v3：第 4 步不再把 77 題 R1a 回條當成全部教學內容審查；19 課短講使用獨立 `go-independent-lesson-content-review-v1`／`fnv1a32-7741b3d8`。
+- 兩種內容回條都依既有 final-phase human review policy 延後收集；延後不等於通過，狀態持續 BLOCKED。若期間再改受審內容，舊 fingerprint／receipt fail closed。
