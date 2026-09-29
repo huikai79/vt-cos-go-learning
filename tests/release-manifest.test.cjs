@@ -301,3 +301,8 @@ test("Advanced evidence bundle export v1 列入公開發佈清單", () => {
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
+
+
+test("backup scope regression test 列入公開發佈清單", () => {
+  assert.ok(manifest.publicFiles.includes("tests/backup-scope.test.cjs"));
+});
