@@ -256,3 +256,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - Advanced Decision Replay 只重做已經看過原著的同一 19×19 局面，固定標記為 `previously_exposed`／T0 practice。
 - replay first response／retry 只屬 practice evidence；不得作 unseen retention、transfer、KC、scheduler、formal evaluation 或 formal teaching 證據。
 - 本輪不修改 formal teaching candidate，也不替代 R1a、目標初學者 usability 或真人 accessibility；這些 gate 仍依 final-phase human review policy 保持原狀。
+
+
+## 2026-09-29 Change note｜Comparable Position v1
+
+- Advanced 的公開 comparable pair 只建立 practice／process-check 工程契約；target item 雖標 T2 taxonomy，仍是公開已可取得答案的題目，不能作 formal unseen holdout。
+- provisional KC hypothesis 為 `urgent-atari-rescue-kc-v1`，但 construct validity 未由真人資料建立，且事件禁止更新 learner skill state／scheduler。
+- 本輪不修改 formal teaching candidate，也不解除 R1a、R1b、target novice usability、accessibility、private unseen formal evaluation 或 learning-effect gate。
