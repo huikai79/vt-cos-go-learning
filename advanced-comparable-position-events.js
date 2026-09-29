@@ -20,9 +20,10 @@ function read(storage){
 function validPoint(p){return Array.isArray(p)&&p.length===2&&p.every(Number.isInteger)&&p[0]>=0&&p[0]<19&&p[1]>=0&&p[1]<19;}
 function validate(e){
  if(!e||e.schemaVersion!==SCHEMA_VERSION||e.eventStreamVersion!==STREAM_VERSION||!TYPES.has(e.type))return"event_contract_invalid";
- for(const k of ["eventId","sessionId","attemptId","pairId","pairVersion","pairHypothesisVersion","itemId","itemVersion","itemRole","positionFingerprint","scoringContractVersion","evidenceTaxonomyVersion","selectionPolicyVersion","occurredAt"])if(typeof e[k]!=="string"||!e[k])return"event_metadata_missing";
+ for(const k of ["eventId","sessionId","attemptId","pairId","pairVersion","pairHypothesisVersion","itemId","itemVersion","itemRole","positionFingerprint","kcHypothesisId","kcHypothesisVersion","scoringContractVersion","evidenceTaxonomyVersion","selectionPolicyVersion","occurredAt"])if(typeof e[k]!=="string"||!e[k])return"event_metadata_missing";
  const item=Contract.itemById(e.itemId);
  if(!item||item.itemVersion!==e.itemVersion||item.pairId!==e.pairId||item.pairVersion!==e.pairVersion||item.positionFingerprint!==e.positionFingerprint)return"event_item_identity_mismatch";
+ if(e.kcHypothesisId!==Contract.KC_HYPOTHESIS_ID||e.kcHypothesisVersion!==Contract.KC_HYPOTHESIS_VERSION||e.constructValidated!==false)return"event_kc_hypothesis_invalid";
  if(e.scoringContractVersion!==Contract.SCORING_CONTRACT_VERSION||e.evidenceTaxonomyVersion!==Contract.EVIDENCE_TAXONOMY_VERSION||e.selectionPolicyVersion!==Contract.PAIR_POLICY_VERSION)return"event_version_invalid";
  if(e.boardSize!==19||e.publicItem!==true||e.formalEligible!==false||e.independentEvaluation!==false||e.schedulerEligible!==false||e.skillUpdateEligible!==false||e.qualifiedOpportunity!==false)return"event_authority_invalid";
  const expectedTransfer=item.role==="process_check"?"T2":"T0";
@@ -45,6 +46,7 @@ function append(storage,input){
  if(!item)return{ok:false,error:"advanced_comparable_item_unknown",store:r.store};
  const event={
   schemaVersion:SCHEMA_VERSION,eventStreamVersion:STREAM_VERSION,...input,
+  kcHypothesisId:item.kcHypothesisId,kcHypothesisVersion:item.kcHypothesisVersion,constructValidated:false,
   boardSize:19,publicItem:true,formalEligible:false,independentEvaluation:false,schedulerEligible:false,skillUpdateEligible:false,qualifiedOpportunity:false,
   transferLevel:item.role==="process_check"?"T2":"T0",
   evidenceUse:item.role==="process_check"?"advanced_comparable_public_process_check":"advanced_comparable_practice",
