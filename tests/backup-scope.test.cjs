@@ -22,8 +22,8 @@ test("Core 備份入口明確限定 Core/實戰，並指向獨立 Advanced 備�
 test("backup-scope 文案變更後 formal candidate 重新凍結且 gate/example 綁定一致",()=>{
   const verification=Candidate.evaluateManifest(candidate,root);
   assert.equal(verification.valid,true,verification.errors.join("\n"));
-  assert.equal(candidate.candidateId,"formal-teaching-candidate-2026-09-29-v");
-  assert.equal(candidate.assetFingerprint,"fnv1a32-js16-45fb67e5");
+  assert.equal(candidate.candidateId,"formal-teaching-candidate-2026-09-29-w");
+  assert.equal(candidate.assetFingerprint,"fnv1a32-js16-30995be7");
   assert.equal(gate.formalTeachingCandidateId,candidate.candidateId);
   assert.equal(gate.formalTeachingCandidateFingerprint,candidate.assetFingerprint);
   assert.equal(example.candidateId,candidate.candidateId);
