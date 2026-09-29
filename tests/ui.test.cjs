@@ -1000,6 +1000,85 @@ async function main() {
     assert.deepEqual(comparableFlow.processFirst,{correct:false,transfer:"T2"});
     assert.deepEqual(comparableFlow.processCompleted,{firstCorrect:false,eventualCorrect:true,attempts:2});
     assert.equal(comparableFlow.listButtons.find(item=>item.id==="urgent-rescue-b-process").disabled,false);
+
+    const delayedBeforeDue = await evaluate(socket, `(() => {
+      window.GoAdvancedDelayedComparable.render();
+      const button = document.querySelector('#delayed-comparable-list [data-delayed-item="urgent-rescue-a-delayed"]');
+      return {
+        disabled: button.disabled,
+        text: button.textContent,
+        summary: document.querySelector('#delayed-comparable-summary').textContent,
+        rawAbsent: localStorage.getItem('go-advanced-delayed-comparable-events-v1') === null
+      };
+    })()`);
+    assert.equal(delayedBeforeDue.disabled,true);
+    assert.match(delayedBeforeDue.text,/還沒到時間/);
+    assert.match(delayedBeforeDue.summary,/至少 24 小時後開放/);
+    assert.equal(delayedBeforeDue.rawAbsent,true);
+
+    const delayedFlow = await evaluate(socket, `(() => {
+      const key='go-advanced-comparable-position-events-v1';
+      const comparable=JSON.parse(localStorage.getItem(key));
+      const shift=25*60*60*1000;
+      comparable.events=comparable.events.map(event=>({...event,occurredAt:new Date(Date.parse(event.occurredAt)-shift).toISOString()}));
+      localStorage.setItem(key,JSON.stringify(comparable));
+      window.GoAdvancedDelayedComparable.render();
+
+      const button=document.querySelector('#delayed-comparable-list [data-delayed-item="urgent-rescue-a-delayed"]');
+      if(!button || button.disabled) throw new Error('delayed comparable item did not become due');
+      const dueText=button.textContent;
+      button.click();
+
+      function clickPoint(x,y){
+        const point=document.querySelector('#delayed-comparable-board [data-delayed-x="'+x+'"][data-delayed-y="'+y+'"]');
+        if(!point) throw new Error('delayed comparable point missing '+x+','+y);
+        point.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+      }
+      clickPoint(0,0);
+      const afterWrong=document.querySelector('#delayed-comparable-feedback').textContent;
+      clickPoint(8,9);
+      const afterCorrect=document.querySelector('#delayed-comparable-feedback').textContent;
+
+      const raw=JSON.parse(localStorage.getItem('go-advanced-delayed-comparable-events-v1'));
+      const presented=raw.events.find(event=>event.type==='delayed_presented');
+      const first=raw.events.find(event=>event.type==='delayed_first');
+      const completed=raw.events.find(event=>event.type==='delayed_completed');
+      return {
+        dueText,
+        afterWrong,
+        afterCorrect,
+        eventTypes:raw.events.map(event=>event.type),
+        presented:{
+          transfer:presented.transferLevel,
+          timing:presented.retrievalTiming,
+          delay:presented.actualDelayMs,
+          formal:presented.formalEligible,
+          scheduler:presented.schedulerEligible,
+          skillUpdate:presented.skillUpdateEligible,
+          independent:presented.independentEvaluation
+        },
+        first:{correct:first.correct,delay:first.actualDelayMs},
+        completed:{firstCorrect:completed.firstCorrect,eventualCorrect:completed.eventualCorrect,attempts:completed.attempts,delay:completed.actualDelayMs}
+      };
+    })()`);
+    assert.match(delayedFlow.dueText,/已到時間/);
+    assert.match(delayedFlow.afterWrong,/仍處在只剩一氣/);
+    assert.match(delayedFlow.afterCorrect,/實際相隔時間|第一次作答/);
+    assert.deepEqual(delayedFlow.eventTypes,["delayed_presented","delayed_first","delayed_retry","delayed_completed"]);
+    assert.equal(delayedFlow.presented.transfer,"T2");
+    assert.equal(delayedFlow.presented.timing,"delayed");
+    assert.ok(delayedFlow.presented.delay>=24*60*60*1000);
+    assert.deepEqual(
+      {formal:delayedFlow.presented.formal,scheduler:delayedFlow.presented.scheduler,skillUpdate:delayedFlow.presented.skillUpdate,independent:delayedFlow.presented.independent},
+      {formal:false,scheduler:false,skillUpdate:false,independent:false}
+    );
+    assert.equal(delayedFlow.first.correct,false);
+    assert.ok(delayedFlow.first.delay>=24*60*60*1000);
+    assert.deepEqual(
+      {firstCorrect:delayedFlow.completed.firstCorrect,eventualCorrect:delayedFlow.completed.eventualCorrect,attempts:delayedFlow.completed.attempts},
+      {firstCorrect:false,eventualCorrect:true,attempts:2}
+    );
+
     const comparisonStart = await evaluate(socket, `(() => {
       const Comparison = window.GoDecisionComparison;
       window.__originalDecisionComparisonProvider = window.GoDecisionComparisonProvider.requestComparison;
