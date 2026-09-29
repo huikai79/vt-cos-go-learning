@@ -19,7 +19,10 @@ function verifyPrivateManifest(manifest,privateRoot){
   if(ids.has(item.itemId))errors.push(`重複 itemId: ${item.itemId}`);ids.add(item.itemId);
   const target=path.resolve(root,item.relativePath);if(!inside(root,target)){errors.push(`private item 路徑逃出 private root: ${item.itemId}`);continue;}
   if(filesSeen.has(target))errors.push(`多個 item 指向同一檔案: ${item.relativePath}`);filesSeen.add(target);
-  if(!fs.existsSync(target)||!fs.statSync(target).isFile()){errors.push(`private item 不存在: ${item.itemId}`);continue;}
+  if(!fs.existsSync(target)){errors.push(`private item 不存在: ${item.itemId}`);continue;}
+  const stat=fs.lstatSync(target);if(stat.isSymbolicLink()){errors.push(`private item 不得使用 symbolic link: ${item.itemId}`);continue;}
+  if(!stat.isFile()){errors.push(`private item 不是一般檔案: ${item.itemId}`);continue;}
+  const realRoot=fs.realpathSync(root),realTarget=fs.realpathSync(target);if(!inside(realRoot,realTarget)){errors.push(`private item real path 逃出 private root: ${item.itemId}`);continue;}
   const actual=sha256(fs.readFileSync(target));if(actual!==item.sha256)errors.push(`private item hash 不符: ${item.itemId}`);
   verifiedItems.push({itemId:item.itemId,relativePath:item.relativePath,sha256:actual});
  }
