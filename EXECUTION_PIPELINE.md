@@ -1,3 +1,5 @@
+2026-09-29 Capture & Semeai Track v1：本輪屬新增 Experience／內容治理的小步更新。Advanced choice practice 新增兩個「打吃方向」Teaching Candidate，目的只是在不改 KC 的前提下測「預測逃路／阻止連接」是否值得形成獨立 task family；既有四個多手 sequence family、`advanced-fixed-interleave-v1`、`advanced-sequence-events-v3`、scheduler、T2/T3 與 formal evaluation 全部不變。使用者教材截圖來源與授權未確認，只作 DISCOVERED 研究線索，不把原圖／原文／完整棋形帶入 public assets。驗收看 content metadata、首答／retry 回歸與固定 policy 未漂移；工程 PASS 不等於 KC 或教學效果成立。
+
 2026-09-29 Evidence Overview v1：本輪屬 Step 2 formative usability engineering，不是正式 usability gate。可觀察 bottleneck 是 v54 雖縮短文字，第一層仍同時展示 activity、sampling coverage、evidence state 與 diagnostic；v55 以「目前可知道什麼」作單一 overview，完整分母與錯誤診斷下沉到 details。驗收只看 learner-facing 狀態映射、ERROR fail-closed、詳細證據仍可取得、320px／鍵盤／ARIA 結構與既有回歸；不得把工程 PASS 寫成「初學者已看懂」。若 formative observation 沒再出現此 bottleneck，不再增加新的 dashboard 層級。
 
 2026-09-29 Delayed Comparable Fixed Order addendum：若 delayed A／B 同時達到 24 小時條件，仍固定依 A → B 呈現；B 必須等 A completed 後才能建立 presentation event。event append、store validator 與 UI 三層共同 enforce，防止使用者自選先做哪題形成 presentation-order 偏差。B 的 actualDelayMs 仍按自己的 immediate target anchor 實際計算，因此延後超過 24 小時會被如實保存。這不是 adaptive sequencing。
