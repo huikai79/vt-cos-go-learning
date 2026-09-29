@@ -273,7 +273,7 @@
         { boardSize: 7, stones: [[2,2,W],[4,2,W],[1,2,B],[2,1,B],[2,3,B]], highlights: [[3,2]], reference: [[4,2]], label: "錯的方向可能把白棋趕去接應", caption: "黑從下方打吃後，白棋唯一逃路正好是兩串之間。白若走到那裡，就會和右邊同伴連接。" },
         { boardSize: 7, stones: [[2,2,W],[4,2,W],[1,2,B],[2,1,B],[3,2,B]], highlights: [[2,3]], reference: [[4,2]], label: "先堵連接點，再迫使往另一邊逃", caption: "黑先佔兩串之間的連接點，同時形成打吃，白棋只剩往下延長。這仍是局部教學目標；後續能否吃到要繼續讀。" }
       ]
-
+    }
   ];
 
   const sequenceExperiences = [
