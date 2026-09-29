@@ -893,7 +893,7 @@
     if (atLessonOpening) {
       activeStep = 0;
       now = "先看本課短講，再用棋盤示範確認要觀察的變化。";
-      why = "每一課先建立一個明確概念，才進入無提示練習。";
+      why = "先抓住本課要觀察的核心線索，再進入不看答案的練習。";
       next = !state.hasStarted && state.index === 0 ? "按下開始後，不看答案自己回答第一題。" : "看完示範後，向下進入本課第一題。";
     } else if (state.reviewMode) {
       activeStep = 2;
