@@ -81,6 +81,41 @@ function append(storage,input){
  try{storage.setItem(STORAGE_KEY,JSON.stringify(next));return{ok:true,store:next,event};}
  catch{return{ok:false,error:"advanced_delayed_comparable_store_write_failed",store:r.store};}
 }
+function validateStore(store){
+ if(!store||store.schemaVersion!==SCHEMA_VERSION||store.eventStreamVersion!==STREAM_VERSION||!Array.isArray(store.events))return{ok:false,error:"delayed_store_invalid"};
+ for(const event of store.events){
+  const error=validate(event);if(error)return{ok:false,error:"event_invalid:"+error,eventId:event&&event.eventId||null};
+ }
+ for(const item of Contract.items){
+  const events=store.events.filter(event=>event.itemId===item.itemId);
+  if(!events.length)continue;
+  const presentations=events.filter(event=>event.type==="delayed_presented");
+  const firsts=events.filter(event=>event.type==="delayed_first");
+  const retries=events.filter(event=>event.type==="delayed_retry");
+  const completions=events.filter(event=>event.type==="delayed_completed");
+  if(presentations.length!==1)return{ok:false,error:"delayed_store_presentation_count_invalid",itemId:item.itemId};
+  const attemptId=presentations[0].attemptId;
+  if(events.some(event=>event.attemptId!==attemptId))return{ok:false,error:"delayed_store_attempt_mismatch",itemId:item.itemId};
+  if(firsts.length>1)return{ok:false,error:"delayed_store_multiple_first",itemId:item.itemId};
+  if(completions.length>1)return{ok:false,error:"delayed_store_multiple_completion",itemId:item.itemId};
+  if(retries.length&&firsts.length===0)return{ok:false,error:"delayed_store_retry_without_first",itemId:item.itemId};
+  if(completions.length&&firsts.length===0)return{ok:false,error:"delayed_store_completion_without_first",itemId:item.itemId};
+  if(completions.length&&completions[0].firstCorrect!==firsts[0].correct)return{ok:false,error:"delayed_store_completion_first_mismatch",itemId:item.itemId};
+  if(completions.length&&completions[0].attempts!==1+retries.length)return{ok:false,error:"delayed_store_completion_attempt_count_mismatch",itemId:item.itemId};
+  const order={delayed_presented:0,delayed_first:1,delayed_retry:2,delayed_completed:3};
+  let lastTime=-Infinity,seenFirst=false,seenCompleted=false;
+  for(const event of events){
+   const time=Date.parse(event.occurredAt);
+   if(time<lastTime)return{ok:false,error:"delayed_store_time_order_invalid",itemId:item.itemId};
+   lastTime=time;
+   if(event.type==="delayed_first"){if(seenFirst)return{ok:false,error:"delayed_store_multiple_first",itemId:item.itemId};seenFirst=true;}
+   if(event.type==="delayed_retry"&&!seenFirst)return{ok:false,error:"delayed_store_retry_before_first",itemId:item.itemId};
+   if(event.type==="delayed_completed"){if(seenCompleted)return{ok:false,error:"delayed_store_multiple_completion",itemId:item.itemId};seenCompleted=true;}
+   if(seenCompleted&&event.type!=="delayed_completed")return{ok:false,error:"delayed_store_event_after_completion",itemId:item.itemId};
+  }
+ }
+ return{ok:true};
+}
 function eventsForItem(store,itemId){return((store&&store.events)||[]).filter(event=>event.itemId===itemId);}
 function completedItemIds(store){return new Set(((store&&store.events)||[]).filter(e=>e.type==="delayed_completed").map(e=>e.itemId));}
 function activeAttempt(store,itemId){
@@ -96,7 +131,7 @@ function activeAttempt(store,itemId){
  };
 }
 
-const api={STORAGE_KEY,STREAM_VERSION,SCHEMA_VERSION,read,append,validate,eventsForItem,completedItemIds,activeAttempt};
+const api={STORAGE_KEY,STREAM_VERSION,SCHEMA_VERSION,read,append,validate,validateStore,eventsForItem,completedItemIds,activeAttempt};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.GoAdvancedDelayedComparableEvents=api;
 })(typeof window!=="undefined"?window:globalThis);
