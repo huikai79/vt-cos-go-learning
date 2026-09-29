@@ -4,7 +4,7 @@
 範圍：`index.html`、`styles.css`、`app.js` 的學習頁，以及 `r1-review.html` 的獨立審題頁。  
 定位：此文件是個人離線版的設計稽核與下一輪修改規格；它不是使用者研究或無障礙合規宣告。
 
-> 當前補遺：介面版本為 `learner-flow-v54`、棋盤練習頁為 `live-game-ui-v11`、儲存 schema 為 7、內容目錄版本為 5。重複出現的首次使用卡、完整五階段流水線與每題短講已改成漸進揭露：主畫面只保留目前行動及「查看本課短講／查看學習流程」入口；每課短講只在第一次進入時自動開啟，看過的課直接進題，仍可手動重開。`seenLessonIntros` 與待看狀態會跨重新載入保存。工具面板把日常練習與棋譜複盤保留在第一層，將七天流程試行、複習策略與匯出收進預設關閉的「進階設定與資料」；完整備份清楚標示含原始事件與局部復盤資料。完成同課題目時直接前往下一題；跨課或跨單元時，按鈕明示將進入短講，未看過的新課會自動聚焦短講視窗。19 課都有棋盤示範；多步只有在相鄰棋盤／標記真的有可見差異時才成立，避免把步驟數量當成教學進展代理。第 9–19 課的 5×5 縮圖仍明示為局部比較或階段示意，不冒充唯一全局答案。10 個後續單元另有 9×9 的局部觀察點選；它只判定題幹指定要點，不能用來判定全局最佳手。首頁只在有題目真正到期時顯示「今日到期」與數量；R1a 已從學習者工具選單移除。七天批次為 `personal-pilot-v3`，只檢查操作、返回、資料與負擔。審查母體仍為 77 題；R1b 難度可比性維持未知。下段 `learner-flow-v20` 至 `v28` 為歷史快照，與本補遺衝突時以本補遺及 `COMPLETION_MATRIX.md` 為準。
+> 當前補遺：介面版本為 `learner-flow-v55`、棋盤練習頁為 `live-game-ui-v11`、儲存 schema 為 7、內容目錄版本為 5。重複出現的首次使用卡、完整五階段流水線與每題短講已改成漸進揭露：主畫面只保留目前行動及「查看本課短講／查看學習流程」入口；每課短講只在第一次進入時自動開啟，已處理自動顯示的課直接進題，仍可手動重開。`seenLessonIntros` 只代表 auto-display suppression，不代表短講完成或學習證據；該狀態與待看狀態會跨重新載入保存。工具面板把日常練習與棋譜複盤保留在第一層，將七天流程試行、複習策略與匯出收進預設關閉的「進階設定與資料」；完整備份清楚標示含原始事件與局部復盤資料。完成同課題目時直接前往下一題；跨課或跨單元時，按鈕明示將進入短講，未看過的新課會自動聚焦短講視窗。19 課都有棋盤示範；多步只有在相鄰棋盤／標記真的有可見差異時才成立，避免把步驟數量當成教學進展代理。第 9–19 課的 5×5 縮圖仍明示為局部比較或階段示意，不冒充唯一全局答案。10 個後續單元另有 9×9 的局部觀察點選；它只判定題幹指定要點，不能用來判定全局最佳手。首頁只在有題目真正到期時顯示「今日到期」與數量；R1a 已從學習者工具選單移除。七天批次為 `personal-pilot-v3`，只檢查操作、返回、資料與負擔。審查母體仍為 77 題；R1b 難度可比性維持未知。下段 `learner-flow-v20` 至 `v28` 為歷史快照，與本補遺衝突時以本補遺及 `COMPLETION_MATRIX.md` 為準。
 
 2026-09-28 首頁配圖修正（v48）：實機截圖顯示 v47 把「配圖」做成了新的資訊架構，造成 Hero 右欄高度增加、步驟與棋盤被拆成兩張卡，且「怎樣才算真的學會」由 3 項擴成 4 項。v48 回到 v46 原本結構，只把棋盤圖嵌入既有 Hero 面板，三張課程階段卡各加一張小圖；學習證據恢復 3 項。這輪的成功條件是「圖有進來、結構沒被改寫」，不是重新設計首頁。正式 usability 仍待真人 gate。
 
@@ -289,4 +289,11 @@ M1 不重畫整個 workspace；保留桌面棋盤左／問題與作答右，以�
 - **輔助資訊：** legend 改由整課實際使用到的 marker union 產生；沒有紅叉／藍框的課不預先顯示。step caption 只保留一個可見／可朗讀來源，step count 不再設第二個 live region。
 - **Modal 語義：** 自動進課顯示「先跳過」並維持「只自動顯示一次」契約；手動重看顯示「關閉」，不修改 learner state，關閉後回到「查看本課短講」。每次重看由 step 1 開始。
 - **未知／停止線：** 這輪不加入 phase system、動畫、遊戲化、另一套 presentation engine 或短講觀看進度。6 步劫課是否過長、240px 是否更好、關鍵詞位置是否最適合，留給 frozen candidate 後的 target novice observation；在真人證據前不把工程假說寫成 UX 成效。
+## 2026-09-29｜Short Talk UX v2 post-audit hardening
 
+- **實際失誤：** v54 的 short-talk mobile override 位於 base short-talk rule 之前；相同 specificity 下，後面的 desktop `grid-template-columns:minmax(200px,240px) minmax(0,1fr)` 會蓋回雙欄。v55 把短講 mobile override 移到 base rule 後方，不以提高 specificity 掩蓋 cascade 問題。
+- **新增反證：** 真瀏覽器在短講 Modal 開啟時直接測 320px：一欄、page/dialog/board 無水平 overflow、primary CTA 可捲動到達；另測 200% text。這補上先前只驗整頁、卻在短講關閉後才做窄版檢查的 coverage hole。
+- **焦點語義：** 移除 dialog `close` listener 的第二套焦點決策，讓 dismiss action 單一決定結果：manual Close／manual Esc 回「查看本課短講」；manual Start／auto skip／auto Esc 進 `question-prompt`。browser regression 分支驗證。
+- **契約邊界：** v4→v5 保留 `seenLessonIntros`，明確視為自動顯示抑制狀態，不是 completion。`demoSteps.length >= 1` 的新契約新增 synthetic one-step runtime test。
+- **內容治理：** UI／candidate fingerprint 不能替代棋理審查。77 題題庫 R1a 不涵蓋 19 課短講，因此另加 `go-independent-lesson-content-review-v1`；它只審內容正確性，不證明可理解性。
+- **未測：** 240px 是否優於其他尺寸、6-step 劫課是否過長、caption／terms 的實際認知負擔，仍保留給 target novice 與真人 accessibility；工程 PASS 不升格。
