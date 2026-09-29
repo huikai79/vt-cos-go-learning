@@ -1,4 +1,4 @@
-2026-09-30 History Explore v6 served-content sync：`history.html` 已升為 v6 後，push-to-main 的 served Pages verifier 仍檢查舊 `歷史探索 v5` marker；已同步為 v6。這只修部署驗證契約，不改頁面內容、learner runtime、formal candidate 或 evidence semantics。
+2026-09-30 History Explore v6 served-content sync：`history.html` 已升為 v6 且來源查核日更新為 2026-09-29 後，push-to-main 的 served Pages verifier 仍檢查舊 `歷史探索 v5` 與 2026-09-28 marker；兩者均已同步。這只修部署驗證契約，不改頁面內容、learner runtime、formal candidate 或 evidence semantics。
 
 2026-09-29 History Explore cosmology／AI + cross-language concepts pilot：依使用者優先序，R1a／三位 target novice usability／真人 accessibility 維持最後階段處理；本輪先做 research／authoring plane。`history.html` 新增「天地／陰陽／天文／象數」證據邊界與 2016 後 AI 知識轉折；前者只證明歷史詮釋存在，不把《易》或 361 升格成盤制起源因果，後者用日本棋院與大型棋譜研究描述布局／定石知識重組，不寫成所有傳統棋理失效。新增 `research/go-history-cosmology-ai-v1.md` 與 `research/cross-language-go-concepts-pilot-v1.md`；跨語 pilot 先鎖定厚／勢／味／先手／定石，使用 Equivalent／Overlap／Broader／Narrower／Non-equivalent／Unknown，不建立「民族思考模式」結論，也暫不新增 `concepts.html`。這些 Explore／Research 變更不接 learner state、KC、scoring、scheduler、T2/T3 或 formal evaluation；未改 `index.html` 或 Core critical candidate surface，因此不重凍結 formal candidate。
 
