@@ -240,3 +240,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 未完成的人工作業仍維持 `BLOCKED`／`NOT_TESTED`；
 - 自動測試、LLM、搜尋、KataGo 或開發期間自我檢查不得替代正式真人證據；
 - final candidate 若在人工審查前再次變更 critical learner-facing asset，仍須依既有 fingerprint／version 規則重新凍結後再收證據。
+
+
+## 2026-09-29 Change note｜Decision Replay v1
+
+- Advanced Decision Replay 只重做已經看過原著的同一 19×19 局面，固定標記為 `previously_exposed`／T0 practice。
+- replay first response／retry 只屬 practice evidence；不得作 unseen retention、transfer、KC、scheduler、formal evaluation 或 formal teaching 證據。
+- 本輪不修改 formal teaching candidate，也不替代 R1a、目標初學者 usability 或真人 accessibility；這些 gate 仍依 final-phase human review policy 保持原狀。
