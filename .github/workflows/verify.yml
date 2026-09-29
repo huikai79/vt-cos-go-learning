@@ -177,7 +177,7 @@ jobs:
                 'decision-comparison.js?v=decision-comparison-v1',
                 '用 KataGo 再比較這兩手（選用）',
                 '固定搜尋量下的估計',
-                '不把原著當唯一最佳手'
+                '不把原棋譜當唯一最佳手'
               ]
             },
             {
