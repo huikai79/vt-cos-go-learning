@@ -80,7 +80,11 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate 
   const privateHoldoutPassed = formalEvaluation.privateUnexposedHoldoutEstablished === true
     && nonEmpty(formalEvaluation.evidenceReference)
     && privateEvaluationVerification
-    && privateEvaluationVerification.valid === true;
+    && privateEvaluationVerification.valid === true
+    && privateEvaluationVerification.protocolId === FormalEvaluationVerifier.PROTOCOL_ID
+    && Number.isInteger(privateEvaluationVerification.itemCount)
+    && privateEvaluationVerification.itemCount > 0
+    && /^[a-f0-9]{64}$/.test(String(privateEvaluationVerification.manifestFingerprint || ""));
   const r1bPassed = formalEvaluation.r1bComparabilityEstablished === true && nonEmpty(formalEvaluation.evidenceReference);
   return { usabilityPassed, accessibilityPassed, privateHoldoutPassed, r1bPassed, candidateUsable, errors };
 }
