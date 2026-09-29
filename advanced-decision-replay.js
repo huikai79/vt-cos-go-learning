@@ -115,7 +115,7 @@ function renderList(){
  list.innerHTML=items.map(item=>
   '<button type="button" class="decision-replay-item" data-replay-id="'+item.replayId+'">'+
    '<strong>原局第 '+item.moveNumber+' 手 · '+(item.playerColor===1?"黑":"白")+'棋</strong>'+
-   '<span>同一局面重做 · 已看過原著</span>'+
+   '<span>同一局面重做 · 已看過原棋譜著手</span>'+
   '</button>'
  ).join("");
 }
@@ -157,8 +157,8 @@ function startReplay(replayId){
  firstLegal=null;
  $("decision-replay-workspace").hidden=false;
  $("decision-replay-reveal").disabled=true;
- $("decision-replay-meta").textContent="原局第 "+item.moveNumber+" 手 · 輪到"+(item.playerColor===1?"黑":"白")+"棋 · 原著暫時隱藏";
- $("decision-replay-feedback").textContent="這是你已經看過原著的同一局面。先再選一手；這次重做不算未見題或遷移。";
+ $("decision-replay-meta").textContent="原局第 "+item.moveNumber+" 手 · 輪到"+(item.playerColor===1?"黑":"白")+"棋 · 原棋譜著手暫時隱藏";
+ $("decision-replay-feedback").textContent="這是你已經看過原棋譜著手的同一局面。先再選一手；這次只是重做同一局面，不會當成新局面表現。";
  renderBoard();
 }
 function handleBoardClick(event){
@@ -190,7 +190,7 @@ function revealOriginal(){
  const same=samePoint(firstPoint,current.originalMove);
  const saved=appendFor(current,"replay_original_revealed",{attemptId,originalMove:current.originalMove.slice(),firstCandidateMatchesOriginal:same,firstCandidateLegal:firstLegal===true,originalExposed:true});
  if(!saved.ok){
-  $("decision-replay-feedback").textContent="原著揭露無法保存，因此這次先不顯示。";
+  $("decision-replay-feedback").textContent="原棋譜著手揭露無法保存，因此這次先不顯示。";
   return;
  }
  revealed=true;
@@ -200,7 +200,7 @@ function revealOriginal(){
  if(firstLegal===false){
   $("decision-replay-feedback").textContent="你的第一次選擇依規則不能下。原棋譜著手已顯示；這仍只是已曝光局面的重做。";
  }else if(same){
-  $("decision-replay-feedback").textContent="這次第一候選和原棋譜著手相同。因為這個局面先前已看過原著，所以不能把它當成未見題或遷移證據。";
+  $("decision-replay-feedback").textContent="這次第一候選和原棋譜著手相同。因為這個局面先前已看過原棋譜著手，所以不能把它當成你已會在新局面運用的證據。";
  }else{
   $("decision-replay-feedback").textContent="這次第一候選和原棋譜著手不同。這不是錯手判定；同一局面的重做只用來再次整理你的判斷。";
  }
