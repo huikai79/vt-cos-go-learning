@@ -7,11 +7,11 @@ const DIAGRAM_LESSONS = lessons.map((_, index) => index);
 
 function key([x, y]) { return `${x},${y}`; }
 
-test("每課都有概念、示範與解題前檢查點", () => {
+test("每課都有概念、棋盤示範與解題前檢查點", () => {
   assert.equal(lessons.length, 19);
   for (const lesson of lessons) {
     assert.match(lesson.text, /\S/, `${lesson.title} 缺少概念`);
-    assert.match(lesson.demo, /\S/, `${lesson.title} 缺少示範`);
+    assert.ok(Array.isArray(lesson.demoSteps) && lesson.demoSteps.length >= 1, `${lesson.title} 缺少棋盤示範`);
     assert.match(lesson.takeaway, /\S/, `${lesson.title} 缺少解題前檢查點`);
   }
 });
