@@ -230,11 +230,12 @@ test("History Explore v5 用新布石區分戰略觀念變化與規則改制", (
   assert.ok(html.includes("https://www.nihonkiin.or.jp/teach/history/history03.html"));
 });
 
-test("History Explore v5 明確分離棋譜證據、規則條文與戰略理解三種變化", () => {
+test("History Explore v6 明確分離棋譜證據、規則條文、人類戰略與 AI 知識轉折", () => {
   assert.match(html, /留下更可重建的資料/);
   assert.match(html, /把競賽規則寫成條文/);
-  assert.match(html, /棋手對最佳戰略的理解改變/);
-  assert.match(html, /前一件不會自動證明後兩件，後兩件也不是同一種歷史變化/);
+  assert.match(html, /人類棋手改寫戰略常識/);
+  assert.match(html, /AI 介入後重新組織知識/);
+  assert.match(html, /其中任何一種都不會自動證明另外幾種/);
 });
 
 
@@ -244,7 +245,7 @@ test("History Explore v6 新增宇宙論詮釋，但拒絕把它升格為圍棋�
   assert.match(html, /《棋經十三篇》.*361.*周天.*七十二.*陰陽/s);
   assert.match(html, /不能反推 19 路棋盤最初就是依《易經》、曆法或 361 這套象數設計/);
   assert.match(html, /早期 17 路實物.*後世象數解釋不能自動倒推成起源原因/s);
-  assert.doesNotMatch(html, /圍棋源自《易經》[^「]/);
+  assert.match(html, /不能直接說[\s\S]*「圍棋源自《易經》」/);
   assert.ok(html.includes("node=547596"));
   assert.ok(html.includes("node=46934"));
 });
@@ -268,7 +269,7 @@ test("跨語概念 pilot 維持 research-only，不把術語差異升格成民�
   assert.match(pilot, /Narrower/);
   assert.match(pilot, /Non-equivalent/);
   assert.match(pilot, /不能從術語差異推出「中國人／日本人／韓國人天生以不同方式思考」/);
-  assert.match(pilot, /目前不得.*建立「各語言思考模式」公開結論頁/s);
+  assert.match(pilot, /目前\*\*不得\*\*建立「各語言思考模式」公開結論頁/);
 });
 
 test("宇宙論與 AI 更新留下獨立 research record 與停止線", () => {
