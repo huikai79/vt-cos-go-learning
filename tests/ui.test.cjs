@@ -883,6 +883,56 @@ async function main() {
     assert.deepEqual(decisionReview.candidate, {legal:true, originalMove:null, matchesOriginal:null, exposed:false, hasCorrect:false});
     assert.deepEqual(decisionReview.reveal, {originalMove:[16,15], matches:false, exposed:true, hasCorrect:false});
     assert.equal(decisionReview.reflectionDisabled, false);
+    const replayQueued = await evaluate(socket, `(() => {
+      const button = document.querySelector('#decision-replay-queue');
+      if (button.disabled) throw new Error('decision replay queue unexpectedly disabled');
+      button.click();
+      const raw = JSON.parse(localStorage.getItem('go-advanced-decision-replay-events-v1'));
+      const queued = raw.events.find((event) => event.type === 'replay_queued');
+      const listButton = document.querySelector('#decision-replay-list [data-replay-id]');
+      if (!listButton) throw new Error('decision replay list item missing');
+      listButton.click();
+      const point = document.querySelector('#decision-replay-board [data-replay-x="4"][data-replay-y="4"]');
+      if (!point) throw new Error('decision replay point missing');
+      point.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const beforeReveal = document.querySelector('#decision-replay-feedback').textContent;
+      document.querySelector('#decision-replay-reveal').click();
+      const replayRaw = JSON.parse(localStorage.getItem('go-advanced-decision-replay-events-v1'));
+      const first = replayRaw.events.find((event) => event.type === 'replay_candidate_first');
+      const reveal = replayRaw.events.find((event) => event.type === 'replay_original_revealed');
+      return {
+        queueText: button.textContent,
+        queued: {
+          exposure: queued.sourceExposure,
+          transfer: queued.transferLevel,
+          formal: queued.formalEligible,
+          originalExposed: queued.sourceOriginalExposed
+        },
+        beforeReveal,
+        afterReveal: document.querySelector('#decision-replay-feedback').textContent,
+        eventTypes: replayRaw.events.map((event) => event.type),
+        first: {
+          originalMove: first.originalMove,
+          matchesOriginal: first.matchesOriginal,
+          originalExposed: first.originalExposed,
+          hasCorrect: Object.prototype.hasOwnProperty.call(first,'correct')
+        },
+        reveal: {
+          originalMove: reveal.originalMove,
+          transfer: reveal.transferLevel,
+          formal: reveal.formalEligible,
+          hasCorrect: Object.prototype.hasOwnProperty.call(reveal,'correct'),
+          hasMastery: Object.prototype.hasOwnProperty.call(reveal,'mastery')
+        }
+      };
+    })()`);
+    assert.match(replayQueued.queueText, /已加入重做清單|已在重做清單/);
+    assert.deepEqual(replayQueued.queued, {exposure:"previously_exposed", transfer:"T0", formal:false, originalExposed:true});
+    assert.match(replayQueued.beforeReveal, /同一局面|這次候選已保存/);
+    assert.match(replayQueued.afterReveal, /已曝光局面的重做|已經看過原著|同一局面重做/);
+    assert.deepEqual(replayQueued.eventTypes, ["replay_queued","replay_presented","replay_candidate_first","replay_original_revealed"]);
+    assert.deepEqual(replayQueued.first, {originalMove:null, matchesOriginal:null, originalExposed:false, hasCorrect:false});
+    assert.deepEqual(replayQueued.reveal, {originalMove:[16,15], transfer:"T0", formal:false, hasCorrect:false, hasMastery:false});
     const comparisonStart = await evaluate(socket, `(() => {
       const Comparison = window.GoDecisionComparison;
       window.__originalDecisionComparisonProvider = window.GoDecisionComparisonProvider.requestComparison;
