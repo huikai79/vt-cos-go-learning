@@ -1,3 +1,5 @@
+2026-09-29 Backup Scope Clarity v1：Advanced Evidence Bundle v1 上線後，Core 工具仍把自己的 JSON 稱為「備份完整資料」，會讓使用者誤以為一次匯出涵蓋整個產品。現在 Core 入口改為「備份核心與實戰資料」，說明其範圍為 Core、固定應用探測、局部復盤與實戰；獨立 Advanced 事件由進階頁另行匯出。這是 evidence durability／資訊邊界修正，不把兩套 store 強行耦合，也不新增 restore/import。因 `index.html` 屬 formal candidate critical learner surface，candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-v`／`fnv1a32-js16-45fb67e5`，並同步 teaching gate、example evidence 與 served Pages verifier。重新凍結只代表資產身分；R1a、正式 usability、accessibility 仍依 final-phase policy 保持 BLOCKED／NOT_TESTED，沒有新增真人證據。
+
 # 正式教學閘門
 
 ## 一句話判定

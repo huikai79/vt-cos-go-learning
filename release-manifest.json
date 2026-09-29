@@ -195,6 +195,7 @@
     "tests/advanced-evidence-export.test.cjs",
     "tests/advanced.test.cjs",
     "tests/app-state.test.cjs",
+    "tests/backup-scope.test.cjs",
     "tests/classic-geometry-extraction.test.cjs",
     "tests/classic-geometry-fingerprint.test.cjs",
     "tests/classic-geometry-reference-html-sgf.test.cjs",
