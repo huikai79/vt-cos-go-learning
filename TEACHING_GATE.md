@@ -281,3 +281,15 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 
 ### Delayed Comparable Fixed Order addendum
 - 延後 A → B 的順序事前固定，只控制公開 process-check 的 presentation order；不取得 scheduler／formal evaluation authority。
+
+
+## 2026-09-29｜Private evaluation freeze tooling
+
+正式評量的 private unseen pool 在最後階段不得手寫成「已建立」。若未來建立真實 pool，必須先使用 `formal-evaluation-freeze.cjs` 由 private root 內的實際 item files 產生 immutable manifest，再由 `formal-evaluation-verify.cjs` 驗證。
+
+此工具只降低 evidence-integrity 操作風險：
+- 不建立或提供 private 題目；
+- 不解除 R1b 或任何真人 gate；
+- 不讓公開題恢復 unseen 資格；
+- 不改 formal teaching candidate；
+- 未存在 verified private pool 時，formal evaluation 仍維持 `BLOCKED`。
