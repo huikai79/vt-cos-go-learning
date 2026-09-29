@@ -7,11 +7,11 @@ const DIAGRAM_LESSONS = lessons.map((_, index) => index);
 
 function key([x, y]) { return `${x},${y}`; }
 
-test("每課都有概念、示範與解題前檢查點", () => {
+test("每課都有概念、棋盤示範與解題前檢查點", () => {
   assert.equal(lessons.length, 19);
   for (const lesson of lessons) {
     assert.match(lesson.text, /\S/, `${lesson.title} 缺少概念`);
-    assert.match(lesson.demo, /\S/, `${lesson.title} 缺少示範`);
+    assert.ok(Array.isArray(lesson.demoSteps) && lesson.demoSteps.length >= 1, `${lesson.title} 缺少棋盤示範`);
     assert.match(lesson.takeaway, /\S/, `${lesson.title} 缺少解題前檢查點`);
   }
 });
@@ -38,24 +38,47 @@ function validateDiagram(title, diagram) {
   assert.match(diagram.label, /\S/, `${title} 缺少棋形替代文字`);
 }
 
-test("全部課程的示範棋盤與標記都在盤內且沒有互相衝突", () => {
-  assert.deepEqual(lessons.map((lesson, index) => lesson.demoBoard ? index : null).filter(Number.isInteger), DIAGRAM_LESSONS);
-  for (const index of DIAGRAM_LESSONS) {
-    const { title, demoBoard } = lessons[index];
-    validateDiagram(title, demoBoard);
-  }
-});
+function sortedPoints(points = []) {
+  return points
+    .map((point) => [...point])
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1] || (a[2] || 0) - (b[2] || 0));
+}
 
-test("全部十九課都有至少兩步、可逐步閱讀的棋形示範", () => {
+function visualSignature(step) {
+  return JSON.stringify({
+    stones: sortedPoints(step.stones),
+    highlights: sortedPoints(step.highlights),
+    emphasis: sortedPoints(step.emphasis),
+    blocked: sortedPoints(step.blocked),
+    reference: sortedPoints(step.reference)
+  });
+}
+
+test("全部十九課都有有效棋盤示範，且相鄰步驟不能是完全相同畫面", () => {
   for (const index of DIAGRAM_LESSONS) {
     const { title, demoSteps } = lessons[index];
-    assert.ok(Array.isArray(demoSteps) && demoSteps.length >= 2, `${title} 缺少逐步示範`);
+    assert.ok(Array.isArray(demoSteps) && demoSteps.length >= 1, `${title} 缺少棋盤示範`);
     for (const step of demoSteps) {
       assert.match(step.caption, /\S/, `${title} 的示範步驟缺少說明`);
       assert.ok(Array.isArray(step.stones), `${title} 的示範步驟缺少棋形`);
       validateDiagram(title, step);
     }
+    for (let stepIndex = 1; stepIndex < demoSteps.length; stepIndex += 1) {
+      assert.notEqual(
+        visualSignature(demoSteps[stepIndex - 1]),
+        visualSignature(demoSteps[stepIndex]),
+        `${title} 第 ${stepIndex}→${stepIndex + 1} 步沒有可見變化`
+      );
+    }
   }
+});
+
+test("認識氣先聚焦角上黑棋，再揭示兩口氣", () => {
+  const [observeStone, revealLiberties] = lessons[0].demoSteps;
+  assert.equal((observeStone.highlights || []).length, 0);
+  assert.deepEqual(observeStone.emphasis, [[0, 0]]);
+  assert.deepEqual(revealLiberties.highlights, [[1, 0], [0, 1]]);
+  assert.match(revealLiberties.caption, /2 口氣/);
 });
 
 test("中高級縮圖明示比較或示意邊界，不把五路圖寫成唯一全局答案", () => {

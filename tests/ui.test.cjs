@@ -111,6 +111,9 @@ async function main() {
   assert.match(m2Html, /id="course-nav-toggle"[^>]*aria-expanded="false"[^>]*aria-controls="course-navigation"/);
   assert.match(m2Html, /id="current-course-context"/);
   assert.match(m2Html, /id="today-navigation"[^>]*hidden/);
+  assert.match(m2App, /const currentLessonIndex = problems\[state\.index\]\.lesson/);
+  assert.match(m2App, /state\.navUnitIndex/);
+  assert.match(m2Css, /\.course-navigation\.is-open\{display:block\}/);
   assert.match(m2Html, /class="advanced-priority-label">學習狀態<\/div>/);
   for (const id of ["live-practice-brief", "live-evidence-brief", "integrated-progress-brief", "diagnostic-brief"]) {
     assert.match(m2Html, new RegExp(`id="${id}"`));
@@ -122,9 +125,6 @@ async function main() {
   assert.ok(advancedStatusPosition < diagnosticPosition && diagnosticPosition < courseMapPosition && courseMapPosition < toolsPosition);
   assert.match(m2Css, /\.diagnostic-brief\{[^}]*text-align:right/);
   assert.match(m2Css, /\.diagnostic-card p\{[^}]*white-space:pre-line/);
-  assert.match(m2App, /const currentLessonIndex = problems\[state\.index\]\.lesson/);
-  assert.match(m2App, /state\.navUnitIndex/);
-  assert.match(m2Css, /\.course-navigation\.is-open\{display:block\}/);
   const sourceHtml = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
   const sourceCss = fs.readFileSync(path.resolve(__dirname, "../styles.css"), "utf8");
   const sourceApp = fs.readFileSync(path.resolve(__dirname, "../app.js"), "utf8");
@@ -193,7 +193,6 @@ async function main() {
         flowNow: document.querySelector('#learning-now').textContent,
         flowWhy: document.querySelector('#learning-why').textContent,
         concept: document.querySelector('#teaching-text').textContent,
-        demo: document.querySelector('#teaching-demo').textContent,
         check: document.querySelector('#teaching-check').textContent,
         visualDemo: document.querySelectorAll('#teaching-demo-board .demo-liberty').length,
         termCount: document.querySelector('#lesson-term-count').textContent,
@@ -207,7 +206,7 @@ async function main() {
         stageBadge: document.querySelector('#learning-stage-badge').textContent
       };
     })()`);
-    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "從 0 開始，先學氣與提子，再走進 9 路棋局。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 3, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 0, localCoreEntry: "從這裡開始 →", globalCoreEntry: "從這裡開始 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "每一課先建立一個明確概念，才進入無提示練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", demo: "角上的一顆黑棋，只有右邊和下邊兩個盤內空點，所以有 2 口氣；斜角的空點不算。", check: "先找空點，再數氣；同一個空點只算一次。", visualDemo: 2, termCount: "（1 個）", firstTerm: "氣", legendItems: 4, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", heroImage: "assets/homepage/hero.png", pathImages: 3, evidenceImages: 3, stageBadge: "目前 1/5 · 先看懂" });
+    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "從 0 開始，先學氣與提子，再走進 9 路棋局。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 3, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 0, localCoreEntry: "從這裡開始 →", globalCoreEntry: "從這裡開始 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: "learning-step-0", flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "先抓住本課要觀察的核心線索，再進入不看答案的練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", check: "先找沿線相鄰的空點，再數氣；同一個空點只算一次。", visualDemo: 0, termCount: "（1 個）", firstTerm: "氣", legendItems: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", heroImage: "assets/homepage/hero.png", pathImages: 3, evidenceImages: 3, stageBadge: "目前 1/5 · 先看懂" });
     const screenshotDirectory = process.env.GO_UI_SCREENSHOT_DIR;
     if (screenshotDirectory) {
       assert.ok(fs.existsSync(screenshotDirectory), "screenshot directory must already exist");
@@ -225,8 +224,73 @@ async function main() {
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const landingStart = await evaluate(socket, `(() => { document.querySelector('[data-site-intro-start]').click(); return {siteIntroHidden: document.querySelector('#site-introduction').hidden, introOpen: document.querySelector('#lesson-intro-dialog').open, introTitle: document.querySelector('#lesson-intro-title').textContent, hash: location.hash}; })()`);
     assert.deepEqual(landingStart, { siteIntroHidden: true, introOpen: true, introTitle: "現在先學：認識氣", hash: "#core" });
-    const steppedDemo = await evaluate(socket, `(() => { const before = {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, previousDisabled: document.querySelector('#teaching-demo-previous').disabled}; document.querySelector('#teaching-demo-next').click(); return {before, after: {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, nextDisabled: document.querySelector('#teaching-demo-next').disabled}}; })()`);
-    assert.deepEqual(steppedDemo, { before: {step: "第 1 / 2 步", caption: "先看角上的黑棋：棋盤外不是交叉點，所以不算氣。", previousDisabled: true}, after: {step: "第 2 / 2 步", caption: "只剩右邊和下邊兩個盤內空點，因此這顆棋有 2 口氣；斜角不算。", nextDisabled: true} });
+    const steppedDemo = await evaluate(socket, `(() => {
+      const before = {
+        step: document.querySelector('#teaching-demo-count').textContent,
+        caption: document.querySelector('#teaching-demo-caption').textContent,
+        previousDisabled: document.querySelector('#teaching-demo-previous').disabled,
+        libertyRings: document.querySelectorAll('#teaching-demo-board .demo-liberty').length,
+        emphasisRings: document.querySelectorAll('#teaching-demo-board .demo-emphasis').length
+      };
+      document.querySelector('#teaching-demo-next').click();
+      return {
+        before,
+        after: {
+          step: document.querySelector('#teaching-demo-count').textContent,
+          caption: document.querySelector('#teaching-demo-caption').textContent,
+          libertyRings: document.querySelectorAll('#teaching-demo-board .demo-liberty').length,
+          nextLabel: document.querySelector('#teaching-demo-next').textContent
+        }
+      };
+    })()`);
+    assert.deepEqual(steppedDemo, {
+      before: {step: "第 1 / 2 步", caption: "先看角上的黑棋。棋盤外沒有交叉點，所以不能算氣。", previousDisabled: true, libertyRings: 0, emphasisRings: 1},
+      after: {step: "第 2 / 2 步", caption: "只有右邊和下邊兩個盤內空點與它沿線相鄰，所以有 2 口氣；斜對角不算。", libertyRings: 2, nextLabel: "從頭再看 ↺"}
+    });
+    const demoStructure = await evaluate(socket, `({
+      captionNodes: document.querySelectorAll('#teaching-demo-caption').length,
+      duplicateFigureCaptions: document.querySelectorAll('#teaching-demo-board figcaption').length,
+      legendText: document.querySelector('#demo-legend').textContent
+    })`);
+    assert.equal(demoStructure.captionNodes, 1);
+    assert.equal(demoStructure.duplicateFigureCaptions, 0);
+    assert.match(demoStructure.legendText, /金色小圈/);
+    assert.match(demoStructure.legendText, /金色大圈/);
+    assert.doesNotMatch(demoStructure.legendText, /紅叉|藍框/);
+
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 320, height: 812, deviceScaleFactor: 1, mobile: true });
+    const shortTalkNarrow = await evaluate(socket, `(() => {
+      const dialog = document.querySelector('#lesson-intro-dialog');
+      const stage = document.querySelector('.teaching-demo-stage');
+      const board = document.querySelector('#teaching-demo-board');
+      dialog.scrollTop = dialog.scrollHeight;
+      const dialogRect = dialog.getBoundingClientRect();
+      const startRect = document.querySelector('#lesson-intro-start-button').getBoundingClientRect();
+      return {
+        open: dialog.open,
+        columns: getComputedStyle(stage).gridTemplateColumns.split(/\\s+/).filter(Boolean).length,
+        pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        dialogOverflow: dialog.scrollWidth > dialog.clientWidth + 1,
+        boardOverflow: board.scrollWidth > board.clientWidth + 1,
+        ctaReachable: startRect.bottom <= dialogRect.bottom + 2
+      };
+    })()`);
+    assert.deepEqual(shortTalkNarrow, { open: true, columns: 1, pageOverflow: false, dialogOverflow: false, boardOverflow: false, ctaReachable: true });
+
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    const shortTalkZoom = await evaluate(socket, `(() => {
+      document.documentElement.style.fontSize = '32px';
+      const dialog = document.querySelector('#lesson-intro-dialog');
+      const result = {
+        open: dialog.open,
+        pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        dialogOverflow: dialog.scrollWidth > dialog.clientWidth + 1
+      };
+      document.documentElement.style.fontSize = '';
+      return result;
+    })()`);
+    assert.deepEqual(shortTalkZoom, { open: true, pageOverflow: false, dialogOverflow: false });
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const started = await evaluate(socket, `(async () => { document.querySelector('#lesson-intro-start-button').click(); await new Promise((resolve) => requestAnimationFrame(() => resolve())); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, takeawayHidden: document.querySelector('.takeaway').hidden}; })()`);
     assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-prompt", activeFlow: "learning-step-1", seen: [0], takeawayHidden: true });
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
@@ -304,7 +368,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v54"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v55"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -437,7 +501,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v54");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v55");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -454,9 +518,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v54");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v55");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v54");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v55");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
@@ -568,10 +632,62 @@ async function main() {
     }
     const restoredLessonIntro = await evaluate(socket, `({lesson: document.querySelector('#lesson-title').textContent, stage: document.querySelector('#learning-stage-badge').textContent, guidance: document.querySelector('#learning-now').textContent, pending: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).lessonIntroPending, introOpen: document.querySelector('#lesson-intro-dialog').open})`);
     assert.deepEqual(restoredLessonIntro, {lesson: "辨認棋串", stage: "目前 1/5 · 先看懂", guidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", pending: true, introOpen: true});
-    const seenAfterDismiss = await evaluate(socket, `(() => { document.querySelector('#lesson-intro-start-button').click(); document.querySelector('[data-lesson="4"]').click(); const reopened = document.querySelector('#lesson-intro-dialog').open; document.querySelector('#lesson-intro-dismiss-button').click(); document.querySelector('[data-lesson="4"]').click(); return {seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, reopened, repeatedOpen: document.querySelector('#lesson-intro-dialog').open}; })()`);
-    assert.equal(seenAfterDismiss.reopened, true);
+    const seenAfterDismiss = await evaluate(socket, `(() => {
+      document.querySelector('#lesson-intro-start-button').click();
+      document.querySelector('[data-lesson="4"]').click();
+      const autoLabel = document.querySelector('#lesson-intro-dismiss-button').textContent;
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      document.querySelector('[data-lesson="4"]').click();
+      const repeatedOpen = document.querySelector('#lesson-intro-dialog').open;
+      document.querySelector('#lesson-intro-button').click();
+      const manualLabel = document.querySelector('#lesson-intro-dismiss-button').textContent;
+      document.querySelector('#teaching-demo-next').click();
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      document.querySelector('#lesson-intro-button').click();
+      const resetStep = document.querySelector('#teaching-demo-count').textContent;
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      return {seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, autoLabel, repeatedOpen, manualLabel, resetStep};
+    })()`);
+    assert.equal(seenAfterDismiss.autoLabel, "先跳過");
     assert.equal(seenAfterDismiss.repeatedOpen, false);
+    assert.equal(seenAfterDismiss.manualLabel, "關閉");
+    assert.equal(seenAfterDismiss.resetStep, "第 1 / 2 步");
     assert.ok(seenAfterDismiss.seen.includes(4));
+
+    const manualCloseFocus = await evaluate(socket, `(() => {
+      document.querySelector('#lesson-intro-button').click();
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      return {open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id};
+    })()`);
+    assert.deepEqual(manualCloseFocus, {open: false, focused: "lesson-intro-button"});
+
+    const manualStartFocus = await evaluate(socket, `(() => {
+      document.querySelector('#lesson-intro-button').click();
+      document.querySelector('#lesson-intro-start-button').click();
+      return {open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id};
+    })()`);
+    assert.deepEqual(manualStartFocus, {open: false, focused: "question-prompt"});
+
+    await evaluate(socket, "document.querySelector('#lesson-intro-button').click()");
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await delay(50);
+    const manualEscapeFocus = await evaluate(socket, `({open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id})`);
+    assert.deepEqual(manualEscapeFocus, {open: false, focused: "lesson-intro-button"});
+
+    await evaluate(socket, "document.querySelector('[data-lesson=\"5\"]').click()");
+    assert.equal(await evaluate(socket, "document.querySelector('#lesson-intro-dialog').open"), true);
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await delay(50);
+    const autoEscapeFocus = await evaluate(socket, `({
+      open: document.querySelector('#lesson-intro-dialog').open,
+      focused: document.activeElement.id,
+      seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros
+    })`);
+    assert.equal(autoEscapeFocus.open, false);
+    assert.equal(autoEscapeFocus.focused, "question-prompt");
+    assert.ok(autoEscapeFocus.seen.includes(5));
 
     // Regression: previewing a future unit must not suppress the formal unit-transition intro.
     await evaluate(socket, `(() => {
