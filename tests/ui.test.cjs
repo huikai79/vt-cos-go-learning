@@ -1596,7 +1596,7 @@ async function main() {
     await command(socket, "Page.navigate", { url: historyPage });
     let historyReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
-      historyReady = await evaluate(socket, "Boolean(document.querySelector('#history-title')?.textContent && document.querySelectorAll('.question-block').length === 4)");
+      historyReady = await evaluate(socket, "Boolean(document.querySelector('#history-title')?.textContent && document.querySelectorAll('.question-block').length === 5)");
       if (historyReady) break;
       await delay(100);
     }
