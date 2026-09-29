@@ -598,4 +598,4 @@ History Explore 的證據呈現遵守「claim → evidence unit → source recor
 - `seenLessonIntros` 只表示 auto-display suppression，不是觀看完成、理解或 learner evidence。content catalog 升版不自動清除此狀態；新版短講始終可手動重看。
 - focus authority 收斂到 dismiss action：manual Close／Esc 回短講入口，manual Start／auto skip／auto Esc 進題目；不由 dialog close event 再做第二次焦點決策。
 - 題庫 R1a 與 19 課短講 human content review 分離。short-talk learner-facing semantics 由 `go-independent-lesson-content-review-v1` fingerprint 綁定；它只支持內容正確性，不支持 comprehension／usability／learning effect。
-- final learner-facing candidate 為 `learner-flow-v55`／`formal-teaching-candidate-2026-09-29-v`；若後續再改 critical surface，須 refreeze 後再收正式真人證據。
+- final learner-facing candidate 為 `learner-flow-v55`／`formal-teaching-candidate-2026-09-29-w`；若後續再改 critical surface，須 refreeze 後再收正式真人證據。
