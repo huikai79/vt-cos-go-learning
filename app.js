@@ -1687,11 +1687,6 @@
     event.preventDefault();
     dismissLessonIntro(lessonIntroOpenMode !== "manual");
   });
-  $("lesson-intro-dialog").addEventListener("close", () => {
-    if (siteIntroductionOpen) return;
-    if (lessonIntroOpenMode === "manual") revealElement("lesson-intro-button");
-    else if (!state.lessonIntroPending) revealQuestionStart();
-  });
   $("learning-flow-button").addEventListener("click", () => {
     const dialog = $("learning-flow-dialog");
     if (dialog && typeof dialog.showModal === "function") dialog.showModal();
