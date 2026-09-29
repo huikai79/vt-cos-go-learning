@@ -1,3 +1,8 @@
+2026-09-30 Change note｜History Explore v6 served-content marker sync
+
+- `history.html` 已為 v6，但 main push 的 served-content verifier 仍鎖定舊 v5 marker；同步改為 v6。
+- 只改部署驗證契約；不改 learner-facing 內容、Core runtime、formal candidate、scoring、scheduler 或 formal evaluation。
+
 2026-09-29 Change note｜History Explore cosmology／AI + cross-language concepts pilot
 
 - **實作：** `history.html` 由四題擴成五題，新增漢宋圍棋宇宙論／象數詮釋與《易》關係的證據邊界；近現代轉折新增 2016 後 AI 對布局、定石、新穎著手與知識多樣性的影響。
