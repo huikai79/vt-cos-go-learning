@@ -121,3 +121,25 @@ test("Advanced 頁提供單向原始事件備份，明示不屬正式評量",()=
  assert.match(html,/匯出進階練習原始事件/);
  assert.match(html,/只作備份與分析，不作正式評量/);
 });
+
+
+test("schema 合法但 event authority 被污染時不得標成健康 stream",()=>{
+ const s=storage();
+ s.setItem(Comparison.STORAGE_KEY,JSON.stringify({
+  schemaVersion:1,
+  eventStreamVersion:"advanced-decision-comparison-events-v1",
+  events:[{
+   schemaVersion:1,eventStreamVersion:"advanced-decision-comparison-events-v1",
+   type:"comparison_requested",eventId:"bad",sessionId:"s",reviewId:"r",requestId:"q",
+   sourceId:"src",positionFingerprint:"p",comparisonContractVersion:"c",
+   providerContractVersion:"p",occurredAt:"2026-09-29T09:03:00.000Z",
+   formalEligible:true,evidenceUse:"advanced_sgf_comparison_reference_only",
+   evaluationContext:"sgf_decision_comparison",transferLevel:null
+  }]
+ }));
+ const bundle=Exporter.buildBundle(s);
+ assert.equal(bundle.complete,false);
+ assert.equal(bundle.streams.decisionComparison.status,"error");
+ assert.match(bundle.streams.decisionComparison.error,/event_invalid:comparison_event_authority_invalid/);
+ assert.equal(bundle.streams.decisionComparison.store,null);
+});
