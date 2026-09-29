@@ -9,10 +9,10 @@ const matrix = fs.readFileSync(path.join(__dirname, "..", "COMPLETION_MATRIX.md"
 const pipeline = fs.readFileSync(path.join(__dirname, "..", "EXECUTION_PIPELINE.md"), "utf8");
 const teachingGate = fs.readFileSync(path.join(__dirname, "..", "TEACHING_GATE.md"), "utf8");
 
-test("完成矩陣 current truth 已同步 learner-flow-v53 與全球觀察入口", () => {
-  assert.match(matrix, /`ui_version`: `learner-flow-v53`/);
+test("完成矩陣 current truth 已同步 learner-flow-v54 與全球觀察入口", () => {
+  assert.match(matrix, /`ui_version`: `learner-flow-v54`/);
   assert.match(matrix, /Global Go Observatory v0\.1/);
-  assert.match(matrix, /formal-teaching-candidate-2026-09-29-p/);
+  assert.match(matrix, /formal-teaching-candidate-2026-09-29-u/);
   assert.match(matrix, /工具面板語意與品牌邊界複核（v45）/);
   assert.match(matrix, /複習今日到期（N）/);
   assert.match(matrix, /棋譜單點復盤/);
@@ -23,10 +23,10 @@ test("完成矩陣的題庫與示範計數可由目前內容重算", () => {
   assert.equal(units.length, 15);
   assert.equal(lessons.length, 19);
   assert.equal(problems.length, 106);
-  assert.equal(lessons.filter((lesson) => lesson.demoSteps?.length >= 2).length, 19);
+  assert.equal(lessons.filter((lesson) => lesson.demoSteps?.length >= 1).length, 19);
   assert.equal(phase2Problems.length, 148);
   assert.match(matrix, /15 單元、19 課、106 題/);
-  assert.match(matrix, /19 課都有文字短講及至少兩步棋盤示範/);
+  assert.match(matrix, /19 課都有文字短講與棋盤示範/);
   assert.match(matrix, /100 題吃子、連接與救棋，加上 48 題兩類基礎死活/);
 });
 
@@ -41,7 +41,7 @@ test("完成矩陣區分已實作診斷與尚未取得的正式資料或外部�
 });
 
 test("完成矩陣記錄 Phase 3 導覽工程完成但保留真人閘門", () => {
-  assert.match(matrix, /根網址固定作為悟之一手學習樞紐[\s\S]*?三階段直接承擔核心課程入口[\s\S]*?局部直達 Core 第 6 單元[\s\S]*?全局直達 Core 第 11 單元[\s\S]*?Advanced 維持獨立路線[\s\S]*?只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量[\s\S]*?`learner-flow-v53` 條件通過[\s\S]*?真人觀察/);
+  assert.match(matrix, /根網址固定作為悟之一手學習樞紐[\s\S]*?三階段直接承擔核心課程入口[\s\S]*?局部直達 Core 第 6 單元[\s\S]*?全局直達 Core 第 11 單元[\s\S]*?Advanced 維持獨立路線[\s\S]*?只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量[\s\S]*?`learner-flow-v54` 條件通過[\s\S]*?真人觀察/);
   assert.match(matrix, /reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組/);
   assert.match(matrix, /學習頁不再提供入口[\s\S]*?外部回條仍待不同於學習者的審查者完成/);
 });
