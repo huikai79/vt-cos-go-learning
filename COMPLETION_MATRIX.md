@@ -981,3 +981,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **狀態語義不變：** 延後不等於通過。所有尚未完成的人工證據維持原本的 `BLOCKED`／`NOT_TESTED`／`NEEDS_HUMAN_REVIEW`／`INSUFFICIENT`；自動測試、搜尋、engine、LLM 或開發者自己的臨時觀察都不得代填正式真人證據。
 - **執行規則：** 若某自動工程只因「缺人工回條」而被卡住，但該人工結果不是安全／正確執行該工程的前置條件，則繼續完成可逆、可測試的工程與 research tooling；把人工缺口記入 final-review backlog，不在中途停止。
 - **例外：** 若缺少人工判定會直接改變不可逆操作、正式內容真值、scoring、公開宣稱、formal evaluation eligibility 或其他高風險結論，仍必須 fail closed，不得以「最後再看」為理由先升格。
+
+## 2026-09-29 Change note｜Private unseen formal evaluation verifier v1
+
+- **bottleneck：** 公開 holdout 已因 publication 全部退役，但 formal evaluation gate 原先只靠 `privateUnexposedHoldoutEstablished=true` 加文字 evidence reference，無法 machine-verify private pool 是否真的存在、是否在 outcomes 前凍結、是否未公開／未呈現，以及是否與同輪 scheduler／教學調整分離。
+- **公開 contract：** 新增 `formal-evaluation-verify.cjs`。未來只能在本機以 private manifest + private item files 驗證；逐檔 SHA-256、唯一 item ID、private-root path confinement、pool/version、scoring/evidence-taxonomy version 都需一致。
+- **evidence-integrity declarations：** manifest 必須是 `never_public_never_presented`、`independent_evaluation`、`no_same_round_updates`、`locked_before_outcomes`，且 `frozenBeforeOutcomes=true`；缺一項即 fail closed。
+- **Public/Private Hard Wall：** 真正 private 題目、答案與 manifest 只能放在 `.private-evaluation/`，該目錄同時加入 Git ignore 與 release exclusion；公開 repo 只保存 verifier 與 synthetic tests。
+- **gate hardening：** `teaching-gate-verify.cjs` 不再接受單純手填 private-holdout boolean 作 formal evaluation 證據；必須另有同次本機 verifier 的有效結果。R1b 仍是獨立條件，不能由 private pool 存在自動升格。
+- **目前狀態不變：** 本輪沒有建立任何真正 private evaluation item／manifest，也沒有真人資料；`replacementPrivateHoldout=not_established`、R1b=`not_established`、formal evaluation=`BLOCKED`、learning effect=`NOT_MEASURED`。formal teaching candidate 不需重凍結，因 learner-facing critical surface 未變。

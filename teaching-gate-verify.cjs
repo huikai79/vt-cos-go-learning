@@ -5,12 +5,13 @@ const path = require("node:path");
 const gateDefinition = require("./teaching-gate.json");
 const ReviewVerifier = require("./r1-review-verify.cjs");
 const CandidateVerifier = require("./formal-teaching-candidate.cjs");
+const FormalEvaluationVerifier = require("./formal-evaluation-verify.cjs");
 const candidateManifest = require("./formal-teaching-candidate.json");
 
 function validTimestamp(value) { return typeof value === "string" && Number.isFinite(Date.parse(value)); }
 function nonEmpty(value) { return typeof value === "string" && value.trim().length > 0; }
 
-function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate = CandidateVerifier.evaluateManifest(candidateManifest, __dirname)) {
+function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate = CandidateVerifier.evaluateManifest(candidateManifest, __dirname), privateEvaluationVerification = null) {
   const errors = [];
   if (!evidence) return { usabilityPassed: false, accessibilityPassed: false, privateHoldoutPassed: false, r1bPassed: false, errors: ["尚未提供真人證據檔"] };
   const schemaValid = evidence.schemaVersion === 2 && evidence.protocolId === "go-formal-teaching-evidence-v2";
@@ -76,12 +77,19 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate 
   if (!accessibilityPassed) errors.push("真人無障礙 spot check 未達最低正式教學閘門");
 
   const formalEvaluation = evidence.formalEvaluation || {};
-  const privateHoldoutPassed = formalEvaluation.privateUnexposedHoldoutEstablished === true && nonEmpty(formalEvaluation.evidenceReference);
+  const privateHoldoutPassed = formalEvaluation.privateUnexposedHoldoutEstablished === true
+    && nonEmpty(formalEvaluation.evidenceReference)
+    && privateEvaluationVerification
+    && privateEvaluationVerification.valid === true
+    && privateEvaluationVerification.protocolId === FormalEvaluationVerifier.PROTOCOL_ID
+    && Number.isInteger(privateEvaluationVerification.itemCount)
+    && privateEvaluationVerification.itemCount > 0
+    && /^[a-f0-9]{64}$/.test(String(privateEvaluationVerification.manifestFingerprint || ""));
   const r1bPassed = formalEvaluation.r1bComparabilityEstablished === true && nonEmpty(formalEvaluation.evidenceReference);
   return { usabilityPassed, accessibilityPassed, privateHoldoutPassed, r1bPassed, candidateUsable, errors };
 }
 
-function evaluateGate({ definition = gateDefinition, receipt = null, humanEvidence = null, candidate = null } = {}) {
+function evaluateGate({ definition = gateDefinition, receipt = null, humanEvidence = null, candidate = null, privateEvaluationVerification = null } = {}) {
   const definitionErrors = [];
   if (definition.schemaVersion !== 2 || definition.protocolId !== "go-formal-teaching-gate-v2") definitionErrors.push("正式教學 gate schema 或 protocol 不符");
   if (definition.r1ProtocolId !== ReviewVerifier.PROTOCOL_ID) definitionErrors.push("R1 protocol 與 verifier 不一致");
@@ -99,7 +107,7 @@ function evaluateGate({ definition = gateDefinition, receipt = null, humanEviden
 
   const r1 = receipt ? ReviewVerifier.verifyReceipt(receipt) : null;
   const r1Passed = Boolean(r1 && r1.receiptValid && r1.r1IndependentReviewPassed);
-  const human = evaluateHumanEvidence(humanEvidence, definition, candidateVerification);
+  const human = evaluateHumanEvidence(humanEvidence, definition, candidateVerification, privateEvaluationVerification);
   const formalTeachingPassed = definitionErrors.length === 0 && r1Passed && human.usabilityPassed && human.accessibilityPassed;
   const formalEvaluationPassed = formalTeachingPassed && human.privateHoldoutPassed && human.r1bPassed;
   const blockingReasons = [...definitionErrors];
@@ -133,7 +141,7 @@ function evaluateGate({ definition = gateDefinition, receipt = null, humanEviden
 
 function readJson(filePath) { return JSON.parse(fs.readFileSync(path.resolve(filePath), "utf8")); }
 
-module.exports = { evaluateHumanEvidence, evaluateGate, CandidateVerifier };
+module.exports = { evaluateHumanEvidence, evaluateGate, CandidateVerifier, FormalEvaluationVerifier };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
@@ -144,7 +152,11 @@ if (require.main === module) {
   try {
     const receiptPath = valueAfter("--r1");
     const humanPath = valueAfter("--human");
-    const result = evaluateGate({ receipt: receiptPath ? readJson(receiptPath) : null, humanEvidence: humanPath ? readJson(humanPath) : null });
+    const privateManifestPath = valueAfter("--private-manifest");
+    const privateRoot = valueAfter("--private-root");
+    if ((privateManifestPath && !privateRoot) || (!privateManifestPath && privateRoot)) throw new Error("--private-manifest 與 --private-root 必須一起提供");
+    const privateEvaluationVerification = privateManifestPath ? FormalEvaluationVerifier.verifyPrivateManifest(readJson(privateManifestPath), privateRoot) : null;
+    const result = evaluateGate({ receipt: receiptPath ? readJson(receiptPath) : null, humanEvidence: humanPath ? readJson(humanPath) : null, privateEvaluationVerification });
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
     if (!args.includes("--report-only") && result.formalTeachingUse.status !== "PASS") process.exitCode = 1;
   } catch (error) {

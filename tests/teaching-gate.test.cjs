@@ -196,3 +196,27 @@ test("formal teaching evidence example 必須綁定目前 frozen candidate", () 
   assert.equal(example.accessibility.candidateId, candidateId);
   assert.equal(example.accessibility.candidateFingerprint, candidateFingerprint);
 });
+
+
+test("手填 private holdout established 不能繞過 private manifest verifier", () => {
+  const evidence = validHumanEvidence();
+  evidence.formalEvaluation = { privateUnexposedHoldoutEstablished: true, r1bComparabilityEstablished: true, evidenceReference: "claimed-only" };
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence });
+  assert.equal(result.formalEvaluation.status, "BLOCKED");
+  assert.match(result.formalEvaluation.blockingReasons.join(" "), /formal holdout/);
+});
+
+test("formal evaluation 只有在 verified private pool 與 R1b 都存在時才可通過該 machine gate", () => {
+  const evidence = validHumanEvidence();
+  evidence.formalEvaluation = { privateUnexposedHoldoutEstablished: true, r1bComparabilityEstablished: true, evidenceReference: "local-formal-evaluation-evidence" };
+  const privateEvaluationVerification = {
+    valid: true,
+    protocolId: GateVerifier.FormalEvaluationVerifier.PROTOCOL_ID,
+    itemCount: 3,
+    manifestFingerprint: "a".repeat(64)
+  };
+  const result = GateVerifier.evaluateGate({ receipt: validReceipt(), humanEvidence: evidence, privateEvaluationVerification });
+  assert.equal(result.formalTeachingUse.status, "PASS");
+  assert.equal(result.formalEvaluation.status, "PASS");
+  assert.equal(result.learningEffect, "NOT_MEASURED");
+});
