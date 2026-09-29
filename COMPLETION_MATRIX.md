@@ -1,3 +1,11 @@
+2026-09-29 Change note｜Go × Mathematics Explore v1
+
+- **Johari correction：** 上一輪把 HKBU 2024 七人 narrative multiple case study 的「feeble to moderate」連結描述得太接近已量測 transfer；現已降格為雙領域熟手的感知策略連結／預期轉移線索，不作 learner outcome effect。
+- **實作：** 新增獨立 `math.html` 與 `research/go-math-explore-v1.md`；首頁只在既有低優先 Explore 區增加入口。頁面區分 formal mathematical relation、Go cognition 與 educational transfer，不載入 learner runtime。
+- **不可破壞：** 不改 Core 題目／KC／scoring／first response／retry／scheduler／T2-T3／formal evaluation；不宣稱本站提升一般數學能力。
+- **candidate：** 因 `index.html` 屬 critical learner surface，重新凍結為 `formal-teaching-candidate-2026-09-29-s`／`fnv1a32-js16-14856586`。
+- **狀態：** 正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。Explore engineering PASS 不升格成數學學習成效。
+
 2026-09-29 KaTrain Smoke Autodiscovery v1：Real KataGo receipt gate 已 ready，但 Windows 使用者仍需人工提供 executable/config/model 三條路徑。KaTrain 1.20.0 官方設定以 `~/.katrain/config.json` 保存 engine 設定，bundled Windows engine 使用 `katrain/KataGo/katago.exe`、分析設定預設 `katrain/KataGo/analysis_config.cfg`、模型使用 `katrain/models/...` package resource。新增 `tests/katrain-katago-smoke.ps1`：優先讀 user config；自訂 absolute path 直接採用；bundled resource 只在明確 `-KaTrainRoot`、正在執行的 KaTrain 目錄或有限常見安裝根下尋找 exact suffix。找不到、相對 custom path 無法安全解析、或同一 root 出現多個 bundled KataGo 都 fail closed。wrapper 最終只呼叫既有 `katago-bridge-smoke.ps1`，不建立第二套 receipt/scoring/engine contract。Windows CI 用 synthetic KaTrain layout 的 `-ResolveOnly` 測試成功解析與 ambiguity rejection；這仍不是 real-engine evidence，狀態維持 `READY_FOR_LOCAL_RUN / BLOCKED_ON_LOCAL_RECEIPT`。
 
 2026-09-29 Change note｜Real KataGo Smoke Receipt v1
