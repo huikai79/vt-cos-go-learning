@@ -1596,7 +1596,7 @@ async function main() {
     await command(socket, "Page.navigate", { url: historyPage });
     let historyReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
-      historyReady = await evaluate(socket, "Boolean(document.querySelector('#history-title')?.textContent && document.querySelectorAll('.question-block').length === 4)");
+      historyReady = await evaluate(socket, "Boolean(document.querySelector('#history-title')?.textContent && document.querySelectorAll('.question-block').length === 5)");
       if (historyReady) break;
       await delay(100);
     }
@@ -1665,7 +1665,7 @@ async function main() {
         evidenceLabels: [...new Set([...document.querySelectorAll('.evidence-guide .evidence-badge')].map((node) => node.textContent.trim()))],
         sourceAuditDate: document.querySelector('.source-audit-date')?.textContent.trim(),
         scripts: document.querySelectorAll('script').length,
-        historyVersion: document.querySelector('footer')?.textContent.includes('歷史探索 v5'),
+        historyVersion: document.querySelector('footer')?.textContent.includes('歷史探索 v6'),
         minContrast: Math.min(...audited.map((item) => item.ratio)),
         lowContrast: audited.filter((item) => item.ratio < 4.5),
         width: innerWidth,
@@ -1673,9 +1673,9 @@ async function main() {
       };
     })()`);
     assert.match(historyDesktop.title, /圍棋為什麼會長成今天這個樣子/);
-    assert.equal(historyDesktop.questions, 4);
+    assert.equal(historyDesktop.questions, 5);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
-    assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-28");
+    assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-29");
     assert.equal(historyDesktop.scripts, 0);
     assert.equal(historyDesktop.historyVersion, true);
     assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);

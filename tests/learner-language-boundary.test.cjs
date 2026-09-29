@@ -24,6 +24,7 @@ test("learner-facing HTML 不重新暴露內部研究／工程禁詞", () => {
     "advanced.html",
     "classic-shapes.html",
     "global-go-observatory.html",
+    "history.html",
     "math.html",
     "live-game.html"
   ];

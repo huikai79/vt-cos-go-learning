@@ -1,3 +1,11 @@
+2026-09-29 Change note｜History Explore cosmology／AI + cross-language concepts pilot
+
+- **實作：** `history.html` 由四題擴成五題，新增漢宋圍棋宇宙論／象數詮釋與《易》關係的證據邊界；近現代轉折新增 2016 後 AI 對布局、定石、新穎著手與知識多樣性的影響。
+- **研究治理：** 新增 `research/go-history-cosmology-ai-v1.md`；另新增 `research/cross-language-go-concepts-pilot-v1.md`，先研究厚／勢／味／先手／定石，不把語詞差異升格為民族認知差異，不建立獨立 Explore 頁。
+- **反證／邊界：** 132 年 17 路棋盤持續作為反對「361 是最初固定天文設計」的邊界證據；AI 研究只支持群體著手與知識分布變化，不取得唯一教學答案 authority。
+- **candidate／runtime：** 未改 `index.html`、Core runtime 或 formal critical surface；formal candidate 不重凍結。R1a、三位 target novice usability、真人 accessibility 依使用者決策保留最後階段，現況仍 BLOCKED／NOT_TESTED。
+- **驗證：** `tests/history.test.cjs` 新增宇宙論起源反證、AI 非全面失效、跨語 research-only 等 negative tests；`learner-language-boundary.test.cjs` 納入 `history.html`。
+
 2026-09-29 Evidence Overview v1：上一版 v54 已把「進階設定與資料」由長文字牆改成四張 compact cards，但四張仍把 activity、可分析機會、整合 evidence 與錯誤診斷放在第一層，容易讓 backend taxonomy 繼續支配學習者閱讀。v55 改成單一「目前紀錄與證據」overview，再以一個「查看資料來源與診斷」details 保留完整分母、首答、技能診斷與限制。overview 只消費既有 validated summary，不重算 scoring、不改 learner state／KC／scheduler／formal evaluation；ERROR 明示「部分資料暫時無法讀取」，高分母或錯誤數不會被翻成 mastery。candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-w`／`fnv1a32-js16-30995be7`。這是 learner-facing information hierarchy 的工程修正；正式 usability 仍 NOT_TESTED，正式教學仍 BLOCKED，學習成效仍 NOT_MEASURED。
 
 2026-09-29 Change note｜Global Go Observatory title wrap fix
@@ -209,7 +217,16 @@
 - **征子停止線：** 暫不加入 learner-facing 征子 sequence。原因不是缺教材名稱，而是目前尚未建立能驗證「每一步最強逃路／打吃選擇與引征干擾」的 forced-line oracle；不用一條看似梯形的固定手順冒充完整征子判定。
 - **Evidence boundary：** 三題仍全部為 `advanced_practice_only`、`formalEligible=false`、`qualifiedOpportunity=false`。rules oracle 只證明規則與已定 sequence contract 一致，不證明手筋構念效度、難度可比或學習成效。
 
-## 2026-09-26 Change note｜進階多手讀棋 v4：bounded 征子 forced line\n\n- **為何現在加入：** v3 把征子留在停止線，因為單靠合法手／提子不足以證明「對手被迫沿唯一路線逃」。v4 先擴 `advanced-sequence-contract.js`，讓每個 decision 可宣告並驗證 `expectedTrackedLibertiesBeforeLearner` 與 `opponentMoveMustBeUniqueLiberty`；只有能逐手重算「兩口氣→打吃後一口→對手唯一延長」的局面才可進 learner-facing sequence。\n- **bounded sequence：** 新增 7×7 征子局部。白方被追串起始兩口氣；黑連續六次把它壓成一口氣，每次白的固定應手都必須等於 tracked group 當下唯一 liberty；最後白在邊線只剩一口，黑第七手提掉八顆。所有中間氣數與最終提子數由 rules engine 重播。\n- **引征 negative oracle：** 測試另在征子路線上加入一顆白色接應／干擾子；原 canonical forced line 必須失效。這只證明「有干擾時不能沿原手順硬追」，不表示已窮舉所有引征形狀或能一般化判斷全盤征子。\n- **UI：** 多手棋盤題由 3 題增為 4 題；sequence selector、下一題、重設、鍵盤與 mobile reflow 共用同一 runtime。每次切題／重設都產生新的 presentation；舊首答與 retry append-only 保留。\n- **停止線仍在：** 不把這個 bounded ladder sequence 升為 KC 或正式征子能力；若要建立 transferable ladder skill，下一步需至少有多個不同方向／距離／引征位置的平行變形，且需外部棋理審查與真人難度資料。\n- **證據邊界：** rules-backed forced-line oracle 是工程／局部棋理一致性檢查；它不能證明教材最佳、學習者已會征子、或學習成效。\n\n## 2026-09-27 Change note｜進階 sequence family v5：非單純旋轉的第二變形
+## 2026-09-26 Change note｜進階多手讀棋 v4：bounded 征子 forced line
+
+- **為何現在加入：** v3 把征子留在停止線，因為單靠合法手／提子不足以證明「對手被迫沿唯一路線逃」。v4 先擴 `advanced-sequence-contract.js`，讓每個 decision 可宣告並驗證 `expectedTrackedLibertiesBeforeLearner` 與 `opponentMoveMustBeUniqueLiberty`；只有能逐手重算「兩口氣→打吃後一口→對手唯一延長」的局面才可進 learner-facing sequence。
+- **bounded sequence：** 新增 7×7 征子局部。白方被追串起始兩口氣；黑連續六次把它壓成一口氣，每次白的固定應手都必須等於 tracked group 當下唯一 liberty；最後白在邊線只剩一口，黑第七手提掉八顆。所有中間氣數與最終提子數由 rules engine 重播。
+- **引征 negative oracle：** 測試另在征子路線上加入一顆白色接應／干擾子；原 canonical forced line 必須失效。這只證明「有干擾時不能沿原手順硬追」，不表示已窮舉所有引征形狀或能一般化判斷全盤征子。
+- **UI：** 多手棋盤題由 3 題增為 4 題；sequence selector、下一題、重設、鍵盤與 mobile reflow 共用同一 runtime。每次切題／重設都產生新的 presentation；舊首答與 retry append-only 保留。
+- **停止線仍在：** 不把這個 bounded ladder sequence 升為 KC 或正式征子能力；若要建立 transferable ladder skill，下一步需至少有多個不同方向／距離／引征位置的平行變形，且需外部棋理審查與真人難度資料。
+- **證據邊界：** rules-backed forced-line oracle 是工程／局部棋理一致性檢查；它不能證明教材最佳、學習者已會征子、或學習成效。
+
+## 2026-09-27 Change note｜進階 sequence family v5：非單純旋轉的第二變形
 
 - **learning-loop bottleneck：** v4 每種手筋只有一個 learner-facing seed。即使單題 rules oracle 完整，學習者仍可能記座標、棋色、固定提子數或固定征子終點；這不足以觀察同一能力在新局部條件下是否保留。
 - **family schema：** 每個棋盤 Experience 新增 `familyId`、`variantId`、`variationAxes`；contract 缺欄位、重複 family/variant 或重複 experience id 都 fail closed。這些欄位只描述內容家族，不建立 KC 或 mastery。
@@ -262,7 +279,9 @@
 | 5×5／7×7／9×9 active 棋盤練習 | 共用 `live-game.html` 與尺寸切換；5／7 路作基礎／過渡練習，9 路保留完整小棋盤對局。3×3 已退出學習者 UI，但底層與歷史資料相容保留。規則、Pass、人工終局、悔棋、續局與 SGF 共用 bounded runtime | `tests/live-game.test.cjs` 目前 targeted suite 26/26 PASS，含尺寸、3×3 legacy、SGF、bot、rendering、cache-bust 與 live evidence 靜態接線 | 工程 | 5×5／7×7 仍只作 practice；9×9 只有 `live-eligibility-v1` 明列的少數局部回合可成 bounded live T3，其餘仍 unscored；不代表學習成效 |
 
 
-| 可替換對弈 provider | `move-provider-v1` 統一 heuristic／本機 KataGo bridge／Remote HTTP API；provider 只提候選，規則引擎再次驗證 | `tests/move-provider.test.cjs` 覆蓋 canonical payload、malformed/out-of-range、HTTP success 與 fail-closed；完整 CI 待分支 workflow | 工程 | 候選實作完成；KataGo 真機路徑仍需 Windows bridge 實測，不代表棋力或教學效度 |\n\n## 2026-09-22 Change note｜9×9 完整實戰
+| 可替換對弈 provider | `move-provider-v1` 統一 heuristic／本機 KataGo bridge／Remote HTTP API；provider 只提候選，規則引擎再次驗證 | `tests/move-provider.test.cjs` 覆蓋 canonical payload、malformed/out-of-range、HTTP success 與 fail-closed；完整 CI 待分支 workflow | 工程 | 候選實作完成；KataGo 真機路徑仍需 Windows bridge 實測，不代表棋力或教學效度 |
+
+## 2026-09-22 Change note｜9×9 完整實戰
 
 - **改動：** 新增 `live-game.js`／`live-game.html`／`live-game-page.js`／`live-game.css`，規則契約固定為 `cn-area-simple-ko-v1`，本機續局 envelope 為 `go-live-game-v1`。
 - **為何現在改：** 現有底盤已能處理 9 路合法落子與 SGF 局部回流，但缺完整棋局生命週期；本次只補這個 learning-loop experience bottleneck。
@@ -361,7 +380,15 @@
 - **階段：** `not_started`、`scanning_no_eligible`、`eligible_waiting_response`、`collecting_single_session`、`collecting_multi_session`。
 - **證據邊界：** readiness 不是「樣本量已足夠」、mastery、棋力、學習成效或 formal evaluation；沒有 eligible 機會不代表退步。
 - **Validation：** `tests/learner-progress.test.cjs` 6/6 PASS；現行 live evidence contract 11/11 PASS；board/UI targeted suite 26/26 PASS。
-\n## 2026-09-23 Change note｜Move Provider + KataGo／Remote API\n\n- **改動：** 新增 `move-provider.js`、`katago-bridge.cjs` 與 provider UI；既有 heuristic bot、localhost KataGo 與 Remote API 共用 `move-provider-v1` action contract。\n- **不可破壞 invariant：** provider 不取得 rules/scoring authority；任何候選 play 都再次經 `Live.play`。timeout、HTTP、JSON、KataGo process 或非法手維持 ERROR，不 fallback。\n- **歷史語義：** 不修改既有 practice event、live T3 eligibility/scoring、KC、scheduler 或 formal evaluation；provider/model metadata 只附加在 computer practice event。\n- **Migration／rollback：** 舊 opponent 設定仍可讀；移除 provider script／UI 與 bridge 即回到 heuristic/local mode，棋局與 evidence store 不需 migration。\n- **Validation：** PR #5 的 GitHub Actions `verify` run #151 已 PASS：`node-contracts`、`windows-ui-and-boundary`、`sabaki-sgf-oracle` 全部成功；其中 provider contract tests 已納入 Node contracts。**本機 Windows KataGo 真機 bridge smoke 仍為 NOT_MEASURED**。已新增 `tests/katago-bridge-smoke.ps1`，以實際 `katago.exe`、config、model 啟動 localhost bridge 並送出 `move-provider-v1` 9×9 請求；只有腳本取得有效 provider action 才可升為 PASS。因此目前只可宣稱 provider/API 與既有工程契約通過，不可宣稱 KataGo 全鏈路已驗證。\n
+
+## 2026-09-23 Change note｜Move Provider + KataGo／Remote API
+
+- **改動：** 新增 `move-provider.js`、`katago-bridge.cjs` 與 provider UI；既有 heuristic bot、localhost KataGo 與 Remote API 共用 `move-provider-v1` action contract。
+- **不可破壞 invariant：** provider 不取得 rules/scoring authority；任何候選 play 都再次經 `Live.play`。timeout、HTTP、JSON、KataGo process 或非法手維持 ERROR，不 fallback。
+- **歷史語義：** 不修改既有 practice event、live T3 eligibility/scoring、KC、scheduler 或 formal evaluation；provider/model metadata 只附加在 computer practice event。
+- **Migration／rollback：** 舊 opponent 設定仍可讀；移除 provider script／UI 與 bridge 即回到 heuristic/local mode，棋局與 evidence store 不需 migration。
+- **Validation：** PR #5 的 GitHub Actions `verify` run #151 已 PASS：`node-contracts`、`windows-ui-and-boundary`、`sabaki-sgf-oracle` 全部成功；其中 provider contract tests 已納入 Node contracts。**本機 Windows KataGo 真機 bridge smoke 仍為 NOT_MEASURED**。已新增 `tests/katago-bridge-smoke.ps1`，以實際 `katago.exe`、config、model 啟動 localhost bridge 並送出 `move-provider-v1` 9×9 請求；只有腳本取得有效 provider action 才可升為 PASS。因此目前只可宣稱 provider/API 與既有工程契約通過，不可宣稱 KataGo 全鏈路已驗證。
+
 ## 2026-09-23 Change note｜初學者對弈入口與進階 provider 分層
 
 - **目標行為：** learner-facing 主流程只要求選「練習電腦」或「雙人同機」及執黑／白；KataGo、Remote API、endpoint 與連線測試收進預設收合的進階設定。新使用者預設「練習電腦」，不要求理解引擎名稱、API 或安裝流程。
@@ -473,7 +500,9 @@
 ## 2026-09-27 Change note｜工具面板語意與品牌邊界複核（v45）
 
 - **Johari 開放區：** 「工具與資料」的分層本身成立：日常練習／複盤留第一層，流程試行、排程政策與匯出留在預設收合區；頂端「今日到期」仍只在確實有到期題時顯示。
-- **盲點修正：** 原 HTML 真的含有兩段字面量 `\n`，瀏覽器因此把 `\n` 當文字顯示；已改成真正換行並加反回歸。原工具按鈕「今日複習」也不精確，因 scheduler 在沒有到期題時會選尚未呈現的新 practice item；v45 改為依既有 `dueCount` 動態顯示「複習今日到期（N）」或「開始間隔練習」，但沒有改 scheduler 規則。
+- **盲點修正：** 原 HTML 真的含有兩段字面量 `
+`，瀏覽器因此把 `
+` 當文字顯示；已改成真正換行並加反回歸。原工具按鈕「今日複習」也不精確，因 scheduler 在沒有到期題時會選尚未呈現的新 practice item；v45 改為依既有 `dueCount` 動態顯示「複習今日到期（N）」或「開始間隔練習」，但沒有改 scheduler 規則。
 - **前輪判斷糾正：** 不採「公開介面移除 VT-COS」的全面做法。依 `BRAND.md`，第一次出現產品名稱仍保留母品牌 `VT-COS｜悟之一手`；後續操作列可只顯示「悟之一手」，避免重複品牌與英文狀態字串干擾任務。亦不把「棋譜單點復盤」泛化成「棋譜復盤」，因現行能力仍是 bounded single-move historical recall；「進階訓練」也保留既有產品路徑名稱。
 - **learner-facing 文案：** 「局面小測驗」改為「局面應用練習」；自由棋盤、進階訓練與 SGF 說明縮短並改成使用者可理解的功能／邊界，不再直接顯示 raw `practice`、KC／T2-T3 等不必要內部語言。SGF 仍明示單手重建不是最佳手評分。
 - **不可破壞 invariant：** 不改 item／KC、scoring、first response／retry、scheduler policy、storage schema、Evidence Taxonomy、formal evaluation、live evidence 或 advanced event contract。v45 只改 learner-facing HTML、顯示文案、現有 due state 的呈現與 UI version。
@@ -1031,4 +1060,5 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **修正：** main push 的 `served-pages-content` 現在另外檢查 `styles.css?v=learner-flow-v54`、`app.js?v=learner-flow-v54`、四個 compact brief DOM marker、15 單元參考標題，以及 `formal-teaching-candidate.json`／`teaching-gate.json` 的 candidate ID + fingerprint。另新增 `served-pages-status`，把 push 後 served-content 結果以 commit status context `verify/served-pages-content` 寫回該 main SHA。
 - **目的：** 讓 Definition of Done 的 post-merge served-content gate 可由機器直接查詢，不再只能推測 GitHub Pages 是否已更新。
 - **不可破壞 invariant：** 不改 learner-facing UI、題目、scoring、scheduler、first response/retry、event schema、KC、evidence taxonomy、formal candidate asset bytes 或正式評量語義；因此 candidate `formal-teaching-candidate-2026-09-29-u`／`fnv1a32-js16-86699408` 不需重凍結。
-- **Validation：** PR #111 pre-merge verify 全數 PASS；squash merge 至 `main` commit `0b1411c1f4c2780adb1245c477478b76532695a6` 後，push workflow run `36541346363` 的 `verify/served-pages-content` commit status = `success`，表示公開 Pages 已實際提供 v54 marker、candidate 與 teaching-gate binding。\n- **狀態：** release/deployment gate 工程 PASS。正式 usability 仍 `NOT_TESTED`、正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
+- **Validation：** PR #111 pre-merge verify 全數 PASS；squash merge 至 `main` commit `0b1411c1f4c2780adb1245c477478b76532695a6` 後，push workflow run `36541346363` 的 `verify/served-pages-content` commit status = `success`，表示公開 Pages 已實際提供 v54 marker、candidate 與 teaching-gate binding。
+- **狀態：** release/deployment gate 工程 PASS。正式 usability 仍 `NOT_TESTED`、正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
