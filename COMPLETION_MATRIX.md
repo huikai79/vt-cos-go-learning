@@ -1,3 +1,5 @@
+2026-09-29 Decision Replay v1：Decision Review 已能形成「全盤局面 → first candidate → 原著揭露 → reflection／bounded comparison」的 Response/Evidence，但沒有一個不依賴原 SGF 檔案的 Next Experience。新增獨立 replay stream 與本機 queue：只有已存在 `original_revealed` event 的局面才能加入，snapshot 保存 source review/version/fingerprint、棋盤 stones、ko previous stones、player、move number 與 historical original move。重做時原著再次先隱藏，first response／retry 分開保存，揭露後只做 historical comparison。所有 replay event 固定 `sourceExposure=previously_exposed`、`transferLevel=T0`、`formalEligible=false`、`qualifiedOpportunity=false`、`skillId=null`；不得當 unseen retention、T1/T2/T3、KC、scheduler 或 formal evaluation。later comparable position 明確保留為另一份尚未建立的 contract，不由 replay 自動升格。舊 review/comparison event stream 不修改、不 migration；rollback 可單獨移除 replay UI／stream。
+
 2026-09-29 Change note｜Math Explore learner-language sweep
 
 - **問題：** `math.html` 雖屬一般讀者 Explore 頁，仍散落 `spatial training`、`far transfer`、`transfer effect`、`Go-only` 等研究英文與翻譯腔；不符合 learner-facing 中文語境。
