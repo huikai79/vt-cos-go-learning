@@ -270,3 +270,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - Advanced 的公開 comparable pair 只建立 practice／process-check 工程契約；target item 雖標 T2 taxonomy，仍是公開已可取得答案的題目，不能作 formal unseen holdout。
 - provisional KC hypothesis 為 `urgent-atari-rescue-kc-v1`，但 construct validity 未由真人資料建立，且事件禁止更新 learner skill state／scheduler。
 - 本輪不修改 formal teaching candidate，也不解除 R1a、R1b、target novice usability、accessibility、private unseen formal evaluation 或 learning-effect gate。
+
+
+## 2026-09-29 Change note｜Delayed Comparable Retrieval v1
+
+- 24 小時固定延後只建立 public process-check 的時間分離；公開題可取得答案，因此不是 private unseen／Independent Evaluation。
+- delayed first response 與 actual delay 可作描述性 retention-oriented evidence，但目前不輸出 retention success、mastery 或 learning-effect claim，也不更新 KC／scheduler。
+- 本輪不修改 formal teaching candidate，不解除 R1a、R1b、target novice usability、accessibility、private unseen formal evaluation 或 learning-effect gate。
