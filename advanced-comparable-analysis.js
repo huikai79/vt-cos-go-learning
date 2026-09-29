@@ -98,10 +98,34 @@
    transferConclusion:null
   };
  }
+ function validateStoreEvents(store){
+  for(const event of store.events){
+   const error=Events.validate(event);
+   if(error)return{ok:false,error:"event_invalid:"+error,eventId:event&&event.eventId||null};
+  }
+  const order=Contract.itemOrder();
+  const firstPresentationIndex=new Map();
+  store.events.forEach((event,index)=>{
+   if(event.type==="comparable_presented"&&!firstPresentationIndex.has(event.itemId))firstPresentationIndex.set(event.itemId,index);
+  });
+  let previousIndex=-1;
+  let seenGap=false;
+  for(const item of order){
+   const index=firstPresentationIndex.has(item.itemId)?firstPresentationIndex.get(item.itemId):null;
+   if(index===null){seenGap=true;continue;}
+   if(seenGap)return{ok:false,error:"presentation_order_skipped_item",itemId:item.itemId};
+   if(index<=previousIndex)return{ok:false,error:"presentation_order_invalid",itemId:item.itemId};
+   previousIndex=index;
+  }
+  return{ok:true};
+ }
+
  function summarizeStore(store){
   if(!store||store.schemaVersion!==Events.SCHEMA_VERSION||store.eventStreamVersion!==Events.STREAM_VERSION||!Array.isArray(store.events)){
    return{ok:false,status:STATUS.INVALID,error:"comparable_store_invalid",pairs:[]};
   }
+  const lifecycle=validateStoreEvents(store);
+  if(!lifecycle.ok)return{ok:false,status:STATUS.INVALID,error:lifecycle.error,pairs:[]};
   const pairs=Contract.pairs.map(pair=>summarizePair(store,pair));
   const invalid=pairs.find(pair=>!pair.ok);
   if(invalid)return{ok:false,status:STATUS.INVALID,error:invalid.error,pairs};
@@ -127,5 +151,5 @@
   };
  }
 
- return Object.freeze({VERSION,STATUS,summarizeFirstPresentation,summarizePair,summarizeStore});
+ return Object.freeze({VERSION,STATUS,validateStoreEvents,summarizeFirstPresentation,summarizePair,summarizeStore});
 });
