@@ -249,3 +249,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **Public/Private Hard Wall：** 真正 private 題目、答案與 manifest 只能放在 `.private-evaluation/`，該目錄同時加入 Git ignore 與 release exclusion；公開 repo 只保存 verifier 與 synthetic tests。
 - **gate hardening：** `teaching-gate-verify.cjs` 不再接受單純手填 private-holdout boolean 作 formal evaluation 證據；必須另有同次本機 verifier 的有效結果。R1b 仍是獨立條件，不能由 private pool 存在自動升格。
 - **目前狀態不變：** 本輪沒有建立任何真正 private evaluation item／manifest，也沒有真人資料；`replacementPrivateHoldout=not_established`、R1b=`not_established`、formal evaluation=`BLOCKED`、learning effect=`NOT_MEASURED`。formal teaching candidate 不需重凍結，因 learner-facing critical surface 未變。
+
+
+## 2026-09-29 Change note｜Decision Replay v1
+
+- Advanced Decision Replay 只重做已經看過原著的同一 19×19 局面，固定標記為 `previously_exposed`／T0 practice。
+- replay first response／retry 只屬 practice evidence；不得作 unseen retention、transfer、KC、scheduler、formal evaluation 或 formal teaching 證據。
+- 本輪不修改 formal teaching candidate，也不替代 R1a、目標初學者 usability 或真人 accessibility；這些 gate 仍依 final-phase human review policy 保持原狀。

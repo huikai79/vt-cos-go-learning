@@ -7,6 +7,7 @@
   const Comparison = window.GoDecisionComparison;
   const ComparisonProvider = window.GoDecisionComparisonProvider;
   const ComparisonEvents = window.GoAdvancedDecisionComparisonEvents;
+  const Replay = window.GoAdvancedDecisionReplay;
   if (!Go || !Sgf || !Events) return;
 
   const $ = (id) => document.getElementById(id);
@@ -149,6 +150,8 @@
     $("decision-review-reveal").disabled = true;
     $("decision-review-reflection").disabled = true;
     $("decision-review-save-reflection").disabled = true;
+    $("decision-replay-queue").disabled = true;
+    $("decision-replay-queue").textContent = "加入稍後重做";
     $("decision-comparison-result").textContent = "";
     $("decision-comparison-panel").open = false;
     $("decision-review-feedback").textContent = "先在全盤提出你的第一候選；原棋譜著手現在還看不到。";
@@ -265,7 +268,20 @@
     $("decision-review-reveal").disabled = true;
     $("decision-review-reflection").disabled = false;
     $("decision-review-save-reflection").disabled = false;
+    $("decision-replay-queue").disabled = !Replay;
     setupComparisonInputs();
+  });
+
+  $("decision-replay-queue").addEventListener("click", () => {
+    if (!revealed || !exp || !Replay) return;
+    const result = Replay.queueFromExperience(exp);
+    if (result.ok) {
+      $("decision-replay-queue").disabled = true;
+      $("decision-replay-queue").textContent = result.existing ? "已在重做清單" : "已加入重做清單";
+      $("decision-replay-queue-note").textContent = "已保存同一個、已曝光的局面；之後重做仍只算 T0 練習。";
+    } else {
+      $("decision-replay-queue-note").textContent = "目前無法加入重做清單；原本複盤紀錄仍保留。";
+    }
   });
 
   $("decision-review-save-reflection").addEventListener("click", () => {
