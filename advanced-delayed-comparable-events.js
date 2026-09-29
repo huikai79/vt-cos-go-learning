@@ -52,6 +52,12 @@ function lifecycleError(store,event){
  const completions=sameAttempt.filter(e=>e.type==="delayed_completed");
  if(event.type==="delayed_presented"){
   if(presentations.length)return"delayed_item_already_presented";
+  const itemIndex=Contract.items.findIndex(item=>item.itemId===event.itemId);
+  for(let index=0;index<itemIndex;index++){
+   const previousId=Contract.items[index].itemId;
+   const previousCompleted=store.events.some(e=>e.itemId===previousId&&e.type==="delayed_completed");
+   if(!previousCompleted)return"delayed_previous_item_incomplete";
+  }
   return null;
  }
  if(!sameAttempt.some(e=>e.type==="delayed_presented"))return"delayed_response_without_presentation";
@@ -86,9 +92,11 @@ function validateStore(store){
  for(const event of store.events){
   const error=validate(event);if(error)return{ok:false,error:"event_invalid:"+error,eventId:event&&event.eventId||null};
  }
+ let seenDelayedGap=false;
  for(const item of Contract.items){
   const events=store.events.filter(event=>event.itemId===item.itemId);
-  if(!events.length)continue;
+  if(!events.length){seenDelayedGap=true;continue;}
+  if(seenDelayedGap)return{ok:false,error:"delayed_store_presentation_order_skipped_item",itemId:item.itemId};
   const presentations=events.filter(event=>event.type==="delayed_presented");
   const firsts=events.filter(event=>event.type==="delayed_first");
   const retries=events.filter(event=>event.type==="delayed_retry");
