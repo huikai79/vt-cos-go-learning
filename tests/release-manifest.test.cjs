@@ -195,16 +195,16 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /本頁來源最後查核：2026-09-28/);
   assert.match(workflow, /href="advanced\.html">回進階訓練<\/a>/);
   assert.match(workflow, /attempt <= 12/);
-  assert.match(workflow, /styles\.css\?v=learner-flow-v54/);
-  assert.match(workflow, /app\.js\?v=learner-flow-v54/);
+  assert.match(workflow, /styles\.css\?v=learner-flow-v55/);
+  assert.match(workflow, /app\.js\?v=learner-flow-v55/);
   assert.match(workflow, /15 單元核心課程（參考）/);
   assert.match(workflow, /id="live-practice-brief"/);
   assert.match(workflow, /id="live-evidence-brief"/);
   assert.match(workflow, /id="integrated-progress-brief"/);
   assert.match(workflow, /id="diagnostic-brief"/);
   assert.match(workflow, /formal-teaching-candidate\.json\?deploy=/);
-  assert.match(workflow, /formal-teaching-candidate-2026-09-29-u/);
-  assert.match(workflow, /fnv1a32-js16-86699408/);
+  assert.match(workflow, /formal-teaching-candidate-2026-09-29-w/);
+  assert.match(workflow, /fnv1a32-js16-4a325a8b/);
   assert.match(workflow, /served-pages-status:/);
   assert.match(workflow, /permissions:\s*[\s\S]*statuses: write/);
   assert.match(workflow, /context:"verify\/served-pages-content"/);
@@ -292,6 +292,12 @@ test("Comparable Position v1 runtime 與 contract tests 列入公開發佈清單
 
 test("Comparable Position analysis v1 列入公開發佈清單", () => {
   for (const file of ["advanced-comparable-analysis.js", "tests/advanced-comparable-analysis.test.cjs"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
+
+test("short-talk content review verifier 與 template 列入公開發佈清單", () => {
+  for (const file of ["lesson-content-review-verify.cjs", "lesson-content-review.example.json", "tests/lesson-content-review.test.cjs"]) {
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
