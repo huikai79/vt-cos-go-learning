@@ -592,4 +592,10 @@ History Explore 的證據呈現遵守「claim → evidence unit → source recor
 ### 2026-09-29 Short Talk UX v2 設計契約
 
 短講的最小單位不再是「兩步」，而是「一個有意義的 observable state」。多步只在下一步會改變棋子或教學標記時成立；相鄰完全相同畫面屬 regression。資料來源收斂為 `lesson.text → demoSteps[] → takeaway → terms[]`，不再維護 `lesson.demo`／`demoBoard` 平行真值。學習者主流程採「核心概念 → 棋盤變化 → 單一 caption → 進題前一句 → 練習」，圖例與關鍵詞降為輔助層。自動短講與手動重看只在顯示／焦點語義上區分，不新增 learner mastery 或觀看進度。這個 contract 的成功條件是減少無資訊增量步驟與重複表達；是否真正降低認知負荷仍由 final candidate 真人 usability 驗證。
+### 2026-09-29 Short Talk UX v2 post-audit hardening
 
+- Responsive contract 必須以「短講 Modal 開啟」為實際改動面驗證；不能只以整頁 320px 無 overflow 代替。mobile override 放在 base short-talk rule 之後，避免相同 specificity 的 cascade 回歸。
+- `seenLessonIntros` 只表示 auto-display suppression，不是觀看完成、理解或 learner evidence。content catalog 升版不自動清除此狀態；新版短講始終可手動重看。
+- focus authority 收斂到 dismiss action：manual Close／Esc 回短講入口，manual Start／auto skip／auto Esc 進題目；不由 dialog close event 再做第二次焦點決策。
+- 題庫 R1a 與 19 課短講 human content review 分離。short-talk learner-facing semantics 由 `go-independent-lesson-content-review-v1` fingerprint 綁定；它只支持內容正確性，不支持 comprehension／usability／learning effect。
+- final learner-facing candidate 為 `learner-flow-v55`／`formal-teaching-candidate-2026-09-29-v`；若後續再改 critical surface，須 refreeze 後再收正式真人證據。
