@@ -1014,4 +1014,8 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **內容治理：** 題庫 R1a v5 實際只審 77 題 reviewer set，不能代表 19 課短講已受外部棋理審查。新增 `go-independent-lesson-content-review-v1`／`fnv1a32-7741b3d8`，將 19 課短講逐課 fail closed；formal teaching gate 升至 v3，未有短講回條時即使題庫 R1a 與真人 usability/accessibility 齊備也不得 PASS。
 - **版本／candidate：** learner UI 升為 `learner-flow-v55`；content catalog 仍為 5。critical learner surface 重新凍結為 `formal-teaching-candidate-2026-09-29-v`／`fnv1a32-js16-76aaa07f`。storage schema、題目 scoring、KC、scheduler、first response/retry、event schema、evidence taxonomy 與 formal evaluation authority 不變。
 - **證據邊界：** 上述均是工程與 governance hardening；沒有產生外部棋理回條、target-novice usability、真人 accessibility、R1b、private holdout 或 learning-effect 證據。
+## 2026-09-29 Change note｜Inherited v54 advanced-sidebar hierarchy in v55
 
+- 最新 main 的 `learner-flow-v54` 已把「進階設定與資料」重排為「目前學習狀態摘要 → 按需展開完整診斷 → 15 單元核心課程參考 → 工具與資料」，並為實戰紀錄、可分析實戰機會、學習證據與錯誤修正加入 compact brief。
+- Short Talk v55 已保留上述 main 變更；沒有把側欄重排回舊版，也沒有改變診斷、KC、scheduler、scoring 或 learner-state authority。
+- 這仍只屬資訊階層與呈現工程；真人是否更快理解狀態與下一步仍待正式 usability。
