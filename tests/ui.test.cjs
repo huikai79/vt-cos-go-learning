@@ -111,6 +111,17 @@ async function main() {
   assert.match(m2Html, /id="course-nav-toggle"[^>]*aria-expanded="false"[^>]*aria-controls="course-navigation"/);
   assert.match(m2Html, /id="current-course-context"/);
   assert.match(m2Html, /id="today-navigation"[^>]*hidden/);
+  assert.match(m2Html, /class="advanced-priority-label">學習狀態<\/div>/);
+  for (const id of ["live-practice-brief", "live-evidence-brief", "integrated-progress-brief", "diagnostic-brief"]) {
+    assert.match(m2Html, new RegExp(`id="${id}"`));
+  }
+  const advancedStatusPosition = m2Html.indexOf('class="advanced-priority-label"');
+  const diagnosticPosition = m2Html.indexOf('id="live-practice-brief"');
+  const courseMapPosition = m2Html.indexOf('class="advanced-course-map"');
+  const toolsPosition = m2Html.indexOf('id="sidebar-tools-button"');
+  assert.ok(advancedStatusPosition < diagnosticPosition && diagnosticPosition < courseMapPosition && courseMapPosition < toolsPosition);
+  assert.match(m2Css, /\.diagnostic-brief\{[^}]*text-align:right/);
+  assert.match(m2Css, /\.diagnostic-card p\{[^}]*white-space:pre-line/);
   assert.match(m2App, /const currentLessonIndex = problems\[state\.index\]\.lesson/);
   assert.match(m2App, /state\.navUnitIndex/);
   assert.match(m2Css, /\.course-navigation\.is-open\{display:block\}/);
