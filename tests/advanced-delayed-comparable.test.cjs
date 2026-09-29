@@ -199,3 +199,21 @@ test("兩筆單獨合法 presentation 組成同一 item store 時仍 fail closed
  assert.equal(checked.ok,false);
  assert.equal(checked.error,"delayed_store_presentation_count_invalid");
 });
+
+
+test("不得繞過 UI 先呈現 delayed B",()=>{
+ const s=storage(),item=Delayed.items[1];
+ const anchorAt="2026-09-28T00:00:00.000Z",dueAt="2026-09-29T00:00:00.000Z";
+ const input={
+  eventId:"b-first",sessionId:"s",attemptId:"b1",
+  itemId:item.itemId,itemVersion:item.itemVersion,pairId:item.pairId,pairVersion:item.pairVersion,pairHypothesisVersion:item.pairHypothesisVersion,
+  anchorItemId:item.anchorItemId,anchorEventId:"anchor-b",anchorOccurredAt:anchorAt,dueAt,
+  positionFingerprint:item.positionFingerprint,kcHypothesisId:item.kcHypothesisId,kcHypothesisVersion:item.kcHypothesisVersion,
+  scoringContractVersion:item.scoringContractVersion,evidenceTaxonomyVersion:item.evidenceTaxonomyVersion,retrievalPolicyVersion:item.retrievalPolicyVersion,
+  minimumDelayMs:Delayed.MIN_DELAY_MS,actualDelayMs:Delayed.MIN_DELAY_MS,occurredAt:dueAt,
+  type:"delayed_presented",eligibilityDeclaredBeforeResponse:true,hintAvailable:false
+ };
+ const result=Events.append(s,input);
+ assert.equal(result.ok,false);
+ assert.equal(result.error,"delayed_previous_item_incomplete");
+});
