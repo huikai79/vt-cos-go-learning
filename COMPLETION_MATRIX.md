@@ -1,3 +1,5 @@
+2026-09-29 Evidence Overview v1：上一版 v54 已把「進階設定與資料」由長文字牆改成四張 compact cards，但四張仍把 activity、可分析機會、整合 evidence 與錯誤診斷放在第一層，容易讓 backend taxonomy 繼續支配學習者閱讀。v55 改成單一「目前紀錄與證據」overview，再以一個「查看資料來源與診斷」details 保留完整分母、首答、技能診斷與限制。overview 只消費既有 validated summary，不重算 scoring、不改 learner state／KC／scheduler／formal evaluation；ERROR 明示「部分資料暫時無法讀取」，高分母或錯誤數不會被翻成 mastery。candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-w`／`fnv1a32-js16-30995be7`。這是 learner-facing information hierarchy 的工程修正；正式 usability 仍 NOT_TESTED，正式教學仍 BLOCKED，學習成效仍 NOT_MEASURED。
+
 2026-09-29 Change note｜Global Go Observatory title wrap fix
 
 - **問題：** 寬版 Hero 主標「全球圍棋觀察」受 `max-width: 9ch` 限制，最後一字「察」可能單獨掉到第二行。
@@ -78,7 +80,7 @@
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v5`
-- `ui_version`: `learner-flow-v54`；棋盤練習頁 `live-game-ui-v11`
+- `ui_version`: `learner-flow-v55`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
 - `content_catalog_version`: 4
 - `formal_evaluation_available`: false
@@ -108,7 +110,7 @@
 | standardized T3 固定應用探測 | 5 個減少技能線索的固定局面；Evidence Taxonomy v2 以 `evaluationContext=standardized` 與 live T3 分開 | SGF、試行、UI 與 evidence-taxonomy contract 測試 | 工程 | 條件通過；只支持既定局部 scoring contract，不代表全局判斷或 live 實戰遷移 |
 | SGF 實戰回流／決策點複盤／兩手比較 | Core 保留單一主線 9 路 historical recall；Advanced 的 19×19 SGF Decision Review v1 保存 first candidate／retry／原著揭露，Decision Point Comparison v1 只在原著已揭露、第一候選合法且兩手不同時，允許選用 KataGo 以固定 rules／komi／visits 比較第一候選與原著 | `sgf.test.cjs`、`advanced-decision-review.test.cjs`、`decision-comparison.test.cjs`、KataGo bridge fail-closed、Windows browser UI、發布邊界與 CI | 工程／practice reference | 條件通過只表示 bounded comparison workflow 可追溯；engine 排序不是標準答案，不產生 correct／mastery／transfer，不更新 KC／scheduler／T2-T3／formal evaluation |
 | KaTrain／KataGo 分析 | KaTrain 1.20.0 可啟動；封裝內含 KataGo 1.18.1、38 MB 模型與 OpenCL GPU；網頁可匯出交接 SGF | 同版本設定已補齊 KaTrain `analysis` 必填欄位；9 路固定局面經 GTP 回應 `E5`，並由 `analysis` 回傳 JSON；原版桌面程式已建立 `katago.exe analysis` 子程序 | 外部工具 | 工具層通過；輸出是搜尋估計，仍需使用者對實戰局面確認教學結論 |
-| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：Hero 仍以零基礎 Core 為主要 CTA，首屏後由「基礎建立／局部與棋局判斷／全局與綜合應用」三階段直接承擔核心課程入口；基礎進 Core、局部直達 Core 第 6 單元、全局直達 Core 第 11 單元。Advanced 維持獨立路線，不屬於單元 1–15，也不再冒充三階段中的局部入口。Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、Core 第 6／11 單元直達與無橫向溢出反證 | 工程 | `learner-flow-v54` 條件通過；三張階段卡只代表 Core 1–15，Advanced 另列為獨立進階訓練。首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
+| 首頁下一步清楚 | 根網址固定作為悟之一手學習樞紐：Hero 仍以零基礎 Core 為主要 CTA，首屏後由「基礎建立／局部與棋局判斷／全局與綜合應用」三階段直接承擔核心課程入口；基礎進 Core、局部直達 Core 第 6 單元、全局直達 Core 第 11 單元。Advanced 維持獨立路線，不屬於單元 1–15，也不再冒充三階段中的局部入口。Core workspace 使用 `#core`，重新載入可留在課程，回到根網址則回首頁。回訪者首頁顯示「繼續核心課程」與上次課名，不再自動略過首頁；只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量 | `app-state.test.cjs`、UI 測試；375px 單欄、root-vs-#core route、回訪 CTA、Core 第 6／11 單元直達與無橫向溢出反證 | 工程 | `learner-flow-v55` 條件通過；三張階段卡只代表 Core 1–15，Advanced 另列為獨立進階訓練。首頁是否讓不同程度使用者更快選對入口仍待真人觀察 |
 | 跨課短講銜接 | 同課前往下一題；跨課或跨單元時按鈕明示短講；同單元跨課仍以是否看過決定自動開啟，正式跨單元則一律再次開啟下一單元短講，避免先前預覽跳過教學銜接 | 狀態與 UI 測試；`tests/ui.test.cjs` 逐一覆蓋全部 14 個跨單元邊界，另覆蓋「已預覽第 8 單元後正式完成第 7 單元」反證案例 | 工程 | 條件通過；14/14 跨單元 browser regression 與已預覽下一單元案例已通過，真人是否感覺自然仍待最後觀察 |
 | R1a 內容審題操作 | reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組；學習頁不再提供入口，審查頁只載入去答案資料，三項獨立聲明分開 | `r1-content-audit.test.cjs`、UI 測試 | 工程 | v5 答案盲審流程條件通過；fingerprint 同時綁定 reviewer-visible `prompt`／`focus` 與 family／skill／scoring identity；外部回條仍待不同於學習者的審查者完成，且結果不恢復 formal holdout 資格 |
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |

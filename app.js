@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v54";
+  const uiVersion = "learner-flow-v55";
   const contentCatalogVersion = 4;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -199,22 +199,18 @@
 
   function renderLivePracticeSummary() {
     const target = $("live-practice-summary");
-    const brief = $("live-practice-brief");
     if (!target) return;
     const result = readLivePractice();
     if (!result.ok) {
       target.textContent = "實戰練習紀錄目前無法讀取；不會以推測資料取代。";
-      if (brief) brief.textContent = "暫時無法讀取";
       return;
     }
     const summary = result.summary;
     if (!summary || !summary.totalEvents) {
       target.textContent = "尚無人機實戰紀錄。";
-      if (brief) brief.textContent = "尚無紀錄";
       return;
     }
     target.textContent = `人機練習 ${summary.computerSessions} 局；你的可觀察決策 ${summary.humanDecisions} 次。\n這些只作練習紀錄，不以單局勝負判定能力。`;
-    if (brief) brief.textContent = `${summary.computerSessions} 局 · ${summary.humanDecisions} 次決策`;
   }
 
   function readLiveEvidence() {
@@ -233,18 +229,15 @@
 
   function renderLiveEvidenceSummary() {
     const target = $("live-evidence-summary");
-    const brief = $("live-evidence-brief");
     if (!target) return;
     const result = readLiveEvidence();
     if (!result.ok) {
       target.textContent = "實戰學習紀錄目前無法讀取；不會以零紀錄或推測值取代。";
-      if (brief) brief.textContent = "暫時無法讀取";
       return;
     }
     const summary = result.summary;
     if (!summary || !summary.assessedHumanTurns) {
       target.textContent = "目前還沒有可用來觀察能力的 9×9 人機實戰機會。";
-      if (brief) brief.textContent = "尚無可分析機會";
       return;
     }
     const skillText = summary.skills
@@ -252,7 +245,6 @@
       .map((skill) => `${skill.label}：${skill.satisfiedFirstResponses}/${skill.firstResponses} 首答完成；${liveEvidenceStateLabel(skill.evidenceState)}`)
       .join("\n");
     target.textContent = `已查看 ${summary.assessedHumanTurns} 個你的回合；其中 ${summary.eligibleOpportunities} 個符合目前的觀察條件，其餘 ${summary.unscoredHumanTurns} 個回合不評分。\n${skillText || "目前還沒有符合客觀評分條件的局面。"}`;
-    if (brief) brief.textContent = `${summary.eligibleOpportunities} / ${summary.assessedHumanTurns} 可分析`;
   }
 
   function computeIntegratedProgress(diagnostics = null, liveSummary = null) {
@@ -267,24 +259,20 @@
 
   function renderIntegratedProgressSummary(diagnostics = null) {
     const target = $("integrated-progress-summary");
-    const brief = $("integrated-progress-brief");
     if (!target) return;
     const liveResult = readLiveEvidence();
     if (!liveResult.ok) {
       target.textContent = "整合學習紀錄暫時無法更新：實戰紀錄目前無法讀取。";
-      if (brief) brief.textContent = "暫時無法更新";
       return;
     }
     const summary = computeIntegratedProgress(diagnostics, liveResult.summary);
     if (!summary || !summary.skills.length) {
       target.textContent = "尚無足夠的可比較技能證據。";
-      if (brief) brief.textContent = "資料不足";
       return;
     }
     const visible = summary.skills.filter((skill) => skill.practiceQualifiedOpportunities || skill.liveEligibleOpportunities);
     if (!visible.length) {
       target.textContent = "尚無足夠的可比較技能證據。";
-      if (brief) brief.textContent = "資料不足";
       return;
     }
     const readiness = summary.collectionReadiness;
@@ -293,15 +281,58 @@
       return `${name}：${skill.label}；${skill.nextEvidenceNeed}`;
     }).join("\n");
     target.textContent = `${readiness ? "資料收集：" + readiness.label + "\n" : ""}${skillText}`;
-    if (brief) {
-      brief.textContent = visible.some((skill) => skill.state === "needs_more_practice_evidence")
-        ? "仍需練習"
-        : visible.every((skill) => skill.state === "practice_evidence_only")
-          ? "目前只有練習紀錄"
-          : visible.some((skill) => skill.state === "delayed_t2_and_live_observed")
-            ? "已有延後＋實戰紀錄"
-            : "資料累積中";
+  }
+
+  function renderAdvancedEvidenceOverview(diagnostics = null) {
+    const brief = $("advanced-evidence-brief");
+    const note = $("advanced-evidence-note");
+    if (!brief || !note) return;
+
+    const practiceResult = readLivePractice();
+    const liveResult = readLiveEvidence();
+    if (!practiceResult.ok || !liveResult.ok) {
+      brief.textContent = "部分資料暫時無法讀取";
+      note.textContent = "詳細資料會保留讀取失敗狀態；系統不會把錯誤當成沒有紀錄。";
+      return;
     }
+
+    const summary = computeIntegratedProgress(diagnostics, liveResult.summary);
+    if (!summary) {
+      brief.textContent = "目前無法整理資料";
+      note.textContent = "目前無法產生整合摘要；請查看詳細資料，不會以推測結果取代。";
+      return;
+    }
+
+    const visible = summary.skills.filter((skill) => skill.practiceQualifiedOpportunities || skill.liveEligibleOpportunities);
+    const hasPracticeActivity = Boolean(practiceResult.summary && practiceResult.summary.totalEvents);
+    const hasLiveActivity = Boolean(liveResult.summary && liveResult.summary.assessedHumanTurns);
+
+    if (!visible.length) {
+      brief.textContent = hasPracticeActivity || hasLiveActivity ? "已有練習紀錄" : "尚無足夠資料";
+      note.textContent = hasPracticeActivity || hasLiveActivity
+        ? "目前還沒有足夠的可比較資料；詳細資料可查看已收到哪些紀錄。"
+        : "完成練習、延後複習或實戰後，這裡會整理目前可比較的紀錄。";
+      return;
+    }
+
+    const states = visible.map((skill) => skill.state);
+    if (states.some((state) => state === "needs_more_practice_evidence")) {
+      brief.textContent = "仍需繼續觀察";
+      note.textContent = "目前已有可比較紀錄，但其中包含錯誤或未完成；先保留紀錄，再用新題或新棋局繼續觀察。";
+      return;
+    }
+    if (states.some((state) => state === "delayed_t2_and_live_observed")) {
+      brief.textContent = "已有延後與實戰紀錄";
+      note.textContent = "已有不同來源的可比較紀錄；這仍不是熟練程度、棋力或正式評量。";
+      return;
+    }
+    if (states.every((state) => state === "practice_evidence_only")) {
+      brief.textContent = "目前只有練習紀錄";
+      note.textContent = "還需要延後複習或新的實戰機會，才有更多可比較依據。";
+      return;
+    }
+    brief.textContent = "資料仍在累積";
+    note.textContent = "目前已有部分可比較紀錄；還需要更多延後或實戰機會，暫不作能力結論。";
   }
 
   function clearAuxiliaryFeedback(id) {
@@ -1247,19 +1278,11 @@
       : "今天沒有到期題；可先做尚未練過的練習題，之後再依間隔回來複習。";
     $("resume-button").textContent = state.externalMode ? "返回目前課程" : state.hasStarted ? "前往目前題目" : state.index === 0 ? "開始第 1 題" : "開始這一題";
     const diagnostics = Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses });
-    const diagnosticBrief = $("diagnostic-brief");
-    if (diagnosticBrief) {
-      const totalFirstAnswerErrors = diagnostics.skills.reduce((sum, skill) => sum + (Number(skill.observedErrors) || 0), 0);
-      diagnosticBrief.textContent = diagnostics.skills.length
-        ? totalFirstAnswerErrors
-          ? `${totalFirstAnswerErrors} 次首答錯誤`
-          : "目前未記到首答錯誤"
-        : "尚無可比較資料";
-    }
     $("diagnostic-summary").textContent = diagnosticSummaryText(diagnostics);
     renderLivePracticeSummary();
     renderLiveEvidenceSummary();
     renderIntegratedProgressSummary(diagnostics);
+    renderAdvancedEvidenceOverview(diagnostics);
   }
 
   function diagnosticSummaryText(diagnostics) {
