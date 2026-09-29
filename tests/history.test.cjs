@@ -288,7 +288,7 @@ test("AI-era concrete case research 維持候選資產，不把引擎偏好直�
   assert.match(record, /Candidate B｜三三舊定石中的二路爬重新評價/);
   assert.match(record, /Candidate C｜「定石」本身被重新定義為條件性知識/);
   assert.match(record, /不能寫成「AI 證明開局三三永遠最好」/);
-  assert.match(record, /如果一個案例最後只能表達「AI 說這手比較好」.*就不升格為教學內容/s);
+  assert.match(record, /若一個案例最後只能表達「AI 說這手比較好」.*不能指出可觀察的棋盤線索或條件.*就不升格為教學內容/s);
   assert.match(record, /representative board \/ SGF 重建/);
   assert.match(record, /Go-specific technical validation/);
 });
