@@ -264,3 +264,15 @@ test("decision replay runtime 與 evidence contract 列入公開發佈清單", (
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
+
+
+test("Comparable Position v1 runtime 與 contract tests 列入公開發佈清單", () => {
+  for (const file of [
+    "advanced-comparable-position-contract.js",
+    "advanced-comparable-position-events.js",
+    "advanced-comparable-position.js",
+    "tests/advanced-comparable-position.test.cjs"
+  ]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
