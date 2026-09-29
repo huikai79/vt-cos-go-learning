@@ -1060,6 +1060,62 @@ async function main() {
     assert.deepEqual(replayQueued.eventTypes, ["replay_queued","replay_presented","replay_candidate_first","replay_original_revealed"]);
     assert.deepEqual(replayQueued.first, {originalMove:null, matchesOriginal:null, originalExposed:false, hasCorrect:false});
     assert.deepEqual(replayQueued.reveal, {originalMove:[16,15], transfer:"T0", formal:false, hasCorrect:false, hasMastery:false});
+    const comparableFlow = await evaluate(socket, `(() => {
+      const firstButton = document.querySelector('#comparable-list [data-comparable-item="urgent-rescue-a-practice"]');
+      if (!firstButton || firstButton.disabled) throw new Error('first comparable item unavailable');
+      firstButton.click();
+
+      function clickPoint(x,y){
+        const point = document.querySelector('#comparable-board [data-comparable-x="'+x+'"][data-comparable-y="'+y+'"]');
+        if (!point) throw new Error('comparable point missing '+x+','+y);
+        point.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+      }
+
+      clickPoint(10,10);
+      const afterWrong = document.querySelector('#comparable-feedback').textContent;
+      clickPoint(5,3);
+      const afterPracticeA = document.querySelector('#comparable-feedback').textContent;
+      document.querySelector('#comparable-next').click();
+
+      clickPoint(0,7);
+      document.querySelector('#comparable-next').click();
+
+      const roleAtProcess = document.querySelector('#comparable-role').textContent;
+      clickPoint(0,0);
+      const processWrong = document.querySelector('#comparable-feedback').textContent;
+      clickPoint(12,5);
+
+      const raw = JSON.parse(localStorage.getItem('go-advanced-comparable-position-events-v1'));
+      const practiceFirst = raw.events.find(event => event.itemId==='urgent-rescue-a-practice' && event.type==='comparable_first');
+      const practiceCompleted = raw.events.find(event => event.itemId==='urgent-rescue-a-practice' && event.type==='comparable_completed');
+      const processPresented = raw.events.find(event => event.itemId==='urgent-rescue-a-process' && event.type==='comparable_presented');
+      const processFirst = raw.events.find(event => event.itemId==='urgent-rescue-a-process' && event.type==='comparable_first');
+      const processCompleted = raw.events.find(event => event.itemId==='urgent-rescue-a-process' && event.type==='comparable_completed');
+      const listButtons = [...document.querySelectorAll('#comparable-list [data-comparable-item]')].map(button=>({id:button.dataset.comparableItem,disabled:button.disabled}));
+
+      return {
+        afterWrong,
+        afterPracticeA,
+        roleAtProcess,
+        processWrong,
+        practiceFirst:{correct:practiceFirst.correct,transfer:practiceFirst.transferLevel,context:practiceFirst.evaluationContext,formal:practiceFirst.formalEligible},
+        practiceCompleted:{firstCorrect:practiceCompleted.firstCorrect,eventualCorrect:practiceCompleted.eventualCorrect,attempts:practiceCompleted.attempts},
+        processPresented:{transfer:processPresented.transferLevel,context:processPresented.evaluationContext,formal:processPresented.formalEligible,scheduler:processPresented.schedulerEligible,skillUpdate:processPresented.skillUpdateEligible,qualified:processPresented.qualifiedOpportunity,kc:processPresented.kcHypothesisId,validated:processPresented.constructValidated},
+        processFirst:{correct:processFirst.correct,transfer:processFirst.transferLevel},
+        processCompleted:{firstCorrect:processCompleted.firstCorrect,eventualCorrect:processCompleted.eventualCorrect,attempts:processCompleted.attempts},
+        listButtons
+      };
+    })()`);
+    assert.match(comparableFlow.afterWrong, /仍處在只剩一氣/);
+    assert.match(comparableFlow.afterPracticeA, /脫離只剩一氣/);
+    assert.equal(comparableFlow.roleAtProcess, "換個局面再判斷");
+    assert.match(comparableFlow.processWrong, /仍處在只剩一氣/);
+    assert.deepEqual(comparableFlow.practiceFirst,{correct:false,transfer:"T0",context:"practice",formal:false});
+    assert.deepEqual(comparableFlow.practiceCompleted,{firstCorrect:false,eventualCorrect:true,attempts:2});
+    assert.deepEqual(comparableFlow.processPresented,{transfer:"T2",context:"process_check",formal:false,scheduler:false,skillUpdate:false,qualified:false,kc:"urgent-atari-rescue-kc",validated:false});
+    assert.deepEqual(comparableFlow.processFirst,{correct:false,transfer:"T2"});
+    assert.deepEqual(comparableFlow.processCompleted,{firstCorrect:false,eventualCorrect:true,attempts:2});
+    assert.equal(comparableFlow.listButtons.find(item=>item.id==="urgent-rescue-b-process").disabled,false);
     const comparisonStart = await evaluate(socket, `(() => {
       const Comparison = window.GoDecisionComparison;
       window.__originalDecisionComparisonProvider = window.GoDecisionComparisonProvider.requestComparison;
