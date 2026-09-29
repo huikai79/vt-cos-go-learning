@@ -77,34 +77,48 @@
           <button class="sidebar-task-link" id="sidebar-review-button" type="button" hidden>錯題重做 <span id="sidebar-review-count">0</span></button>
         </div>
         <details class="advanced-sidebar-tools">
-          <summary>進階設定與資料</summary>
+          <summary><span>進階設定與資料</span><small>需要時再查看</small></summary>
           <div class="advanced-sidebar-links">
-            <div class="side-label level-label">15 單元核心課程</div>
-            <div class="level-path" aria-label="課程層次；不等同棋力級位">
-              <span id="level-beginner"><strong>基礎建立</strong><small>原課綱初級 · 單元 1–5 · 規則到 9 路</small></span>
-              <span id="level-intermediate"><strong>局部與棋局判斷</strong><small>原課綱中級 · 單元 6–10 · 讀棋、攻守與官子</small></span>
-              <span id="level-advanced"><strong>全局與綜合應用</strong><small>原課綱高級 · 單元 11–15 · 取捨、戰鬥與複盤</small></span>
+            <p class="advanced-sidebar-intro">先看目前狀態；詳細數字與診斷需要時再展開。</p>
+            <div class="advanced-priority-label">學習狀態</div>
+            <div class="diagnostic-stack">
+              <details class="diagnostic-card">
+                <summary><span>實戰紀錄</span><strong class="diagnostic-brief" id="live-practice-brief">尚無紀錄</strong></summary>
+                <div class="diagnostic-detail">
+                  <p id="live-practice-summary">尚無人機實戰紀錄。</p>
+                  <small>只保存練習紀錄；不以單局勝負判定能力。</small>
+                </div>
+              </details>
+              <details class="diagnostic-card">
+                <summary><span>可分析的實戰機會</span><strong class="diagnostic-brief" id="live-evidence-brief">尚無資料</strong></summary>
+                <div class="diagnostic-detail">
+                  <p id="live-evidence-summary">尚無可判定的 9×9 人機實戰證據。</p>
+                  <small>只計入事先符合條件、且能由規則引擎客觀評分的局部機會；不是熟練程度百分比。</small>
+                </div>
+              </details>
+              <details class="diagnostic-card">
+                <summary><span>學習證據</span><strong class="diagnostic-brief" id="integrated-progress-brief">資料不足</strong></summary>
+                <div class="diagnostic-detail">
+                  <p id="integrated-progress-summary">尚無足夠的可比較證據。</p>
+                  <small>課程練習、延後複習與實戰分開保存後再一起查看；不直接改變複習安排。</small>
+                </div>
+              </details>
+              <details class="diagnostic-card">
+                <summary><span>錯誤修正</span><strong class="diagnostic-brief" id="diagnostic-brief">尚無資料</strong></summary>
+                <div class="diagnostic-detail">
+                  <p id="diagnostic-summary">尚無可比較的首答紀錄。</p>
+                  <small>只描述同一技能的未提示首答結果；不判定心理原因。</small>
+                </div>
+              </details>
             </div>
-            <details class="diagnostic-card">
-              <summary>實戰練習紀錄</summary>
-              <p id="live-practice-summary">尚無人機實戰紀錄。</p>
-              <small>保留人機實戰中的練習紀錄；不會只看勝負或電腦的下法來判定你的能力。</small>
-            </details>
-            <details class="diagnostic-card">
-              <summary>實戰證據進度</summary>
-              <p id="live-evidence-summary">尚無可判定的 9×9 人機實戰證據。</p>
-              <small>只計入事先符合判定條件、且能由規則引擎客觀評分的局部機會；這不是熟練程度百分比。</small>
-            </details>
-            <details class="diagnostic-card">
-              <summary>整合學習證據</summary>
-              <p id="integrated-progress-summary">尚無足夠的可比較證據。</p>
-              <small>把課程練習、延後複習與實戰表現分開保存後一起查看；目前不把它當成熟練程度分數，也不會直接改變複習安排。</small>
-            </details>
-            <details class="diagnostic-card">
-              <summary>錯誤修正診斷</summary>
-              <p id="diagnostic-summary">尚無可比較的首答紀錄。</p>
-              <small>依同一技能的未提示首答分組；只描述題目結果，不判定心理根因。</small>
-            </details>
+            <div class="advanced-course-map">
+              <div class="side-label level-label">15 單元核心課程（參考）</div>
+              <div class="level-path" aria-label="課程層次；不等同棋力級位">
+                <span id="level-beginner"><strong>基礎建立</strong><small>原課綱初級 · 單元 1–5 · 規則到 9 路</small></span>
+                <span id="level-intermediate"><strong>局部與棋局判斷</strong><small>原課綱中級 · 單元 6–10 · 讀棋、攻守與官子</small></span>
+                <span id="level-advanced"><strong>全局與綜合應用</strong><small>原課綱高級 · 單元 11–15 · 取捨、戰鬥與複盤</small></span>
+              </div>
+            </div>
             <button id="sidebar-tools-button" type="button">開啟工具與資料</button>
           </div>
         </details>
