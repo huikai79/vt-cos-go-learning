@@ -34,7 +34,7 @@ test("完成矩陣區分已實作診斷與尚未取得的正式資料或外部�
   assert.match(matrix, /穩定修正距離與再犯間隔[\s\S]*?尚無真人延後結果，指標效度未驗/);
   assert.match(matrix, /不推定粗心、誤解等心理根因/);
   assert.match(matrix, /兩類死活內容仍待獨立審題/);
-  assert.match(matrix, /R1a 棋理與構念核對[\s\S]*?待外部審查/);
+  assert.match(matrix, /R1a 題庫棋理與構念核對[\s\S]*?待外部審查/);
   assert.match(matrix, /19 課短講外部棋理審查[\s\S]*?待外部回條/);
   assert.match(matrix, /R1b 平行題可比性[\s\S]*?未建立/);
   assert.match(matrix, /正式 usability 仍 `NOT_TESTED`/);
