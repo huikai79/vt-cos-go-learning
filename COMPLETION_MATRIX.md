@@ -1000,4 +1000,4 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **修正：** `learner-flow-v54` 固定為「目前學習狀態摘要 → 按需展開完整診斷 → 課程層次參考 → 工具與資料」。實戰紀錄、可分析實戰機會、學習證據與錯誤修正各有 compact brief；完整分母、限制、錯誤／資料不足狀態仍留在 details。
 - **不可破壞 invariant：** 不改題目、KC、scoring、scheduler、first response/retry、learner event、evidence taxonomy、formal evaluation 或 learner-state authority；ERROR／資料不足維持 fail closed，不改成成功狀態。
 - **回歸：** `tests/app-state.test.cjs` 增加 brief 值檢查；`tests/ui.test.cjs` 固定狀態 → 診斷 → 課程參考 → 工具的 DOM 順序與 compact-status CSS 契約。
-- **Formal candidate：** critical learner surface 已重新凍結為 `formal-teaching-candidate-2026-09-29-u`／`fnv1a32-js16-5459053d`。這只證明候選資產身分；正式 usability 仍 `NOT_TESTED`、正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
+- **Formal candidate：** critical learner surface 已重新凍結為 `formal-teaching-candidate-2026-09-29-u`／`fnv1a32-js16-86699408`。這只證明候選資產身分；正式 usability 仍 `NOT_TESTED`、正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
