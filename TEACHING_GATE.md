@@ -230,3 +230,13 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - PR #103 首輪 CI fail-closed 重算 critical learner surface fingerprint 為 `fnv1a32-js16-4db8fb88`；formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-t`。
 - example evidence 僅同步 candidate binding；真人 usability/accessibility 仍保持 false/null，未建立或偽造真人證據。
 - 題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 與 formal evaluation 語義不變。正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-29｜Human evidence collection timing
+
+依目前開發流程，R1a 外部內容審查、三位 target novice usability、真人 accessibility、R1b 真人難度資料與其他人工內容覆核，統一延後到 learner-facing engineering／自動研究收斂後的最後階段執行。
+
+這只調整**收集時序**，不降低或移除任何 gate：
+- 未完成的人工作業仍維持 `BLOCKED`／`NOT_TESTED`；
+- 自動測試、LLM、搜尋、KataGo 或開發期間自我檢查不得替代正式真人證據；
+- final candidate 若在人工審查前再次變更 critical learner-facing asset，仍須依既有 fingerprint／version 規則重新凍結後再收證據。
