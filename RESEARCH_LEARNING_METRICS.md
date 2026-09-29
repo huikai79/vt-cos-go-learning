@@ -125,3 +125,11 @@ T0/T1/T2/T3 分開呈現；T2 流程檢核初步通過不能代替獨立驗收�
 - 個人版每批凍結 KC 與題目版本，以延後無提示 T2 及固定應用探測為主要成果；自然 T3 依合格機會報分子分母，不能只數錯誤。
 
 停止條件：若額外層在預定觀察預算內沒有穩定達到事前定義的實用改善，或其記錄、調參、除錯及使用負擔超過收益，保留較簡單方案。這是工程選擇，不改寫成證明複雜政策普遍無效。
+## 2026-09-30｜吃子與對殺內容候選：來源與升格邊界
+
+本輪輸入包含使用者提供的「打吃方向」與「對殺基本知識」教材截圖。它們足以作為**研究發現線索**，但目前沒有可核對的書名／作者／出版版本／授權或可重新散布條款，因此記為 `DISCOVERED / source_kind=user-provided-screenshot / license=UNKNOWN / shipping=NO`。公開 repo 不複製原圖、原文段落或完整教材棋形；實作只採本專案自行編製的文字與示意棋形。
+
+可進 Teaching Candidate 的較弱主張只有：打吃後的逃路方向、連接／切斷條件與基本對殺的氣／行棋次序值得成為可觀察 task features。這不證明「打吃方向」是一個獨立 KC，也不證明中文的「門吃／抱吃」與日／韓／英單一術語完全等價。跨語名稱仍依 Concept Anchor 分別標 Equivalent／Overlap／Broader／Narrower／Non-equivalent；未核對者只保留 term candidate。
+
+本輪工程實作只把兩個「打吃方向」項目加入 Advanced choice practice，並保持 `advanced-fixed-interleave-v1` 的四個 sequence family 不變。這能驗證內容可呈現、首答／retry 可保存及 metadata 邊界，不能支持內容效度、KC 效度、retention、transfer 或 learning-effect claim。若後續要升格為可評分棋盤題，至少需要 rules/scoring 驗證、反例、內容審查與新的版本化 item contract；若要升格 KC，再需要不同母題上的 learner evidence 與決策增益。
+
