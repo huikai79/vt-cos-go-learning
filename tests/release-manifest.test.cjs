@@ -257,3 +257,10 @@ test("KaTrain smoke autodiscovery helper 與 Windows fixture test 列入公開�
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
+
+
+test("decision replay runtime 與 evidence contract 列入公開發佈清單", () => {
+  for (const file of ["advanced-decision-replay-events.js", "advanced-decision-replay.js", "tests/advanced-decision-replay.test.cjs"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
