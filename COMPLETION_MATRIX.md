@@ -1,3 +1,10 @@
+2026-09-29 Change note｜Global Go Observatory title wrap fix
+
+- **問題：** 寬版 Hero 主標「全球圍棋觀察」受 `max-width: 9ch` 限制，最後一字「察」可能單獨掉到第二行。
+- **修正：** research page v2 在寬版移除標題寬度上限並使用 `white-space: nowrap`；Hero 左右欄比例微調為 1.7fr / 0.6fr；560px 以下恢復 `white-space: normal`，避免窄螢幕橫向溢出。
+- **邊界：** 只改 `global-go-observatory.css` 與該頁 stylesheet cache-busting；不改首頁、learner runtime、KC、scoring、scheduler、formal candidate 或 research data。
+- **驗證：** `tests/global-go-observatory.test.cjs` 鎖定寬版單行／手機可換行；served-content gate 檢查 v2 stylesheet marker。
+
 2026-09-29 Decision Replay v1：Decision Review 已能形成「全盤局面 → first candidate → 原著揭露 → reflection／bounded comparison」的 Response/Evidence，但沒有一個不依賴原 SGF 檔案的 Next Experience。新增獨立 replay stream 與本機 queue：只有已存在 `original_revealed` event 的局面才能加入，snapshot 保存 source review/version/fingerprint、棋盤 stones、ko previous stones、player、move number 與 historical original move。重做時原著再次先隱藏，first response／retry 分開保存，揭露後只做 historical comparison。所有 replay event 固定 `sourceExposure=previously_exposed`、`transferLevel=T0`、`formalEligible=false`、`qualifiedOpportunity=false`、`skillId=null`；不得當 unseen retention、T1/T2/T3、KC、scheduler 或 formal evaluation。later comparable position 明確保留為另一份尚未建立的 contract，不由 replay 自動升格。舊 review/comparison event stream 不修改、不 migration；rollback 可單獨移除 replay UI／stream。
 
 2026-09-29 Change note｜Math Explore learner-language sweep
