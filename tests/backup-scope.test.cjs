@@ -35,7 +35,11 @@ test("backup-scope 文案變更後 formal candidate 重新凍結且 gate/example
 });
 
 test("重新凍結只代表資產身分，不把 example evidence 偽造成真人 PASS",()=>{
-  assert.equal(example.usability.passed,false);
-  assert.equal(example.accessibility.passed,false);
+  assert.equal(example.usability.participantCount,0);
+  assert.equal(example.usability.participantsAreTargetNovices,false);
+  assert.equal(Object.values(example.usability.criticalTasks).every(value=>value===false),true);
+  assert.equal(Object.values(example.accessibility.checks).every(value=>value===false),true);
+  assert.equal(example.formalEvaluation.privateUnexposedHoldoutEstablished,false);
+  assert.equal(example.formalEvaluation.r1bComparabilityEstablished,false);
   assert.equal(gate.formalTeachingCandidateId,candidate.candidateId);
 });
