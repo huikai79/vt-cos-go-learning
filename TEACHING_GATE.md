@@ -222,3 +222,11 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - HKBU 2024 七人質性研究已明確降格為感知策略連結線索，不作實測 transfer evidence。
 - 重新凍結不產生真人證據；R1a、至少三位 target novice usability 與真人 accessibility spot check 仍缺，因此正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
 
+
+
+## 2026-09-29 Change note｜Homepage outcome decoration clean refreeze
+
+- 從當時最新 main 乾淨重建，只移除「完成核心課程，大約會到哪裡」卡片右上角純裝飾黑白棋子 pseudo-elements；不補替代圖示，不改文字或 DOM 結構。
+- PR #103 首輪 CI fail-closed 重算 critical learner surface fingerprint 為 `fnv1a32-js16-4db8fb88`；formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-t`。
+- example evidence 僅同步 candidate binding；真人 usability/accessibility 仍保持 false/null，未建立或偽造真人證據。
+- 題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 與 formal evaluation 語義不變。正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
