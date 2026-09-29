@@ -214,7 +214,7 @@
       return;
     }
     target.textContent = `人機練習 ${summary.computerSessions} 局；你的可觀察決策 ${summary.humanDecisions} 次。\n這些只作練習紀錄，不以單局勝負判定能力。`;
-    if (brief) brief.textContent = `${summary.computerSessions} 局 · ${summary.humanDecisions} 次落子`;
+    if (brief) brief.textContent = `${summary.computerSessions} 局 · ${summary.humanDecisions} 次決策`;
   }
 
   function readLiveEvidence() {
