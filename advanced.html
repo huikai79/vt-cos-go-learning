@@ -14,6 +14,7 @@
   <script defer src="decision-comparison.js?v=decision-comparison-v1"></script>
   <script defer src="decision-comparison-provider.js?v=decision-comparison-v1"></script>
   <script defer src="advanced-decision-comparison-events.js?v=decision-comparison-v1"></script>
+  <script defer src="advanced-decision-replay-events.js?v=advanced-decision-replay-v1"></script>
   <script defer src="advanced-content.js?v=advanced-training-v6"></script>
   <script defer src="advanced-events.js?v=advanced-training-v1"></script>
   <script defer src="advanced-sequence-events.js?v=advanced-sequence-v3"></script>
@@ -21,7 +22,8 @@
   <script defer src="advanced-sequence-policy.js?v=advanced-fixed-interleave-v1"></script>
   <script defer src="advanced.js?v=advanced-training-v3"></script>
   <script defer src="advanced-sequence.js?v=advanced-sequence-v6"></script>
-  <script defer src="advanced-decision-review.js?v=advanced-decision-review-v1"></script>
+  <script defer src="advanced-decision-replay.js?v=advanced-decision-replay-v1"></script>
+  <script defer src="advanced-decision-review.js?v=advanced-decision-review-v2"></script>
 </head>
 <body class="advanced-page">
   <a class="skip-link" href="#advanced-main">跳到進階訓練</a>
@@ -167,6 +169,10 @@
           <div class="advanced-actions">
             <button class="primary-button" id="decision-review-reveal" type="button" disabled>顯示原棋譜著手並比較</button>
           </div>
+          <div class="advanced-actions">
+            <button class="subtle-button" id="decision-replay-queue" type="button" disabled>加入稍後重做</button>
+          </div>
+          <p id="decision-replay-queue-note" class="decision-review-meta">原著揭露後可把同一個已看過的局面加入重做清單；它只算同一題重做，不算未見題或遷移。</p>
           <label for="decision-review-reflection"><strong>復盤備註（揭露後可選）</strong></label>
           <textarea id="decision-review-reflection" rows="4" disabled placeholder="例如：我漏看了哪個方向？原棋譜著手和我的候選差在哪裡？"></textarea>
           <button class="subtle-button" id="decision-review-save-reflection" type="button" disabled>保存復盤備註</button>
@@ -195,6 +201,34 @@
         <div class="decision-review-board-wrap">
           <div id="decision-review-board" class="decision-review-board" aria-label="19 路棋譜決策點盤面"></div>
           <div class="decision-review-legend" aria-label="決策點複盤符號">
+            <span><i class="decision-candidate-key" aria-hidden="true"></i>你的目前候選</span>
+            <span><i class="decision-original-key" aria-hidden="true"></i>原棋譜著手（顯示後）</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="advanced-decision-review-section" aria-labelledby="decision-replay-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">已曝光局面重做 · T0 practice</span>
+          <h2 id="decision-replay-title">稍後再做一次</h2>
+        </div>
+        <p id="decision-replay-summary">尚未加入局面。</p>
+      </div>
+      <div class="decision-review-card">
+        <div class="decision-review-controls">
+          <div id="decision-replay-list" class="decision-replay-list" aria-label="已保存的重做局面"></div>
+          <p class="answer-policy">這裡重做的是你已經看過原著的同一局面。首答與重試仍分開保存，但它永遠不是 unseen、retention、transfer、KC 或正式評量證據。</p>
+        </div>
+        <div id="decision-replay-workspace" class="decision-review-board-wrap" hidden>
+          <p id="decision-replay-meta" class="decision-review-meta">選一個已保存局面開始。</p>
+          <div id="decision-replay-feedback" class="feedback" role="status" aria-live="polite">同一局面重做只用來重新整理判斷。</div>
+          <div id="decision-replay-board" class="decision-review-board" aria-label="19 路已曝光局面重做棋盤"></div>
+          <div class="advanced-actions">
+            <button class="primary-button" id="decision-replay-reveal" type="button" disabled>顯示原棋譜著手</button>
+          </div>
+          <div class="decision-review-legend" aria-label="重做棋盤符號">
             <span><i class="decision-candidate-key" aria-hidden="true"></i>你的目前候選</span>
             <span><i class="decision-original-key" aria-hidden="true"></i>原棋譜著手（顯示後）</span>
           </div>
