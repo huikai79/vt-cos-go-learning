@@ -251,10 +251,7 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
 .intro-split-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
 .intro-split-grid .intro-section{margin-top:0;min-width:0}
 .intro-history{background:linear-gradient(135deg,#eef4eb,#fbfcf8 55%)}
-.intro-outcome{position:relative;overflow:hidden;background:linear-gradient(135deg,#fffdf6,#fbf4e6)}
-.intro-outcome::before,.intro-outcome::after{content:"";position:absolute;border-radius:50%;filter:drop-shadow(0 5px 6px #1f34272b)}
-.intro-outcome::before{right:22px;top:28px;width:35px;height:35px;background:#22372d}
-.intro-outcome::after{right:5px;top:50px;width:31px;height:31px;background:#f5f2e9;border:1px solid #d6d2c6}
+.intro-outcome{background:linear-gradient(135deg,#fffdf6,#fbf4e6)}
 .intro-outcome-list{display:grid;gap:8px;margin:17px 0 0;padding-left:1.2em;color:#536b59;font-size:.9375rem;line-height:1.55}
 .intro-outcome-list strong{color:#294a35}
 .intro-split-card .intro-boundary{margin-top:16px}
