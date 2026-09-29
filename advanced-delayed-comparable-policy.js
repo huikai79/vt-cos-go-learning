@@ -20,6 +20,7 @@
  const STATUS=Object.freeze({
   WAITING_FOR_ANCHOR:"WAITING_FOR_ANCHOR",
   WAITING_FOR_DELAY:"WAITING_FOR_DELAY",
+  WAITING_FOR_PREVIOUS:"WAITING_FOR_PREVIOUS",
   DUE:"DUE",
   IN_PROGRESS:"IN_PROGRESS",
   COMPLETED:"COMPLETED",
@@ -62,6 +63,12 @@
 
   const dueMs=anchor.anchorMs+D.delayedContract.MIN_DELAY_MS;
   const dueAt=new Date(dueMs).toISOString();
+  const itemIndex=D.delayedContract.items.findIndex(entry=>entry.itemId===item.itemId);
+  for(let index=0;index<itemIndex;index++){
+   const previousId=D.delayedContract.items[index].itemId;
+   const previousCompleted=delayedStore.events.some(event=>event.itemId===previousId&&event.type==="delayed_completed");
+   if(!previousCompleted)return{ok:true,status:STATUS.WAITING_FOR_PREVIOUS,itemId:item.itemId,anchorEvent:anchor.anchorEvent,dueAt};
+  }
   const itemEvents=delayedStore.events.filter(event=>event.itemId===item.itemId);
   const presented=itemEvents.find(event=>event.type==="delayed_presented")||null;
   const completed=itemEvents.find(event=>event.type==="delayed_completed")||null;
