@@ -1,6 +1,6 @@
 2026-09-30 Change note｜History Explore v6 served-content marker sync
 
-- `history.html` 已為 v6，但 main push 的 served-content verifier 仍鎖定舊 v5 marker；同步改為 v6。
+- `history.html` 已為 v6、來源查核日為 2026-09-29，但 main push 的 served-content verifier 仍鎖定舊 v5 與 2026-09-28 marker；兩者均同步。
 - 只改部署驗證契約；不改 learner-facing 內容、Core runtime、formal candidate、scoring、scheduler 或 formal evaluation。
 
 2026-09-29 Change note｜History Explore cosmology／AI + cross-language concepts pilot
