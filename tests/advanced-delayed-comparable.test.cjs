@@ -172,3 +172,30 @@ test("delayed analysis 只輸出描述性公開流程檢查，不產生 retentio
  assert.equal(summary.mastery,null);
  assert.equal(summary.independentEvaluation,false);
 });
+
+
+test("兩筆單獨合法 presentation 組成同一 item store 時仍 fail closed",()=>{
+ const s=storage(),item=Delayed.items[0];
+ const anchorAt="2026-09-28T00:00:00.000Z";
+ const dueAt="2026-09-29T00:00:00.000Z";
+ const first={
+  schemaVersion:Events.SCHEMA_VERSION,eventStreamVersion:Events.STREAM_VERSION,
+  type:"delayed_presented",eventId:"p1",sessionId:"s",attemptId:"a1",
+  itemId:item.itemId,itemVersion:item.itemVersion,pairId:item.pairId,pairVersion:item.pairVersion,pairHypothesisVersion:item.pairHypothesisVersion,
+  anchorItemId:item.anchorItemId,anchorEventId:"anchor",anchorOccurredAt:anchorAt,dueAt,
+  positionFingerprint:item.positionFingerprint,kcHypothesisId:item.kcHypothesisId,kcHypothesisVersion:item.kcHypothesisVersion,
+  scoringContractVersion:item.scoringContractVersion,evidenceTaxonomyVersion:item.evidenceTaxonomyVersion,retrievalPolicyVersion:item.retrievalPolicyVersion,
+  minimumDelayMs:Delayed.MIN_DELAY_MS,actualDelayMs:Delayed.MIN_DELAY_MS,occurredAt:dueAt,
+  boardSize:19,publicItem:true,formalEligible:false,independentEvaluation:false,schedulerEligible:false,skillUpdateEligible:false,qualifiedOpportunity:false,
+  constructValidated:false,transferLevel:"T2",retrievalTiming:"delayed",
+  evidenceUse:"advanced_delayed_comparable_public_process_check",evaluationContext:"process_check",
+  eligibilityDeclaredBeforeResponse:true,hintAvailable:false
+ };
+ const second={...first,eventId:"p2",attemptId:"a2",occurredAt:"2026-09-29T00:00:01.000Z",actualDelayMs:Delayed.MIN_DELAY_MS+1000};
+ assert.equal(Events.validate(first),null);
+ assert.equal(Events.validate(second),null);
+ const store={schemaVersion:Events.SCHEMA_VERSION,eventStreamVersion:Events.STREAM_VERSION,events:[first,second]};
+ const checked=Events.validateStore(store);
+ assert.equal(checked.ok,false);
+ assert.equal(checked.error,"delayed_store_presentation_count_invalid");
+});
