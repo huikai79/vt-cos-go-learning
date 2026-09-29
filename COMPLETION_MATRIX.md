@@ -66,6 +66,7 @@
 - `public_source_exposure`: 48 題公開保留組全部已公開，均不得再作 formal holdout
 - `known_current_learner_direct_exposure`: 舊 R1 自我審查草稿中的 22 題；現行 pilot 八題全包含在內
 - `r1a_content_review`: 待不同於學習者、且未參與編題的外部審查者
+- `lesson_content_review`: `go-independent-lesson-content-review-v1`，19 課待外部棋理回條
 - `r1b_parallel_form_comparability`: 未建立
 
 ## 使用規則
