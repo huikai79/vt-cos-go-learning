@@ -270,7 +270,7 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 ## 2026-09-29 Change note｜Short Talk UX v2 candidate refreeze
 
 - **critical surface 變更：** `index.html`、`styles.css`、`content.js`、`app.js` 都發生 learner-facing 變更，因此舊 candidate `formal-teaching-candidate-2026-09-29-t` 不得沿用。
-- **新 candidate：** `formal-teaching-candidate-2026-09-29-w`；fingerprint `fnv1a32-js16-4a325a8b`；asset set version 維持 6；UI version 升為 `learner-flow-v55`，content catalog 升為 5。
+- **新 candidate：** `formal-teaching-candidate-2026-09-29-x`；fingerprint `fnv1a32-js16-dc476494`；asset set version 維持 6；UI version 升為 `learner-flow-v55`，content catalog 升為 5。
 - **範圍：** 短講示範收斂為 `demoSteps` 單一來源；visual-delta negative test 防止相鄰完全同圖；第 1 課改為 progressive reveal；caption 單一來源；contextual legend；自動／手動關閉語義分開；最後一步可回到開頭；第 5、6、7、8、9、12、19 課 learner-facing 文案收窄。
 - **不變：** storage schema、題目答案／scoring、KC、scheduler、first response／retry、learner events、evidence taxonomy 與 formal evaluation authority 未改。
 - **證據狀態：** example evidence 只更新 candidate binding，所有真人 usability／accessibility 欄位仍是 false/null。R1a 外部內容審查仍待完成；formal teaching 維持 `BLOCKED`，formal evaluation 維持 `BLOCKED`，learning effect 維持 `NOT_MEASURED`。
@@ -280,7 +280,7 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **盲點修正：** 題庫 R1a v5 實際只審 77 題 reviewer set，不能替 19 課短講提供外部棋理證據。新增 `lesson-content-review-verify.cjs` 與 `lesson-content-review.example.json`，protocol 為 `go-independent-lesson-content-review-v1`，目前 fingerprint 為 `fnv1a32-7741b3d8`。
 - **Gate v3：** `teaching-gate.json`／`teaching-gate-verify.cjs` 升為 `go-formal-teaching-gate-v3`。正式教學 PASS 現在同時需要題庫 R1a 回條、19 課短講回條、三位 target novice usability 與真人 accessibility；缺任一項都 fail closed。
 - **UI regression：** v54 審查發現 mobile short-talk media rule 被後方 base rule 蓋掉；v55 修正 CSS cascade，並新增 320px Modal-open、200% text、manual Close／Start／Esc、auto Esc、單步 demo 與 v4→v5 seen migration 回歸。
-- **Candidate：** learner-facing critical surface 重新凍結為 `formal-teaching-candidate-2026-09-29-w`／`fnv1a32-js16-4a325a8b`；content catalog 仍為 5。舊 u candidate 不得用於正式真人證據。
+- **Candidate：** learner-facing critical surface 重新凍結為 `formal-teaching-candidate-2026-09-29-x`／`fnv1a32-js16-dc476494`；content catalog 仍為 5。舊 u candidate 不得用於正式真人證據。
 - **證據狀態：** 新 verifier 與 gate 只提高 evidence integrity；目前仍沒有題庫 R1a 外部回條、19 課短講回條、正式 usability 或 accessibility 證據，因此 formal teaching／formal evaluation 仍 `BLOCKED`，learning effect 仍 `NOT_MEASURED`。
 
 ## 2026-09-29 Change note｜Comparable Position v1
