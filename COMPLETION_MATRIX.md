@@ -1,3 +1,11 @@
+2026-09-30 Change note｜AI-era concrete cases + Go decision-model research v1
+
+- **研究實作：** 新增 `research/go-ai-knowledge-cases-v1.md`，先建立直接三三、三三二路爬重新評價、AI 定石革命三個可驗證案例候選；另新增 `research/go-decision-models-v1.md`，研究局部／全局、先手、捨石、厚勢、定石五種 structural analogy。
+- **硬邊界：** AI case 仍是 `NOT_YET_TEACHING_ASSET`；decision models 明示 `NOT_TRANSFER_EVIDENCE`。沒有 validated board／SGF、Go-specific technical validation、授權與 negative case 前，不進正式教學資產。
+- **資訊架構：** 暫不建立 `thinking.html`；只有至少三個模型完成棋形、學習者解釋、失效條件後才重新評估 page split。
+- **runtime／candidate：** 不改 `index.html`、Core／Advanced learner runtime、KC、scoring、scheduler、formal evaluation 或 candidate critical surface；formal candidate 不重凍結。R1a、三位 target novice usability、真人 accessibility 依使用者決策保留最後階段，狀態仍 BLOCKED／NOT_TESTED。
+- **停止線：** 若內容只能說「AI 評價較好」或現代管理／經濟術語只讓文字更漂亮、不能改善棋盤理解，就不升格為教學內容。
+
 2026-09-30 Change note｜History Explore v6 served-content marker sync
 
 - `history.html` 已為 v6、來源查核日為 2026-09-29，但 main push 的 served-content verifier 仍鎖定舊 v5 與 2026-09-28 marker；兩者均同步。
