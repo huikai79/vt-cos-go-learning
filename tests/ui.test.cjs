@@ -929,7 +929,7 @@ async function main() {
     assert.match(replayQueued.queueText, /已加入重做清單|已在重做清單/);
     assert.deepEqual(replayQueued.queued, {exposure:"previously_exposed", transfer:"T0", formal:false, originalExposed:true});
     assert.match(replayQueued.beforeReveal, /同一局面|這次候選已保存/);
-    assert.match(replayQueued.afterReveal, /已曝光局面的重做|已經看過原著|同一局面重做/);
+    assert.match(replayQueued.afterReveal, /同一局面的重做|已經看過原棋譜著手|新局面表現/);
     assert.deepEqual(replayQueued.eventTypes, ["replay_queued","replay_presented","replay_candidate_first","replay_original_revealed"]);
     assert.deepEqual(replayQueued.first, {originalMove:null, matchesOriginal:null, originalExposed:false, hasCorrect:false});
     assert.deepEqual(replayQueued.reveal, {originalMove:[16,15], transfer:"T0", formal:false, hasCorrect:false, hasMastery:false});
