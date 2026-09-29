@@ -973,3 +973,11 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - PR #103 首輪 CI fail-closed 重算 critical learner surface fingerprint 為 `fnv1a32-js16-4db8fb88`；formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-t`。
 - example evidence 僅同步 candidate binding；真人 usability/accessibility 仍保持 false/null，未建立或偽造真人證據。
 - 題目、scoring、scheduler、KC、first response/retry、learner events、evidence taxonomy、learner state 與 formal evaluation 語義不變。正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-29 Decision note｜Human review timing policy｜all manual review deferred to final phase
+
+- **使用者工作方式：** 開發過程會持續邊修改邊自行檢視，因此正式人工工作不在中途反覆啟動；R1a、R1b 真人難度資料、target-novice usability、accessibility spot check、L Group mark-semantics review 與其他 human content review 一律集中到工程／自動研究收斂後的最後階段。
+- **狀態語義不變：** 延後不等於通過。所有尚未完成的人工證據維持原本的 `BLOCKED`／`NOT_TESTED`／`NEEDS_HUMAN_REVIEW`／`INSUFFICIENT`；自動測試、搜尋、engine、LLM 或開發者自己的臨時觀察都不得代填正式真人證據。
+- **執行規則：** 若某自動工程只因「缺人工回條」而被卡住，但該人工結果不是安全／正確執行該工程的前置條件，則繼續完成可逆、可測試的工程與 research tooling；把人工缺口記入 final-review backlog，不在中途停止。
+- **例外：** 若缺少人工判定會直接改變不可逆操作、正式內容真值、scoring、公開宣稱、formal evaluation eligibility 或其他高風險結論，仍必須 fail closed，不得以「最後再看」為理由先升格。
