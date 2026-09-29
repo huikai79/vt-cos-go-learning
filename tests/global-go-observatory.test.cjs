@@ -50,3 +50,11 @@ test("公開來源保留 locator，且研究紀錄保存不支持範圍", () => 
   assert.match(record, /\| 支持 \| 不支持 \|/);
   assert.match(record, /第一版不建立加權總分/);
 });
+
+
+test("主標題在寬版保持單行，手機版恢復可換行", () => {
+  const css = fs.readFileSync(path.join(root, "global-go-observatory.css"), "utf8");
+  assert.match(css, /\.hero h1 \{[^}]*max-width: none;[^}]*white-space: nowrap;/s);
+  assert.match(css, /@media \(max-width: 560px\)[\s\S]*?\.hero h1 \{[^}]*white-space: normal;/);
+  assert.match(html, /global-go-observatory\.css\?v=global-go-observatory-v2/);
+});
