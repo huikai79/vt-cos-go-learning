@@ -279,3 +279,28 @@ test("宇宙論與 AI 更新留下獨立 research record 與停止線", () => {
   assert.match(record, /起源因果未知/);
   assert.match(record, /下一步若要深化，應轉向具體棋形案例，而不是增加更多泛論/);
 });
+
+
+test("AI-era concrete case research 維持候選資產，不把引擎偏好直接升格成教學答案", () => {
+  const record = fs.readFileSync(path.join(root, "research", "go-ai-knowledge-cases-v1.md"), "utf8");
+  assert.match(record, /CASE_CANDIDATES \/ NOT_YET_TEACHING_ASSET/);
+  assert.match(record, /Candidate A｜開局直接三三/);
+  assert.match(record, /Candidate B｜三三舊定石中的二路爬重新評價/);
+  assert.match(record, /Candidate C｜「定石」本身被重新定義為條件性知識/);
+  assert.match(record, /不能寫成「AI 證明開局三三永遠最好」/);
+  assert.match(record, /如果一個案例最後只能表達「AI 說這手比較好」.*就不升格為教學內容/s);
+  assert.match(record, /representative board \/ SGF 重建/);
+  assert.match(record, /Go-specific technical validation/);
+});
+
+test("Go decision-model research 只作 structural analogy，不宣稱一般決策 transfer", () => {
+  const record = fs.readFileSync(path.join(root, "research", "go-decision-models-v1.md"), "utf8");
+  assert.match(record, /STRUCTURAL_ANALOGY_CANDIDATES \/ NOT_TRANSFER_EVIDENCE/);
+  for (const anchor of ["局部最佳 ≠ 全局最佳", "先手：行動權與回應負擔", "捨石：停止為既有投入追加成本", "厚勢：未立即兌現的能力", "定石：條件式 heuristic"]) {
+    assert.ok(record.includes(anchor), anchor);
+  }
+  assert.match(record, /不支持[\s\S]*學會該圍棋概念後.*一般決策中就會自動變好/);
+  assert.match(record, /暫不建立 \`thinking\.html\`/);
+  assert.match(record, /至少 3 個候選模型.*validated board example/s);
+  assert.match(record, /如果增加現代管理／經濟學名詞只讓內容更漂亮.*就刪除該類比/s);
+});
