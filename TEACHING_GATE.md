@@ -256,3 +256,12 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - Advanced Decision Replay 只重做已經看過原著的同一 19×19 局面，固定標記為 `previously_exposed`／T0 practice。
 - replay first response／retry 只屬 practice evidence；不得作 unseen retention、transfer、KC、scheduler、formal evaluation 或 formal teaching 證據。
 - 本輪不修改 formal teaching candidate，也不替代 R1a、目標初學者 usability 或真人 accessibility；這些 gate 仍依 final-phase human review policy 保持原狀。
+
+
+## 2026-09-29 Change note｜Short Talk UX v2 candidate refreeze
+
+- **critical surface 變更：** `index.html`、`styles.css`、`content.js`、`app.js` 都發生 learner-facing 變更，因此舊 candidate `formal-teaching-candidate-2026-09-29-t` 不得沿用。
+- **新 candidate：** `formal-teaching-candidate-2026-09-29-u`；fingerprint `fnv1a32-js16-14966636`；asset set version 維持 6；UI version 升為 `learner-flow-v54`，content catalog 升為 5。
+- **範圍：** 短講示範收斂為 `demoSteps` 單一來源；visual-delta negative test 防止相鄰完全同圖；第 1 課改為 progressive reveal；caption 單一來源；contextual legend；自動／手動關閉語義分開；最後一步可回到開頭；第 5、6、7、8、9、12、19 課 learner-facing 文案收窄。
+- **不變：** storage schema、題目答案／scoring、KC、scheduler、first response／retry、learner events、evidence taxonomy 與 formal evaluation authority 未改。
+- **證據狀態：** example evidence 只更新 candidate binding，所有真人 usability／accessibility 欄位仍是 false/null。R1a 外部內容審查仍待完成；formal teaching 維持 `BLOCKED`，formal evaluation 維持 `BLOCKED`，learning effect 維持 `NOT_MEASURED`。
