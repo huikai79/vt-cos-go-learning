@@ -38,7 +38,7 @@
    events:store.events
   };
  }
- function safeRead(name,storageKey,read,storage,validateEvent=null){
+ function safeRead(name,storageKey,read,storage,validateEvent=null,validateStore=null){
   try{
    const result=read(storage);
    if(!result||result.ok!==true||!result.store)return errorEntry(name,storageKey,result&&result.error||"store_read_failed");
@@ -47,6 +47,10 @@
      const error=validateEvent(event);
      if(error)return errorEntry(name,storageKey,"event_invalid:"+error);
     }
+   }
+   if(validateStore){
+    const checked=validateStore(result.store);
+    if(!checked||checked.ok!==true)return errorEntry(name,storageKey,"store_invalid:"+(checked&&checked.error||"unknown"));
    }
    return okEntry(name,storageKey,result.store);
   }catch(error){
@@ -64,7 +68,7 @@
    decisionComparison:safeRead("decisionComparison",D.comparison.STORAGE_KEY,D.comparison.read,storage,D.comparison.validate),
    decisionReplay:safeRead("decisionReplay",D.replay.STORAGE_KEY,D.replay.read,storage,D.replay.validate),
    comparablePosition:safeRead("comparablePosition",D.comparable.STORAGE_KEY,D.comparable.read,storage,D.comparable.validate),
-   delayedComparable:safeRead("delayedComparable",D.delayedComparable.STORAGE_KEY,D.delayedComparable.read,storage,D.delayedComparable.validate)
+   delayedComparable:safeRead("delayedComparable",D.delayedComparable.STORAGE_KEY,D.delayedComparable.read,storage,D.delayedComparable.validate,D.delayedComparable.validateStore)
   };
   const errors=Object.values(streams).filter(entry=>entry.status==="error").map(entry=>({stream:entry.name,error:entry.error}));
   let comparableAnalysis=null;
