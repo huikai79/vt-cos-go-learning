@@ -1009,7 +1009,7 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **版本：** `uiVersion` 升為 `learner-flow-v55`，`contentCatalogVersion` 升為 5。storage schema、題目 ID／答案／scoring、KC、scheduler、first response／retry、evidence taxonomy 與 formal evaluation 語義不變。
 - **反證／測試：** `lesson-content.test.cjs` 新增排序後 visual signature negative test，並直接驗第 1 課 step 1 無 liberty highlight、step 2 有兩個 liberty highlight；browser UI test 不能只驗 caption 改變，也必須驗棋盤 marker 數量改變、contextual legend、自動／手動關閉標籤與重看 reset。
 - **證據邊界：** 這只建立更嚴格的 engineering／presentation contract；不證明短講棋理已通過 R1a、240px 更好、初學者更容易理解或 learning effect 成立。正式 usability 仍 `NOT_TESTED`，formal teaching 仍依既有 gate 保持 `BLOCKED`。
-- **Formal candidate：** learner-facing critical surface 已重新凍結為 `formal-teaching-candidate-2026-09-29-w`／`fnv1a32-js16-4a325a8b`；只代表目前 critical asset bytes 與 manifest 綁定一致，不產生任何真人證據。
+- **Formal candidate：** learner-facing critical surface 已重新凍結為 `formal-teaching-candidate-2026-09-29-x`／`fnv1a32-js16-dc476494`；只代表目前 critical asset bytes 與 manifest 綁定一致，不產生任何真人證據。
 
 ## 2026-09-29 Change note｜Short Talk UX v2 post-audit hardening
 
@@ -1017,10 +1017,11 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **新 browser regression：** 短講 Modal 開啟時直接驗 320px 為單欄、page/dialog/board 無水平 overflow 且 primary CTA 可捲動到達；另驗 200% text。manual Close、manual Start、manual Esc、auto Esc 的焦點結果也分開鎖定。
 - **狀態／邊界：** v4→v5 保留 `seenLessonIntros`，明確將其視為「已處理自動顯示」而不是 lecture completion／learning evidence；新版短講仍可手動重看。另加入 synthetic one-step demo regression，確保 `demoSteps.length >= 1` 的新契約有 runtime 覆蓋。
 - **內容治理：** 題庫 R1a v5 實際只審 77 題 reviewer set，不能代表 19 課短講已受外部棋理審查。新增 `go-independent-lesson-content-review-v1`／`fnv1a32-7741b3d8`，將 19 課短講逐課 fail closed；formal teaching gate 升至 v3，未有短講回條時即使題庫 R1a 與真人 usability/accessibility 齊備也不得 PASS。
-- **版本／candidate：** learner UI 升為 `learner-flow-v55`；content catalog 仍為 5。critical learner surface 重新凍結為 `formal-teaching-candidate-2026-09-29-w`／`fnv1a32-js16-4a325a8b`。storage schema、題目 scoring、KC、scheduler、first response/retry、event schema、evidence taxonomy 與 formal evaluation authority 不變。
+- **版本／candidate：** learner UI 升為 `learner-flow-v55`；content catalog 仍為 5。critical learner surface 重新凍結為 `formal-teaching-candidate-2026-09-29-x`／`fnv1a32-js16-dc476494`。storage schema、題目 scoring、KC、scheduler、first response/retry、event schema、evidence taxonomy 與 formal evaluation authority 不變。
 - **證據邊界：** 上述均是工程與 governance hardening；沒有產生外部棋理回條、target-novice usability、真人 accessibility、R1b、private holdout 或 learning-effect 證據。
 ## 2026-09-29 Change note｜Inherited v54 advanced-sidebar hierarchy in v55
 
 - 最新 main 的 `learner-flow-v54` 已把「進階設定與資料」重排為「目前學習狀態摘要 → 按需展開完整診斷 → 15 單元核心課程參考 → 工具與資料」，並為實戰紀錄、可分析實戰機會、學習證據與錯誤修正加入 compact brief。
 - Short Talk v55 已保留上述 main 變更；沒有把側欄重排回舊版，也沒有改變診斷、KC、scheduler、scoring 或 learner-state authority。
 - 這仍只屬資訊階層與呈現工程；真人是否更快理解狀態與下一步仍待正式 usability。
+- **200% text overflow 修正：** v55 真瀏覽器反證發現對話框在放大文字時內部水平 overflow；補上 teaching-card flex child `min-width:0`、控制列換行與按鈕可換行後，candidate 再凍結為 `formal-teaching-candidate-2026-09-29-x`／`fnv1a32-js16-dc476494`。此修正仍只屬 accessibility engineering，不能替代真人 spot check。
