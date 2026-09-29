@@ -203,8 +203,8 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /id="integrated-progress-brief"/);
   assert.match(workflow, /id="diagnostic-brief"/);
   assert.match(workflow, /formal-teaching-candidate\.json\?deploy=/);
-  assert.match(workflow, /formal-teaching-candidate-2026-09-29-u/);
-  assert.match(workflow, /fnv1a32-js16-86699408/);
+  assert.match(workflow, /formal-teaching-candidate-2026-09-29-v/);
+  assert.match(workflow, /fnv1a32-js16-45fb67e5/);
   assert.match(workflow, /served-pages-status:/);
   assert.match(workflow, /permissions:\s*[\s\S]*statuses: write/);
   assert.match(workflow, /context:"verify\/served-pages-content"/);
