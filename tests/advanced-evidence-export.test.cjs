@@ -121,10 +121,13 @@ test("Advanced 頁提供單向原始事件備份，明示不屬正式評量",()=
  const html=fs.readFileSync(path.join(__dirname,"..","advanced.html"),"utf8");
  assert.match(html,/advanced-comparable-analysis\.js\?v=advanced-comparable-analysis-v1/);
  assert.match(html,/advanced-evidence-export\.js\?v=advanced-evidence-export-v1/);
+ assert.match(html,/advanced-delayed-comparable-analysis\.js\?v=advanced-delayed-comparable-v1/);
+ assert.match(html,/advanced-delayed-comparable\.js\?v=advanced-delayed-comparable-v1/);
  assert.match(html,/advanced-evidence-export-ui\.js\?v=advanced-evidence-export-v1/);
  assert.match(html,/id="advanced-export-evidence"/);
  assert.match(html,/匯出進階練習原始事件/);
  assert.match(html,/只作備份與分析，不作正式評量/);
+ assert.match(html,/延後全盤判斷紀錄/);
 });
 
 
