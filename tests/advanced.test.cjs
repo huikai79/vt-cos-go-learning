@@ -39,7 +39,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
 });
 
 test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 practice", () => {
-  assert.equal(content.version, 6);
+  assert.equal(content.version, 7);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 4);
   const full = content.tracks.find((track) => track.id === "full-board-review");
@@ -47,7 +47,7 @@ test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 p
   assert.equal(full.href, "live-game.html?size=19");
   assert.match(full.summary, /全盤實戰練習/);
   assert.match(html, /不納入正式能力評量/);
-  assert.equal(content.experiences.length, 8);
+  assert.equal(content.experiences.length, 10);
   for (const item of content.experiences) {
     assert.ok(content.tracks.some((track) => track.id === item.trackId));
     assert.ok(item.choices.length >= 3, item.id);
@@ -55,6 +55,32 @@ test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 p
     assert.ok(Array.isArray(item.demoSteps) && item.demoSteps.length >= 3, item.id);
     assert.ok(Array.isArray(item.terms) && item.terms.length >= 2, item.id);
   }
+});
+
+test("打吃方向以 teaching candidate/task features 進入 choice practice，不直接升格 KC", () => {
+  const items = content.experiences.filter((item) => item.candidateId === "capture-semeai-track-v1");
+  assert.deepEqual(items.map((item) => item.id), ["adv-r09", "adv-r10"]);
+  assert.deepEqual(items.map((item) => item.taskFeatures.atariDirectionGoal), ["edge_constraint", "prevent_connection"]);
+  for (const item of items) {
+    assert.equal(item.candidateStatus, "teaching_candidate");
+    assert.equal(item.kcStatus, "not_promoted");
+    assert.equal(item.taskFeatures.capturePattern, "atari_direction");
+    assert.equal(item.taskFeatures.eyeCondition, "none");
+    assert.equal(item.taskFeatures.approachMoveRequired, false);
+    assert.equal(item.taskFeatures.terminalCaptureResult, "not_asserted");
+    assert.ok(Array.isArray(item.demoSteps) && item.demoSteps.length >= 3);
+  }
+  assert.equal(content.sequenceExperiences.some((item) => item.familyId === "atari-direction"), false);
+  assert.equal(content.sequenceExperiences.some((item) => item.candidateId === "capture-semeai-track-v1"), false);
+});
+
+test("打吃方向新增不改寫既有 fixed-interleave sequence policy 或四個 family", () => {
+  assert.equal(SequencePolicy.VERSION, "advanced-fixed-interleave-v1");
+  const validation = SequencePolicy.validateCatalog(content.sequenceExperiences);
+  assert.equal(validation.ok, true, validation.errors.join("\n"));
+  assert.deepEqual(SequenceContract.summarizeFamilies(content.sequenceExperiences).map((family) => family.familyId), [
+    "snapback", "net", "semeai", "ladder"
+  ]);
 });
 
 test("進階示意圖沿用固定 marker 語義，不把 reference 當禁著", () => {
