@@ -192,7 +192,8 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /兩個 72 不能當成同一條歷史因果證據/);
   assert.match(workflow, /132｜東漢望都/);
   assert.match(workflow, /1949 → 1989｜規則到近現代仍在成文化與修訂/);
-  assert.match(workflow, /本頁來源最後查核：2026-09-28/);
+  assert.match(workflow, /歷史探索 v6/);
+  assert.match(workflow, /本頁來源最後查核：2026-09-29/);
   assert.match(workflow, /href="advanced\.html">回進階訓練<\/a>/);
   assert.match(workflow, /attempt <= 12/);
   assert.match(workflow, /styles\.css\?v=learner-flow-v55/);
