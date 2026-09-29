@@ -277,3 +277,7 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 24 小時固定延後只建立 public process-check 的時間分離；公開題可取得答案，因此不是 private unseen／Independent Evaluation。
 - delayed first response 與 actual delay 可作描述性 retention-oriented evidence，但目前不輸出 retention success、mastery 或 learning-effect claim，也不更新 KC／scheduler。
 - 本輪不修改 formal teaching candidate，不解除 R1a、R1b、target novice usability、accessibility、private unseen formal evaluation 或 learning-effect gate。
+
+
+### Delayed Comparable Fixed Order addendum
+- 延後 A → B 的順序事前固定，只控制公開 process-check 的 presentation order；不取得 scheduler／formal evaluation authority。
