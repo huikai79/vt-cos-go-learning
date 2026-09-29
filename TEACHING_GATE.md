@@ -16,7 +16,7 @@
 
 ### 2026-09-29｜learner-flow-v54 candidate refreeze
 
-「進階設定與資料」的 learner-facing 資訊階層已改為狀態摘要優先、詳細證據按需展開、課程層次降為參考、工具入口最後；因此 `index.html`、`styles.css`、`app.js` 的 critical learner surface 已變更。新凍結候選為 `formal-teaching-candidate-2026-09-29-u`，fingerprint `fnv1a32-js16-5459053d`。example evidence 只同步 candidate binding，真人欄位仍維持 false/null。這次重凍結不解除 R1a、三位 target novice usability、真人 accessibility 或 formal evaluation 的既有 blocker。
+「進階設定與資料」的 learner-facing 資訊階層已改為狀態摘要優先、詳細證據按需展開、課程層次降為參考、工具入口最後；因此 `index.html`、`styles.css`、`app.js` 的 critical learner surface 已變更。新凍結候選為 `formal-teaching-candidate-2026-09-29-u`，fingerprint `fnv1a32-js16-86699408`。example evidence 只同步 candidate binding，真人欄位仍維持 false/null。這次重凍結不解除 R1a、三位 target novice usability、真人 accessibility 或 formal evaluation 的既有 blocker。
 這三位正式證據應在 learner-facing 核心流程相對收斂、candidate 的 UI／content version 與 critical tasks 已凍結後收集；目前凍結 candidate 由 `formal-teaching-candidate.json` 定義，verifier 每次會重新計算 critical learner surface fingerprint。開發期間邊使用邊修改的 formative observation 只作產品診斷，不補入正式三位分母。任一參與者無法完成開始課程、棋盤作答、錯答後修正、重新載入續學或匯出資料，均須先記錄並處理阻擋問題；若因此修改會影響 critical task 的 learner-facing 行為，受影響的正式觀察須在新 candidate 重做。
 
 ## R1a 外部棋理審查
