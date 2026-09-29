@@ -211,8 +211,8 @@ jobs:
               name: "math",
               url: new URL(`math.html?deploy=${deploySha}`, base),
               checks: [
-                '圍棋 × 數學探索 v1',
-                '不是學習者實測 transfer effect',
+                '圍棋 × 數學探索｜第 1 版',
+                '不是對學習者轉移效果的實測',
                 '目前不宣稱本站能提升一般數學能力',
                 '本頁來源最後查核：2026-09-29'
               ]
