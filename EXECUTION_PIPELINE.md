@@ -454,3 +454,13 @@
 - **Public/Private Hard Wall：** 真正 private 題目、答案與 manifest 只能放在 `.private-evaluation/`，該目錄同時加入 Git ignore 與 release exclusion；公開 repo 只保存 verifier 與 synthetic tests。
 - **gate hardening：** `teaching-gate-verify.cjs` 不再接受單純手填 private-holdout boolean 作 formal evaluation 證據；必須另有同次本機 verifier 的有效結果。R1b 仍是獨立條件，不能由 private pool 存在自動升格。
 - **目前狀態不變：** 本輪沒有建立任何真正 private evaluation item／manifest，也沒有真人資料；`replacementPrivateHoldout=not_established`、R1b=`not_established`、formal evaluation=`BLOCKED`、learning effect=`NOT_MEASURED`。formal teaching candidate 不需重凍結，因 learner-facing critical surface 未變。
+
+
+## 2026-09-29 Decision note｜Private pool freeze gate
+
+- 最後階段若建立 private unseen evaluation pool，固定流程為：private item files → draft manifest → `formal-evaluation-freeze.cjs` → immutable frozen manifest → `formal-evaluation-verify.cjs` → 才允許開始 outcome collection。
+- draft 不得攜帶 item hash 或 evidence-integrity declarations；這些由 freeze builder 根據實際檔案與固定 contract 產生。
+- `outcomes/` 只要已有任何檔案，就禁止首次／補寫 freeze；避免看結果後才宣稱 pool 事前鎖定。
+- frozen manifest 不可覆寫；任何題目、scoring contract 或 evidence taxonomy 改變，都必須建立新 pool/version。
+- private item／manifest／outcomes 持續位於 `.private-evaluation/` hard wall 內，不列入 public release。
+- 這是 final-phase tooling readiness，不是 private holdout evidence；沒有真實 private pool 時 formal evaluation 繼續 `BLOCKED`。
