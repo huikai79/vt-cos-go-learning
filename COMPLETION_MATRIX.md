@@ -1002,4 +1002,5 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **版本：** `uiVersion` 升為 `learner-flow-v54`，`contentCatalogVersion` 升為 5。storage schema、題目 ID／答案／scoring、KC、scheduler、first response／retry、evidence taxonomy 與 formal evaluation 語義不變。
 - **反證／測試：** `lesson-content.test.cjs` 新增排序後 visual signature negative test，並直接驗第 1 課 step 1 無 liberty highlight、step 2 有兩個 liberty highlight；browser UI test 不能只驗 caption 改變，也必須驗棋盤 marker 數量改變、contextual legend、自動／手動關閉標籤與重看 reset。
 - **證據邊界：** 這只建立更嚴格的 engineering／presentation contract；不證明短講棋理已通過 R1a、240px 更好、初學者更容易理解或 learning effect 成立。正式 usability 仍 `NOT_TESTED`，formal teaching 仍依既有 gate 保持 `BLOCKED`。
+- **Formal candidate：** learner-facing critical surface 已重新凍結為 `formal-teaching-candidate-2026-09-29-u`／`fnv1a32-js16-14966636`；只代表目前 critical asset bytes 與 manifest 綁定一致，不產生任何真人證據。
 
