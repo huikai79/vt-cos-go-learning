@@ -49,11 +49,8 @@
   return{ok:true,ready:true,status:null,anchorEvent:completed,anchorMs};
  }
  function validateDelayedStore(delayedStore){
-  if(!delayedStore||delayedStore.schemaVersion!==D.delayedEvents.SCHEMA_VERSION||delayedStore.eventStreamVersion!==D.delayedEvents.STREAM_VERSION||!Array.isArray(delayedStore.events))return{ok:false,error:"delayed_store_invalid"};
-  for(const event of delayedStore.events){
-   const error=D.delayedEvents.validate(event);
-   if(error)return{ok:false,error:"delayed_event_invalid:"+error,eventId:event.eventId};
-  }
+  const result=D.delayedEvents.validateStore(delayedStore);
+  if(!result.ok)return{ok:false,error:result.error,eventId:result.eventId||null};
   return{ok:true};
  }
  function statusForItem(comparableStore,delayedStore,item,nowMs=Date.now()){
