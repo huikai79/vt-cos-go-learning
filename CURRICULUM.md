@@ -1,3 +1,5 @@
+2026-09-29 Comparable Position v1：Advanced 新增 4 個本站原創 19×19 全盤局面，前兩題作練習、後兩題換成不同棋串大小／拓撲／棋色／盤面位置等條件再判斷。v1 只問「找出唯一只剩一氣的己方棋串，下一手讓它脫離立即被提的危險」，由 rules engine 判定；不把這題型外推成全盤最佳手。後兩題是公開流程檢查，不是 formal unseen evaluation；完成率不能直接稱 mastery 或 learning effect。
+
 2026-09-29 Decision Point Comparison v1：在 19×19 SGF Decision Review 已能保存第一候選與原著之後，新增選用的 KataGo 兩手比較層。只有原著已揭露、第一候選合法且與原著不同時才可送出；若 SGF 缺規則／貼目則要求使用者補上，不自行猜測。分析固定只允許「第一候選」與「原著」兩手進 root search，保存 rules、komi、visits、engine/model/provider version、PV 與兩手排序；結果固定標記為 bounded search estimate，只作複盤參考，不產生 correct／mastery／transfer，不更新 KC、scheduler、T2/T3 或 formal evaluation。provider／engine／storage failure 維持失敗，不回退 heuristic。learner-facing 文案只說「這次搜尋較偏向哪一手」，不把 engine ranking 寫成標準答案。
 
 # 15 單元課綱與驗證邊界
