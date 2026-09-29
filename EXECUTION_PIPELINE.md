@@ -1,4 +1,6 @@
-2026-09-29 History Explore cosmology／AI + cross-language concepts pilot：依使用者優先序，R1a／三位 target novice usability／真人 accessibility 維持最後階段處理；本輪先做 research／authoring plane。\`history.html\` 新增「天地／陰陽／天文／象數」證據邊界與 2016 後 AI 知識轉折；前者只證明歷史詮釋存在，不把《易》或 361 升格成盤制起源因果，後者用日本棋院與大型棋譜研究描述布局／定石知識重組，不寫成所有傳統棋理失效。新增 \`research/go-history-cosmology-ai-v1.md\` 與 \`research/cross-language-go-concepts-pilot-v1.md\`；跨語 pilot 先鎖定厚／勢／味／先手／定石，使用 Equivalent／Overlap／Broader／Narrower／Non-equivalent／Unknown，不建立「民族思考模式」結論，也暫不新增 \`concepts.html\`。這些 Explore／Research 變更不接 learner state、KC、scoring、scheduler、T2/T3 或 formal evaluation；未改 \`index.html\` 或 Core critical candidate surface，因此不重凍結 formal candidate。\n\n2026-09-29 Evidence Overview v1：本輪屬 Step 2 formative usability engineering，不是正式 usability gate。可觀察 bottleneck 是 v54 雖縮短文字，第一層仍同時展示 activity、sampling coverage、evidence state 與 diagnostic；v55 以「目前可知道什麼」作單一 overview，完整分母與錯誤診斷下沉到 details。驗收只看 learner-facing 狀態映射、ERROR fail-closed、詳細證據仍可取得、320px／鍵盤／ARIA 結構與既有回歸；不得把工程 PASS 寫成「初學者已看懂」。若 formative observation 沒再出現此 bottleneck，不再增加新的 dashboard 層級。
+2026-09-29 History Explore cosmology／AI + cross-language concepts pilot：依使用者優先序，R1a／三位 target novice usability／真人 accessibility 維持最後階段處理；本輪先做 research／authoring plane。`history.html` 新增「天地／陰陽／天文／象數」證據邊界與 2016 後 AI 知識轉折；前者只證明歷史詮釋存在，不把《易》或 361 升格成盤制起源因果，後者用日本棋院與大型棋譜研究描述布局／定石知識重組，不寫成所有傳統棋理失效。新增 `research/go-history-cosmology-ai-v1.md` 與 `research/cross-language-go-concepts-pilot-v1.md`；跨語 pilot 先鎖定厚／勢／味／先手／定石，使用 Equivalent／Overlap／Broader／Narrower／Non-equivalent／Unknown，不建立「民族思考模式」結論，也暫不新增 `concepts.html`。這些 Explore／Research 變更不接 learner state、KC、scoring、scheduler、T2/T3 或 formal evaluation；未改 `index.html` 或 Core critical candidate surface，因此不重凍結 formal candidate。
+
+2026-09-29 Evidence Overview v1：本輪屬 Step 2 formative usability engineering，不是正式 usability gate。可觀察 bottleneck 是 v54 雖縮短文字，第一層仍同時展示 activity、sampling coverage、evidence state 與 diagnostic；v55 以「目前可知道什麼」作單一 overview，完整分母與錯誤診斷下沉到 details。驗收只看 learner-facing 狀態映射、ERROR fail-closed、詳細證據仍可取得、320px／鍵盤／ARIA 結構與既有回歸；不得把工程 PASS 寫成「初學者已看懂」。若 formative observation 沒再出現此 bottleneck，不再增加新的 dashboard 層級。
 
 2026-09-29 Delayed Comparable Fixed Order addendum：若 delayed A／B 同時達到 24 小時條件，仍固定依 A → B 呈現；B 必須等 A completed 後才能建立 presentation event。event append、store validator 與 UI 三層共同 enforce，防止使用者自選先做哪題形成 presentation-order 偏差。B 的 actualDelayMs 仍按自己的 immediate target anchor 實際計算，因此延後超過 24 小時會被如實保存。這不是 adaptive sequencing。
 
@@ -294,9 +296,20 @@
 - **Authority boundary：** fingerprint 只能回答『這兩份已結構化 geometry 是否等價』；不能決定死活答案、family taxonomy、regional name、scoring、KC 或 mastery。
 - **下一步：** 尋找可合法保存／人工轉錄且具 provenance 的 L Group／Carpenter geometry source，先完成座標提取 protocol，再嘗試解除小曲尺 ambiguity。
 - **Validation：** PR #33 verify run #465 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
-\n## 2026-09-27 Decision note｜Geometry extraction gate v1\n\n- **Bottleneck：** geometry fingerprint 只能保證 normalization 正確；若 diagram／SGF 的座標轉錄本身錯誤或來源權利不清，仍會把壞 evidence 穩定地 fingerprint。\n- **實作：** 新增 `classic-geometry-extraction.js`，版本化 extraction method、rights status、review status、payload signature、independent review 與 public promotion gate。\n- **人工轉錄：** 單份不能升格；兩個不同 reviewKey 的轉錄必須 canonical payload 完全相同。不同即 `CONFLICT`，不採多數決。
-- **來源不可變性：** promotion batch 必須共用同一 `sourceDigest`；來源版本不同不得互相充當覆核。`verified_reusable` 必須帶 `rightsEvidence`，避免只改狀態字串繞過 gate。\n- **Deterministic source：** SGF parse／source-native coordinates 可免第二份人工轉錄，但只在 `verified_reusable` 權利與 deterministic source flag 同時成立時。\n- **Public boundary：** `unknown`／`reference_only` 來源衍生 geometry 不得進公開 registry；可作 non-shipping reference/oracle。現有 BadukWorld geometry source 暫標 `unknown`。\n- **Context gate：** corner 需要兩個 board boundaries；side 需要至少一個 boundary。缺失即 INVALID，不能拿 shape-only match 冒充完整局面等價。\n- **反證：** single manual、same reviewKey、independent conflict、unknown rights、corner missing boundary 全部必須 fail closed。\n- **下一步：** 研究可合法重用的 L Group／Carpenter／Comb geometry source；若只有 reference-only source，建立 external oracle workflow 而非把其座標複製入 repo。
-- **Validation：** PR #34 verify run #469 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。\n
+
+## 2026-09-27 Decision note｜Geometry extraction gate v1
+
+- **Bottleneck：** geometry fingerprint 只能保證 normalization 正確；若 diagram／SGF 的座標轉錄本身錯誤或來源權利不清，仍會把壞 evidence 穩定地 fingerprint。
+- **實作：** 新增 `classic-geometry-extraction.js`，版本化 extraction method、rights status、review status、payload signature、independent review 與 public promotion gate。
+- **人工轉錄：** 單份不能升格；兩個不同 reviewKey 的轉錄必須 canonical payload 完全相同。不同即 `CONFLICT`，不採多數決。
+- **來源不可變性：** promotion batch 必須共用同一 `sourceDigest`；來源版本不同不得互相充當覆核。`verified_reusable` 必須帶 `rightsEvidence`，避免只改狀態字串繞過 gate。
+- **Deterministic source：** SGF parse／source-native coordinates 可免第二份人工轉錄，但只在 `verified_reusable` 權利與 deterministic source flag 同時成立時。
+- **Public boundary：** `unknown`／`reference_only` 來源衍生 geometry 不得進公開 registry；可作 non-shipping reference/oracle。現有 BadukWorld geometry source 暫標 `unknown`。
+- **Context gate：** corner 需要兩個 board boundaries；side 需要至少一個 boundary。缺失即 INVALID，不能拿 shape-only match 冒充完整局面等價。
+- **反證：** single manual、same reviewKey、independent conflict、unknown rights、corner missing boundary 全部必須 fail closed。
+- **下一步：** 研究可合法重用的 L Group／Carpenter／Comb geometry source；若只有 reference-only source，建立 external oracle workflow 而非把其座標複製入 repo。
+- **Validation：** PR #34 verify run #469 全數 PASS，包含 Node、Sabaki、Windows file-URL UI、Edge smoke 與 repository boundary。
+
 ## 2026-09-27 Decision note｜Reference-only geometry oracle v1
 
 - **Bottleneck：** extraction gate 對 rights=unknown/reference-only 正確阻止 shipping，但若完全不能利用這些來源，geometry-first research 會失去大量候選／反證材料。
