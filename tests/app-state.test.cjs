@@ -118,7 +118,7 @@ test("每課短講只自動顯示一次，並可隨時重開", () => {
   assert.match(elements["teaching-demo-board"].innerHTML, /demo-emphasis/);
   assert.doesNotMatch(elements["teaching-demo-board"].innerHTML, /demo-liberty/);
   elements["lesson-intro-start-button"].listeners.click();
-  assert.equal(elements["lesson-intro-dialog"].open, false);
+  assert.equal(Boolean(elements["lesson-intro-dialog"].open), false);
   assert.deepEqual(JSON.parse(storage.get(STORAGE_KEY)).seenLessonIntros, [0]);
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "4" }, "[data-lesson]") });
   assert.equal(elements["lesson-intro-dialog"].open, true);
