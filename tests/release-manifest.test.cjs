@@ -320,3 +320,16 @@ test("Delayed Comparable Retrieval v1 runtime、policy、analysis 與 tests 列�
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
+
+
+test("private evaluation freeze tooling 公開，但真實 private pool 保持排除", () => {
+  for (const file of [
+    "formal-evaluation-freeze.cjs",
+    "formal-evaluation-freeze.example.json",
+    "tests/formal-evaluation-freeze.test.cjs"
+  ]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+  assert.ok(manifest.excludedPatterns.includes(".private-evaluation/"));
+  assert.equal(manifest.publicFiles.some((file) => file.startsWith(".private-evaluation/")), false);
+});
