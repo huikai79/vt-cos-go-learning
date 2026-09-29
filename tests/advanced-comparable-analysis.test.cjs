@@ -122,3 +122,26 @@ test("生命週期矛盾 fail closed，不用完成事件補造首答",()=>{
  assert.equal(summary.status,Analysis.STATUS.INVALID);
  assert.equal(summary.error,"completion_without_first");
 });
+
+
+test("process-check 若跳過前置 item 提前呈現，store analysis fail closed",()=>{
+ const s=storage();
+ const target=Contract.itemOrder()[2];
+ appendPresented(s,target,"t-early");
+ const summary=Analysis.summarizeStore(Events.read(s).store);
+ assert.equal(summary.ok,false);
+ assert.equal(summary.status,Analysis.STATUS.INVALID);
+ assert.equal(summary.error,"presentation_order_skipped_item");
+});
+
+test("合法格式但事件本身 authority 被污染時 analysis fail closed",()=>{
+ const s=storage(),item=Contract.itemOrder()[0];
+ const presented=appendPresented(s,item,"a1");
+ assert.equal(presented.ok,true);
+ const store=Events.read(s).store;
+ store.events[0]={...store.events[0],formalEligible:true};
+ const summary=Analysis.summarizeStore(store);
+ assert.equal(summary.ok,false);
+ assert.equal(summary.status,Analysis.STATUS.INVALID);
+ assert.match(summary.error,/event_invalid:event_authority_invalid/);
+});
