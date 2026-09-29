@@ -236,6 +236,16 @@ async function main() {
       before: {step: "第 1 / 2 步", caption: "先看角上的黑棋。棋盤外沒有交叉點，所以不能算氣。", previousDisabled: true, libertyRings: 0, emphasisRings: 1},
       after: {step: "第 2 / 2 步", caption: "只有右邊和下邊兩個盤內空點與它沿線相鄰，所以有 2 口氣；斜對角不算。", libertyRings: 2, nextLabel: "從頭再看 ↺"}
     });
+    const demoStructure = await evaluate(socket, `({
+      captionNodes: document.querySelectorAll('#teaching-demo-caption').length,
+      duplicateFigureCaptions: document.querySelectorAll('#teaching-demo-board figcaption').length,
+      legendText: document.querySelector('#demo-legend').textContent
+    })`);
+    assert.equal(demoStructure.captionNodes, 1);
+    assert.equal(demoStructure.duplicateFigureCaptions, 0);
+    assert.match(demoStructure.legendText, /金色小圈/);
+    assert.match(demoStructure.legendText, /金色大圈/);
+    assert.doesNotMatch(demoStructure.legendText, /紅叉|藍框/);
     const started = await evaluate(socket, `(async () => { document.querySelector('#lesson-intro-start-button').click(); await new Promise((resolve) => requestAnimationFrame(() => resolve())); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, takeawayHidden: document.querySelector('.takeaway').hidden}; })()`);
     assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-prompt", activeFlow: "learning-step-1", seen: [0], takeawayHidden: true });
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
