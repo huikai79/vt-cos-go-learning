@@ -1,3 +1,5 @@
+2026-09-30 Capture & Semeai Track v1：Advanced choice content 新增兩個「打吃方向」Teaching Candidate；`candidateId`、`candidateStatus`、`kcStatus` 與 task features 只屬 authoring／content metadata，不寫入 learner/KC state，也不改 `advanced-practice-events-v1`、`advanced-sequence-events-v3`、`advanced-fixed-interleave-v1` 或 scheduler。現行 sequence 四 family 與歷史事件語義保持不變；若未來 task feature 要取得 learner-model authority，須另立 versioned event/model contract 與 migration。
+
 2026-09-29 Delayed Comparable Fixed Order addendum：若 delayed A／B 同時達到 24 小時條件，仍固定依 A → B 呈現；B 必須等 A completed 後才能建立 presentation event。event append、store validator 與 UI 三層共同 enforce，防止使用者自選先做哪題形成 presentation-order 偏差。B 的 actualDelayMs 仍按自己的 immediate target anchor 實際計算，因此延後超過 24 小時會被如實保存。這不是 adaptive sequencing。
 
 2026-09-29 Delayed Comparable Retrieval v1：Comparable Position v1 只有 immediate public process-check，尚不能區分「剛練完仍記得」與「隔一段時間後仍能在不同全盤局面重新辨認同一種危險」。新增兩個 project-synthetic 19×19 delayed item；每個 item 都是與既有 practice/source、immediate target 不同 surface class 的第三局面，仍沿用 rules-backed「唯一己方一氣棋串 → 落子後原棋串存活且至少兩氣」scoring，不判全盤最佳手。固定 policy `advanced-delayed-fixed-24h-v1` 以 immediate process-check 的 completed event 為 anchor，至少實際經過 24 小時才允許 presentation；不到時間不建立呈現事件，系統時鐘早於 anchor、anchor 生命週期時間倒退、due relation 不一致均 fail closed。這是固定間隔 baseline，不是自適應 scheduler，也不宣稱 24 小時是最佳間隔。Delayed event stream 保存 anchor identity、anchor/due/actual time、first response、retry、completion；一旦呈現即進公開 process-check denominator，未答不得移除。所有 delayed evidence 固定為 public T2 process-check taxonomy，`constructValidated=false`、`skillUpdateEligible=false`、`schedulerEligible=false`、`formalEligible=false`、`independentEvaluation=false`；analysis 只輸出描述性 first-response／actual-delay 摘要，`retentionConclusion=null`、`transferConclusion=null`。Advanced Evidence Bundle 升為 v2，新增 delayed stream 與 delayed analysis；舊 event stores 不 migration、不覆寫。private unseen formal evaluation 仍是獨立 gate。rollback 可移除 delayed runtime/policy/stream/items，既有 Comparable v1、Replay、Decision Review 不受影響。
@@ -47,7 +49,7 @@
 
 擴大題庫時，維持以下資料邊界：
 
-- **課程內容**：單元、先備概念、短講解、題目、技能標籤、錯誤類型、變形題關係、提示與錯誤解釋。每題保留來源參考、編題者與檢核狀態；局面、task features、答案及評分規則綁定題目版本。特徵先保存棋盤大小、位置、氣數、先手方、干擾及作答方式等需要的內容，未知或不適用明示。
+- **課程內容**：單元、先備概念、短講解、題目、技能標籤、錯誤類型、變形題關係、提示與錯誤解釋。Teaching Candidate 可另帶 task features 與 `candidateStatus`，但這些欄位本身不取得 learner/KC authority。每題保留來源參考、編題者與檢核狀態；局面、task features、答案及評分規則綁定題目版本。特徵先保存棋盤大小、位置、氣數、先手方、干擾及作答方式等需要的內容，未知或不適用明示。
 - **技能模型**：KC 是暫定假說；保存技能卡版本、題目對應、預測、修訂理由與新舊版關係。事件保留原版，另存新模型分析；不同曲線先查題目及情境差異，不自動拆分或合併。
 - **棋局事實**：SGF 保存初始局面、落子與變化；答案樹另記目標條件與可接受變化。單一固定座標不足以判定所有死活題。
 - **規則引擎**：處理相連、氣、提子、禁著與劫。題目評分先檢合法手，再檢教學目標。
