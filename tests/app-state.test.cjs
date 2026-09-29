@@ -114,7 +114,7 @@ test("每課短講只自動顯示一次，並可隨時重開", () => {
   assert.equal(elements["lesson-intro-dialog"].open, true);
   assert.equal(elements["lesson-intro-title"].textContent, "現在先學：認識氣");
   assert.match(elements["teaching-text"].textContent, /上下左右相鄰的空點/);
-  assert.match(elements["teaching-check"].textContent, /先找空點/);
+  assert.match(elements["teaching-check"].textContent, /先找沿線相鄰的空點/);
   assert.match(elements["teaching-demo-board"].innerHTML, /demo-emphasis/);
   assert.doesNotMatch(elements["teaching-demo-board"].innerHTML, /demo-liberty/);
   elements["lesson-intro-start-button"].listeners.click();
