@@ -1,3 +1,11 @@
+2026-09-29 Change note｜Math Explore learner-language sweep
+
+- **問題：** `math.html` 雖屬一般讀者 Explore 頁，仍散落 `spatial training`、`far transfer`、`transfer effect`、`Go-only` 等研究英文與翻譯腔；不符合 learner-facing 中文語境。
+- **修正：** 一般讀者敘述改為自然繁體中文；文獻作者姓名與 `PSPACE-hard` 等必要專名保留。研究方法改寫為「統合分析」「具對照組的前後測研究」「近距離／遠距轉移」等中文表達。
+- **不可破壞：** 沒有改來源、數字、研究邊界、頁面路由、learner runtime、KC、scoring、scheduler 或 formal evaluation。研究紀錄仍保留原始英文術語供稽核。
+- **驗證：** `math.test.cjs` 新增英文研究術語回歸掃描；`math.html` 納入 `learner-language-boundary.test.cjs`。
+- **未驗證：** 機器與 AI 文案審查不能證明目標讀者實際理解；正式教學與學習成效狀態不變。
+
 2026-09-29 Change note｜Go × Mathematics Explore v1
 
 - **Johari correction：** 上一輪把 HKBU 2024 七人 narrative multiple case study 的「feeble to moderate」連結描述得太接近已量測 transfer；現已降格為雙領域熟手的感知策略連結／預期轉移線索，不作 learner outcome effect。
