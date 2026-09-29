@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-29-v",
-  "frozenAt": "2026-09-29T15:17:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-29-w",
+  "frozenAt": "2026-09-29T16:34:00+08:00",
   "assetSetVersion": 6,
-  "assetFingerprint": "fnv1a32-js16-76aaa07f",
+  "assetFingerprint": "fnv1a32-js16-4a325a8b",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -38,5 +38,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "Short Talk UX v2 final regression pass：learner-flow-v55／content catalog 5。保留 demoSteps 單一示範來源與第 1 課 progressive reveal；修正短講 mobile CSS cascade，使 ≤760px 真正回到單欄；移除 dialog close-event 的焦點競爭，由 dismiss action 明確決定手動關閉回短講入口、開始／自動略過進題目。新增 320px Modal-open、200% text、manual Start/Close/Esc、auto Esc、v4→v5 seen migration 與單步 demo regression。短講棋理另由獨立 19 課 content-review gate 管理；該 gate 不產生真人證據。storage schema、題目答案／scoring、KC、scheduler、first response／retry、event schema、evidence taxonomy 與 formal evaluation authority 均未改。"
+  "scopeNote": "Short Talk UX v2 final merge candidate：learner-flow-v55／content catalog 5。保留最新 main 的 v54 進階設定資訊階層（目前狀態摘要 → 按需完整診斷 → 15 單元核心課程參考 → 工具），並加入 short-talk demoSteps 單一來源、progressive reveal、contextual legend、單一 caption、mobile cascade 修正與 deterministic focus。新增 320px Modal-open、200% text、manual Close/Start/Esc、auto Esc、v4→v5 seen migration、one-step demo regressions。正式教學 gate v3 另要求 19 課 short-talk 外部棋理回條。storage schema、題目答案/scoring、KC、scheduler、first response/retry、event schema、evidence taxonomy 與 formal evaluation authority 均未改。"
 }
