@@ -283,3 +283,8 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - **Candidate：** learner-facing critical surface 重新凍結為 `formal-teaching-candidate-2026-09-29-w`／`fnv1a32-js16-4a325a8b`；content catalog 仍為 5。舊 u candidate 不得用於正式真人證據。
 - **證據狀態：** 新 verifier 與 gate 只提高 evidence integrity；目前仍沒有題庫 R1a 外部回條、19 課短講回條、正式 usability 或 accessibility 證據，因此 formal teaching／formal evaluation 仍 `BLOCKED`，learning effect 仍 `NOT_MEASURED`。
 
+## 2026-09-29 Change note｜Comparable Position v1
+
+- Advanced 的公開 comparable pair 只建立 practice／process-check 工程契約；target item 雖標 T2 taxonomy，仍是公開已可取得答案的題目，不能作 formal unseen holdout。
+- provisional KC hypothesis 為 `urgent-atari-rescue-kc-v1`，但 construct validity 未由真人資料建立，且事件禁止更新 learner skill state／scheduler。
+- 本輪不修改 formal teaching candidate，也不解除 R1a、R1b、target novice usability、accessibility、private unseen formal evaluation 或 learning-effect gate。
