@@ -222,7 +222,7 @@ jobs:
               url: new URL(`history.html?deploy=${deploySha}`, base),
               checks: [
                 'history.css?v=history-explore-v5',
-                '歷史探索 v5',
+                '歷史探索 v6',
                 '兩個 72 不能當成同一條歷史因果證據',
                 '132｜東漢望都',
                 '1949 → 1989｜規則到近現代仍在成文化與修訂',
