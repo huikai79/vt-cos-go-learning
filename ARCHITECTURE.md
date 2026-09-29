@@ -284,3 +284,13 @@ SGF 局部功能的 authority 現在分成三層：
 - 「確證／高度可信／有爭議／傳說／研究假說／未知」是 historical claim presentation metadata，不是 `evidence-taxonomy.js` 的 learner evidence classification。
 - 外部古籍、博物館、學術論文與研究機構只提供歷史主張 evidence；它們不取得 rules engine、item scoring、KC 或 scheduler authority。
 - 若未來要把某段歷史材料轉成教學題或正式評量，必須另走 content/scoring/TEACHING_GATE 流程，不得由 Explore 頁直接升格。
+
+
+## 2026-09-29 Change note｜Private unseen formal evaluation verifier v1
+
+- **bottleneck：** 公開 holdout 已因 publication 全部退役，但 formal evaluation gate 原先只靠 `privateUnexposedHoldoutEstablished=true` 加文字 evidence reference，無法 machine-verify private pool 是否真的存在、是否在 outcomes 前凍結、是否未公開／未呈現，以及是否與同輪 scheduler／教學調整分離。
+- **公開 contract：** 新增 `formal-evaluation-verify.cjs`。未來只能在本機以 private manifest + private item files 驗證；逐檔 SHA-256、唯一 item ID、private-root path confinement、pool/version、scoring/evidence-taxonomy version 都需一致。
+- **evidence-integrity declarations：** manifest 必須是 `never_public_never_presented`、`independent_evaluation`、`no_same_round_updates`、`locked_before_outcomes`，且 `frozenBeforeOutcomes=true`；缺一項即 fail closed。
+- **Public/Private Hard Wall：** 真正 private 題目、答案與 manifest 只能放在 `.private-evaluation/`，該目錄同時加入 Git ignore 與 release exclusion；公開 repo 只保存 verifier 與 synthetic tests。
+- **gate hardening：** `teaching-gate-verify.cjs` 不再接受單純手填 private-holdout boolean 作 formal evaluation 證據；必須另有同次本機 verifier 的有效結果。R1b 仍是獨立條件，不能由 private pool 存在自動升格。
+- **目前狀態不變：** 本輪沒有建立任何真正 private evaluation item／manifest，也沒有真人資料；`replacementPrivateHoldout=not_established`、R1b=`not_established`、formal evaluation=`BLOCKED`、learning effect=`NOT_MEASURED`。formal teaching candidate 不需重凍結，因 learner-facing critical surface 未變。
