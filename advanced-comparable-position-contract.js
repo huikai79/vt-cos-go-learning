@@ -194,7 +194,7 @@ function validatePair(pair){
  if(sameSurfaceClass(pair.source,pair.target))return"pair_surface_too_equivalent";
  return null;
 }
-function itemOrder(){return normalizedPairs.flatMap(pair=>[pair.source,pair.target]);}
+function itemOrder(){return[...normalizedPairs.map(pair=>pair.source),...normalizedPairs.map(pair=>pair.target)];}
 function pairById(pairId){return normalizedPairs.find(pair=>pair.pairId===pairId)||null;}
 function itemById(itemId){return itemOrder().find(item=>item.itemId===itemId)||null;}
 function validateAll(){
