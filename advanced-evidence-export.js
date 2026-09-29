@@ -6,7 +6,9 @@
   comparison:require("./advanced-decision-comparison-events.js"),
   replay:require("./advanced-decision-replay-events.js"),
   comparable:require("./advanced-comparable-position-events.js"),
-  comparableAnalysis:require("./advanced-comparable-analysis.js")
+  comparableAnalysis:require("./advanced-comparable-analysis.js"),
+  delayedComparable:require("./advanced-delayed-comparable-events.js"),
+  delayedComparableAnalysis:require("./advanced-delayed-comparable-analysis.js")
  }:{
   choice:root.GoAdvancedEvents,
   sequence:root.GoAdvancedSequenceEvents,
@@ -14,14 +16,16 @@
   comparison:root.GoAdvancedDecisionComparisonEvents,
   replay:root.GoAdvancedDecisionReplayEvents,
   comparable:root.GoAdvancedComparablePositionEvents,
-  comparableAnalysis:root.GoAdvancedComparableAnalysis
+  comparableAnalysis:root.GoAdvancedComparableAnalysis,
+  delayedComparable:root.GoAdvancedDelayedComparableEvents,
+  delayedComparableAnalysis:root.GoAdvancedDelayedComparableAnalysis
  };
  const api=factory(deps);
  if(typeof module==="object"&&module.exports)module.exports=api;
  if(root)root.GoAdvancedEvidenceExport=api;
 })(typeof globalThis!=="undefined"?globalThis:this,function(D){"use strict";
 
- const BUNDLE_VERSION="advanced-evidence-bundle-v1";
+ const BUNDLE_VERSION="advanced-evidence-bundle-v2";
 
  function errorEntry(name,storageKey,error){
   return{name,storageKey,status:"error",error:String(error||"unknown_error"),store:null};
@@ -59,10 +63,12 @@
    decisionReview:safeRead("decisionReview",D.review.STORAGE_KEY,D.review.read,storage,D.review.validate),
    decisionComparison:safeRead("decisionComparison",D.comparison.STORAGE_KEY,D.comparison.read,storage,D.comparison.validate),
    decisionReplay:safeRead("decisionReplay",D.replay.STORAGE_KEY,D.replay.read,storage,D.replay.validate),
-   comparablePosition:safeRead("comparablePosition",D.comparable.STORAGE_KEY,D.comparable.read,storage,D.comparable.validate)
+   comparablePosition:safeRead("comparablePosition",D.comparable.STORAGE_KEY,D.comparable.read,storage,D.comparable.validate),
+   delayedComparable:safeRead("delayedComparable",D.delayedComparable.STORAGE_KEY,D.delayedComparable.read,storage,D.delayedComparable.validate)
   };
   const errors=Object.values(streams).filter(entry=>entry.status==="error").map(entry=>({stream:entry.name,error:entry.error}));
   let comparableAnalysis=null;
+  let delayedComparableAnalysis=null;
   if(streams.comparablePosition.status==="ok"){
    try{
     const result=D.comparableAnalysis.summarizeStore({
@@ -76,8 +82,28 @@
     errors.push({stream:"comparableAnalysis",error:"analysis_exception:"+(error&&error.message||"unknown")});
    }
   }
+  if(streams.comparablePosition.status==="ok"&&streams.delayedComparable.status==="ok"){
+   try{
+    const result=D.delayedComparableAnalysis.summarizeStore(
+     {
+      schemaVersion:streams.comparablePosition.schemaVersion,
+      eventStreamVersion:streams.comparablePosition.eventStreamVersion,
+      events:streams.comparablePosition.events
+     },
+     {
+      schemaVersion:streams.delayedComparable.schemaVersion,
+      eventStreamVersion:streams.delayedComparable.eventStreamVersion,
+      events:streams.delayedComparable.events
+     }
+    );
+    if(result&&result.ok===true)delayedComparableAnalysis=result;
+    else errors.push({stream:"delayedComparableAnalysis",error:result&&result.error||"analysis_failed"});
+   }catch(error){
+    errors.push({stream:"delayedComparableAnalysis",error:"analysis_exception:"+(error&&error.message||"unknown")});
+   }
+  }
   return{
-   schemaVersion:1,
+   schemaVersion:2,
    bundleVersion:BUNDLE_VERSION,
    exportedAt:exportedAt||new Date().toISOString(),
    scope:"advanced_local_evidence_backup",
@@ -91,7 +117,8 @@
    mastery:null,
    learningEffect:null,
    streams,
-   comparableAnalysis
+   comparableAnalysis,
+   delayedComparableAnalysis
   };
  }
 
