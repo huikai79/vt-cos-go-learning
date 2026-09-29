@@ -246,6 +246,40 @@ async function main() {
     assert.match(demoStructure.legendText, /金色小圈/);
     assert.match(demoStructure.legendText, /金色大圈/);
     assert.doesNotMatch(demoStructure.legendText, /紅叉|藍框/);
+
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 320, height: 812, deviceScaleFactor: 1, mobile: true });
+    const shortTalkNarrow = await evaluate(socket, `(() => {
+      const dialog = document.querySelector('#lesson-intro-dialog');
+      const stage = document.querySelector('.teaching-demo-stage');
+      const board = document.querySelector('#teaching-demo-board');
+      dialog.scrollTop = dialog.scrollHeight;
+      const dialogRect = dialog.getBoundingClientRect();
+      const startRect = document.querySelector('#lesson-intro-start-button').getBoundingClientRect();
+      return {
+        open: dialog.open,
+        columns: getComputedStyle(stage).gridTemplateColumns.split(/\\s+/).filter(Boolean).length,
+        pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        dialogOverflow: dialog.scrollWidth > dialog.clientWidth + 1,
+        boardOverflow: board.scrollWidth > board.clientWidth + 1,
+        ctaReachable: startRect.bottom <= dialogRect.bottom + 2
+      };
+    })()`);
+    assert.deepEqual(shortTalkNarrow, { open: true, columns: 1, pageOverflow: false, dialogOverflow: false, boardOverflow: false, ctaReachable: true });
+
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    const shortTalkZoom = await evaluate(socket, `(() => {
+      document.documentElement.style.fontSize = '32px';
+      const dialog = document.querySelector('#lesson-intro-dialog');
+      const result = {
+        open: dialog.open,
+        pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        dialogOverflow: dialog.scrollWidth > dialog.clientWidth + 1
+      };
+      document.documentElement.style.fontSize = '';
+      return result;
+    })()`);
+    assert.deepEqual(shortTalkZoom, { open: true, pageOverflow: false, dialogOverflow: false });
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const started = await evaluate(socket, `(async () => { document.querySelector('#lesson-intro-start-button').click(); await new Promise((resolve) => requestAnimationFrame(() => resolve())); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, takeawayHidden: document.querySelector('.takeaway').hidden}; })()`);
     assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-prompt", activeFlow: "learning-step-1", seen: [0], takeawayHidden: true });
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
@@ -608,6 +642,41 @@ async function main() {
     assert.equal(seenAfterDismiss.manualLabel, "關閉");
     assert.equal(seenAfterDismiss.resetStep, "第 1 / 2 步");
     assert.ok(seenAfterDismiss.seen.includes(4));
+
+    const manualCloseFocus = await evaluate(socket, `(() => {
+      document.querySelector('#lesson-intro-button').click();
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      return {open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id};
+    })()`);
+    assert.deepEqual(manualCloseFocus, {open: false, focused: "lesson-intro-button"});
+
+    const manualStartFocus = await evaluate(socket, `(() => {
+      document.querySelector('#lesson-intro-button').click();
+      document.querySelector('#lesson-intro-start-button').click();
+      return {open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id};
+    })()`);
+    assert.deepEqual(manualStartFocus, {open: false, focused: "question-prompt"});
+
+    await evaluate(socket, "document.querySelector('#lesson-intro-button').click()");
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await delay(50);
+    const manualEscapeFocus = await evaluate(socket, `({open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id})`);
+    assert.deepEqual(manualEscapeFocus, {open: false, focused: "lesson-intro-button"});
+
+    await evaluate(socket, "document.querySelector('[data-lesson=\"5\"]').click()");
+    assert.equal(await evaluate(socket, "document.querySelector('#lesson-intro-dialog').open"), true);
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await delay(50);
+    const autoEscapeFocus = await evaluate(socket, `({
+      open: document.querySelector('#lesson-intro-dialog').open,
+      focused: document.activeElement.id,
+      seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros
+    })`);
+    assert.equal(autoEscapeFocus.open, false);
+    assert.equal(autoEscapeFocus.focused, "question-prompt");
+    assert.ok(autoEscapeFocus.seen.includes(5));
 
     // Regression: previewing a future unit must not suppress the formal unit-transition intro.
     await evaluate(socket, `(() => {
