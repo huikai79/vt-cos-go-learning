@@ -427,7 +427,7 @@
 ## 2026-09-29 Decision note｜Final-phase human review policy
 
 - 開發／研究期間先完成：可自動重現的工程、rules/scoring contracts、negative tests、provenance、rights boundary、reference-only receipts、rollback 與 current-truth 同步。
-- 所有需要真人判定的工作統一排入最後階段：R1a、R1b 真人難度、三位 target novice usability、真人 accessibility、mark-semantics review、人工棋理／內容覆核。
+- 所有需要真人判定的工作統一排入最後階段：R1a 題庫回條、19 課短講外部棋理回條、R1b 真人難度、三位 target novice usability、真人 accessibility、mark-semantics review、其他人工棋理／內容覆核。
 - 中途遇到人工缺口時：
   1. 先標記 `DEFERRED_TO_FINAL_REVIEW` 與既有證據狀態；
   2. 若後續工程不依賴該人工判定，可繼續；
