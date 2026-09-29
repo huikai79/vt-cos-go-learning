@@ -34,10 +34,16 @@
    events:store.events
   };
  }
- function safeRead(name,storageKey,read,storage){
+ function safeRead(name,storageKey,read,storage,validateEvent=null){
   try{
    const result=read(storage);
    if(!result||result.ok!==true||!result.store)return errorEntry(name,storageKey,result&&result.error||"store_read_failed");
+   if(validateEvent){
+    for(const event of result.store.events){
+     const error=validateEvent(event);
+     if(error)return errorEntry(name,storageKey,"event_invalid:"+error);
+    }
+   }
    return okEntry(name,storageKey,result.store);
   }catch(error){
    return errorEntry(name,storageKey,"store_read_exception:"+(error&&error.message||"unknown"));
@@ -50,10 +56,10 @@
    sequenceV3:safeRead("sequenceV3",D.sequence.STORAGE_KEY,D.sequence.read,storage),
    sequenceV2:safeRead("sequenceV2",D.sequence.LEGACY_STORAGE_KEY,D.sequence.readLegacy,storage),
    sequenceV1:safeRead("sequenceV1",D.sequence.V1_STORAGE_KEY,D.sequence.readV1,storage),
-   decisionReview:safeRead("decisionReview",D.review.STORAGE_KEY,D.review.read,storage),
-   decisionComparison:safeRead("decisionComparison",D.comparison.STORAGE_KEY,D.comparison.read,storage),
-   decisionReplay:safeRead("decisionReplay",D.replay.STORAGE_KEY,D.replay.read,storage),
-   comparablePosition:safeRead("comparablePosition",D.comparable.STORAGE_KEY,D.comparable.read,storage)
+   decisionReview:safeRead("decisionReview",D.review.STORAGE_KEY,D.review.read,storage,D.review.validate),
+   decisionComparison:safeRead("decisionComparison",D.comparison.STORAGE_KEY,D.comparison.read,storage,D.comparison.validate),
+   decisionReplay:safeRead("decisionReplay",D.replay.STORAGE_KEY,D.replay.read,storage,D.replay.validate),
+   comparablePosition:safeRead("comparablePosition",D.comparable.STORAGE_KEY,D.comparable.read,storage,D.comparable.validate)
   };
   const errors=Object.values(streams).filter(entry=>entry.status==="error").map(entry=>({stream:entry.name,error:entry.error}));
   let comparableAnalysis=null;
