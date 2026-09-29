@@ -66,7 +66,7 @@ function pointTarget(dataset, selector) {
 }
 
 function createApp(saved = {}, options = {}) {
-  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "lesson-terms", "lesson-term-count", "lesson-term-list", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "current-course-context", "course-nav-toggle", "course-navigation", "today-navigation", "sidebar-due-review-button", "sidebar-due-review-count", "sidebar-review-button", "sidebar-review-count", "sidebar-tools-button", "system-status", "feedback", "interaction-feedback", "hint-feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "scheduled-practice-description", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "live-practice-brief", "live-practice-summary", "live-evidence-brief", "live-evidence-summary", "integrated-progress-brief", "integrated-progress-summary", "diagnostic-brief"];
+  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "lesson-terms", "lesson-term-count", "lesson-term-list", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "current-course-context", "course-nav-toggle", "course-navigation", "today-navigation", "sidebar-due-review-button", "sidebar-due-review-count", "sidebar-review-button", "sidebar-review-count", "sidebar-tools-button", "system-status", "feedback", "interaction-feedback", "hint-feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "scheduled-practice-description", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "advanced-evidence-brief", "advanced-evidence-note", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary"];
   const elements = Object.fromEntries(ids.map((id) => [id, new Element()]));
   const storage = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   for (const [key, value] of Object.entries(options.rawStorage || {})) storage.set(key, value);
@@ -163,7 +163,8 @@ test("試行技能將首答、重試與提示後作答存成可重算事件", ()
   assert.equal(capture.at(-1).endedReason, "navigation");
   assert.equal(saved.exposures["u1-06"].contentVersion, 1);
   assert.match(elements["diagnostic-summary"].textContent, /最後一口氣未找對：1 次首答錯誤/);
-  assert.equal(elements["diagnostic-brief"].textContent, "1 次首答錯誤");
+  assert.equal(elements["advanced-evidence-brief"].textContent, "仍需繼續觀察");
+  assert.match(elements["advanced-evidence-note"].textContent, /錯誤或未完成/);
 });
 
 test("舊版進度可載入並在首次新事件時寫入新版資料", () => {
@@ -344,7 +345,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v54");
+  assert.equal(exported.uiVersion, "learner-flow-v55");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -514,7 +515,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v54");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v55");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -541,7 +542,8 @@ test("人機實戰事件只進獨立 practice stream，不污染技能事件、�
   const { elements, storage, downloads } = createApp({}, { rawStorage: { [GoPracticeEvents.STORAGE_KEY]: JSON.stringify(practiceStore) } });
   assert.match(elements["live-practice-summary"].textContent, /人機練習 1 局/);
   assert.match(elements["live-practice-summary"].textContent, /可觀察決策 1 次/);
-  assert.equal(elements["live-practice-brief"].textContent, "1 局 · 1 次決策");
+  assert.equal(elements["advanced-evidence-brief"].textContent, "已有練習紀錄");
+  assert.match(elements["advanced-evidence-note"].textContent, /還沒有足夠的可比較資料/);
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.deepEqual(saved.events, []);
   assert.equal(saved.scheduler.responses.length, 0);
@@ -556,6 +558,8 @@ test("人機實戰事件只進獨立 practice stream，不污染技能事件、�
 test("損壞的人機事件流顯示讀取失敗，完整備份不以空陣列掩蓋", async () => {
   const { elements, downloads } = createApp({}, { rawStorage: { [GoPracticeEvents.STORAGE_KEY]: "{broken" } });
   assert.match(elements["live-practice-summary"].textContent, /無法讀取/);
+  assert.equal(elements["advanced-evidence-brief"].textContent, "部分資料暫時無法讀取");
+  assert.match(elements["advanced-evidence-note"].textContent, /不會把錯誤當成沒有紀錄/);
   elements["export-events-button"].listeners.click();
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.livePracticeEvents, null);
@@ -577,7 +581,8 @@ test("live eligibility/scoring contract 的資料只進 live evidence，不污�
   const { elements, storage, downloads } = createApp({}, { rawStorage: { [GoLiveEvidence.STORAGE_KEY]: JSON.stringify(store) } });
   assert.match(elements["live-evidence-summary"].textContent, /已查看 1 個你的回合/);
   assert.match(elements["live-evidence-summary"].textContent, /其中 1 個符合目前的觀察條件/);
-  assert.equal(elements["live-evidence-brief"].textContent, "1 / 1 可分析");
+  assert.equal(elements["advanced-evidence-brief"].textContent, "資料仍在累積");
+  assert.match(elements["advanced-evidence-note"].textContent, /暫不作能力結論/);
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.deepEqual(saved.events, []);
   assert.equal(saved.scheduler.responses.length, 0);
@@ -596,6 +601,8 @@ test("live eligibility/scoring contract 的資料只進 live evidence，不污�
 test("損壞 live evidence store 顯示 ERROR，備份不偽造零進度", async () => {
   const { elements, downloads } = createApp({}, { rawStorage: { [GoLiveEvidence.STORAGE_KEY]: "{broken" } });
   assert.match(elements["live-evidence-summary"].textContent, /無法讀取/);
+  assert.equal(elements["advanced-evidence-brief"].textContent, "部分資料暫時無法讀取");
+  assert.match(elements["advanced-evidence-note"].textContent, /不會把錯誤當成沒有紀錄/);
   elements["export-events-button"].listeners.click();
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.liveEvidenceEvents, null);
@@ -603,6 +610,20 @@ test("損壞 live evidence store 顯示 ERROR，備份不偽造零進度", async
   assert.equal(exported.liveEvidenceReadError, "live_evidence_store_malformed");
 });
 
+
+test("進階證據概覽只摘要資料狀態，不把分母或錯誤數升格為能力判定", () => {
+  const empty = createApp();
+  assert.equal(empty.elements["advanced-evidence-brief"].textContent, "尚無足夠資料");
+  assert.doesNotMatch(empty.elements["advanced-evidence-brief"].textContent, /掌握|熟練|通過|百分比|%/);
+
+  const appJs = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
+  const start = appJs.indexOf("function renderAdvancedEvidenceOverview");
+  const end = appJs.indexOf("function clearAuxiliaryFeedback", start);
+  assert.ok(start >= 0 && end > start);
+  const overview = appJs.slice(start, end);
+  assert.doesNotMatch(overview, /satisfiedFirstResponses\s*\/|eligibleOpportunities\s*\/|observedErrors\s*次/);
+  assert.doesNotMatch(overview, /已掌握|熟練程度百分比|能力已通過/);
+});
 
 test("主課程 save envelope 不得複製 live streams，raw export 仍可帶出", () => {
   const appJs = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
@@ -650,7 +671,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-flow-v54/);
+  assert.match(html, /styles\.css\?v=learner-flow-v55/);
   assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
   assert.equal((html.match(/class="intro-path-image"/g) || []).length, 3);
   assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 3);
