@@ -165,13 +165,14 @@ jobs:
                 'href="math.html"',
                 'href="global-go-observatory.html">全球觀察</a>',
                 '歷史與典故另外讀，不擋住你的學習主線',
-                'styles.css?v=learner-flow-v54',
-                'app.js?v=learner-flow-v54',
+                'styles.css?v=learner-flow-v55',
+                'app.js?v=learner-flow-v55',
                 '15 單元核心課程（參考）',
-                'id="live-practice-brief"',
-                'id="live-evidence-brief"',
-                'id="integrated-progress-brief"',
-                'id="diagnostic-brief"'
+                'class="advanced-priority-label">目前紀錄與證據</div>',
+                'id="advanced-evidence-brief"',
+                'id="advanced-evidence-note"',
+                'class="advanced-evidence-details"',
+                '查看資料來源與診斷'
               ]
             },
             {
@@ -255,17 +256,17 @@ jobs:
               name: "formal-teaching-candidate",
               url: new URL(`formal-teaching-candidate.json?deploy=${deploySha}`, base),
               checks: [
-                '"candidateId": "formal-teaching-candidate-2026-09-29-v"',
-                '"assetFingerprint": "fnv1a32-js16-45fb67e5"',
-                'learner-flow-v54'
+                '"candidateId": "formal-teaching-candidate-2026-09-29-w"',
+                '"assetFingerprint": "fnv1a32-js16-30995be7"',
+                'learner-flow-v55'
               ]
             },
             {
               name: "teaching-gate",
               url: new URL(`teaching-gate.json?deploy=${deploySha}`, base),
               checks: [
-                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-09-29-v"',
-                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-45fb67e5"',
+                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-09-29-w"',
+                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-30995be7"',
                 '"noviceUsability": "not_tested"',
                 '"accessibility": "not_tested"'
               ]
