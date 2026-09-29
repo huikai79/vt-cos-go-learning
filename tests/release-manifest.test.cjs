@@ -295,3 +295,9 @@ test("Comparable Position analysis v1 列入公開發佈清單", () => {
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
+
+test("Advanced evidence bundle export v1 列入公開發佈清單", () => {
+  for (const file of ["advanced-evidence-export.js", "advanced-evidence-export-ui.js", "tests/advanced-evidence-export.test.cjs"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
