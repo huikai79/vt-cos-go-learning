@@ -1,3 +1,5 @@
+2026-09-29 Capture & Semeai Track v1：把打吃方向、連斷、基礎手筋與對殺整合成跨單元「捕獲推理梯」。本輪只新增 Teaching Candidate／task features 與課程映射，不新增 KC、不改 scheduler、T0–T3、formal evaluation 或既有 sequence event/policy 語義；`advanced-fixed-interleave-v1`／`advanced-sequence-events-v3` 保持原四 family。來源不明的使用者教材截圖只作 DISCOVERED 研究線索，不複製圖片、原文或完整棋形到公開教材。rollback 可移除兩個 Advanced choice candidate 與本節，不需 migration 歷史事件。
+
 2026-09-29 Delayed Comparable Fixed Order addendum：若 delayed A／B 同時達到 24 小時條件，仍固定依 A → B 呈現；B 必須等 A completed 後才能建立 presentation event。event append、store validator 與 UI 三層共同 enforce，防止使用者自選先做哪題形成 presentation-order 偏差。B 的 actualDelayMs 仍按自己的 immediate target anchor 實際計算，因此延後超過 24 小時會被如實保存。這不是 adaptive sequencing。
 
 2026-09-29 Delayed Comparable Retrieval v1：Comparable Position v1 只有 immediate public process-check，尚不能區分「剛練完仍記得」與「隔一段時間後仍能在不同全盤局面重新辨認同一種危險」。新增兩個 project-synthetic 19×19 delayed item；每個 item 都是與既有 practice/source、immediate target 不同 surface class 的第三局面，仍沿用 rules-backed「唯一己方一氣棋串 → 落子後原棋串存活且至少兩氣」scoring，不判全盤最佳手。固定 policy `advanced-delayed-fixed-24h-v1` 以 immediate process-check 的 completed event 為 anchor，至少實際經過 24 小時才允許 presentation；不到時間不建立呈現事件，系統時鐘早於 anchor、anchor 生命週期時間倒退、due relation 不一致均 fail closed。這是固定間隔 baseline，不是自適應 scheduler，也不宣稱 24 小時是最佳間隔。Delayed event stream 保存 anchor identity、anchor/due/actual time、first response、retry、completion；一旦呈現即進公開 process-check denominator，未答不得移除。所有 delayed evidence 固定為 public T2 process-check taxonomy，`constructValidated=false`、`skillUpdateEligible=false`、`schedulerEligible=false`、`formalEligible=false`、`independentEvaluation=false`；analysis 只輸出描述性 first-response／actual-delay 摘要，`retentionConclusion=null`、`transferConclusion=null`。Advanced Evidence Bundle 升為 v2，新增 delayed stream 與 delayed analysis；舊 event stores 不 migration、不覆寫。private unseen formal evaluation 仍是獨立 gate。rollback 可移除 delayed runtime/policy/stream/items，既有 Comparable v1、Replay、Decision Review 不受影響。
@@ -310,6 +312,20 @@ engagement、frustration、boredom、session completion 與 learner agency 分�
 > 一步吃子 → 兩三步吃子 → 基礎手筋 → 一手做活／殺棋 → 簡單死活 → 分支死活 → 實戰局部
 
 目前 15 單元主架構保留；第 4 單元「眼與基礎死活」負責 Level 2–3，第 9 單元「死活閱讀」承接 Level 4–5。下一版先擴充這兩個單元及第 1、2 單元的變形題，不等待學習者完成全部佈局課程。
+
+### 4.1 捕獲推理梯與 Teaching Candidate 邊界
+
+跨單元的底層操作順序暫定為：
+
+> **看氣 → 找打吃候選 → 預測對方逃法 → 檢查連接／切斷 → 判斷能否繼續追 → 比較雙方氣 → 讀到可判定結果**
+
+這是 teaching sequence／task decomposition，不宣稱是不可再分的心理階段。`打吃方向`、`雙打吃`、`門吃`、`抱吃`、`征子`、`枷`、`倒撲`、`接不歸`、`對殺`先視為教學名稱、task family 或 task feature 候選；**不得因教材有一個名稱就各自建立 KC**。只有下列條件同時出現時，才考慮把其中一項升格為 versioned KC：跨不同母題可一致判定、能和先備不足／介面錯誤區分、專門補練能改變後續新題表現，而且該分類對 prediction／selection／intervention 有實際決策價值。
+
+第一批 Teaching Candidate 是 `capture-semeai-track-v1` 的「打吃方向」。先只記確定的 task features，例如 `capturePattern`、`atariDirectionGoal`、`escapeRoute`、`connectionThreat`、`edgeConstraint`、`sharedLiberties`、`externalLiberties`、`eyeCondition`、`approachMoveRequired`、`terminalCaptureResult`；未知或未用欄位不補值。本輪 Advanced 新增兩個 choice practice：一個比較把對方逼向受限方向，一個比較是否堵住連接路；兩者固定 `kcStatus=not_promoted`，不進現行多手 sequence policy、scheduler、T2/T3 或 formal evaluation。
+
+對殺 pilot 分層：先做無眼、局部、短手數、無劫且可可靠評分的基本對殺；再分開加入外氣／公氣、眼、接近手與較長分支。初期不把複雜對殺、全局交換或 KataGo position estimate 混成同一 scoring contract。規則引擎負責合法手、棋串、氣與提子；短變化的教學成功仍需 versioned answer/scoring contract 與內容審查；KataGo 如使用只作 bounded cross-check。
+
+驗收與反例：打吃方向題至少要包含「兩邊都能打吃但結果相同」「看似往邊線卻讓對方連上」「局部打吃不是題目目標」等負例；T1 旋轉／換色仍須重驗邊線與外援，T2 必須換不同母題且不提前顯示技能名稱。這些公開 practice／process-check 即使結構像 T2，也不能因此取得 formal unseen evaluation 資格。
 
 ## 5. 題目難度不用棋力標籤硬切
 
