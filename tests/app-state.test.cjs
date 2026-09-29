@@ -82,7 +82,7 @@ function createApp(saved = {}, options = {}) {
       return element;
     }
   };
-  const window = { GoCore, GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy, GoPracticeEvents, GoLiveEvidence, GoLearnerProgress };
+  const window = { GoCore, GoContent: options.goContent || GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy, GoPracticeEvents, GoLiveEvidence, GoLearnerProgress };
   const url = {
     createObjectURL(blob) { const href = `blob:test-${++blobId}`; blobs.set(href, blob); return href; },
     revokeObjectURL() {}
@@ -251,12 +251,47 @@ test("v5 第 4 單元之後的舊數字索引會遷移到原本題目", () => {
   assert.equal(saved.contentCatalogVersion, 5);
 });
 
-test("v3 內容目錄升到 v4 時只更新教學內容版本，不移動目前題目", () => {
+test("v3 內容目錄升到 v5 時只更新教學內容版本，不移動目前題目", () => {
   const { elements, storage } = createApp({ [STORAGE_KEY]: { schemaVersion: 7, contentCatalogVersion: 3, index: 68, hasStarted: true } });
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.equal(saved.index, 68);
   assert.equal(saved.contentCatalogVersion, 5);
   assert.equal(elements["question-title"].textContent.length > 0, true);
+});
+
+test("v4 升到 v5 保留短講自動顯示抑制狀態，不把 seen 當成完成證據", () => {
+  const { elements, storage } = createApp({
+    [STORAGE_KEY]: {
+      schemaVersion: 7,
+      contentCatalogVersion: 4,
+      index: 0,
+      hasStarted: true,
+      lessonIntroPending: false,
+      seenLessonIntros: [0, 6]
+    }
+  });
+  const saved = JSON.parse(storage.get(STORAGE_KEY));
+  assert.equal(saved.contentCatalogVersion, 5);
+  assert.deepEqual(saved.seenLessonIntros, [0, 6]);
+  assert.equal(elements["lesson-intro-dialog"].open, false);
+  elements["lesson-intro-button"].listeners.click();
+  assert.equal(elements["lesson-intro-dialog"].open, true, "catalog 升版後仍可手動重看新版短講");
+});
+
+test("單步短講只顯示棋盤與說明，不顯示無意義的上一步、下一步或步數", () => {
+  const syntheticContent = {
+    ...GoContent,
+    lessons: GoContent.lessons.map((lesson, index) => index === 0
+      ? { ...lesson, demoSteps: [lesson.demoSteps[0]] }
+      : lesson)
+  };
+  const { elements } = createApp({}, { goContent: syntheticContent });
+  assert.equal(elements["teaching-demo-stepper"].hidden, false);
+  assert.equal(elements["teaching-demo-previous"].hidden, true);
+  assert.equal(elements["teaching-demo-next"].hidden, true);
+  assert.equal(elements["teaching-demo-count"].hidden, true);
+  assert.match(elements["teaching-demo-caption"].textContent, /角上的黑棋/);
+  assert.match(elements["teaching-demo-board"].innerHTML, /role="img"/);
 });
 
 test("短暫 v6 內容目錄的索引也會再遷移到原本題目", () => {
