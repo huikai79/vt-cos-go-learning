@@ -541,7 +541,7 @@ test("人機實戰事件只進獨立 practice stream，不污染技能事件、�
   const { elements, storage, downloads } = createApp({}, { rawStorage: { [GoPracticeEvents.STORAGE_KEY]: JSON.stringify(practiceStore) } });
   assert.match(elements["live-practice-summary"].textContent, /人機練習 1 局/);
   assert.match(elements["live-practice-summary"].textContent, /可觀察決策 1 次/);
-  assert.equal(elements["live-practice-brief"].textContent, "1 局 · 1 次落子");
+  assert.equal(elements["live-practice-brief"].textContent, "1 局 · 1 次決策");
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.deepEqual(saved.events, []);
   assert.equal(saved.scheduler.responses.length, 0);
