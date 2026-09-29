@@ -145,7 +145,7 @@ function sameSurfaceClass(a,b){
  return Boolean(da&&db&&da.groupSize===db.groupSize&&da.edgeTouch===db.edgeTouch&&JSON.stringify(da.degrees)===JSON.stringify(db.degrees));
 }
 function normalizeItem(raw,pair){
- return Object.freeze({
+ return {
   ...raw,
   boardSize:19,
   contractVersion:CONTRACT_VERSION,
@@ -158,7 +158,7 @@ function normalizeItem(raw,pair){
   provenance:{type:"project_synthetic",license:"project_original",public:true},
   prompt:(raw.playerColor===Go.BLACK?"黑":"白")+"棋下。盤上只有一串你的棋只剩一氣。請直接在全盤下出一手，讓那串棋脫離立即被提的危險。",
   positionFingerprint:null
- });
+ };
 }
 const normalizedPairs=pairs.map(pair=>{
  const source=normalizeItem(pair.source,pair),target=normalizeItem(pair.target,pair);
