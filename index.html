@@ -434,33 +434,29 @@
     <div class="lesson-intro-shell">
       <div class="dialog-topline"><span class="dialog-kicker" id="lesson-intro-kicker">本課短講 · 每課只自動顯示一次</span><button class="dialog-close-button" id="lesson-intro-dismiss-button" type="button">關閉</button></div>
       <h2 id="lesson-intro-title" tabindex="-1">現在先學：認識氣</h2>
-      <p class="lesson-intro-first-use" id="lesson-intro-first-use">先看一個概念與示範，再自己完成題目；答錯後會進入修正，日後再用新棋形確認。紀錄只存於這台電腦。</p>
+      <p class="lesson-intro-first-use" id="lesson-intro-first-use">先看本課的核心概念與棋盤示範，再自己完成題目；答錯後會進入修正，日後再用新棋形確認。紀錄只存於這台電腦。</p>
       <section class="teaching-card" aria-labelledby="teaching-title">
         <span class="teaching-icon" aria-hidden="true">✦</span>
         <div>
-          <strong id="teaching-title">先懂這一點</strong>
+          <strong id="teaching-title">核心概念</strong>
           <p id="teaching-text"></p>
-          <p class="teaching-demo"><span>示範：</span><span id="teaching-demo"></span></p>
-          <figure class="teaching-board-preview" id="teaching-demo-board"></figure>
-          <section class="demo-stepper" id="teaching-demo-stepper" aria-label="逐步棋形示範" hidden>
-            <p id="teaching-demo-caption" role="status" aria-live="polite"></p>
+          <div class="teaching-demo-stage">
+            <figure class="teaching-board-preview" id="teaching-demo-board"></figure>
+            <section class="demo-stepper" id="teaching-demo-stepper" aria-label="棋形示範" hidden>
+              <p id="teaching-demo-caption" role="status" aria-live="polite"></p>
             <div class="demo-stepper-actions">
               <button class="subtle-button" id="teaching-demo-previous" type="button">← 上一步</button>
               <span id="teaching-demo-count" aria-live="polite"></span>
               <button class="subtle-button" id="teaching-demo-next" type="button">看下一步 →</button>
             </div>
+            <div class="demo-legend" id="demo-legend" aria-label="本課示意圖符號" hidden></div>
           </section>
-          <div class="demo-legend" aria-label="示意圖符號說明">
-            <span><i class="legend-observe" aria-hidden="true"></i>金色小圈：觀察／候選空點</span>
-            <span><i class="legend-focus" aria-hidden="true"></i>金色大圈：目前強調的棋</span>
-            <span><i class="legend-blocked" aria-hidden="true">×</i>紅叉：這一步不能下</span>
-            <span><i class="legend-reference" aria-hidden="true"></i>藍框：比較／前一步位置</span>
           </div>
           <details class="lesson-terms" id="lesson-terms">
             <summary>本課關鍵詞 <span id="lesson-term-count"></span></summary>
             <dl id="lesson-term-list"></dl>
           </details>
-          <p class="teaching-check"><span>解題前先做：</span><span id="teaching-check"></span></p>
+          <p class="teaching-check"><span>進題前只記這句：</span><span id="teaching-check"></span></p>
         </div>
       </section>
       <div class="dialog-actions">
