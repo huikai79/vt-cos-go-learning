@@ -289,3 +289,9 @@ test("Comparable Position v1 runtime 與 contract tests 列入公開發佈清單
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
+
+test("Comparable Position analysis v1 列入公開發佈清單", () => {
+  for (const file of ["advanced-comparable-analysis.js", "tests/advanced-comparable-analysis.test.cjs"]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
