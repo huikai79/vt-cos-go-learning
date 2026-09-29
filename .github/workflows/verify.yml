@@ -164,7 +164,14 @@ jobs:
                 'href="history.html"',
                 'href="math.html"',
                 'href="global-go-observatory.html">全球觀察</a>',
-                '歷史與典故另外讀，不擋住你的學習主線'
+                '歷史與典故另外讀，不擋住你的學習主線',
+                'styles.css?v=learner-flow-v54',
+                'app.js?v=learner-flow-v54',
+                '15 單元核心課程（參考）',
+                'id="live-practice-brief"',
+                'id="live-evidence-brief"',
+                'id="integrated-progress-brief"',
+                'id="diagnostic-brief"'
               ]
             },
             {
@@ -176,11 +183,16 @@ jobs:
                 'advanced-decision-review.js?v=advanced-decision-review-v2',
                 'advanced-decision-replay-events.js?v=advanced-decision-replay-v1',
                 'advanced-decision-replay.js?v=advanced-decision-replay-v1',
+                'advanced-comparable-position-contract.js?v=advanced-comparable-position-v1',
+                'advanced-comparable-position-events.js?v=advanced-comparable-position-v1',
+                'advanced-comparable-position.js?v=advanced-comparable-position-v1',
                 'decision-comparison.js?v=decision-comparison-v1',
                 '用 KataGo 再比較這兩手（選用）',
                 '固定搜尋量下的估計',
                 '同一個已看過的局面加入重做清單',
                 '已看過的局面重做',
+                '在不同盤面找出同一種立即危險',
+                '只用於練習與流程檢查，不作正式能力評量',
                 '不把原棋譜當唯一最佳手'
               ]
             },
@@ -230,6 +242,25 @@ jobs:
                 'href="r1-review.html"',
                 '請先不要瀏覽本專案的 GitHub 原始碼庫'
               ]
+            },
+            {
+              name: "formal-teaching-candidate",
+              url: new URL(`formal-teaching-candidate.json?deploy=${deploySha}`, base),
+              checks: [
+                '"candidateId": "formal-teaching-candidate-2026-09-29-u"',
+                '"assetFingerprint": "fnv1a32-js16-86699408"',
+                'learner-flow-v54'
+              ]
+            },
+            {
+              name: "teaching-gate",
+              url: new URL(`teaching-gate.json?deploy=${deploySha}`, base),
+              checks: [
+                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-09-29-u"',
+                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-86699408"',
+                '"noviceUsability": "not_tested"',
+                '"accessibility": "not_tested"'
+              ]
             }
           ];
 
@@ -260,3 +291,35 @@ jobs:
 
           for (const target of targets) await fetchWithRetry(target);
           NODE
+
+
+  served-pages-status:
+    if: ${{ always() && github.event_name == 'push' }}
+    needs:
+      - served-pages-content
+    runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+    steps:
+      - name: Publish machine-readable served-content status
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SERVED_RESULT: ${{ needs.served-pages-content.result }}
+        run: |
+          set -euo pipefail
+          state="failure"
+          description="served-content gate failed or was skipped"
+          if [ "$SERVED_RESULT" = "success" ]; then
+            state="success"
+            description="public Pages markers match pushed main"
+          fi
+          export state description
+          payload="$(node -e 'console.log(JSON.stringify({state:process.env.state,target_url:process.env.GITHUB_SERVER_URL+"/"+process.env.GITHUB_REPOSITORY+"/actions/runs/"+process.env.GITHUB_RUN_ID,description:process.env.description,context:"verify/served-pages-content"}))')"
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -d "$payload"
