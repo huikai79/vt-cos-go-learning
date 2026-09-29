@@ -7,7 +7,7 @@
   <meta name="description" content="VT-COS｜悟之一手的進階訓練：從核心課程轉入多路線、可回跳的讀棋與全局訓練。">
   <title>VT-COS｜悟之一手｜進階訓練</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v45">
-  <link rel="stylesheet" href="advanced.css?v=advanced-training-v6">
+  <link rel="stylesheet" href="advanced.css?v=advanced-training-v7">
   <script defer src="go.js"></script>
   <script defer src="sgf.js?v=sgf-decision-review-v1"></script>
   <script defer src="advanced-decision-review-events.js?v=advanced-decision-review-v1"></script>
@@ -15,6 +15,8 @@
   <script defer src="decision-comparison-provider.js?v=decision-comparison-v1"></script>
   <script defer src="advanced-decision-comparison-events.js?v=decision-comparison-v1"></script>
   <script defer src="advanced-decision-replay-events.js?v=advanced-decision-replay-v1"></script>
+  <script defer src="advanced-comparable-position-contract.js?v=advanced-comparable-position-v1"></script>
+  <script defer src="advanced-comparable-position-events.js?v=advanced-comparable-position-v1"></script>
   <script defer src="advanced-content.js?v=advanced-training-v6"></script>
   <script defer src="advanced-events.js?v=advanced-training-v1"></script>
   <script defer src="advanced-sequence-events.js?v=advanced-sequence-v3"></script>
@@ -24,6 +26,7 @@
   <script defer src="advanced-sequence.js?v=advanced-sequence-v6"></script>
   <script defer src="advanced-decision-replay.js?v=advanced-decision-replay-v1"></script>
   <script defer src="advanced-decision-review.js?v=advanced-decision-review-v2"></script>
+  <script defer src="advanced-comparable-position.js?v=advanced-comparable-position-v1"></script>
 </head>
 <body class="advanced-page">
   <a class="skip-link" href="#advanced-main">跳到進階訓練</a>
@@ -231,6 +234,36 @@
           <div class="decision-review-legend" aria-label="重做棋盤符號">
             <span><i class="decision-candidate-key" aria-hidden="true"></i>你的目前候選</span>
             <span><i class="decision-original-key" aria-hidden="true"></i>原棋譜著手（顯示後）</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="advanced-comparable-section" aria-labelledby="comparable-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">換個全盤局面再判斷</span>
+          <h2 id="comparable-title">在不同盤面找出同一種立即危險</h2>
+        </div>
+        <p id="comparable-summary">尚未開始這組全盤判斷。</p>
+      </div>
+      <div class="decision-review-card">
+        <div class="decision-review-controls">
+          <p>這組題不告訴你危險棋串在哪裡。先掃描整盤，找出唯一只剩一氣的己方棋串，再下出能讓它脫離立即被提危險的一手。</p>
+          <div id="comparable-list" class="decision-replay-list" aria-label="全盤可比較局面"></div>
+          <p class="answer-policy">前兩題用來熟悉判斷方式，後兩題換成不同棋形與不同位置再判斷。這些題目都已公開，只用於練習與流程檢查，不作正式能力評量。</p>
+        </div>
+        <div id="comparable-workspace" class="decision-review-board-wrap" hidden>
+          <div class="advanced-sequence-board-head">
+            <span id="comparable-role">練習局面</span>
+            <span id="comparable-side">黑棋下</span>
+          </div>
+          <p id="comparable-prompt" class="advanced-prompt"></p>
+          <div id="comparable-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="comparable-board" class="decision-review-board" tabindex="0" role="application" aria-label="19 路全盤判斷棋盤；方向鍵移動，Enter 鍵落子"></div>
+          <p class="decision-review-meta">方向鍵移動 · Enter 鍵落子；也可以直接點棋盤。</p>
+          <div class="advanced-actions">
+            <button class="primary-button" id="comparable-next" type="button" disabled>下一個局面 →</button>
           </div>
         </div>
       </div>
