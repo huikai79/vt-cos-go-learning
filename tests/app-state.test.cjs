@@ -130,7 +130,7 @@ test("每課短講只自動顯示一次，並可隨時重開", () => {
   assert.equal(elements["lesson-intro-dialog"].open, true, "仍可手動重開短講");
   elements["lesson-intro-dismiss-button"].listeners.click();
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "7" }, "[data-lesson]") });
-  assert.match(elements["teaching-demo-board"].innerHTML, /直三|三個連成一直線/);
+  assert.match(elements["teaching-demo-board"].innerHTML, /受包圍的三個相連空點/);
 });
 
 test("試行技能將首答、重試與提示後作答存成可重算事件", () => {
