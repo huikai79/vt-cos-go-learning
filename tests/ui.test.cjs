@@ -111,17 +111,24 @@ async function main() {
   assert.match(m2Html, /id="course-nav-toggle"[^>]*aria-expanded="false"[^>]*aria-controls="course-navigation"/);
   assert.match(m2Html, /id="current-course-context"/);
   assert.match(m2Html, /id="today-navigation"[^>]*hidden/);
-  assert.match(m2Html, /class="advanced-priority-label">學習狀態<\/div>/);
-  for (const id of ["live-practice-brief", "live-evidence-brief", "integrated-progress-brief", "diagnostic-brief"]) {
+  assert.match(m2Html, /class="advanced-priority-label">目前紀錄與證據<\/div>/);
+  for (const id of ["advanced-evidence-brief", "advanced-evidence-note", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary", "diagnostic-summary"]) {
     assert.match(m2Html, new RegExp(`id="${id}"`));
   }
+  for (const retiredId of ["live-practice-brief", "live-evidence-brief", "integrated-progress-brief", "diagnostic-brief"]) {
+    assert.doesNotMatch(m2Html, new RegExp(`id="${retiredId}"`));
+  }
   const advancedStatusPosition = m2Html.indexOf('class="advanced-priority-label"');
-  const diagnosticPosition = m2Html.indexOf('id="live-practice-brief"');
+  const overviewPosition = m2Html.indexOf('class="advanced-evidence-overview"');
+  const detailPosition = m2Html.indexOf('class="advanced-evidence-details"');
   const courseMapPosition = m2Html.indexOf('class="advanced-course-map"');
   const toolsPosition = m2Html.indexOf('id="sidebar-tools-button"');
-  assert.ok(advancedStatusPosition < diagnosticPosition && diagnosticPosition < courseMapPosition && courseMapPosition < toolsPosition);
-  assert.match(m2Css, /\.diagnostic-brief\{[^}]*text-align:right/);
-  assert.match(m2Css, /\.diagnostic-card p\{[^}]*white-space:pre-line/);
+  assert.ok(advancedStatusPosition < overviewPosition && overviewPosition < detailPosition && detailPosition < courseMapPosition && courseMapPosition < toolsPosition);
+  assert.match(m2Html, /class="advanced-evidence-overview" aria-labelledby="advanced-evidence-brief"/);
+  assert.match(m2Html, /<summary>查看資料來源與診斷 <span aria-hidden="true">⌄<\/span><\/summary>/);
+  assert.match(m2Css, /\.advanced-evidence-overview\{[^}]*padding:/);
+  assert.match(m2Css, /\.evidence-detail-row p\{[^}]*white-space:pre-line/);
+  assert.match(m2App, /function renderAdvancedEvidenceOverview\(diagnostics = null\)/);
   assert.match(m2App, /const currentLessonIndex = problems\[state\.index\]\.lesson/);
   assert.match(m2App, /state\.navUnitIndex/);
   assert.match(m2Css, /\.course-navigation\.is-open\{display:block\}/);
@@ -138,6 +145,11 @@ async function main() {
   assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", current\(\)\.hint\)/);
   assert.match(sourceApp, /showAuxiliaryFeedback\("interaction-feedback", result\.reason\)/);
   assert.doesNotMatch(sourceApp, /\$\("feedback"\)\.textContent = current\(\)\.hint/);
+  assert.match(sourceHtml, /<details class="advanced-evidence-details">/);
+  assert.match(sourceHtml, /id="advanced-evidence-brief">尚無足夠資料<\/strong>/);
+  assert.match(sourceHtml, /id="advanced-evidence-note">完成練習、延後複習或實戰後/);
+  assert.doesNotMatch(sourceHtml, /id="(?:live-practice|live-evidence|integrated-progress|diagnostic)-brief"/);
+  assert.doesNotMatch(sourceApp, /advanced-evidence-brief[^\n]*(?:掌握|熟練|通過)/);
   assert.ok(browser, "Chrome or Edge is required for this local UI test");
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), "go-learning-ui-"));
   const child = spawn(browser, ["--headless=new", "--disable-gpu", "--no-first-run", "--disable-extensions", "--disable-background-mode", "--remote-debugging-pipe", `--user-data-dir=${profile}`, page], { stdio: ["ignore", "ignore", "pipe", "pipe", "pipe"] });
@@ -304,7 +316,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v54"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v55"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -437,7 +449,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v54");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v55");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -454,9 +466,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v54");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v55");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v54");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v55");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
