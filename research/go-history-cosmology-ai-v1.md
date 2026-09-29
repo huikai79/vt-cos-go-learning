@@ -38,7 +38,7 @@
 ## Source records
 
 - 《藝文類聚》所錄班固《弈旨》：https://ctext.org/text.pl?if=gb&node=547596&show=parallel
-- 《棋經十三篇·論局》：https://ctext.org/qijing/lunju/zh
+- 《棋經十三篇·論局》：https://ctext.org/wiki.pl?chapter=240784&if=gb
 - 《周易·繫辭上》：https://ctext.org/text.pl?if=gb&node=46934&show=parallel
 - 河北省文物局｜望都一號漢墓：https://wenwu.hebei.gov.cn/system/2023/10/16/030257948.shtml
 - 日本棋院｜《布石革命》：https://www.nihonkiin.or.jp/publishing/books/husekikakumei.html
