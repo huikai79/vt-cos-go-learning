@@ -81,6 +81,7 @@ function readStores(){
 function statusText(status){
  if(status.status===Policy.STATUS.WAITING_FOR_ANCHOR)return"先完成前面的不同局面檢查。";
  if(status.status===Policy.STATUS.WAITING_FOR_DELAY)return"還沒到時間；"+formatWhen(status.dueAt)+" 之後再回來。";
+ if(status.status===Policy.STATUS.WAITING_FOR_PREVIOUS)return"時間條件已記錄；先完成前一個延後局面。";
  if(status.status===Policy.STATUS.DUE)return"已到時間，可以開始。";
  if(status.status===Policy.STATUS.IN_PROGRESS)return"已開始，繼續完成這個局面。";
  if(status.status===Policy.STATUS.COMPLETED)return"已完成。";
@@ -97,7 +98,7 @@ function render(){
   const status=Policy.statusForItem(stores.comparable,stores.delayed,item,nowMs());
   if(status.ok&&status.status===Policy.STATUS.DUE)dueCount++;
   if(status.ok&&status.status===Policy.STATUS.COMPLETED)completedCount++;
-  if(status.ok&&[Policy.STATUS.WAITING_FOR_ANCHOR,Policy.STATUS.WAITING_FOR_DELAY].includes(status.status))waitingCount++;
+  if(status.ok&&[Policy.STATUS.WAITING_FOR_ANCHOR,Policy.STATUS.WAITING_FOR_DELAY,Policy.STATUS.WAITING_FOR_PREVIOUS].includes(status.status))waitingCount++;
   const disabled=!(status.ok&&[Policy.STATUS.DUE,Policy.STATUS.IN_PROGRESS].includes(status.status));
   rows.push('<button type="button" class="decision-replay-item" data-delayed-item="'+item.itemId+'" '+(disabled?'disabled':'')+'>'+
     '<strong>延後局面 '+(rows.length+1)+'</strong><span>'+statusText(status)+'</span></button>');
