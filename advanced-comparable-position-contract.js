@@ -8,6 +8,8 @@ const SCORING_CONTRACT_VERSION="urgent-atari-rescue-rules-v1";
 const PAIR_POLICY_VERSION="advanced-comparable-fixed-pairs-v1";
 const EVIDENCE_TAXONOMY_VERSION="advanced-comparable-evidence-v1";
 const PAIR_HYPOTHESIS_VERSION="urgent-atari-rescue-hypothesis-v1";
+const KC_HYPOTHESIS_ID="urgent-atari-rescue-kc";
+const KC_HYPOTHESIS_VERSION="urgent-atari-rescue-kc-v1";
 
 const pairs=[
  {
@@ -155,6 +157,9 @@ function normalizeItem(raw,pair){
   pairId:pair.pairId,
   pairVersion:pair.pairVersion,
   pairHypothesisVersion:pair.pairHypothesisVersion,
+  kcHypothesisId:KC_HYPOTHESIS_ID,
+  kcHypothesisVersion:KC_HYPOTHESIS_VERSION,
+  constructValidated:false,
   provenance:{type:"project_synthetic",license:"project_original",public:true},
   prompt:(raw.playerColor===Go.BLACK?"黑":"白")+"棋下。盤上只有一串你的棋只剩一氣。請直接在全盤下出一手，讓那串棋脫離立即被提的危險。",
   positionFingerprint:null
@@ -173,6 +178,7 @@ function forbiddenAnswerField(item){
 function validateItem(item){
  if(!item||item.contractVersion!==CONTRACT_VERSION||item.scoringContractVersion!==SCORING_CONTRACT_VERSION)return"item_contract_invalid";
  if(item.boardSize!==19||![Go.BLACK,Go.WHITE].includes(item.playerColor)||!["practice","process_check"].includes(item.role))return"item_metadata_invalid";
+ if(item.kcHypothesisId!==KC_HYPOTHESIS_ID||item.kcHypothesisVersion!==KC_HYPOTHESIS_VERSION||item.constructValidated!==false)return"item_kc_hypothesis_invalid";
  if(typeof item.itemId!=="string"||!item.itemId||typeof item.itemVersion!=="string"||!item.itemVersion||typeof item.positionFingerprint!=="string"||!item.positionFingerprint)return"item_identity_missing";
  if(!item.provenance||item.provenance.type!=="project_synthetic"||item.provenance.license!=="project_original"||item.provenance.public!==true)return"item_provenance_invalid";
  if(forbiddenAnswerField(item))return"item_answer_injection_forbidden";
@@ -209,7 +215,7 @@ function validateAll(){
  return{ok:true};
 }
 
-const api={CONTRACT_VERSION,SCORING_CONTRACT_VERSION,PAIR_POLICY_VERSION,EVIDENCE_TAXONOMY_VERSION,PAIR_HYPOTHESIS_VERSION,pairs:normalizedPairs,itemOrder,pairById,itemById,positionFingerprint,groupsForColor,urgentGroup,scoreResponse,successfulPoints,surfaceDescriptor,sameSurfaceClass,validateItem,validatePair,validateAll};
+const api={CONTRACT_VERSION,SCORING_CONTRACT_VERSION,PAIR_POLICY_VERSION,EVIDENCE_TAXONOMY_VERSION,PAIR_HYPOTHESIS_VERSION,KC_HYPOTHESIS_ID,KC_HYPOTHESIS_VERSION,pairs:normalizedPairs,itemOrder,pairById,itemById,positionFingerprint,groupsForColor,urgentGroup,scoreResponse,successfulPoints,surfaceDescriptor,sameSurfaceClass,validateItem,validatePair,validateAll};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.GoAdvancedComparablePositionContract=api;
 })(typeof window!=="undefined"?window:globalThis);
