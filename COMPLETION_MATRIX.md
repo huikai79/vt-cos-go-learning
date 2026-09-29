@@ -1030,3 +1030,15 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **目的：** 讓 Definition of Done 的 post-merge served-content gate 可由機器直接查詢，不再只能推測 GitHub Pages 是否已更新。
 - **不可破壞 invariant：** 不改 learner-facing UI、題目、scoring、scheduler、first response/retry、event schema、KC、evidence taxonomy、formal candidate asset bytes 或正式評量語義；因此 candidate `formal-teaching-candidate-2026-09-29-u`／`fnv1a32-js16-86699408` 不需重凍結。
 - **Validation：** PR #111 pre-merge verify 全數 PASS；squash merge 至 `main` commit `0b1411c1f4c2780adb1245c477478b76532695a6` 後，push workflow run `36541346363` 的 `verify/served-pages-content` commit status = `success`，表示公開 Pages 已實際提供 v54 marker、candidate 與 teaching-gate binding。\n- **狀態：** release/deployment gate 工程 PASS。正式 usability 仍 `NOT_TESTED`、正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-29 Change note｜Private unseen formal evaluation freeze builder v1
+
+- **bottleneck：** `formal-evaluation-verify.cjs` 已能驗證 frozen private manifest，但最後階段若仍手寫 SHA-256、治理宣告與 `frozenBeforeOutcomes`，容易在 outcome 已出現後補寫、填錯 hash、重複 item 或覆寫既有 pool。
+- **實作：** 新增 `formal-evaluation-freeze.cjs`。輸入只接受 private root 內的 draft manifest（item ID + relative path + pool/scoring/evidence versions）；builder 實際讀 item bytes 計算 SHA-256，自動加入固定 independent-evaluation declarations 與 freeze timestamp，然後立即呼叫既有 verifier。
+- **防事後凍結：** 若 private root 的 `outcomes/` 已有任何檔案，freeze 直接 fail closed；draft 禁止預填 `frozenAt`、`frozenBeforeOutcomes`、治理宣告或 item SHA-256。
+- **不可覆寫：** frozen manifest 使用 exclusive create；已存在的 manifest 不得原地更新。題目、scoring contract 或 evidence taxonomy 改變時，必須建立新的 pool/version。
+- **filesystem boundary：** builder 與 verifier 都拒絕 symlink、relativePath escape 與 realpath escape；private item 必須是 private root 內的一般檔案。
+- **Public/Private Hard Wall：** 公開 repo 只保存 builder／verifier／synthetic example／tests；真正 private 題、manifest、outcomes 仍只能位於 `.private-evaluation/`，不進 release。
+- **狀態不升格：** 本輪沒有建立任何真實 private pool，也沒有 outcome／真人資料；replacement private holdout 仍 `not_established`，formal evaluation 仍 `BLOCKED`，learning effect 仍 `NOT_MEASURED`。
+- **rollback：** 移除 freeze builder/example/test，保留既有 verifier；無 learner data migration。
