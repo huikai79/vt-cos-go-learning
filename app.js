@@ -16,12 +16,13 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v53";
-  const contentCatalogVersion = 4;
+  const uiVersion = "learner-flow-v54";
+  const contentCatalogVersion = 5;
   let pendingSgf = null;
   let storageReadIssue = null;
   let storageRecoveryNotice = "";
   let storageWarningMessage = "";
+  let lessonIntroOpenMode = "auto";
   const saved = readSaved();
   const savedHasStarted = Boolean(saved.hasStarted || (saved.completed && saved.completed.length) || (saved.events && saved.events.length) || (saved.attempts && Object.keys(saved.attempts).length));
   const coreRouteRequested = typeof window !== "undefined" && window.location && window.location.hash === "#core";
@@ -611,9 +612,14 @@
     showLessonIntroDialog();
   }
 
-  function showLessonIntroDialog() {
+  function showLessonIntroDialog(mode = "auto") {
     const dialog = $("lesson-intro-dialog");
     if (!dialog || dialog.open) return;
+    lessonIntroOpenMode = mode === "manual" ? "manual" : "auto";
+    demoStepIndex = 0;
+    renderTeachingDemoStep(currentLesson());
+    const dismissButton = $("lesson-intro-dismiss-button");
+    if (dismissButton) dismissButton.textContent = lessonIntroOpenMode === "manual" ? "關閉" : "先跳過";
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.setAttribute("open", "");
     revealElement("lesson-intro-title");
@@ -624,17 +630,19 @@
     if (state.lessonIntroPending && !state.externalMode && !state.reviewMode) showLessonIntroDialog();
   }
 
-  function dismissLessonIntro() {
+  function dismissLessonIntro(markSeen = true) {
     const dialog = $("lesson-intro-dialog");
+    const manualClose = lessonIntroOpenMode === "manual" && !markSeen;
     if (dialog && dialog.open) dialog.close();
-    if (!state.externalMode) {
+    if (markSeen && !state.externalMode) {
       state.hasStarted = true;
       markCurrentLessonIntroSeen();
       save();
       renderLearningFlow();
       renderProgress();
     }
-    revealQuestionStart();
+    if (manualClose) revealElement("lesson-intro-button");
+    else revealQuestionStart();
   }
 
   function closeTools() {
@@ -987,7 +995,7 @@
     $("board").innerHTML = `<svg viewBox="0 0 480 480" role="group" aria-label="${escapeHtml(problem.title)}的 9 路棋盤${keyboardHelp}"><rect x="0" y="0" width="480" height="480" fill="#e7ba78"/>${lines.join("")}${stars.join("")}${marks.join("")}${points.join("")}</svg>`;
   }
 
-  function demoBoardMarkup(diagram) {
+  function demoBoardMarkup(diagram, includeCaption = true) {
     if (!diagram) return "";
     const size = 5;
     const pitch = 32;
@@ -1025,44 +1033,67 @@
       return `<rect class="demo-reference" x="${cx - 11}" y="${cy - 11}" width="22" height="22" rx="3"/>`;
     });
     const caption = diagram.caption || (highlights.size ? "金色小圈標出這一步要觀察或比較的空點。" : "依圖例閱讀目前強調、禁著或比較位置。");
-    return `<svg viewBox="0 0 168 168" role="img" aria-label="${escapeHtml(diagram.label || "示範棋形")}"><rect width="168" height="168" rx="8" class="demo-board-background"/>${lines.join("")}${points.join("")}${stones.join("")}${rings.join("")}${crosses.join("")}${references.join("")}</svg><figcaption>${escapeHtml(caption)}</figcaption>`;
+    return `<svg viewBox="0 0 168 168" role="img" aria-label="${escapeHtml(diagram.label || "示範棋形")}"><rect width="168" height="168" rx="8" class="demo-board-background"/>${lines.join("")}${points.join("")}${stones.join("")}${rings.join("")}${crosses.join("")}${references.join("")}</svg>${includeCaption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ""}`;
+  }
+
+  function lessonLegendMarkup(lesson) {
+    const markerUse = new Set();
+    for (const step of lesson.demoSteps || []) {
+      if (step.highlights && step.highlights.length) markerUse.add("highlights");
+      if (step.emphasis && step.emphasis.length) markerUse.add("emphasis");
+      if (step.blocked && step.blocked.length) markerUse.add("blocked");
+      if (step.reference && step.reference.length) markerUse.add("reference");
+    }
+    const entries = [];
+    if (markerUse.has("highlights")) entries.push('<span><i class="legend-observe" aria-hidden="true"></i>金色小圈：觀察／候選空點</span>');
+    if (markerUse.has("emphasis")) entries.push('<span><i class="legend-focus" aria-hidden="true"></i>金色大圈：目前強調的棋</span>');
+    if (markerUse.has("blocked")) entries.push('<span><i class="legend-blocked" aria-hidden="true">×</i>紅叉：這一步不能下</span>');
+    if (markerUse.has("reference")) entries.push('<span><i class="legend-reference" aria-hidden="true"></i>藍框：比較／前一步位置</span>');
+    return entries.join("");
   }
 
   function renderTeachingDemoStep(lesson) {
     const steps = lesson.demoSteps || [];
     const stepper = $("teaching-demo-stepper");
-    if (steps.length < 2) {
+    const teachingBoard = $("teaching-demo-board");
+    if (!steps.length) {
+      teachingBoard.hidden = true;
       stepper.hidden = true;
       return;
     }
+    demoStepIndex = Math.max(0, Math.min(demoStepIndex, steps.length - 1));
     const step = steps[demoStepIndex];
-    $("teaching-demo-board").innerHTML = demoBoardMarkup(step);
+    teachingBoard.hidden = false;
+    teachingBoard.innerHTML = demoBoardMarkup(step, false);
     $("teaching-demo-caption").textContent = step.caption;
-    $("teaching-demo-count").textContent = `第 ${demoStepIndex + 1} / ${steps.length} 步`;
+    $("teaching-demo-count").textContent = steps.length > 1 ? `第 ${demoStepIndex + 1} / ${steps.length} 步` : "";
     $("teaching-demo-previous").disabled = demoStepIndex === 0;
-    $("teaching-demo-next").disabled = demoStepIndex === steps.length - 1;
-    $("teaching-demo-next").textContent = demoStepIndex === steps.length - 1 ? "示範看完" : "看下一步 →";
+    $("teaching-demo-next").disabled = false;
+    $("teaching-demo-next").textContent = demoStepIndex === steps.length - 1 ? "從頭再看 ↺" : "看下一步 →";
     stepper.hidden = false;
+    $("teaching-demo-previous").hidden = steps.length < 2;
+    $("teaching-demo-next").hidden = steps.length < 2;
+    $("teaching-demo-count").hidden = steps.length < 2;
   }
 
   function renderDemoBoards(lesson) {
-    const markup = demoBoardMarkup(lesson.demoBoard);
     if (demoLessonTitle !== lesson.title) {
       demoLessonTitle = lesson.title;
       demoStepIndex = 0;
     }
-    const teachingBoard = $("teaching-demo-board");
-    teachingBoard.hidden = !markup;
-    teachingBoard.innerHTML = markup;
     renderTeachingDemoStep(lesson);
+    const legend = $("demo-legend");
+    legend.innerHTML = lessonLegendMarkup(lesson);
+    legend.hidden = !legend.innerHTML;
     $("teaching-demo-previous").onclick = () => {
       if (demoStepIndex <= 0) return;
       demoStepIndex -= 1;
       renderTeachingDemoStep(lesson);
     };
     $("teaching-demo-next").onclick = () => {
-      if (demoStepIndex >= (lesson.demoSteps || []).length - 1) return;
-      demoStepIndex += 1;
+      const steps = lesson.demoSteps || [];
+      if (!steps.length) return;
+      demoStepIndex = demoStepIndex >= steps.length - 1 ? 0 : demoStepIndex + 1;
       renderTeachingDemoStep(lesson);
     };
   }
@@ -1152,7 +1183,6 @@
       $("classic-shapes-link").setAttribute("aria-label", "開啟世界死活名型館：先練已驗證棋形，再查看多語名稱與來源");
     }
     $("teaching-text").textContent = lesson.text;
-    $("teaching-demo").textContent = (lesson.demo || "先依題目找出本課要觀察的棋形，再作答。").replace(/^示範：\s*/, "");
     $("teaching-check").textContent = lesson.takeaway;
     const lessonTerms = Array.isArray(lesson.terms) ? lesson.terms : [];
     $("lesson-term-count").textContent = lessonTerms.length ? `（${lessonTerms.length} 個）` : "";
@@ -1649,15 +1679,16 @@
       leaveSiteIntroductionAtUnit(unitIndex);
     }));
   }
-  $("lesson-intro-button").addEventListener("click", showLessonIntroDialog);
-  $("lesson-intro-dismiss-button").addEventListener("click", dismissLessonIntro);
-  $("lesson-intro-start-button").addEventListener("click", dismissLessonIntro);
+  $("lesson-intro-button").addEventListener("click", () => showLessonIntroDialog("manual"));
+  $("lesson-intro-dismiss-button").addEventListener("click", () => dismissLessonIntro(lessonIntroOpenMode !== "manual"));
+  $("lesson-intro-start-button").addEventListener("click", () => dismissLessonIntro(true));
   $("lesson-intro-dialog").addEventListener("cancel", (event) => {
     event.preventDefault();
-    dismissLessonIntro();
+    dismissLessonIntro(lessonIntroOpenMode !== "manual");
   });
   $("lesson-intro-dialog").addEventListener("close", () => {
-    if (!state.lessonIntroPending && !siteIntroductionOpen) revealQuestionStart();
+    if (lessonIntroOpenMode === "manual") revealElement("lesson-intro-button");
+    else if (!state.lessonIntroPending && !siteIntroductionOpen) revealQuestionStart();
   });
   $("learning-flow-button").addEventListener("click", () => {
     const dialog = $("learning-flow-dialog");
