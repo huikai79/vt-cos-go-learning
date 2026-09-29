@@ -9,10 +9,10 @@ const matrix = fs.readFileSync(path.join(__dirname, "..", "COMPLETION_MATRIX.md"
 const pipeline = fs.readFileSync(path.join(__dirname, "..", "EXECUTION_PIPELINE.md"), "utf8");
 const teachingGate = fs.readFileSync(path.join(__dirname, "..", "TEACHING_GATE.md"), "utf8");
 
-test("完成矩陣 current truth 已同步 learner-flow-v54 與全球觀察入口", () => {
-  assert.match(matrix, /`ui_version`: `learner-flow-v54`/);
+test("完成矩陣 current truth 已同步 learner-flow-v55 與全球觀察入口", () => {
+  assert.match(matrix, /`ui_version`: `learner-flow-v55`/);
   assert.match(matrix, /Global Go Observatory v0\.1/);
-  assert.match(matrix, /formal-teaching-candidate-2026-09-29-u/);
+  assert.match(matrix, /formal-teaching-candidate-2026-09-29-v/);
   assert.match(matrix, /工具面板語意與品牌邊界複核（v45）/);
   assert.match(matrix, /複習今日到期（N）/);
   assert.match(matrix, /棋譜單點復盤/);
@@ -35,13 +35,14 @@ test("完成矩陣區分已實作診斷與尚未取得的正式資料或外部�
   assert.match(matrix, /不推定粗心、誤解等心理根因/);
   assert.match(matrix, /兩類死活內容仍待獨立審題/);
   assert.match(matrix, /R1a 棋理與構念核對[\s\S]*?待外部審查/);
+  assert.match(matrix, /19 課短講外部棋理審查[\s\S]*?待外部回條/);
   assert.match(matrix, /R1b 平行題可比性[\s\S]*?未建立/);
   assert.match(matrix, /正式 usability 仍 `NOT_TESTED`/);
   assert.match(matrix, /未量測/);
 });
 
 test("完成矩陣記錄 Phase 3 導覽工程完成但保留真人閘門", () => {
-  assert.match(matrix, /根網址固定作為悟之一手學習樞紐[\s\S]*?三階段直接承擔核心課程入口[\s\S]*?局部直達 Core 第 6 單元[\s\S]*?全局直達 Core 第 11 單元[\s\S]*?Advanced 維持獨立路線[\s\S]*?只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量[\s\S]*?`learner-flow-v54` 條件通過[\s\S]*?真人觀察/);
+  assert.match(matrix, /根網址固定作為悟之一手學習樞紐[\s\S]*?三階段直接承擔核心課程入口[\s\S]*?局部直達 Core 第 6 單元[\s\S]*?全局直達 Core 第 11 單元[\s\S]*?Advanced 維持獨立路線[\s\S]*?只有確實有題目到期時 Core workspace 才顯示「今日到期」及數量[\s\S]*?`learner-flow-v55` 條件通過[\s\S]*?真人觀察/);
   assert.match(matrix, /reviewer-only 77 題母體覆蓋完整 148 題題庫的 43 家族代表與全部 48 題公開保留組/);
   assert.match(matrix, /學習頁不再提供入口[\s\S]*?外部回條仍待不同於學習者的審查者完成/);
 });
