@@ -315,3 +315,29 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
   .course-navigation .lesson-copy small{display:block}
   .course-navigation .unit-actions{margin-top:8px}
 }
+
+/* learner-flow-v55: advanced sidebar follows status → detail → reference → tools priority. */
+.advanced-sidebar-tools>summary{justify-content:space-between;gap:12px}
+.advanced-sidebar-tools>summary small{font-size:.75rem;font-weight:500;line-height:1.35;color:#a9c3af;text-align:right}
+.advanced-sidebar-links{display:grid;gap:10px}
+.advanced-sidebar-intro{margin:2px 2px 0;font-size:.8125rem;line-height:1.55;color:#b9cfbd}
+.advanced-priority-label{margin-top:2px;font-size:.75rem;font-weight:700;letter-spacing:.06em;color:#d0e2d3}
+.diagnostic-stack{display:grid;gap:7px}
+.diagnostic-card{margin:0;padding:0;overflow:hidden}
+.diagnostic-card summary{min-height:48px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;list-style:none}
+.diagnostic-card summary::-webkit-details-marker{display:none}
+.diagnostic-card summary span{font-size:.875rem;font-weight:650;line-height:1.4;color:#eef6ed}
+.diagnostic-brief{max-width:9.5em;text-align:right;font-size:.75rem;font-weight:700;line-height:1.35;color:#f3cd83}
+.diagnostic-card[open] summary{border-bottom:1px solid #45604d}
+.diagnostic-detail{padding:10px 12px 12px}
+.diagnostic-card p{margin:0;white-space:pre-line}
+.diagnostic-card small{margin-top:8px}
+.advanced-course-map{margin-top:4px;padding-top:8px;border-top:1px solid #45604d}
+.advanced-course-map .level-label{margin:0 0 7px}
+#sidebar-tools-button{margin-top:2px}
+@media(max-width:760px){
+  .advanced-sidebar-tools>summary{align-items:flex-start}
+  .diagnostic-card summary{min-height:50px}
+  .diagnostic-brief{max-width:8.8em}
+  .advanced-course-map .level-label{margin-top:0}
+}
