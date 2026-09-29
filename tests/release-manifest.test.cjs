@@ -306,3 +306,17 @@ test("Advanced evidence bundle export v1 列入公開發佈清單", () => {
 test("backup scope regression test 列入公開發佈清單", () => {
   assert.ok(manifest.publicFiles.includes("tests/backup-scope.test.cjs"));
 });
+
+
+test("Delayed Comparable Retrieval v1 runtime、policy、analysis 與 tests 列入公開發佈清單", () => {
+  for (const file of [
+    "advanced-delayed-comparable-contract.js",
+    "advanced-delayed-comparable-events.js",
+    "advanced-delayed-comparable-policy.js",
+    "advanced-delayed-comparable-analysis.js",
+    "advanced-delayed-comparable.js",
+    "tests/advanced-delayed-comparable.test.cjs"
+  ]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});

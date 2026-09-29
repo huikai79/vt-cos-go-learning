@@ -1,3 +1,5 @@
+2026-09-29 Delayed Comparable Retrieval v1：進階頁在 immediate comparable check 之後新增固定 24 小時延後的第三局面；不到時間不開題，到期後以新的 19×19 盤面再次做相同 bounded 判斷，並保存實際相隔時間與第一次作答。這是公開流程檢查與固定 baseline，不是自適應排程，也不是正式未見評量。Advanced 原始事件備份升為 bundle v2，包含 delayed stream／analysis；仍只有單向 export，沒有 restore/import。
+
 2026-09-29 Comparable Position v1：進階頁新增 4 個 19×19 全盤判斷局面。前兩題先熟悉「找出唯一只剩一氣的己方棋串，再下出能讓它增加到至少兩氣的一手」，後兩題改變棋串大小、形狀、棋色、位置與全盤干擾，再做同類判斷。答案由 rules engine 從棋盤事實推導，不使用 KataGo 排名。後兩題仍是公開流程檢查，不是正式未見評量，也不更新能力分數或複習排程。
 
 2026-09-29 Decision Point Comparison v1：19×19 決策點複盤在揭露原著後，可選擇用 KataGo 比較「我的第一候選」與「原著」。只有規則與貼目明確、第一候選合法且兩手不同時才可送出；搜尋只限制在這兩手，結果用自然語句呈現為本次搜尋偏好，不當作標準答案、錯手判定或能力分數。分析失敗不回退成 heuristic，也不影響原本複盤紀錄。

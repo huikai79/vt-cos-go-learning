@@ -20,7 +20,8 @@ function storage(){
 test("空的 Advanced stores 仍能形成完整、無權威升格的備份",()=>{
  const s=storage();
  const bundle=Exporter.buildBundle(s,{exportedAt:"2026-09-29T09:00:00.000Z"});
- assert.equal(bundle.bundleVersion,"advanced-evidence-bundle-v1");
+ assert.equal(bundle.bundleVersion,"advanced-evidence-bundle-v2");
+ assert.equal(bundle.schemaVersion,2);
  assert.equal(bundle.complete,true);
  assert.deepEqual(bundle.errors,[]);
  assert.equal(bundle.authority,"advanced_practice_backup_only");
@@ -36,6 +37,10 @@ test("空的 Advanced stores 仍能形成完整、無權威升格的備份",()=>
  }
  assert.equal(bundle.comparableAnalysis.authority,"descriptive_process_check_only");
  assert.equal(bundle.comparableAnalysis.transferConclusion,null);
+ assert.equal(bundle.streams.delayedComparable.status,"ok");
+ assert.equal(bundle.delayedComparableAnalysis.authority,"descriptive_delayed_process_check_only");
+ assert.equal(bundle.delayedComparableAnalysis.retentionConclusion,null);
+ assert.equal(bundle.delayedComparableAnalysis.transferConclusion,null);
 });
 
 test("choice practice 健康事件會原樣保留在 bundle",()=>{
@@ -116,10 +121,13 @@ test("Advanced 頁提供單向原始事件備份，明示不屬正式評量",()=
  const html=fs.readFileSync(path.join(__dirname,"..","advanced.html"),"utf8");
  assert.match(html,/advanced-comparable-analysis\.js\?v=advanced-comparable-analysis-v1/);
  assert.match(html,/advanced-evidence-export\.js\?v=advanced-evidence-export-v1/);
+ assert.match(html,/advanced-delayed-comparable-analysis\.js\?v=advanced-delayed-comparable-v1/);
+ assert.match(html,/advanced-delayed-comparable\.js\?v=advanced-delayed-comparable-v1/);
  assert.match(html,/advanced-evidence-export-ui\.js\?v=advanced-evidence-export-v1/);
  assert.match(html,/id="advanced-export-evidence"/);
  assert.match(html,/匯出進階練習原始事件/);
  assert.match(html,/只作備份與分析，不作正式評量/);
+ assert.match(html,/延後全盤判斷紀錄/);
 });
 
 
@@ -142,4 +150,49 @@ test("schema 合法但 event authority 被污染時不得標成健康 stream",()
  assert.equal(bundle.streams.decisionComparison.status,"error");
  assert.match(bundle.streams.decisionComparison.error,/event_invalid:comparison_event_authority_invalid/);
  assert.equal(bundle.streams.decisionComparison.store,null);
+});
+
+
+test("delayed comparable store malformed 時只污染 delayed stream，且 raw 壞資料不外洩",()=>{
+ const s=storage();
+ const DelayedEvents=require("../advanced-delayed-comparable-events.js");
+ const secret='{broken-delayed-secret';
+ s.setItem(DelayedEvents.STORAGE_KEY,secret);
+ const bundle=Exporter.buildBundle(s,{exportedAt:"2026-09-29T10:00:00.000Z"});
+ assert.equal(bundle.complete,false);
+ assert.equal(bundle.streams.delayedComparable.status,"error");
+ assert.equal(bundle.streams.delayedComparable.store,null);
+ assert.ok(bundle.errors.some(item=>item.stream==="delayedComparable"));
+ assert.equal(bundle.streams.comparablePosition.status,"ok");
+ assert.equal(JSON.stringify(bundle).includes(secret),false);
+});
+
+
+test("delayed lifecycle corruption 不得被 bundle 標成健康 stream",()=>{
+ const s=storage();
+ const Delayed=require("../advanced-delayed-comparable-contract.js");
+ const DelayedEvents=require("../advanced-delayed-comparable-events.js");
+ const item=Delayed.items[0];
+ const anchorAt="2026-09-28T00:00:00.000Z",dueAt="2026-09-29T00:00:00.000Z";
+ const first={
+  schemaVersion:DelayedEvents.SCHEMA_VERSION,eventStreamVersion:DelayedEvents.STREAM_VERSION,
+  type:"delayed_presented",eventId:"p1",sessionId:"s",attemptId:"a1",
+  itemId:item.itemId,itemVersion:item.itemVersion,pairId:item.pairId,pairVersion:item.pairVersion,pairHypothesisVersion:item.pairHypothesisVersion,
+  anchorItemId:item.anchorItemId,anchorEventId:"anchor",anchorOccurredAt:anchorAt,dueAt,
+  positionFingerprint:item.positionFingerprint,kcHypothesisId:item.kcHypothesisId,kcHypothesisVersion:item.kcHypothesisVersion,
+  scoringContractVersion:item.scoringContractVersion,evidenceTaxonomyVersion:item.evidenceTaxonomyVersion,retrievalPolicyVersion:item.retrievalPolicyVersion,
+  minimumDelayMs:Delayed.MIN_DELAY_MS,actualDelayMs:Delayed.MIN_DELAY_MS,occurredAt:dueAt,
+  boardSize:19,publicItem:true,formalEligible:false,independentEvaluation:false,schedulerEligible:false,skillUpdateEligible:false,qualifiedOpportunity:false,
+  constructValidated:false,transferLevel:"T2",retrievalTiming:"delayed",
+  evidenceUse:"advanced_delayed_comparable_public_process_check",evaluationContext:"process_check",
+  eligibilityDeclaredBeforeResponse:true,hintAvailable:false
+ };
+ const second={...first,eventId:"p2",attemptId:"a2",occurredAt:"2026-09-29T00:00:01.000Z",actualDelayMs:Delayed.MIN_DELAY_MS+1000};
+ s.setItem(DelayedEvents.STORAGE_KEY,JSON.stringify({
+  schemaVersion:DelayedEvents.SCHEMA_VERSION,eventStreamVersion:DelayedEvents.STREAM_VERSION,events:[first,second]
+ }));
+ const bundle=Exporter.buildBundle(s,{exportedAt:"2026-09-29T10:00:00.000Z"});
+ assert.equal(bundle.complete,false);
+ assert.equal(bundle.streams.delayedComparable.status,"error");
+ assert.match(bundle.streams.delayedComparable.error,/delayed_store_presentation_count_invalid/);
 });

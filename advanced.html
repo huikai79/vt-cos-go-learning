@@ -7,7 +7,7 @@
   <meta name="description" content="VT-COS｜悟之一手的進階訓練：從核心課程轉入多路線、可回跳的讀棋與全局訓練。">
   <title>VT-COS｜悟之一手｜進階訓練</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v45">
-  <link rel="stylesheet" href="advanced.css?v=advanced-training-v7">
+  <link rel="stylesheet" href="advanced.css?v=advanced-training-v8">
   <script defer src="go.js"></script>
   <script defer src="sgf.js?v=sgf-decision-review-v1"></script>
   <script defer src="advanced-decision-review-events.js?v=advanced-decision-review-v1"></script>
@@ -21,6 +21,10 @@
   <script defer src="advanced-events.js?v=advanced-training-v1"></script>
   <script defer src="advanced-sequence-events.js?v=advanced-sequence-v3"></script>
   <script defer src="advanced-comparable-analysis.js?v=advanced-comparable-analysis-v1"></script>
+  <script defer src="advanced-delayed-comparable-contract.js?v=advanced-delayed-comparable-v1"></script>
+  <script defer src="advanced-delayed-comparable-events.js?v=advanced-delayed-comparable-v1"></script>
+  <script defer src="advanced-delayed-comparable-policy.js?v=advanced-delayed-comparable-v1"></script>
+  <script defer src="advanced-delayed-comparable-analysis.js?v=advanced-delayed-comparable-v1"></script>
   <script defer src="advanced-evidence-export.js?v=advanced-evidence-export-v1"></script>
   <script defer src="advanced-sequence-contract.js?v=advanced-sequence-v1"></script>
   <script defer src="advanced-sequence-policy.js?v=advanced-fixed-interleave-v1"></script>
@@ -29,6 +33,7 @@
   <script defer src="advanced-decision-replay.js?v=advanced-decision-replay-v1"></script>
   <script defer src="advanced-decision-review.js?v=advanced-decision-review-v2"></script>
   <script defer src="advanced-comparable-position.js?v=advanced-comparable-position-v1"></script>
+  <script defer src="advanced-delayed-comparable.js?v=advanced-delayed-comparable-v1"></script>
   <script defer src="advanced-evidence-export-ui.js?v=advanced-evidence-export-v1"></script>
 </head>
 <body class="advanced-page">
@@ -272,10 +277,40 @@
       </div>
     </section>
 
+    <section class="advanced-comparable-section" aria-labelledby="delayed-comparable-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">隔一段時間再換局面</span>
+          <h2 id="delayed-comparable-title">延後全盤判斷</h2>
+        </div>
+        <p id="delayed-comparable-summary">延後局面會在前一個檢查完成至少 24 小時後開放。</p>
+      </div>
+      <div class="decision-review-card">
+        <div class="decision-review-controls">
+          <p>這裡不重做剛才看過的局面，而是換一個新的全盤局面。系統會等前一個不同局面檢查完成至少 24 小時後才開放，並保存實際相隔時間與第一次作答。</p>
+          <div id="delayed-comparable-list" class="decision-replay-list" aria-label="延後全盤判斷局面"></div>
+          <p class="answer-policy">這是固定間隔的公開流程檢查；如果兩個延後局面都已到時間，仍會照固定順序開放，不會因你的表現自動提早、延後或改題，也不作正式能力評量。</p>
+        </div>
+        <div id="delayed-comparable-workspace" class="decision-review-board-wrap" hidden>
+          <div class="advanced-sequence-board-head">
+            <span>延後局面</span>
+            <span id="delayed-comparable-side">黑棋下</span>
+          </div>
+          <p id="delayed-comparable-prompt" class="advanced-prompt"></p>
+          <div id="delayed-comparable-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="delayed-comparable-board" class="decision-review-board" tabindex="0" role="application" aria-label="19 路延後全盤判斷棋盤；方向鍵移動，Enter 鍵落子"></div>
+          <p class="decision-review-meta">方向鍵移動 · Enter 鍵落子；也可以直接點棋盤。</p>
+          <div class="advanced-actions">
+            <button class="primary-button" id="delayed-comparable-next" type="button" disabled>下一個延後局面 →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="advanced-roadmap" aria-labelledby="advanced-data-title">
       <span class="advanced-kicker">本機資料備份</span>
       <h2 id="advanced-data-title">匯出進階練習原始事件</h2>
-      <p>把本頁的選擇題、多手棋盤、決策點複盤、KataGo 比較、稍後重做與全盤可比較局面紀錄一起匯出。舊版多手事件會按原版本分開保存，不會被目前版本改寫。</p>
+      <p>把本頁的選擇題、多手棋盤、決策點複盤、KataGo 比較、稍後重做、全盤可比較局面與延後全盤判斷紀錄一起匯出。舊版多手事件會按原版本分開保存，不會被目前版本改寫。</p>
       <p>這份 JSON 只作備份與分析，不作正式評量，也不會改變核心課程紀錄、能力判定或複習安排。</p>
       <div class="advanced-actions">
         <button class="subtle-button" id="advanced-export-evidence" type="button">匯出進階練習原始事件</button>
