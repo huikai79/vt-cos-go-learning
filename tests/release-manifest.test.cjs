@@ -195,6 +195,19 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /本頁來源最後查核：2026-09-28/);
   assert.match(workflow, /href="advanced\.html">回進階訓練<\/a>/);
   assert.match(workflow, /attempt <= 12/);
+  assert.match(workflow, /styles\.css\?v=learner-flow-v54/);
+  assert.match(workflow, /app\.js\?v=learner-flow-v54/);
+  assert.match(workflow, /15 單元核心課程（參考）/);
+  assert.match(workflow, /id="live-practice-brief"/);
+  assert.match(workflow, /id="live-evidence-brief"/);
+  assert.match(workflow, /id="integrated-progress-brief"/);
+  assert.match(workflow, /id="diagnostic-brief"/);
+  assert.match(workflow, /formal-teaching-candidate\.json\?deploy=/);
+  assert.match(workflow, /formal-teaching-candidate-2026-09-29-u/);
+  assert.match(workflow, /fnv1a32-js16-86699408/);
+  assert.match(workflow, /served-pages-status:/);
+  assert.match(workflow, /permissions:\s*[\s\S]*statuses: write/);
+  assert.match(workflow, /context:"verify\/served-pages-content"/);
 });
 
 

@@ -49,12 +49,12 @@
 
 # 完成矩陣：悟之一手
 
-更新日期：2026-09-28  
+更新日期：2026-09-29  
 用途：將產品承諾、現有實作、自動驗證與證據邊界分開記錄。此表的「工程通過」只表示指定程式行為可運作，不表示內容正確、初學者可理解或學習有效。
 
 ## Current Status
 
-- `as_of`: 2026-09-28
+- `as_of`: 2026-09-29
 - `claim_mode`: `personal_descriptive`
 - `trial_protocol`: `personal-pilot-v3`
 - `r1_protocol`: `go-r1-independent-content-review-v5`
@@ -1001,3 +1001,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **不可破壞 invariant：** 不改題目、KC、scoring、scheduler、first response/retry、learner event、evidence taxonomy、formal evaluation 或 learner-state authority；ERROR／資料不足維持 fail closed，不改成成功狀態。
 - **回歸：** `tests/app-state.test.cjs` 增加 brief 值檢查；`tests/ui.test.cjs` 固定狀態 → 診斷 → 課程參考 → 工具的 DOM 順序與 compact-status CSS 契約。
 - **Formal candidate：** critical learner surface 已重新凍結為 `formal-teaching-candidate-2026-09-29-u`／`fnv1a32-js16-86699408`。這只證明候選資產身分；正式 usability 仍 `NOT_TESTED`、正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
+
+
+## 2026-09-29 Change note｜v54 served-content observability hardening
+
+- **bottleneck：** PR #110 的 pre-merge regression 已通過，但現有 GitHub connector 只能直接讀取 commit status，push-triggered workflow run 本身無法由目前工具完整查核；而既有 served-content probe 尚未檢查 learner-flow-v54 的側欄摘要與 formal candidate binding。
+- **修正：** main push 的 `served-pages-content` 現在另外檢查 `styles.css?v=learner-flow-v54`、`app.js?v=learner-flow-v54`、四個 compact brief DOM marker、15 單元參考標題，以及 `formal-teaching-candidate.json`／`teaching-gate.json` 的 candidate ID + fingerprint。另新增 `served-pages-status`，把 push 後 served-content 結果以 commit status context `verify/served-pages-content` 寫回該 main SHA。
+- **目的：** 讓 Definition of Done 的 post-merge served-content gate 可由機器直接查詢，不再只能推測 GitHub Pages 是否已更新。
+- **不可破壞 invariant：** 不改 learner-facing UI、題目、scoring、scheduler、first response/retry、event schema、KC、evidence taxonomy、formal candidate asset bytes 或正式評量語義；因此 candidate `formal-teaching-candidate-2026-09-29-u`／`fnv1a32-js16-86699408` 不需重凍結。
+- **狀態：** 此變更只加強 release/deployment 可觀測性。正式 usability 仍 `NOT_TESTED`、正式教學仍 `BLOCKED`、正式評量仍 `BLOCKED`、學習成效仍 `NOT_MEASURED`。
