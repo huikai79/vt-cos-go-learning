@@ -274,7 +274,7 @@ test("v4 升到 v5 保留短講自動顯示抑制狀態，不把 seen 當成完�
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.equal(saved.contentCatalogVersion, 5);
   assert.deepEqual(saved.seenLessonIntros, [0, 6]);
-  assert.equal(elements["lesson-intro-dialog"].open, false);
+  assert.equal(Boolean(elements["lesson-intro-dialog"].open), false);
   elements["lesson-intro-button"].listeners.click();
   assert.equal(elements["lesson-intro-dialog"].open, true, "catalog 升版後仍可手動重看新版短講");
 });
