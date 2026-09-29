@@ -205,7 +205,75 @@
         { boardSize: 7, stones: [[0,0,B],[1,0,B],[0,1,B],[6,6,W],[5,6,W],[6,5,W],[3,2,B],[3,3,W]], emphasis: [[3,2],[3,3]], label: "弱棋風險不能直接算成固定目數", caption: "中央兩子若仍弱，未來戰鬥可能改變兩邊收益。這類風險應另列，不和已確定實地混成一個虛假精確總分。" },
         { boardSize: 7, stones: [[0,0,B],[1,0,B],[0,1,B],[6,6,W],[5,6,W],[6,5,W],[3,2,B],[3,3,W]], highlights: [[2,3],[4,3]], label: "最後才比較候選的風險報酬", caption: "掌握大致形勢後，再比較穩定候選與高風險候選。AI 估算可以輔助比較，但不能取代規則事實或人的判斷理由。" }
       ]
-    }
+    },
+    {
+      id: "adv-r09",
+      trackId: "reading-tesuji",
+      title: "打吃方向：先看對方往哪裡逃",
+      target: "當兩邊都能打吃時，先預測對方延長後的位置，再選較能限制逃跑的方向。",
+      candidateId: "capture-semeai-track-v1",
+      candidateStatus: "teaching_candidate",
+      kcStatus: "not_promoted",
+      taskFeatures: {
+        capturePattern: "atari_direction",
+        atariDirectionGoal: "edge_constraint",
+        escapeRoute: "toward_edge",
+        connectionThreat: false,
+        edgeConstraint: true,
+        eyeCondition: "none",
+        approachMoveRequired: false,
+        terminalCaptureResult: "not_asserted"
+      },
+      prompt: "同一串棋可以從兩邊打吃時，第一個應該比較什麼？",
+      choices: ["對方被打吃後會往哪裡延長，以及延長後是否更受限制", "哪個打吃點離上一手比較近", "哪個打吃點比較靠左"],
+      answer: 0,
+      hint: "先不要急著選點。各想一次：你從這邊打吃，對方唯一的逃路會在哪裡？",
+      explanation: "打吃本身只代表把對方壓到一口氣。若有兩個方向都能打吃，還要比較對方延長後的位置：往邊線、往自己的支援，或往更容易被包圍的方向，後續結果可能不同。這裡先練方向判斷，不把局部方向直接寫成全局最佳手。",
+      takeaway: "先預測逃路，再決定從哪一邊打吃。",
+      terms: [
+        ["打吃方向", "有多個打吃候選時，依對方下一步逃路與後續限制比較落子方向。"],
+        ["逃路", "被打吃棋串可以延長、連接或轉身脫離立即危險的方向。"]
+      ],
+      demoSteps: [
+        { boardSize: 7, stones: [[1,2,W],[1,1,B],[2,2,B]], highlights: [[0,2],[1,3]], label: "同一串棋有兩個打吃候選", caption: "白棋目前有兩口氣。黑棋可以從左邊或下方填一口；先別只看『都能打吃』，要比較留下的唯一逃路。" },
+        { boardSize: 7, stones: [[1,2,W],[1,1,B],[2,2,B],[1,3,B]], highlights: [[0,2]], label: "從下方打吃，白棋只剩邊線方向", caption: "黑棋填下方後，白棋只剩左邊一口氣。這個示意只說明『方向會改變逃路』，不宣稱黑棋已經一定能吃掉白棋。" },
+        { boardSize: 7, stones: [[1,2,W],[0,2,W],[1,1,B],[2,2,B],[1,3,B]], highlights: [[0,1],[0,3]], label: "對方延長後要重新數氣", caption: "白棋沿邊延長後又得到新的氣。下一步仍要重新讀棋；正確方向不能靠一句口訣代替後續計算。" }
+      ]
+    },
+    {
+      id: "adv-r10",
+      trackId: "reading-tesuji",
+      title: "打吃方向：先堵住連接路",
+      target: "打吃前先看對方能否順著唯一逃路連到同伴，避免把弱棋趕去接應。",
+      candidateId: "capture-semeai-track-v1",
+      candidateStatus: "teaching_candidate",
+      kcStatus: "not_promoted",
+      taskFeatures: {
+        capturePattern: "atari_direction",
+        atariDirectionGoal: "prevent_connection",
+        escapeRoute: "forced_away_from_connection",
+        connectionThreat: true,
+        edgeConstraint: false,
+        eyeCondition: "none",
+        approachMoveRequired: false,
+        terminalCaptureResult: "not_asserted"
+      },
+      prompt: "對方弱棋旁邊有同伴可以接應時，選打吃方向前最重要的檢查是什麼？",
+      choices: ["哪個方向會堵住連接點，避免把弱棋趕去和同伴連上", "哪個方向能讓自己立刻多一顆棋", "哪個方向最接近棋盤中央"],
+      answer: 0,
+      hint: "把對方下一手延長真的下在腦中：那一手會不會順便和旁邊的棋連成一串？",
+      explanation: "同樣是打吃，留下的唯一一口氣可能正好是對方的連接點。若把弱棋往同伴方向趕，對方一手延長就可能同時連接並增加更多氣。先辨認連接威脅，再比較打吃方向。",
+      takeaway: "不要只看這一手有沒有打吃；還要看對方逃一步後會不會連上。",
+      terms: [
+        ["連接威脅", "對方延長時可能同時和另一串棋連成一串，讓原本的追擊失去效果。"],
+        ["切斷", "佔住或控制兩串棋之間的重要連接點，使它們不能直接成為同一串。"]
+      ],
+      demoSteps: [
+        { boardSize: 7, stones: [[2,2,W],[4,2,W],[1,2,B],[2,1,B]], highlights: [[3,2],[2,3]], reference: [[4,2]], label: "先找哪一口氣也是連接路", caption: "左邊白棋有兩口氣；右邊還有一顆白棋。若白下一手走到兩者中間，就會把兩邊連起來。" },
+        { boardSize: 7, stones: [[2,2,W],[4,2,W],[1,2,B],[2,1,B],[2,3,B]], highlights: [[3,2]], reference: [[4,2]], label: "錯的方向可能把白棋趕去接應", caption: "黑從下方打吃後，白棋唯一逃路正好是兩串之間。白若走到那裡，就會和右邊同伴連接。" },
+        { boardSize: 7, stones: [[2,2,W],[4,2,W],[1,2,B],[2,1,B],[3,2,B]], highlights: [[2,3]], reference: [[4,2]], label: "先堵連接點，再迫使往另一邊逃", caption: "黑先佔兩串之間的連接點，同時形成打吃，白棋只剩往下延長。這仍是局部教學目標；後續能否吃到要繼續讀。" }
+      ]
+
   ];
 
   const sequenceExperiences = [
@@ -664,7 +732,7 @@
   ];
 
   const api = {
-    version: 6,
+    version: 7,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
     experiences,
