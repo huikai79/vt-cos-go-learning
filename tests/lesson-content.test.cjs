@@ -110,9 +110,33 @@ test("直三示範先呈現同一眼空間，再以中央急所分成兩眼", ()
 
 test("修改過的正式題目文案保留獨立 contentVersion", () => {
   const { problems } = require("../content.js");
-  assert.equal(problems.find((problem) => problem.id === "u4-06").contentVersion, 2);
-  assert.equal(problems.find((problem) => problem.id === "u9-06").contentVersion, 2);
+  for (const id of ["u4-06", "u9-06", "u10-06", "u12-02", "u12-04", "u14-04"]) {
+    assert.equal(problems.find((problem) => problem.id === id).contentVersion, 2, `${id} 應升為 contentVersion 2`);
+  }
   assert.equal(problems.find((problem) => problem.id === "u4-05").contentVersion, 1);
+});
+
+test("厚勢、外勢與先手使用有邊界的學習者定義", () => {
+  const thickness = lessons[10].terms.find((entry) => entry.term === "厚勢");
+  const influence = lessons[10].terms.find((entry) => entry.term === "外勢");
+  const sente = lessons[13].terms.find((entry) => entry.term === "先手");
+  assert.ok(thickness && influence && sente);
+  assert.notEqual(thickness.definition, influence.definition);
+  assert.match(thickness.definition, /安定|厚實棋形/);
+  assert.match(influence.definition, /中央|外側|力量|影響/);
+  assert.match(sente.definition, /不回應/);
+  assert.match(sente.definition, /通常需要回應/);
+  assert.doesNotMatch(sente.definition, /必須回應/);
+});
+
+test("尚未完成中文概念邊界查核的薄味不作 Core 必學術語", () => {
+  const { problems } = require("../content.js");
+  const learnerCopy = JSON.stringify({ lessons, problems });
+  assert.doesNotMatch(learnerCopy, /薄味/);
+  const weakPoint = problems.find((problem) => problem.id === "u12-04");
+  const josekiWeakness = problems.find((problem) => problem.id === "u14-04");
+  assert.match(weakPoint.title + " " + weakPoint.explanation, /弱點|尚未安定/);
+  assert.match(josekiWeakness.explanation, /弱點|後續手段/);
 });
 
 test("術語內容查核保留 Core 概念邊界並阻止舊用語回歸", () => {
