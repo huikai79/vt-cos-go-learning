@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "go-independent-lesson-content-review-v1",
+  "draft": true,
+  "contentFingerprint": "fnv1a32-8e153412",
+  "reviewedAt": null,
+  "reviewer": {
+    "code": "",
+    "experience": "",
+    "independentOfContentAuthoring": false,
+    "separateFromLearner": false,
+    "qualifiedForGoContentReview": false
+  },
+  "reviewScope": {
+    "lessonContentCorrectness": "single_reviewer_evidence",
+    "learnerComprehension": "not_tested",
+    "learningEffect": "not_measured"
+  },
+  "population": {
+    "lessonCount": 19
+  },
+  "reviews": [
+    {
+      "lessonIndex": 0,
+      "title": "認識氣",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 1,
+      "title": "打吃與提子",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 2,
+      "title": "逃出打吃",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 3,
+      "title": "辨認棋串",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 4,
+      "title": "補上連接點",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 5,
+      "title": "找到斷點",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 6,
+      "title": "不能下與不能立刻提回",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 7,
+      "title": "兩眼與急所",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 8,
+      "title": "把一局下完",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 9,
+      "title": "從角落展開",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 10,
+      "title": "實地與厚勢",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 11,
+      "title": "先照顧弱棋",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 12,
+      "title": "讀到活或死",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 13,
+      "title": "收官與數目",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 14,
+      "title": "選擇全局更大的方向",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 15,
+      "title": "戰鬥中的取捨",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 16,
+      "title": "劫材與全局價值",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 17,
+      "title": "定石看方向",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "lessonIndex": 18,
+      "title": "從一局找到下一個課題",
+      "status": "pending",
+      "notes": ""
+    }
+  ]
+}

@@ -66,7 +66,7 @@ function pointTarget(dataset, selector) {
 }
 
 function createApp(saved = {}, options = {}) {
-  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "lesson-terms", "lesson-term-count", "lesson-term-list", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "current-course-context", "course-nav-toggle", "course-navigation", "today-navigation", "sidebar-due-review-button", "sidebar-due-review-count", "sidebar-review-button", "sidebar-review-count", "sidebar-tools-button", "system-status", "feedback", "interaction-feedback", "hint-feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "scheduled-practice-description", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "advanced-evidence-brief", "advanced-evidence-note", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary"];
+  const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "demo-legend", "lesson-terms", "lesson-term-count", "lesson-term-list", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "current-course-context", "course-nav-toggle", "course-navigation", "today-navigation", "sidebar-due-review-button", "sidebar-due-review-count", "sidebar-review-button", "sidebar-review-count", "sidebar-tools-button", "system-status", "feedback", "interaction-feedback", "hint-feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "scheduled-practice-description", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "advanced-evidence-brief", "advanced-evidence-note", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary"];
   const elements = Object.fromEntries(ids.map((id) => [id, new Element()]));
   const storage = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   for (const [key, value] of Object.entries(options.rawStorage || {})) storage.set(key, value);
@@ -82,7 +82,7 @@ function createApp(saved = {}, options = {}) {
       return element;
     }
   };
-  const window = { GoCore, GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy, GoPracticeEvents, GoLiveEvidence, GoLearnerProgress };
+  const window = { GoCore, GoContent: options.goContent || GoContent, GoPhase2Content, GoPhase4Content, GoSgf, GoScheduler, GoTrial, GoLearningMetrics, GoEvidenceTaxonomy, GoPracticeEvents, GoLiveEvidence, GoLearnerProgress };
   const url = {
     createObjectURL(blob) { const href = `blob:test-${++blobId}`; blobs.set(href, blob); return href; },
     revokeObjectURL() {}
@@ -114,11 +114,11 @@ test("每課短講只自動顯示一次，並可隨時重開", () => {
   assert.equal(elements["lesson-intro-dialog"].open, true);
   assert.equal(elements["lesson-intro-title"].textContent, "現在先學：認識氣");
   assert.match(elements["teaching-text"].textContent, /上下左右相鄰的空點/);
-  assert.match(elements["teaching-demo"].textContent, /角上的一顆黑棋/);
-  assert.match(elements["teaching-check"].textContent, /先找空點/);
-  assert.match(elements["teaching-demo-board"].innerHTML, /demo-liberty/);
+  assert.match(elements["teaching-check"].textContent, /先找沿線相鄰的空點/);
+  assert.match(elements["teaching-demo-board"].innerHTML, /demo-emphasis/);
+  assert.doesNotMatch(elements["teaching-demo-board"].innerHTML, /demo-liberty/);
   elements["lesson-intro-start-button"].listeners.click();
-  assert.equal(elements["lesson-intro-dialog"].open, false);
+  assert.equal(Boolean(elements["lesson-intro-dialog"].open), false);
   assert.deepEqual(JSON.parse(storage.get(STORAGE_KEY)).seenLessonIntros, [0]);
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "4" }, "[data-lesson]") });
   assert.equal(elements["lesson-intro-dialog"].open, true);
@@ -130,7 +130,7 @@ test("每課短講只自動顯示一次，並可隨時重開", () => {
   assert.equal(elements["lesson-intro-dialog"].open, true, "仍可手動重開短講");
   elements["lesson-intro-dismiss-button"].listeners.click();
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "7" }, "[data-lesson]") });
-  assert.match(elements["teaching-demo-board"].innerHTML, /直三|三個連成一直線/);
+  assert.match(elements["teaching-demo-board"].innerHTML, /受包圍的三個相連空點/);
 });
 
 test("試行技能將首答、重試與提示後作答存成可重算事件", () => {
@@ -189,7 +189,7 @@ test("損壞 JSON 與欄位型別異常不會阻止課程啟動", () => {
   const wrongShape = createApp({
     [STORAGE_KEY]: {
       schemaVersion: 999,
-      contentCatalogVersion: 4,
+      contentCatalogVersion: 5,
       index: 999,
       completed: {},
       missed: "not-an-array",
@@ -250,15 +250,50 @@ test("v5 第 4 單元之後的舊數字索引會遷移到原本題目", () => {
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.equal(saved.index, 34);
   assert.equal(saved.currentProblemId, "u4-01");
-  assert.equal(saved.contentCatalogVersion, 4);
+  assert.equal(saved.contentCatalogVersion, 5);
 });
 
-test("v3 內容目錄升到 v4 時只更新教學內容版本，不移動目前題目", () => {
+test("v3 內容目錄升到 v5 時只更新教學內容版本，不移動目前題目", () => {
   const { elements, storage } = createApp({ [STORAGE_KEY]: { schemaVersion: 7, contentCatalogVersion: 3, index: 68, hasStarted: true } });
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.equal(saved.index, 68);
-  assert.equal(saved.contentCatalogVersion, 4);
+  assert.equal(saved.contentCatalogVersion, 5);
   assert.equal(elements["question-title"].textContent.length > 0, true);
+});
+
+test("v4 升到 v5 保留短講自動顯示抑制狀態，不把 seen 當成完成證據", () => {
+  const { elements, storage } = createApp({
+    [STORAGE_KEY]: {
+      schemaVersion: 7,
+      contentCatalogVersion: 4,
+      index: 0,
+      hasStarted: true,
+      lessonIntroPending: false,
+      seenLessonIntros: [0, 6]
+    }
+  });
+  const saved = JSON.parse(storage.get(STORAGE_KEY));
+  assert.equal(saved.contentCatalogVersion, 5);
+  assert.deepEqual(saved.seenLessonIntros, [0, 6]);
+  assert.equal(Boolean(elements["lesson-intro-dialog"].open), false);
+  elements["lesson-intro-button"].listeners.click();
+  assert.equal(elements["lesson-intro-dialog"].open, true, "catalog 升版後仍可手動重看新版短講");
+});
+
+test("單步短講只顯示棋盤與說明，不顯示無意義的上一步、下一步或步數", () => {
+  const syntheticContent = {
+    ...GoContent,
+    lessons: GoContent.lessons.map((lesson, index) => index === 0
+      ? { ...lesson, demoSteps: [lesson.demoSteps[0]] }
+      : lesson)
+  };
+  const { elements } = createApp({}, { goContent: syntheticContent });
+  assert.equal(elements["teaching-demo-stepper"].hidden, false);
+  assert.equal(elements["teaching-demo-previous"].hidden, true);
+  assert.equal(elements["teaching-demo-next"].hidden, true);
+  assert.equal(elements["teaching-demo-count"].hidden, true);
+  assert.match(elements["teaching-demo-caption"].textContent, /角上的黑棋/);
+  assert.match(elements["teaching-demo-board"].innerHTML, /role="img"/);
 });
 
 test("短暫 v6 內容目錄的索引也會再遷移到原本題目", () => {
@@ -662,7 +697,8 @@ test("核心學習文字維持至少 16px，metadata 不被誤升格", () => {
   assert.match(css, /\.learning-guidance p\{[^}]*font-size:1rem;[^}]*line-height:1\.65/);
   assert.match(css, /\.answer-policy\{[^}]*font-size:1rem;[^}]*line-height:1\.65/);
   assert.match(css, /\.lesson-intro-first-use\{[^}]*font-size:1rem;[^}]*line-height:1\.7/);
-  assert.match(css, /\.teaching-demo,\.teaching-check\{[^}]*font-size:1rem!important;[^}]*line-height:1\.65!important/);
+  assert.match(css, /\.teaching-check\{[^}]*font-size:1rem!important;[^}]*line-height:1\.65!important/);
+  assert.match(css, /\.demo-stepper p\{[^}]*font-size:1rem!important;[^}]*line-height:1\.65!important/);
   assert.match(css, /\.learning-proof\{[^}]*font-size:\.875rem/);
 });
 

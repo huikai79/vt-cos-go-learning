@@ -120,7 +120,7 @@
 - `r1_protocol`: `go-r1-independent-content-review-v5`
 - `ui_version`: `learner-flow-v55`；棋盤練習頁 `live-game-ui-v11`
 - `storage_schema`: 7
-- `content_catalog_version`: 4
+- `content_catalog_version`: 5
 - `formal_evaluation_available`: false
 - `formal_holdout_pool_status`: `retired_due_to_publication`
 - `public_source_exposure`: 48 題公開保留組全部已公開，均不得再作 formal holdout
@@ -138,7 +138,7 @@
 |---|---|---|---|---|
 | 離線個人課程 | 15 單元、19 課、106 題；直接開啟 `index.html` | 課程與 Chrome 流程測試 | 工程 | 條件通過 |
 | Core 後續進階訓練 v10 | 獨立 `advanced.html`；不是第 16 單元。choice-based practice Experience 由 11 個增至 12 個；既有 2 個「打吃方向」與 1 個「雙打吃」之外，再新增 1 個 rules-backed「包圍吃子」Teaching Candidate，四者都不升格 KC；「門吃／抱吃」只作來源術語，label split 仍 UNKNOWN；棋盤 Response 仍維持 8 題、4 個 family，每族兩題：倒撲第二題改為回提三子；枷第二題改出口幾何且仍驗雙逃路；對殺第二題交換 learner 棋色；征子第二題改 8×8、更長路線並最終提十一子。每題帶 `familyId`／`variantId`／`variationAxes` 並由 rules-backed sequence contract 重播 | `advanced.test.cjs`、`advanced-sequence-contract.js`、Go rules oracle、browser UI、發布邊界、完整 CI | 工程／教學 UX | 條件通過僅限小型 practice family seed；不更新 KC／scheduler／T2-T3／formal evaluation。第二題不是單純旋轉複製，但尚未證明 family 內難度可比、真人 transfer 或構念邊界 |
-| 全課程短講與示範 | 19 課都有文字短講及至少兩步棋盤示範；一般進課只在首次進入時自動開啟，之後可手動重看；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會再次開啟該單元短講；中高級縮圖明示為局部比較或階段示意 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性與是否幫助理解仍待外部審查及真人觀察 |
+| 全課程短講與示範 | 19 課都有文字短講與棋盤示範；`demoSteps` 是唯一示範來源，只有存在可觀察狀態轉移時才使用多步 stepper，相鄰完全同圖由 visual-delta regression 阻擋；step caption 單一來源、圖例只顯示本課實際標記。一般進課只在首次進入時自動開啟，之後可手動重看；正式跨單元即使曾預覽仍會再次開啟下一單元短講 | `lesson-content.test.cjs`、狀態與 UI 測試 | 工程 | 條件通過；棋理適切性需另走 19 課短講外部審查，真人理解仍待 usability |
 | 多題互動練習 | 28 題為棋盤數氣／連接／落子、10 題為局部棋形點選、68 題為文字選擇 | 規則與內容結構測試 | 工程 | 條件通過；局部點選只檢查題幹指定的觀察點，後續全局判斷深度仍待外部審查與真人觀察 |
 | 世界死活名型館 v21 / Ontology v5 小曲尺 candidate | playable practice 不變；本輪只修正 research ontology：新增 `small-curved-ruler-candidate-v1`，把中文「小曲尺」先視為自身 candidate concept，而不是強迫等同 `L Group` 或 `Carpenter's Square`。Carpenter's Square 另補中文 `曲尺` 既有術語鏈；`小曲尺` ambiguity 改為三候選（中文 candidate / Carpenter / L Group）。新增中文曲尺型系列與「小曲尺長大」教學 taxonomy 訊號，但所有新增 geometry evidence 仍是 text-only/no coordinates | ontology negative tests、geometry evidence no-coordinate tests、catalog/UI version；完整 CI 以 PR workflow 為準 | 工程／research governance | 工程 PASS 只支持「名稱歧義不應被二選一壓平」；小曲尺 canonical geometry、與 L/Carpenter 的 exact relation、playable scoring、內容效度與 learning effect 仍 UNKNOWN/BLOCKED |
 | 基礎吃子／死活變形庫 | 原有 100 題吃子、連接與救棋，加上 48 題兩類基礎死活，共 148 題、43 個母題家族 | `phase2-content.test.cjs`、一至三手規則與真眼區域驗證 | 工程 | 條件通過；兩類死活內容仍待獨立審題，不代表完整死活課綱 |
@@ -154,7 +154,7 @@
 | R1a 棋理與構念核對 | 核心 70 題有獨立規則窮舉，完整題庫有目標型規則驗證及 77 題審查母體 | 結構驗證 | 單一外部內容審查 | 待外部審查；通過也只代表單一審查證據 |
 | R1b 平行題可比性 | 基線與追蹤在已知結構特徵上配對 | 結構比對 | 真人難度資料 | 未建立；不得由 R1a 自動升格 |
 | 初學者使用順手 | 有導覽、鍵盤與窄版工程檢查；一般練習的正確／錯誤回饋以圖示、明確標題與不同背景 banner 區分，錯答仍留在原題重試，formal evaluation 仍不揭露正誤；開發期間可持續 formative observation | UI 測試＋開發期觀察僅作診斷 | 真人可用性 | 工程條件通過；正式 usability 仍 NOT_TESTED，待 candidate 凍結後三位 target novice 關鍵任務 |
-| 正式教學使用閘門 | R1a、三位初學者關鍵任務及真人無障礙 spot check 分開驗證 | `teaching-gate.test.cjs`、`teaching-gate-verify.cjs` | 外部內容與真人證據 | BLOCKED；缺 R1a 外部回條、初學者觀察及真人無障礙證據 |
+| 正式教學使用閘門 | R1a 題庫審查、19 課短講外部棋理審查、三位初學者關鍵任務及真人無障礙 spot check 分開驗證 | `r1-review-verify.cjs`、`lesson-content-review-verify.cjs`、`teaching-gate.test.cjs`、`teaching-gate-verify.cjs` | 外部內容與真人證據 | BLOCKED；缺 R1a 題庫外部回條、19 課短講外部回條、初學者觀察及真人無障礙證據 |
 | 個人七天流程試行 | `personal-pilot-v3` 使用舊 R1 已曝光題，只檢查資料、返回與負擔；v1／v2 保留為 legacy | trial、狀態與 UI 測試 | 個人描述 | 工程通過；`formalEligible=false` |
 | 學習成效與排程增益 | 有試行資料管線與 Minimal Sufficient Policy 設計 | 試行流程測試 | 學習成效 | 未量測；個人單機正式驗收停用 |
 
@@ -1113,3 +1113,14 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Cache／release：** 因 `history.css` bytes 實際改變，`history.html` cache-busting 由 `history-explore-v5` 升為 `history-explore-v6`，並同步 History regression、release-manifest contract 與 served Pages marker。
 - **不變範圍：** 不增刪歷史內容、不改 evidence status、來源、Claim Ladder、learner state、KC、scoring、scheduler、formal evaluation 或 Core critical candidate surface；formal candidate 不重凍結。
 - **驗收邊界：** 自動測試只驗桌面 2×2／研究前沿 3 欄／窄版 1 欄與公開 cache marker；視覺是否更舒服屬版面工程判斷，不升格為真人 usability 證據。正式教學仍 `BLOCKED`、formal evaluation 仍 `BLOCKED`、learning effect 仍 `NOT_MEASURED`。
+
+## 2026-09-30 Change note｜Short Talk UX v2 refresh
+
+- **重疊稽核：** 舊 PR #109 已包含大部分 P0～P3 修正，但分支落後 2026-09-30 main 61 commits；因此不直接合併舊 branch，而是在最新 main 上選擇性移植，保留 `learner-flow-v55`、Core terminology QA、Advanced／research governance 與其他 9/30 current truth。
+- **Short Talk contract：** `lesson.demo`／`demoBoard` 平行來源移除，`demoSteps` 成為唯一示範來源；每課至少一個有效 state，多步只在相鄰 visual signature 不同時成立。第 1 課先聚焦角上黑棋，再揭示兩口氣；caption 只顯示一次，legend 依該課實際 marker 產生。
+- **P0 UI 修正：** mobile override 放在 base short-talk rule 之後；320px 開啟 Modal 與 200% text 都由 browser regression 檢查單欄、頁面／dialog／board 無水平 overflow 與 CTA 可到達。desktop 約 240px 棋盤仍只是可回復的 presentation hypothesis。
+- **互動／migration：** 自動短講用「先跳過」，手動重看用「關閉」；manual Close／Esc 回短講按鈕，manual Start 與 auto Esc 回問題。每次重看由 step 1 開始。content catalog 升至 5，但 v4 的 `seenLessonIntros` 保留，只代表 auto-display suppression，不是短講完成或 learner evidence；one-step demo 另有 synthetic regression。
+- **內容治理：** R1a 77 題只審題庫，不再被解讀成 19 課短講已審。新增 `go-independent-lesson-content-review-v1`，fingerprint `fnv1a32-8e153412`，覆蓋 19 課 text／takeaway／terms／demoSteps；example receipt 保持 draft/pending。formal teaching gate v3 必須同時取得 R1a 與短講外部回條，再加三位 target novice usability 與真人 accessibility。
+- **candidate：** critical learner surface 重新凍結為 `formal-teaching-candidate-2026-09-30-b`／`fnv1a32-js16-233592f9`。這只綁定 current bytes，不產生外部審查、usability、accessibility、formal evaluation 或 learning-effect 證據。
+- **不變 invariant：** storage schema、題目答案／scoring、KC、scheduler、first response／retry、event schema、evidence taxonomy、formal evaluation authority 與公開 holdout 邊界不變。
+

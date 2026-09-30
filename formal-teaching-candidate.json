@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-09-30-a",
-  "frozenAt": "2026-09-30T13:51:00+08:00",
+  "candidateId": "formal-teaching-candidate-2026-09-30-b",
+  "frozenAt": "2026-09-30T17:00:00+08:00",
   "assetSetVersion": 6,
-  "assetFingerprint": "fnv1a32-js16-14e8f385",
+  "assetFingerprint": "fnv1a32-js16-233592f9",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -38,5 +38,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v55；Core terminology content QA v1：Unit 7 將「厚勢／外勢」明示為本課操作性區分；Unit 10／12 的「先手」撤回絕對「必須回應」措辭，改為不回應會承受較大損失時通常需要回應；Unit 12／14 在中文概念邊界未核清前不把「薄味」當 Core 正式術語，改用「弱點／後續手段」。受影響 choice item 升 contentVersion 2。此次只改 learner-facing copy／content version，不改棋盤、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 或 formal evaluation。重新凍結只綁定 critical learner surface，不產生 R1a、真人 usability、accessibility 或 learning-effect 證據。"
+  "scopeNote": "learner-flow-v55／content catalog 5。保留 2026-09-30 Core terminology QA v1 的術語收窄；Short Talk UX v2 將 19 課示範收斂為 demoSteps 單一 source of truth，加入第 1 課 progressive reveal、相鄰 visual-delta regression、單一 caption、contextual legend、320px／200% text responsive 修正、自動「先跳過」與手動「關閉」的焦點語義、v4→v5 seen 自動顯示抑制狀態保留與 one-step demo contract。另把 19 課短講外部棋理回條獨立於 R1a 題庫審查。storage schema、題目答案／scoring、KC、scheduler、first response／retry、event schema、evidence taxonomy、learner state 與 formal evaluation authority 均未改；重新凍結不產生真人 usability、accessibility 或 learning-effect 證據。"
 }

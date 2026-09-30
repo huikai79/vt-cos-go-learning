@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 2,
-  "protocolId": "go-formal-teaching-gate-v2",
+  "schemaVersion": 3,
+  "protocolId": "go-formal-teaching-gate-v3",
   "r1ProtocolId": "go-r1-independent-content-review-v5",
   "r1ContentFingerprint": "fnv1a32-c34ef6a4",
   "criteria": {
@@ -34,9 +34,12 @@
     "accessibility": "not_tested",
     "replacementPrivateHoldout": "not_established",
     "r1bComparability": "not_established",
-    "learningEffect": "not_measured"
+    "learningEffect": "not_measured",
+    "lessonContentReview": "awaiting_external_receipt"
   },
   "formalTeachingCandidateProtocolId": "go-formal-teaching-candidate-v1",
-  "formalTeachingCandidateId": "formal-teaching-candidate-2026-09-30-a",
-  "formalTeachingCandidateFingerprint": "fnv1a32-js16-14e8f385"
+  "formalTeachingCandidateId": "formal-teaching-candidate-2026-09-30-b",
+  "formalTeachingCandidateFingerprint": "fnv1a32-js16-233592f9",
+  "lessonContentReviewProtocolId": "go-independent-lesson-content-review-v1",
+  "lessonContentFingerprint": "fnv1a32-8e153412"
 }

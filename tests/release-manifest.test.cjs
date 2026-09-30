@@ -350,3 +350,14 @@ test("Comparable Framework v2、Double Atari runtime 與 tests 列入公開發�
     assert.ok(manifest.publicFiles.includes(file), file);
   }
 });
+
+test("十九課短講外部內容審查 contract 列入公開發佈清單", () => {
+  for (const file of [
+    "lesson-content-review-verify.cjs",
+    "lesson-content-review.example.json",
+    "tests/lesson-content-review.test.cjs"
+  ]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
+

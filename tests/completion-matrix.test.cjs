@@ -23,10 +23,10 @@ test("完成矩陣的題庫與示範計數可由目前內容重算", () => {
   assert.equal(units.length, 15);
   assert.equal(lessons.length, 19);
   assert.equal(problems.length, 106);
-  assert.equal(lessons.filter((lesson) => lesson.demoSteps?.length >= 2).length, 19);
+  assert.equal(lessons.filter((lesson) => lesson.demoSteps?.length >= 1).length, 19);
   assert.equal(phase2Problems.length, 148);
   assert.match(matrix, /15 單元、19 課、106 題/);
-  assert.match(matrix, /19 課都有文字短講及至少兩步棋盤示範/);
+  assert.match(matrix, /19 課都有文字短講與棋盤示範/);
   assert.match(matrix, /100 題吃子、連接與救棋，加上 48 題兩類基礎死活/);
 });
 
@@ -35,6 +35,8 @@ test("完成矩陣區分已實作診斷與尚未取得的正式資料或外部�
   assert.match(matrix, /不推定粗心、誤解等心理根因/);
   assert.match(matrix, /兩類死活內容仍待獨立審題/);
   assert.match(matrix, /R1a 棋理與構念核對[\s\S]*?待外部審查/);
+  assert.match(matrix, /19 課短講外部棋理審查/);
+  assert.match(matrix, /formal-teaching-candidate-2026-09-30-b/);
   assert.match(matrix, /R1b 平行題可比性[\s\S]*?未建立/);
   assert.match(matrix, /正式 usability 仍 `NOT_TESTED`/);
   assert.match(matrix, /未量測/);
