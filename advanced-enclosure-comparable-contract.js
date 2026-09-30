@@ -76,7 +76,7 @@ function groupAt(board,point){return Go.groupAt(board,point[0],point[1]);}
 function scoreCut(item,point){
  let board;try{board=boardFor(item);}catch{return{legal:false,correct:false,error:"board_invalid"};}
  const before=groupAt(board,item.trackedPoint),support=groupAt(board,item.supportPoint);
- if(!before||!support||before.color===support.color)return{legal:false,correct:false,error:"fixture_identity_invalid"};
+ if(!before||!support||before.color!==support.color||before.color===item.playerColor)return{legal:false,correct:false,error:"fixture_identity_invalid"};
  if(before.stones.length!==item.expectedTargetSizeBefore||before.liberties.length!==2)return{legal:false,correct:false,error:"target_precondition_invalid"};
  const move=Go.playMove(board,point[0],point[1],item.playerColor);
  if(!move.legal)return{legal:false,correct:false,reason:move.reason||"illegal_move"};
