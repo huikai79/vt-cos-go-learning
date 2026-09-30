@@ -230,3 +230,13 @@ test("劫示範的提子與回提符合規則引擎，不留下已被提走的�
   assert.equal(finalBoard[1][2], Go.EMPTY, "回劫後原白棋應已被提走");
   assert.equal(finalBoard[2][2], Go.BLACK, "回劫點應為黑棋");
 });
+
+test("Unit 2 明確區分同一串與功能性連絡，不把斜接誤教成一定可切", () => {
+  const lesson = content.lessons.find((entry) => entry.title === "辨認棋串");
+  assert.ok(lesson);
+  assert.match(lesson.text, /不是同一串/);
+  assert.match(lesson.text, /不等於一定沒有連絡作用/);
+  assert.match(lesson.text, /是否容易被切斷還要看附近棋形/);
+  assert.match(lesson.takeaway, /「同一串」與「有連絡作用」/);
+  assert.doesNotMatch(lesson.text, /斜接.*一定.*切斷/);
+});
