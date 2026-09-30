@@ -644,10 +644,62 @@ async function main() {
     }
     const restoredLessonIntro = await evaluate(socket, `({lesson: document.querySelector('#lesson-title').textContent, stage: document.querySelector('#learning-stage-badge').textContent, guidance: document.querySelector('#learning-now').textContent, pending: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).lessonIntroPending, introOpen: document.querySelector('#lesson-intro-dialog').open})`);
     assert.deepEqual(restoredLessonIntro, {lesson: "辨認棋串", stage: "目前 1/5 · 先看懂", guidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", pending: true, introOpen: true});
-    const seenAfterDismiss = await evaluate(socket, `(() => { document.querySelector('#lesson-intro-start-button').click(); document.querySelector('[data-lesson="4"]').click(); const reopened = document.querySelector('#lesson-intro-dialog').open; document.querySelector('#lesson-intro-dismiss-button').click(); document.querySelector('[data-lesson="4"]').click(); return {seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, reopened, repeatedOpen: document.querySelector('#lesson-intro-dialog').open}; })()`);
-    assert.equal(seenAfterDismiss.reopened, true);
+    const seenAfterDismiss = await evaluate(socket, `(() => {
+      document.querySelector('#lesson-intro-start-button').click();
+      document.querySelector('[data-lesson="4"]').click();
+      const autoLabel = document.querySelector('#lesson-intro-dismiss-button').textContent;
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      document.querySelector('[data-lesson="4"]').click();
+      const repeatedOpen = document.querySelector('#lesson-intro-dialog').open;
+      document.querySelector('#lesson-intro-button').click();
+      const manualLabel = document.querySelector('#lesson-intro-dismiss-button').textContent;
+      document.querySelector('#teaching-demo-next').click();
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      document.querySelector('#lesson-intro-button').click();
+      const resetStep = document.querySelector('#teaching-demo-count').textContent;
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      return {seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, autoLabel, repeatedOpen, manualLabel, resetStep};
+    })()`);
+    assert.equal(seenAfterDismiss.autoLabel, "先跳過");
     assert.equal(seenAfterDismiss.repeatedOpen, false);
+    assert.equal(seenAfterDismiss.manualLabel, "關閉");
+    assert.equal(seenAfterDismiss.resetStep, "第 1 / 2 步");
     assert.ok(seenAfterDismiss.seen.includes(4));
+
+    const manualCloseFocus = await evaluate(socket, `(() => {
+      document.querySelector('#lesson-intro-button').click();
+      document.querySelector('#lesson-intro-dismiss-button').click();
+      return {open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id};
+    })()`);
+    assert.deepEqual(manualCloseFocus, {open: false, focused: "lesson-intro-button"});
+
+    const manualStartFocus = await evaluate(socket, `(() => {
+      document.querySelector('#lesson-intro-button').click();
+      document.querySelector('#lesson-intro-start-button').click();
+      return {open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id};
+    })()`);
+    assert.deepEqual(manualStartFocus, {open: false, focused: "question-prompt"});
+
+    await evaluate(socket, "document.querySelector('#lesson-intro-button').click()");
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await delay(50);
+    const manualEscapeFocus = await evaluate(socket, `({open: document.querySelector('#lesson-intro-dialog').open, focused: document.activeElement.id})`);
+    assert.deepEqual(manualEscapeFocus, {open: false, focused: "lesson-intro-button"});
+
+    await evaluate(socket, "document.querySelector('[data-lesson=\"5\"]').click()");
+    assert.equal(await evaluate(socket, "document.querySelector('#lesson-intro-dialog').open"), true);
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await command(socket, "Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+    await delay(50);
+    const autoEscapeFocus = await evaluate(socket, `({
+      open: document.querySelector('#lesson-intro-dialog').open,
+      focused: document.activeElement.id,
+      seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros
+    })`);
+    assert.equal(autoEscapeFocus.open, false);
+    assert.equal(autoEscapeFocus.focused, "question-prompt");
+    assert.ok(autoEscapeFocus.seen.includes(5));
 
     // Regression: previewing a future unit must not suppress the formal unit-transition intro.
     await evaluate(socket, `(() => {
