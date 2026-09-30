@@ -180,8 +180,10 @@ jobs:
               url: new URL(`advanced.html?deploy=${deploySha}`, base),
               checks: [
                 '19×19 棋譜決策點複盤',
+                'advanced-decision-review-tools.js?v=advanced-decision-review-r1-r7-v1',
+                'advanced-decision-review-package.js?v=advanced-decision-review-r1-r7-v1',
                 'advanced-decision-review-events.js?v=advanced-decision-review-v1',
-                'advanced-decision-review.js?v=advanced-decision-review-v2',
+                'advanced-decision-review.js?v=advanced-decision-review-r1-r7-v1',
                 'advanced-decision-replay-events.js?v=advanced-decision-replay-v1',
                 'advanced-decision-replay.js?v=advanced-decision-replay-v1',
                 'advanced-comparable-position-contract.js?v=advanced-comparable-position-v1',
@@ -230,7 +232,10 @@ jobs:
                 '四個局面依固定順序開放',
                 '七天後全盤判斷',
                 '七天是目前固定基準',
-                '不把原棋譜當唯一最佳手'
+                '不把原棋譜當唯一最佳手',
+                '這盤棋要怎麼複盤？',
+                '棋盤事件候選',
+                '帶走／繼續這次複盤'
               ]
             },
             {
