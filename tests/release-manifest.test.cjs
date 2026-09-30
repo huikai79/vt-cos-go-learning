@@ -333,3 +333,19 @@ test("private evaluation freeze tooling 公開，但真實 private pool 保持�
   assert.ok(manifest.excludedPatterns.includes(".private-evaluation/"));
   assert.equal(manifest.publicFiles.some((file) => file.startsWith(".private-evaluation/")), false);
 });
+
+
+test("Comparable Framework v2、Double Atari runtime 與 tests 列入公開發佈清單", () => {
+  for (const file of [
+    "advanced-comparable-framework-v2.js",
+    "advanced-comparable-events-v2.js",
+    "advanced-comparable-analysis-v2.js",
+    "advanced-delayed-comparable-events-v2.js",
+    "advanced-delayed-comparable-policy-v2.js",
+    "advanced-delayed-comparable-analysis-v2.js",
+    "advanced-comparable-v2.js",
+    "tests/advanced-comparable-framework-v2.test.cjs"
+  ]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
