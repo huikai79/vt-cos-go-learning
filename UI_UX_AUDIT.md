@@ -4,7 +4,7 @@
 範圍：`index.html`、`styles.css`、`app.js` 的學習頁，以及 `r1-review.html` 的獨立審題頁。  
 定位：此文件是個人離線版的設計稽核與下一輪修改規格；它不是使用者研究或無障礙合規宣告。
 
-> 當前補遺：介面版本為 `learner-flow-v55`、棋盤練習頁為 `live-game-ui-v11`、儲存 schema 為 7、內容目錄版本為 4。重複出現的首次使用卡、完整五階段流水線與每題短講已改成漸進揭露：主畫面只保留目前行動及「查看本課短講／查看學習流程」入口；每課短講只在第一次進入時自動開啟，看過的課直接進題，仍可手動重開。`seenLessonIntros` 與待看狀態會跨重新載入保存。工具面板把日常練習與棋譜複盤保留在第一層，將七天流程試行、複習策略與匯出收進預設關閉的「進階設定與資料」；完整備份清楚標示含原始事件與局部復盤資料。完成同課題目時直接前往下一題；跨課或跨單元時，按鈕明示將進入短講，未看過的新課會自動聚焦短講視窗。19 課現在都有至少兩步棋盤示範；第 9–19 課的 5×5 縮圖明示為局部比較或階段示意，不冒充唯一全局答案。10 個後續單元另有 9×9 的局部觀察點選；它只判定題幹指定要點，不能用來判定全局最佳手。首頁只在有題目真正到期時顯示「今日到期」與數量；R1a 已從學習者工具選單移除。七天批次為 `personal-pilot-v3`，只檢查操作、返回、資料與負擔。審查母體仍為 77 題；R1b 難度可比性維持未知。下段 `learner-flow-v20` 至 `v28` 為歷史快照，與本補遺衝突時以本補遺及 `COMPLETION_MATRIX.md` 為準。
+> 當前補遺：介面版本為 `learner-flow-v55`、棋盤練習頁為 `live-game-ui-v11`、儲存 schema 為 7、內容目錄版本為 5。主畫面只保留目前行動及「查看本課短講／查看學習流程」入口；每課短講只在第一次進入時自動開啟，之後仍可手動重看。`seenLessonIntros` 只控制 auto-display suppression，不是短講完成或 learner evidence；狀態會跨重新載入保存。Short Talk UX v2 以 `demoSteps` 作唯一棋盤示範來源，每課至少一個有效 state，多步只在相鄰棋盤／marker 有可見差異時成立；第 1 課先聚焦角上黑棋，再揭示兩口氣。step caption 單一來源、legend 只顯示該課使用的 marker，最後一步可「從頭再看」。320px 開啟 Modal 與 200% text 由 browser regression 檢查單欄、無水平 overflow 與 CTA 可到達；manual Close／Esc 回短講按鈕，manual Start／auto Esc 回問題。工具面板、跨課短講銜接、9×9 局部觀察、首頁今日到期、R1a reviewer-only 與 `personal-pilot-v3` 既有契約不變。R1a 77 題不再被當作短講內容審查；19 課另有獨立外部棋理回條。R1b 難度可比性仍未知。下段歷史快照與本補遺衝突時以本補遺及 `COMPLETION_MATRIX.md` 為準。
 
 2026-09-29 證據概覽收斂（v55）：重新檢討 v54 後，保留 progressive disclosure，但修正「四張 compact cards 就等於 learner-centered」的前提。第一層改為單一「目前紀錄與證據」，只呈現資料不足、已有練習紀錄、資料累積中、仍需繼續觀察、已有延後與實戰紀錄或讀取失敗；activity 分母、可分析機會、首答錯誤與技能診斷統一下沉到「查看資料來源與診斷」。這是 presentation mapping，不改 evidence semantics；真人能否更快理解仍需目標讀者任務，不能由 DOM／CI 自證。
 
@@ -284,3 +284,11 @@ M1 不重畫整個 workspace；保留桌面棋盤左／問題與作答右，以�
 - 刪除不再使用的 `assets/homepage/evidence-still-judge.webp`，formal candidate asset set 升至 v6，candidate 更新為 `formal-teaching-candidate-2026-09-28-n`，fingerprint `fnv1a32-js16-8479d7d0`。
 - Core 主 CTA、Core 1–15 三階段入口、Advanced 獨立 practice-only 路線、研究來源預設收合等既有 IA 不變；不修改 scoring、scheduler、first response／retry、event schema、KC、evidence taxonomy、learner state 或 formal evaluation。
 - 證據邊界：M4 只修正首頁語義／資產一致性與工程契約；真人 usability 仍 `NOT_TESTED`，正式教學仍 `BLOCKED`，學習成效仍 `NOT_MEASURED`。
+
+## 2026-09-30｜Short Talk UX v2 refresh
+
+- **P0 已修：** short-talk mobile override 放在 base rule 後面，避免 CSS cascade 把單欄重新覆蓋成 desktop 兩欄；320px Modal-open 與 200% text 都有 browser negative regression。
+- **視覺層級：** 「核心概念 → 棋盤＋目前 step → 進題前一句 → 關鍵詞 → primary CTA」是主路徑。240px 級棋盤是可回復 presentation hypothesis，不是已驗證最佳尺寸。
+- **語義：** auto intro 的「先跳過」與 manual rewatch 的「關閉」分開；`seenLessonIntros` 只表示自動顯示已處理。重看由 step 1 開始，one-step demo 不顯示無意義導航。
+- **證據邊界：** 自動測試只能證明 layout、focus、state 與 visual delta contract。短講棋理另需 19 課外部 review；初學者理解、accessibility 與 learning effect 仍需真人證據。
+
