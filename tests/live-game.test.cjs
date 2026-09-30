@@ -7,6 +7,7 @@ const Live = require("../live-game.js");
 const Bot = require("../practice-bot.js");
 const PracticeEvents = require("../practice-events.js");
 const LiveEvidence = require("../live-evidence.js");
+const BoardGeometry = require("../live-board-geometry.js");
 
 function memoryStorage() {
   const data = new Map();
@@ -312,13 +313,26 @@ test("課程端只讀 practice stream 摘要與備份，不餵入 Metrics 或 sc
 test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑棋", () => {
   const css = fs.readFileSync(path.join(__dirname, "..", "live-game.css"), "utf8");
   assert.match(css, /\.live-board \.point-focus\{fill:none;stroke:transparent;pointer-events:none\}/);
-  assert.match(css, /\.live-point:focus \.point-focus\{fill:none;stroke:#174a31;stroke-width:4\}/);
+  assert.match(css, /\.live-point:focus \.point-focus\{fill:none;stroke:#174a31;stroke-width:var\(--live-focus-stroke,4\)\}/);
 });
 
 
 test("棋盤頁用版本參數載入 live CSS，避免瀏覽器沿用舊渲染樣式", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
-  assert.match(html, /live-game\.css\?v=live-game-ui-v12/);
+  assert.match(html, /live-game\.css\?v=live-game-ui-v13/);
+});
+
+test("19 路 renderer 載入共用 geometry contract 且不再使用固定 18-unit 棋子下限", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
+  const page = fs.readFileSync(path.join(__dirname, "..", "live-game-page.js"), "utf8");
+  assert.match(html, /live-board-geometry\.js\?v=live-board-geometry-v1/);
+  assert.ok(html.indexOf("live-board-geometry.js") < html.indexOf("live-game-page.js"));
+  assert.match(page, /GoLiveBoardGeometry/);
+  assert.match(page, /BoardGeometry\.layoutForSize\(size\)/);
+  assert.doesNotMatch(page, /Math\.max\(18,\s*Math\.min\(25,\s*pitch \* 0\.38\)\)/);
+  const layout = BoardGeometry.layoutForSize(19);
+  assert.ok(Math.abs(layout.stoneToPitchRatio - 0.95) < 1e-9);
+  assert.ok(layout.hitRadius <= layout.pitch / 2);
 });
 
 
@@ -347,7 +361,7 @@ test("棋盤頁在回合開始先建立 live assessment，首答與 retry 分離
   const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const appJs = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   assert.match(html, /live-evidence\.js\?v=live-evidence-v1/);
-  assert.match(html, /live-game-page\.js\?v=live-game-ui-v12/);
+  assert.match(html, /live-game-page\.js\?v=live-game-ui-v13/);
   assert.match(page, /ensureLiveAssessment\(\)/);
   assert.match(page, /recordLiveResponse\(/);
   assert.match(page, /existingResponseCount\(assessmentId\)/);

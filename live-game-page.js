@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  const Go = window.GoCore, Live = window.GoLiveGame, Sgf = window.GoSgf, Bot = window.GoPracticeBot, MoveProvider = window.GoMoveProvider, PracticeEvents = window.GoPracticeEvents, LiveEvidence = window.GoLiveEvidence;
+  const Go = window.GoCore, Live = window.GoLiveGame, BoardGeometry = window.GoLiveBoardGeometry, Sgf = window.GoSgf, Bot = window.GoPracticeBot, MoveProvider = window.GoMoveProvider, PracticeEvents = window.GoPracticeEvents, LiveEvidence = window.GoLiveEvidence;
   const { BLACK, WHITE, EMPTY } = Go;
   const requestedSizeParam = new URLSearchParams(window.location.search).get("size");
   const retiredThreeByThreeRequested = Number(requestedSizeParam) === 3;
@@ -13,7 +13,7 @@
   })();
   const STORAGE_KEY = requestedSize === 9 ? "go-live-game-v1" : `go-live-game-v1-size-${requestedSize}`;
   const RECOVERY_KEY = requestedSize === 9 ? "go-live-game-recovery-v1" : `go-live-game-recovery-v1-size-${requestedSize}`;
-  const UI_VERSION = "live-game-ui-v12";
+  const UI_VERSION = "live-game-ui-v13";
   const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"];
   const boardProfiles = {
     5: { title: "5×5 基礎練習棋盤", heading: "氣、提子、連斷與規則練習", description: "作為第一個可自由操作的練習棋盤，適合練氣、提子、連接、切斷、禁著、簡單劫與基礎眼形，同時維持較低的全局負擔。", purpose: "氣、提子、連斷、禁著、眼形" },
@@ -211,26 +211,34 @@
     return [[middle, middle]];
   }
   function renderBoard() {
-    const size = game.boardSize, offset = 60, end = 460, pitch = (end - offset) / (size - 1);
-    const stoneRadius = Math.max(18, Math.min(25, pitch * 0.38));
-    const hitRadius = stoneRadius + 7;
+    if (!BoardGeometry || typeof BoardGeometry.layoutForSize !== "function") {
+      throw new Error("live_board_geometry_unavailable");
+    }
+    const size = game.boardSize;
+    const layout = BoardGeometry.layoutForSize(size);
+    const { offset, end, pitch, stoneRadius, hitRadius, focusRadius, starRadius, lastMoveRadius, lastMoveStroke, focusStroke, deadCrossStroke } = layout;
+    const coordinateBand = Math.max(18, offset * 0.5);
     const dead = new Set(game.deadStones || []), last = lastPlayedMove();
-    const parts = [`<svg viewBox="0 0 520 520" role="group" aria-label="${size} 路棋盤；${game.status === "playing" ? `輪到${colorLabel(game.toPlay)}棋` : game.status === "scoring" ? "終局死子確認" : "棋局已結束"}">`];
+    const parts = [`<svg viewBox="0 0 ${layout.viewBoxSize} ${layout.viewBoxSize}" role="group" aria-label="${size} 路棋盤；${game.status === "playing" ? `輪到${colorLabel(game.toPlay)}棋` : game.status === "scoring" ? "終局死子確認" : "棋局已結束"}">`];
     for (let i = 0; i < size; i += 1) {
       const p = offset + i * pitch;
       parts.push(`<line class="grid-line" x1="${offset}" y1="${p}" x2="${end}" y2="${p}"/>`);
       parts.push(`<line class="grid-line" x1="${p}" y1="${offset}" x2="${p}" y2="${end}"/>`);
-      parts.push(`<text class="coord" x="${p}" y="30">${columns[i]}</text><text class="coord" x="28" y="${p}">${size - i}</text>`);
+      parts.push(`<text class="coord" x="${p}" y="${coordinateBand}">${columns[i]}</text><text class="coord" x="${coordinateBand}" y="${p}">${size - i}</text>`);
     }
-    for (const [x, y] of starPoints(size)) parts.push(`<circle class="star" cx="${offset + x * pitch}" cy="${offset + y * pitch}" r="4"/>`);
+    for (const [x, y] of starPoints(size)) {
+      const point = BoardGeometry.point(layout, x, y);
+      parts.push(`<circle class="star" cx="${point.x}" cy="${point.y}" r="${starRadius}"/>`);
+    }
     for (let y = 0; y < size; y += 1) for (let x = 0; x < size; x += 1) {
-      const cx = offset + x * pitch, cy = offset + y * pitch, stone = game.board[y][x], isDead = dead.has(`${x},${y}`);
+      const point = BoardGeometry.point(layout, x, y);
+      const cx = point.x, cy = point.y, stone = game.board[y][x], isDead = dead.has(`${x},${y}`);
       const current = cursor[0] === x && cursor[1] === y;
-      parts.push(`<g class="live-point" data-x="${x}" data-y="${y}" role="button" tabindex="${current ? 0 : -1}" aria-label="${pointAria(x, y)}"><circle class="point-hit" cx="${cx}" cy="${cy}" r="${hitRadius}"/><circle class="point-focus" cx="${cx}" cy="${cy}" r="${hitRadius - 1}"/>`);
+      parts.push(`<g class="live-point" data-x="${x}" data-y="${y}" role="button" tabindex="${current ? 0 : -1}" aria-label="${pointAria(x, y)}"><circle class="point-hit" cx="${cx}" cy="${cy}" r="${hitRadius}"/><circle class="point-focus" cx="${cx}" cy="${cy}" r="${focusRadius}" style="--live-focus-stroke:${focusStroke}"/>`);
       if (stone === BLACK) parts.push(`<circle class="stone-black${isDead ? " dead-stone" : ""}" cx="${cx}" cy="${cy}" r="${stoneRadius}"/>`);
       if (stone === WHITE) parts.push(`<circle class="stone-white${isDead ? " dead-stone" : ""}" cx="${cx}" cy="${cy}" r="${stoneRadius}"/>`);
-      if (last && last.point && last.point[0] === x && last.point[1] === y) parts.push(`<circle class="last-move" cx="${cx}" cy="${cy}" r="${Math.max(7, stoneRadius * 0.42)}"/>`);
-      if (isDead && stone !== EMPTY) parts.push(`<line class="dead-cross" x1="${cx - stoneRadius * 0.45}" y1="${cy - stoneRadius * 0.45}" x2="${cx + stoneRadius * 0.45}" y2="${cy + stoneRadius * 0.45}"/><line class="dead-cross" x1="${cx + stoneRadius * 0.45}" y1="${cy - stoneRadius * 0.45}" x2="${cx - stoneRadius * 0.45}" y2="${cy + stoneRadius * 0.45}"/>`);
+      if (last && last.point && last.point[0] === x && last.point[1] === y) parts.push(`<circle class="last-move" cx="${cx}" cy="${cy}" r="${lastMoveRadius}" style="--live-last-move-stroke:${lastMoveStroke}"/>`);
+      if (isDead && stone !== EMPTY) parts.push(`<line class="dead-cross" style="--live-dead-cross-stroke:${deadCrossStroke}" x1="${cx - stoneRadius * 0.45}" y1="${cy - stoneRadius * 0.45}" x2="${cx + stoneRadius * 0.45}" y2="${cy + stoneRadius * 0.45}"/><line class="dead-cross" style="--live-dead-cross-stroke:${deadCrossStroke}" x1="${cx + stoneRadius * 0.45}" y1="${cy - stoneRadius * 0.45}" x2="${cx - stoneRadius * 0.45}" y2="${cy + stoneRadius * 0.45}"/>`);
       parts.push("</g>");
     }
     parts.push("</svg>");
