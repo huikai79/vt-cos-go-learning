@@ -290,8 +290,9 @@ async function main() {
     assert.deepEqual(shortTalkNarrow, { open: true, columns: 1, pageOverflow: false, dialogOverflow: false, boardOverflow: false, ctaReachable: true });
 
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
-    const shortTalkZoom = await evaluate(socket, `(() => {
+    const shortTalkZoom = await evaluate(socket, `(async () => {
       document.documentElement.style.fontSize = '32px';
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       const dialog = document.querySelector('#lesson-intro-dialog');
       const result = {
         open: dialog.open,
@@ -299,6 +300,7 @@ async function main() {
         dialogOverflow: dialog.scrollWidth > dialog.clientWidth + 1
       };
       document.documentElement.style.fontSize = '';
+      await new Promise((resolve) => requestAnimationFrame(resolve));
       return result;
     })()`);
     assert.deepEqual(shortTalkZoom, { open: true, pageOverflow: false, dialogOverflow: false });
