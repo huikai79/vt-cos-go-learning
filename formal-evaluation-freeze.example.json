@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "protocolId": "go-private-unseen-evaluation-freeze-draft-v1",
+  "poolId": "replace-with-private-pool-id",
+  "poolVersion": "replace-with-private-pool-version",
+  "scoringContractVersion": "replace-with-scoring-contract-version",
+  "evidenceTaxonomyVersion": "replace-with-evidence-taxonomy-version",
+  "items": [
+    {
+      "itemId": "private-item-001",
+      "relativePath": "items/private-item-001.json"
+    }
+  ]
+}
