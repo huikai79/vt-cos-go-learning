@@ -361,3 +361,26 @@ test("十九課短講外部內容審查 contract 列入公開發佈清單", () =
   }
 });
 
+
+
+test("P0-P4 completion assets 列入公開發佈清單", () => {
+  for (const file of [
+  "advanced-enclosure-comparable-contract.js",
+  "advanced-enclosure-comparable-events.js",
+  "advanced-enclosure-comparable-policy.js",
+  "advanced-enclosure-comparable-analysis.js",
+  "advanced-enclosure-comparable.js",
+  "advanced-seven-day-comparable-contract.js",
+  "advanced-seven-day-comparable-events.js",
+  "advanced-seven-day-comparable-policy.js",
+  "advanced-seven-day-comparable-analysis.js",
+  "advanced-seven-day-comparable.js",
+  "advanced-cross-family-analysis.js",
+  "advanced-p0-p4-boundary.cjs",
+  "tests/advanced-enclosure-comparable.test.cjs",
+  "tests/advanced-seven-day-comparable.test.cjs",
+  "tests/advanced-p0-p4-completion.test.cjs"
+]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
