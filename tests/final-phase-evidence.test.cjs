@@ -87,6 +87,10 @@ test("final-phase status 無真人證據時第一個 action 固定是 R1a",()=>{
  assert.equal(result.learningEffect,"NOT_MEASURED");
  assert.equal(result.nextAction,"COLLECT_R1A_EXTERNAL_REVIEW");
  assert.equal(result.evidenceStatus.r1a,false);
+ assert.equal(result.evidenceStatus.usability,false);
+ assert.equal(result.evidenceStatus.accessibility,false);
+ assert.equal(result.evidenceStatus.privateHoldout,false);
+ assert.equal(result.evidenceStatus.r1b,false);
 });
 
 test("R1a、19 課與真人 teaching evidence 到位後，status 只前進到 private unseen/R1b，不宣稱 learning effect",()=>{
