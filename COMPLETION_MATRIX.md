@@ -1,3 +1,11 @@
+2026-09-30 Change note｜Cross-language Concepts Pilot v3 governance consolidation
+
+- **回溯修正：** current main 已有 `research/cross-language-go-concepts-pilot-v1.md`；撤回「另建第二份 concepts research record」的舊計畫，沿用單一 Research Record 並升 `snapshotVersion: 3`，避免平行 source of truth。
+- **研究方法：** 五個 anchors 維持厚／勢／味／先手／定石；新增 evidence role（definition／usage／curriculum classification／borrowing／historical change）、locale／source-ecosystem 邊界、四語不對稱 mapping、theme-matched 與 exact-position 兩級案例契約。手筋／tesuji／맥 留在 recheck backlog，不為湊六詞擴張。
+- **Publication Gate：** `concepts.html` 維持不存在。只有至少 3 個 anchors 出現會改變教學解釋的可重現 semantic boundary、至少 1 個 exact-position comparison、高風險 mapping 經懂圍棋且具相關語言能力的人核對、license 與 public-copy 邊界通過，且 prototype 提供現有頁面無法提供的理解增益時，才重新評估獨立 Explore 頁。
+- **反證／停止線：** 不把 institution curriculum 當語言／民族 cognition，不把 usage 當 formal definition，不把同主題三三資料稱 exact same position，不把借詞視為獨立概念生成；若 exact-position 解說高度收斂或新頁只增加文字／流程，維持 research-only。
+- **runtime／candidate：** 本輪只改 research governance、current-truth note 與 negative test；不改 `index.html`、Core／Advanced learner-facing copy、KC、scoring、scheduler、event、T2/T3、formal evaluation 或 formal candidate，因此不重凍 candidate。內容／學習成效狀態不升格。
+
 2026-09-30 Change note｜Core terminology content QA v1
 
 - Core 對厚勢／外勢改採明示的本課操作性區分；先手撤回絕對「必須回應」；味／薄味未通過中文概念升格，learner-facing 改用弱點／後續手段；相關 choice item 升 contentVersion 2。
