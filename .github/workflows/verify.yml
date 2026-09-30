@@ -281,6 +281,27 @@ jobs:
               ]
             },
             {
+              name: "lesson-content-review",
+              url: new URL(`lesson-content-review.html?deploy=${deploySha}`, base),
+              checks: [
+                '19 課短講外部棋理審查',
+                'lesson-content-review.js',
+                '它不測學習者是否理解，也不證明學習成效',
+                'go-independent-lesson-content-review-v1'
+              ]
+            },
+            {
+              name: "formal-teaching-evidence",
+              url: new URL(`formal-teaching-evidence.html?deploy=${deploySha}`, base),
+              checks: [
+                '正式教學真人證據收集',
+                'formal-teaching-evidence.js',
+                'go-formal-teaching-evidence-v2',
+                '三位 target novice usability',
+                '這不是學習成效評量'
+              ]
+            },
+            {
               name: "formal-teaching-candidate",
               url: new URL(`formal-teaching-candidate.json?deploy=${deploySha}`, base),
               checks: [
