@@ -33,7 +33,7 @@ test("跨語 term map 只把已核對的雙打吃標 Equivalent，不替門吃�
 test("v2 只升共同 enclosure_capture 機制，門吃／抱吃 label split 維持 UNKNOWN", () => {
   assert.match(record, /snapshotVersion: 2/);
   assert.match(record, /四個本站原創、非單純鏡射/);
-  assert.match(record, /sourceLabelCandidate=unknown/);
+  assert.match(record, /`sourceLabelCandidate` 全部固定為 `unknown`/);
   assert.match(record, /enclosure_capture.*Teaching Candidate/s);
   assert.match(record, /- `door_capture` \/ `hug_capture` label split：`UNKNOWN \/ NOT_PROMOTED`\./);
 });
