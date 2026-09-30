@@ -1,3 +1,5 @@
+2026-10-01 MWA Module A selective content intake v1：Core Unit 2 明示「是否已沿線成為同一串」與「是否具有功能性連絡」是不同判斷；現行 scored skill 仍只評一手直接連接，不新增虎口／竹節／小飛等名稱 taxonomy。Advanced 新增 practice-only `semeai-liberty-structure-v1` 與 `throw-in-transfer-v1` Teaching Candidate：前者用眼形／公氣／外氣／增氣／先後手的 bounded contrast 取代「一眼必勝」口訣，後者把既有倒撲中的送子抽象為「被提後必須產生可利用的氣／眼形／次序改變」，並包含無改變反例；兩者不升 KC、scheduler、T2/T3 或 formal evaluation。Push/crawl、Monkey Jump/Open Skirt、完整連接形名稱集、級位／讓子／禮儀／棋具先維持 deferred，只有出現 learner bottleneck 才重評。
+
 2026-09-30 Advanced P0–P4 completion：進階全盤流程目前以三個不同 response/scoring family 作公開教學候選：urgent-atari rescue（一手救唯一一氣己方棋串）、Double Atari（一手同時讓恰好兩串分離對方棋進入一氣）、Enclosure Capture（兩步 learner response，中間為 rules-verified unique forced extension）。Double Atari 與 Enclosure Capture 都有 immediate、24h fresh、7d fresh 的公開 process-check 路徑；所有延後題都是新的局面，不重播前題。這只是課程／工程覆蓋，不表示三個 family 難度等同、KC 已驗證或延後學習成效已建立。
 
 2026-09-30 Comparable Framework v2：Advanced 的全盤可比較練習新增第二種能力候選「雙打吃」。學習者完成前不先看到手筋名稱；三個 19×19 公開局面依序為練習、新局面流程檢查、至少 24 小時後的第三局面。成功只由 rules engine 判定「同一手不立即提子，卻讓恰好兩串彼此分開、原本各兩氣的對方棋同時變成各一氣」。這批題只驗新 framework 能承載另一個 scoring mechanism；Double Atari 仍不是已驗 KC，局面之間也未建立真人難度可比性。

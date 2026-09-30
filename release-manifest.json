@@ -298,7 +298,12 @@
     "ui-audit-screenshots/first-entry-desktop.png",
     "ui-audit-screenshots/first-entry-mobile.png",
     "ui-audit-screenshots/go-learning-desktop.png",
-    "ui-audit-screenshots/go-learning-mobile.png"
+    "ui-audit-screenshots/go-learning-mobile.png",
+    "research/mwa-module-a-content-gap-v1.md",
+    "semeai-liberty-structure-fixtures.js",
+    "tests/semeai-liberty-structure.test.cjs",
+    "throw-in-transfer-fixtures.cjs",
+    "tests/throw-in-transfer.test.cjs"
   ],
   "excludedPatterns": [
     "gtp_logs/",

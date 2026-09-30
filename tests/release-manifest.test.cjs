@@ -386,6 +386,18 @@ test("P0-P4 completion assets 列入公開發佈清單", () => {
 });
 
 
+test("MWA selective intake A-E 研究、bounded fixtures 與反證測試列入公開發布清單", () => {
+  for (const file of [
+    "research/mwa-module-a-content-gap-v1.md",
+    "semeai-liberty-structure-fixtures.js",
+    "tests/semeai-liberty-structure.test.cjs",
+    "throw-in-transfer-fixtures.cjs",
+    "tests/throw-in-transfer.test.cjs"
+  ]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
+
 test("final-phase evidence handoff tools 列入公開發佈，真人回條排除於 repository release", () => {
   for (const file of [
     "lesson-content-review.html",

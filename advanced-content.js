@@ -342,6 +342,101 @@
         { boardSize: 6, stones: [[0,1,B],[1,2,B],[2,0,B],[2,2,B],[1,1,W],[2,1,W],[4,1,W],[3,1,B],[1,0,W]], highlights: [[0,0]], label: "白延長後仍只有一口氣", caption: "白棋真的逃一步後，整串三顆白棋仍只剩左上角這一口氣。這一步重算是關鍵，不能只靠名稱判斷。" },
         { boardSize: 6, stones: [[0,1,B],[1,2,B],[2,0,B],[2,2,B],[4,1,W],[3,1,B],[0,0,B]], emphasis: [[0,0]], label: "黑填最後一氣，局部提掉三子", caption: "黑棋填掉最後一氣後，左邊三顆白棋被提走。這只證明這個原創局部手順成立，不代表所有相似外形都一定能吃。" }
       ]
+    },
+    {
+      id: "adv-r13",
+      trackId: "reading-tesuji",
+      title: "對殺：有眼也要重新算",
+      target: "把眼形放回外氣、公氣與行棋次序一起判斷，不把「有眼」當成自動勝負。",
+      candidateId: "semeai-liberty-structure-v1",
+      candidateStatus: "teaching_candidate",
+      kcStatus: "not_promoted",
+      sourceReviewId: "mwa-module-a-content-gap-v1",
+      taskFeatures: {
+        semeaiMechanism: "eye_shared_liberty_interaction",
+        eyeCondition: "contrast_one_eye_vs_no_eye",
+        sharedLibertiesRequired: true,
+        universalProverbRule: false,
+        terminalResult: "bounded_fixture_only"
+      },
+      prompt: "對殺時，你有一眼、對方沒有眼。下一步最可靠的判斷方式是什麼？",
+      choices: ["仍要把外氣、公氣、眼形和輪到誰走一起重算", "只要有一眼就直接判定自己一定贏", "只比較雙方棋子顆數"],
+      answer: 0,
+      hint: "眼形會改變對殺結構，但它不是脫離氣與次序的獨立勝負開關。",
+      explanation: "「一眼對無眼」可以是很有用的觀察線索，但不能直接當成通用的勝負判定規則。本專案用兩個原創、範圍受限的局面做反證：同樣是一眼對無眼，在不同公氣與氣形下可以得到不同局部結果。因此要回到實際盤面，把眼形、外氣、公氣和先後手一起讀。",
+      takeaway: "眼形是條件，不是自動答案；對殺仍要逐手重算。",
+      terms: [
+        ["對殺結構", "雙方外氣、公氣、眼形、先後手與增氣手段共同形成的局部手數關係。"],
+        ["公氣", "同時鄰接雙方相關棋串的共享空點；不能和普通外氣完全等同處理。"]
+      ],
+      demoSteps: [
+        { boardSize: 4, stones: [[1,0,B],[0,1,B],[1,1,B],[2,1,W],[1,3,B]], highlights: [[0,0],[2,0]], label: "有一眼，但先看共享空點", caption: "左上黑棋有一個封閉眼位；黑白仍共享右上附近的關鍵氣。這個局部例子中，即使白先，黑仍可在這個局部讀法下先取得提子結果。" },
+        { boardSize: 4, stones: [[1,1,W],[0,2,B],[1,2,B],[1,3,B],[2,3,W]], highlights: [[0,1]], label: "同樣一眼對無眼，結果可以不同", caption: "這個反例中黑也有一眼、白沒有眼，但公氣與外氣配置不同；在同一個局部讀法下，白先可以取得提子結果。" },
+        { boardSize: 4, stones: [[1,1,W],[0,2,B],[1,2,B],[1,3,B],[2,3,W]], emphasis: [[0,2],[1,2],[1,3]], label: "不要把口訣升格成勝負規則", caption: "看到眼形後，下一步仍是數外氣、公氣並讀先後手；本題只建立這個判斷習慣，不宣稱完整對殺已被一般化解決。" }
+      ]
+    },
+    {
+      id: "adv-r14",
+      trackId: "reading-tesuji",
+      title: "對殺：有時先增自己的氣",
+      target: "比較「直接緊對方氣」與「先讓自己增加氣」兩個候選的局部後果。",
+      candidateId: "semeai-liberty-structure-v1",
+      candidateStatus: "teaching_candidate",
+      kcStatus: "not_promoted",
+      sourceReviewId: "mwa-module-a-content-gap-v1",
+      taskFeatures: {
+        semeaiMechanism: "increase_own_liberties",
+        directAttackContrast: true,
+        terminalResult: "bounded_fixture_only",
+        universalRule: false
+      },
+      prompt: "自己只有兩口氣、對方有三口氣時，最不該漏掉哪一種候選？",
+      choices: ["先找能增加自己氣的合法手，再和直接緊對方氣比較", "一定只能先填掉對方一口氣", "直接看誰的棋子比較多"],
+      answer: 0,
+      hint: "對殺不只是在減少對方的氣；一手若能讓自己的棋串多出幾口氣，手數關係也會改變。",
+      explanation: "原創局面中，黑起初兩氣、白三氣。黑若只緊白的一口氣，白可在這個局部讀法中先得結果；黑若先延長使自己的棋串增加到四氣，局部結果反而改變。這不是「永遠先增氣」的新口訣，而是要求候選手同時包含『增己氣』與『減敵氣』。",
+      takeaway: "對殺候選不只找減氣手，也要找增氣手；兩種都走完再比較。",
+      terms: [
+        ["增氣", "一手落下後，讓自己的相關棋串取得更多可用氣。"],
+        ["候選比較", "把兩種合理下法各自走到可判定結果，而不是先用口訣排除其中一種。"]
+      ],
+      demoSteps: [
+        { boardSize: 4, stones: [[0,0,W],[1,0,W],[2,0,B],[1,1,B],[3,1,W],[0,2,W],[0,3,B],[1,3,B],[2,3,W]], highlights: [[2,1],[3,0]], label: "黑有兩個候選", caption: "黑上方棋串只有兩口氣，右側白棋有三口氣。金色兩點分別代表『先增自己的氣』與『直接緊白棋』兩種候選。" },
+        { boardSize: 4, stones: [[0,0,W],[1,0,W],[2,0,B],[1,1,B],[2,1,B],[3,1,W],[0,2,W],[0,3,B],[1,3,B],[2,3,W]], emphasis: [[2,1]], label: "先延長後，黑棋增加到四氣", caption: "黑下中間後和原棋連成一串，局部可用氣增加。把後續走完後，這條線由黑先取得局部提子結果。" },
+        { boardSize: 4, stones: [[0,0,W],[1,0,W],[2,0,B],[3,0,B],[1,1,B],[3,1,W],[0,2,W],[0,3,B],[1,3,B],[2,3,W]], emphasis: [[3,0]], label: "只緊白棋不一定較快", caption: "另一候選直接填白棋的氣，但沒有改善黑棋自身手數；把同一局部後續走完後，這條線由白先取得提子結果。" }
+      ]
+    },
+    {
+      id: "adv-r15",
+      trackId: "reading-tesuji",
+      title: "送子前先問：它改變了什麼？",
+      target: "把倒撲中的送子機制抽象成可遷移檢查：被提後是否真的改變氣、眼形或提子次序。",
+      candidateId: "throw-in-transfer-v1",
+      candidateStatus: "teaching_candidate",
+      kcStatus: "not_promoted",
+      sourceReviewId: "mwa-module-a-content-gap-v1",
+      taskFeatures: {
+        mechanism: "sacrificial_insertion",
+        sourceContexts: ["snapback","semeai_liberty_change"],
+        falseEyeContextStatus: "research_candidate_not_promoted",
+        negativeCaseRequired: true,
+        terminalResult: "bounded_fixture_only"
+      },
+      prompt: "看到一手棋可以故意送給對方吃，什麼條件最重要？",
+      choices: ["對方提掉後，盤面的氣、眼形或提子次序要出現可利用的改變", "只要棋子會被吃就算好手筋", "送得越多顆越有效"],
+      answer: 0,
+      hint: "把對方提子後的盤面當成新局面；如果什麼重要結構都沒變，那通常只是白送。",
+      explanation: "倒撲已經教過『故意送一子 → 對方提子 → 重新數氣』。這裡把它抽象成更一般的送子檢查：犧牲本身不是價值，價值來自提子後改變的局面。本輪先用對殺減氣的正例與「提完氣數沒變」的反例檢查；破假眼用途仍停在研究階段，不因教材出現名稱就直接變成可評分題。",
+      takeaway: "送子不是目的；對方提完後出現可利用的結構改變，才值得繼續讀。",
+      terms: [
+        ["送子", "故意讓一顆棋處在可被提的位置，希望藉由提子後的局面改變取得後續利益。"],
+        ["結構改變", "提子後的氣、眼形、連接或再提次序出現可驗證差異；若沒有差異，就不能只靠名稱判定手筋成立。"]
+      ],
+      demoSteps: [
+        { boardSize: 4, stones: [[0,0,B],[2,0,W],[3,0,W],[1,1,B],[2,1,W],[3,1,W],[0,2,B],[2,2,W],[3,2,W],[1,3,B]], highlights: [[3,3]], label: "先送一子", caption: "黑可在右下投入一子；它本身會被白棋提掉。先不要因為『會被吃』就判斷好壞。" },
+        { boardSize: 4, stones: [[0,0,B],[2,0,W],[3,0,W],[1,1,B],[2,1,W],[3,1,W],[0,2,B],[2,2,W],[3,2,W],[1,3,B],[3,3,B]], highlights: [[2,3]], label: "白若提掉送子，再重算白串的氣", caption: "在這個局部例子中，白從左邊提掉送子後，目標白串的可用氣由四口降成三口；這才是送子的局部作用。" },
+        { boardSize: 4, stones: [[0,1,W],[2,1,W],[3,1,B],[2,2,W],[0,3,B]], highlights: [[0,0],[1,0]], label: "反例：被提不代表有用", caption: "另一個原創局面也能送一子並被提，但提完後目標棋串仍維持原本三口氣。若沒有其他可利用改變，就不能把『送子』本身當成成功。" }
+      ]
     }
   ];
 
@@ -801,7 +896,7 @@
   ];
 
   const api = {
-    version: 9,
+    version: 10,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
     experiences,
