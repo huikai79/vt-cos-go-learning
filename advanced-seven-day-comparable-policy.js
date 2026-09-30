@@ -3,9 +3,10 @@
   contract:require("./advanced-seven-day-comparable-contract.js"),
   immediate:require("./advanced-comparable-events-v2.js"),
   delayed24:require("./advanced-delayed-comparable-events-v2.js"),
+  delayed24Policy:require("./advanced-delayed-comparable-policy-v2.js"),
   events:require("./advanced-seven-day-comparable-events.js"),
   framework:require("./advanced-comparable-framework-v2.js")
- }:{contract:root.GoAdvancedSevenDayComparableContract,immediate:root.GoAdvancedComparableEventsV2,delayed24:root.GoAdvancedDelayedComparableEventsV2,events:root.GoAdvancedSevenDayComparableEvents,framework:root.GoAdvancedComparableFrameworkV2};
+ }:{contract:root.GoAdvancedSevenDayComparableContract,immediate:root.GoAdvancedComparableEventsV2,delayed24:root.GoAdvancedDelayedComparableEventsV2,delayed24Policy:root.GoAdvancedDelayedComparablePolicyV2,events:root.GoAdvancedSevenDayComparableEvents,framework:root.GoAdvancedComparableFrameworkV2};
  const api=factory(deps);if(typeof module==="object"&&module.exports)module.exports=api;if(root)root.GoAdvancedSevenDayComparablePolicy=api;
 })(typeof globalThis!=="undefined"?globalThis:this,function(D){"use strict";
 const STATUS=Object.freeze({WAITING_FOR_ANCHOR:"WAITING_FOR_ANCHOR",WAITING_FOR_24H:"WAITING_FOR_24H",WAITING_FOR_DELAY:"WAITING_FOR_DELAY",DUE:"DUE",IN_PROGRESS:"IN_PROGRESS",COMPLETED:"COMPLETED",INVALID:"INVALID"});
@@ -29,7 +30,9 @@ function statusFor(immediateStore,delayed24Store,sevenStore,nowMs=Date.now()){
   return{ok:true,status:c?STATUS.COMPLETED:STATUS.IN_PROGRESS,dueAt,anchorEvent:a.anchorEvent,actualDelayMs:p.actualDelayMs};
  }
  const delayedChecked=D.delayed24.validateStore(delayed24Store);if(!delayedChecked.ok)return{ok:false,status:STATUS.INVALID,error:"seven_day_24h_store_invalid:"+delayedChecked.error};
- if(!delayed24Store.events.some(e=>e.type==="delayed_completed"))return{ok:true,status:STATUS.WAITING_FOR_24H,dueAt,anchorEvent:a.anchorEvent};
+ const delayedStatus=D.delayed24Policy.statusFor(immediateStore,delayed24Store,nowMs);
+ if(!delayedStatus.ok)return{ok:false,status:STATUS.INVALID,error:"seven_day_24h_anchor_invalid:"+delayedStatus.error};
+ if(delayedStatus.status!==D.delayed24Policy.STATUS.COMPLETED)return{ok:true,status:STATUS.WAITING_FOR_24H,dueAt,anchorEvent:a.anchorEvent};
  if(nowMs<a.anchorMs)return{ok:false,status:STATUS.INVALID,error:"seven_day_clock_before_anchor"};
  if(nowMs<dueMs)return{ok:true,status:STATUS.WAITING_FOR_DELAY,dueAt,remainingMs:dueMs-nowMs,anchorEvent:a.anchorEvent};
  return{ok:true,status:STATUS.DUE,dueAt,anchorEvent:a.anchorEvent,presentationMetadata:{anchorEventId:a.anchorEvent.eventId,anchorOccurredAt:a.anchorEvent.occurredAt,dueAt,actualDelayMs:nowMs-a.anchorMs}};
