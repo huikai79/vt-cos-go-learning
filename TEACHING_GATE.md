@@ -1,3 +1,5 @@
+2026-09-30 Short Talk UX v2 refresh：在最新 main 上重新套用短講修正，formal candidate 凍結為 `formal-teaching-candidate-2026-09-30-b`／`fnv1a32-js16-885b317c`。R1a 77 題只證明題庫審查範圍，不能覆蓋 19 課短講；新增獨立 `go-independent-lesson-content-review-v1`／`fnv1a32-8e153412`，formal teaching gate 升 v3 並要求兩種外部內容回條。example lesson receipt 保持 draft/pending。此變更不產生真人 usability、accessibility、formal evaluation 或 learning-effect 證據。
+
 2026-09-30 Core terminology content QA v1：Core critical asset `content.js` 因 learner-facing 術語邊界修正而變更，因此 candidate 重新凍結為 `formal-teaching-candidate-2026-09-30-a`／`fnv1a32-js16-14e8f385`。厚勢／外勢採本課操作性區分；先手撤回絕對「必須回應」語氣；中文味／薄味尚未完成概念升格，Core 改用弱點／後續手段。受影響題目只升 contentVersion，不改答案、KC、scoring、scheduler、event、evidence taxonomy 或 formal evaluation。舊 candidate 的真人證據不得跨 candidate 沿用；目前仍缺 R1a 外部回條、三位 target novice 與真人 accessibility spot check，因此正式教學維持 `BLOCKED`、正式評量維持 `BLOCKED`、學習成效維持 `NOT_MEASURED`。
 
 2026-09-29 Evidence Overview v1：Core learner-facing critical surface 已由四張等權重診斷卡改成單一「目前紀錄與證據」overview＋按需展開的完整診斷；因此 candidate 重新凍結為 `formal-teaching-candidate-2026-09-29-w`／`fnv1a32-js16-30995be7`。這次變更不改 scoring、KC、scheduler、event、evidence taxonomy 或 formal evaluation authority；舊 candidate 的真人 usability／accessibility 證據若存在也不得自動沿用。現況仍缺 R1a 外部回條、三位 target novice 與真人 accessibility spot check，所以正式教學維持 `BLOCKED`。
@@ -8,13 +10,13 @@
 
 ## 一句話判定
 
-目前公開原始碼與網站部署已通過，但正式教學使用維持 `BLOCKED`：仍缺 R1a 外部棋理回條、至少三位目標初學者的關鍵任務觀察，以及真人鍵盤／螢幕閱讀器 spot check。正式評量另缺未公開的新 holdout 與 R1b 實際難度可比性；學習成效維持 `NOT_MEASURED`。
+目前公開 main 的既有工程發布已通過；本次 refresh 仍需完成 PR→main→served Pages 驗證。正式教學使用維持 `BLOCKED`：仍缺 R1a 題庫外部回條、19 課短講外部棋理回條、至少三位目標初學者的關鍵任務觀察，以及真人鍵盤／螢幕閱讀器 spot check。正式評量另缺未公開的新 holdout 與 R1b 實際難度可比性；學習成效維持 `NOT_MEASURED`。
 
 ## 三層判定
 
 | 層級 | 最低必要證據 | 現況 |
 |---|---|---|
-| 正式教學使用 | 工程發布通過、R1a 外部內容審查通過、至少三位目標初學者完成五項關鍵任務、真人無障礙 spot check、沒有未解 blocking issue | BLOCKED |
+| 正式教學使用 | 工程發布通過、R1a 題庫外部內容審查通過、19 課短講外部棋理審查通過、至少三位目標初學者完成五項關鍵任務、真人無障礙 spot check、沒有未解 blocking issue | BLOCKED |
 | 正式評量 | 正式教學使用通過、另建未公開的新 holdout、R1b 實際難度可比性成立 | BLOCKED |
 | 學習成效 | 預先定義的 retention／transfer 研究與足夠資料 | NOT MEASURED；不屬 release verdict |
 
@@ -32,14 +34,26 @@
 3. 完成 77 題後匯出 `R1_獨立審題回條.json`，在專案根目錄執行 `node r1-review-verify.cjs R1_獨立審題回條.json`。
 4. 回條只要有需修、歧義、多解或建議落子不同，就不能通過。先修內容、升版並重新審查，不得把異議平均掉。
 
+
+## 19 課短講外部棋理審查
+
+R1a 的 77 題 reviewer set 只覆蓋題庫／scoring content，不自動覆蓋 `lessons[]` 的 text、takeaway、terms 與 demoSteps。短講另使用 `lesson-content-review-verify.cjs`：
+
+1. 複製 `lesson-content-review.example.json` 為本機回條；example 本身是 draft/pending，不能通過。
+2. 審查者須未參與本批短講編寫、不是目前學習者，且具備核對基礎圍棋教學內容的能力。
+3. 19 課逐課核對 text、takeaway、terms、棋盤標記與 caption；任何 `needs_fix`／`ambiguous` 都 fail closed。
+4. 回條必須綁定目前 fingerprint `fnv1a32-8e153412`；learner comprehension 與 learning effect 仍分別保持 `not_tested`／`not_measured`。
+
+驗證命令：`node lesson-content-review-verify.cjs LESSON_CONTENT_REVIEW_RECEIPT.json`。
+
 ## 真人證據與 gate 命令
 
 複製 `formal-teaching-evidence.example.json` 為被 `.gitignore` 排除的 `formal-teaching-evidence.json`，只保存匿名彙整與證據引用，不提交參與者個資。v2 證據必須在總表、每位 participant 與 accessibility spot check 都保存同一 `candidateId`／`candidateFingerprint`；不同 candidate 的觀察不得合併。
 
 - 檢視目前狀態：`node teaching-gate-verify.cjs --report-only`
-- 驗證正式教學閘門：`node teaching-gate-verify.cjs --r1 R1_獨立審題回條.json --human formal-teaching-evidence.json`
+- 驗證正式教學閘門：`node teaching-gate-verify.cjs --r1 R1_獨立審題回條.json --lesson-review LESSON_CONTENT_REVIEW_RECEIPT.json --human formal-teaching-evidence.json`
 
-第二個命令只有正式教學使用達到 `PASS` 才回傳成功退出碼。R1a 即使通過，也不會自動使 R1b、正式評量或學習成效升格。
+第二個命令只有正式教學使用達到 `PASS` 才回傳成功退出碼。R1a 或短講回條單獨通過都不會自動使 usability、R1b、正式評量或學習成效升格。
 
 ## 2026-09-23 Change note｜真人 usability 證據改為逐位保存
 
