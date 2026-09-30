@@ -1121,6 +1121,6 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **P0 UI 修正：** mobile override 放在 base short-talk rule 之後；320px 開啟 Modal 與 200% text 都由 browser regression 檢查單欄、頁面／dialog／board 無水平 overflow 與 CTA 可到達。desktop 約 240px 棋盤仍只是可回復的 presentation hypothesis。
 - **互動／migration：** 自動短講用「先跳過」，手動重看用「關閉」；manual Close／Esc 回短講按鈕，manual Start 與 auto Esc 回問題。每次重看由 step 1 開始。content catalog 升至 5，但 v4 的 `seenLessonIntros` 保留，只代表 auto-display suppression，不是短講完成或 learner evidence；one-step demo 另有 synthetic regression。
 - **內容治理：** R1a 77 題只審題庫，不再被解讀成 19 課短講已審。新增 `go-independent-lesson-content-review-v1`，fingerprint `fnv1a32-8e153412`，覆蓋 19 課 text／takeaway／terms／demoSteps；example receipt 保持 draft/pending。formal teaching gate v3 必須同時取得 R1a 與短講外部回條，再加三位 target novice usability 與真人 accessibility。
-- **candidate：** critical learner surface 重新凍結為 `formal-teaching-candidate-2026-09-30-b`／`fnv1a32-js16-233592f9`。這只綁定 current bytes，不產生外部審查、usability、accessibility、formal evaluation 或 learning-effect 證據。
+- **candidate：** critical learner surface 重新凍結為 `formal-teaching-candidate-2026-09-30-c`／`fnv1a32-js16-15b4184a`。這只綁定 current bytes，不產生外部審查、usability、accessibility、formal evaluation 或 learning-effect 證據。
 - **不變 invariant：** storage schema、題目答案／scoring、KC、scheduler、first response／retry、event schema、evidence taxonomy、formal evaluation authority 與公開 holdout 邊界不變。
 
