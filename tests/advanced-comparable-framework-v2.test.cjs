@@ -64,7 +64,7 @@ test("Double Atari scoring 要求恰好兩串，不把三串同時打吃納入 f
   stones:[
    [5,5,Go.WHITE],[4,5,Go.BLACK],[5,4,Go.BLACK],
    [7,5,Go.WHITE],[8,5,Go.BLACK],[7,4,Go.BLACK],
-   [6,4,Go.WHITE],[5,4,Go.BLACK],[7,4,Go.BLACK],
+   [6,4,Go.WHITE],
    [3,3,Go.BLACK],[15,15,Go.WHITE]
   ]
  };
