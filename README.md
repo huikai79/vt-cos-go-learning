@@ -180,5 +180,5 @@ R0 已通過。R1a 已完成第二套規則實作的 70 題核心唯一解窮舉
 
 ## 2026-09-30｜Short Talk UX v2 refresh
 
-舊 PR #109 已包含多項短講修正，但分支落後最新 main；本輪沒有直接合併舊 branch，而是在 2026-09-30 current main 上選擇性移植。短講現在以 `demoSteps` 為唯一棋盤示範 source of truth，第 1 課採 progressive reveal，step caption 不重複、legend 依實際 marker 顯示、最後一步可從頭再看。mobile CSS 的單欄 override 位於 base rule 之後，320px 開啟 Modal 與 200% text 有 browser regression；manual close/start/Esc 與 auto Esc 的焦點語義也被測試鎖住。content catalog 升至 5，但舊 `seenLessonIntros` 保留為 auto-display suppression，不重設學習狀態。formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-30-b`／`fnv1a32-js16-233592f9`；19 課短講另綁 `fnv1a32-8e153412` 的外部棋理 review contract。工程發布通過仍不能替代 R1a、短講外審、真人 usability／accessibility 或 learning effect。
+舊 PR #109 已包含多項短講修正，但分支落後最新 main；本輪沒有直接合併舊 branch，而是在 2026-09-30 current main 上選擇性移植。短講現在以 `demoSteps` 為唯一棋盤示範 source of truth，第 1 課採 progressive reveal，step caption 不重複、legend 依實際 marker 顯示、最後一步可從頭再看。mobile CSS 的單欄 override 位於 base rule 之後，320px 開啟 Modal 與 200% text 有 browser regression；manual close/start/Esc 與 auto Esc 的焦點語義也被測試鎖住。content catalog 升至 5，但舊 `seenLessonIntros` 保留為 auto-display suppression，不重設學習狀態。formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-30-c`／`fnv1a32-js16-15b4184a`；19 課短講另綁 `fnv1a32-8e153412` 的外部棋理 review contract。工程發布通過仍不能替代 R1a、短講外審、真人 usability／accessibility 或 learning effect。
 
