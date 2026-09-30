@@ -76,7 +76,7 @@ test("所有新分頁外部連結都使用 noreferrer，歷史頁沒有 runtime 
   assert.ok(externalTargets.length >= 10);
   assert.ok(externalTargets.every((tag) => /rel="[^"]*noreferrer[^"]*"/.test(tag)));
   assert.doesNotMatch(html, /<script\b/i);
-  assert.match(html, /history\.css\?v=history-explore-v5/);
+  assert.match(html, /history\.css\?v=history-explore-v6/);
 });
 
 test("歷史頁所有已知小字與 evidence badge 維持一般文字 AA 對比安全值", () => {
@@ -146,7 +146,7 @@ test("歷史 HTML 不得把 escaped newline 當可見文字帶進來源清單", 
 
 
 test("History Explore learner-facing version metadata 一致為 v6", () => {
-  assert.match(html, /history\.css\?v=history-explore-v5/);
+  assert.match(html, /history\.css\?v=history-explore-v6/);
   assert.match(html, /歷史探索 v6/);
   assert.doesNotMatch(html, /歷史探索 v1|歷史探索 v2|歷史探索 v3|歷史探索 v4/);
 });
@@ -303,4 +303,12 @@ test("Go decision-model research 只作 structural analogy，不宣稱一般決�
   assert.match(record, /暫不建立 \`thinking\.html\`/);
   assert.match(record, /至少 3 個候選模型.*validated board example/s);
   assert.match(record, /如果增加現代管理／經濟學名詞只讓內容更漂亮.*就刪除該類比/s);
+});
+
+
+test("History Explore v6 證據轉折卡桌面為 2x2，研究前沿維持 3 欄，窄版回單欄", () => {
+  const css = fs.readFileSync(path.join(root, "history.css"), "utf8");
+  assert.match(css, /\.frontier-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)\}/);
+  assert.match(css, /\.evidence-transitions \.frontier-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/);
+  assert.match(css, /@media\(max-width:760px\)[\s\S]*\.evidence-transitions \.frontier-grid\{grid-template-columns:1fr\}/);
 });
