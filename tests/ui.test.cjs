@@ -237,8 +237,72 @@ async function main() {
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const landingStart = await evaluate(socket, `(() => { document.querySelector('[data-site-intro-start]').click(); return {siteIntroHidden: document.querySelector('#site-introduction').hidden, introOpen: document.querySelector('#lesson-intro-dialog').open, introTitle: document.querySelector('#lesson-intro-title').textContent, hash: location.hash}; })()`);
     assert.deepEqual(landingStart, { siteIntroHidden: true, introOpen: true, introTitle: "現在先學：認識氣", hash: "#core" });
-    const steppedDemo = await evaluate(socket, `(() => { const before = {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, previousDisabled: document.querySelector('#teaching-demo-previous').disabled}; document.querySelector('#teaching-demo-next').click(); return {before, after: {step: document.querySelector('#teaching-demo-count').textContent, caption: document.querySelector('#teaching-demo-caption').textContent, nextDisabled: document.querySelector('#teaching-demo-next').disabled}}; })()`);
-    assert.deepEqual(steppedDemo, { before: {step: "第 1 / 2 步", caption: "先看角上的黑棋：棋盤外不是交叉點，所以不算氣。", previousDisabled: true}, after: {step: "第 2 / 2 步", caption: "只剩右邊和下邊兩個盤內空點，因此這顆棋有 2 口氣；斜角不算。", nextDisabled: true} });
+    const steppedDemo = await evaluate(socket, `(() => {
+      const before = {
+        step: document.querySelector('#teaching-demo-count').textContent,
+        caption: document.querySelector('#teaching-demo-caption').textContent,
+        previousDisabled: document.querySelector('#teaching-demo-previous').disabled,
+        libertyRings: document.querySelectorAll('#teaching-demo-board .demo-liberty').length,
+        emphasisRings: document.querySelectorAll('#teaching-demo-board .demo-emphasis').length
+      };
+      document.querySelector('#teaching-demo-next').click();
+      return {
+        before,
+        after: {
+          step: document.querySelector('#teaching-demo-count').textContent,
+          caption: document.querySelector('#teaching-demo-caption').textContent,
+          libertyRings: document.querySelectorAll('#teaching-demo-board .demo-liberty').length,
+          nextLabel: document.querySelector('#teaching-demo-next').textContent
+        }
+      };
+    })()`);
+    assert.deepEqual(steppedDemo, {
+      before: {step: "第 1 / 2 步", caption: "先看角上的黑棋。棋盤外沒有交叉點，所以不能算氣。", previousDisabled: true, libertyRings: 0, emphasisRings: 1},
+      after: {step: "第 2 / 2 步", caption: "只有右邊和下邊兩個盤內空點與它沿線相鄰，所以有 2 口氣；斜對角不算。", libertyRings: 2, nextLabel: "從頭再看 ↺"}
+    });
+    const demoStructure = await evaluate(socket, `({
+      captionNodes: document.querySelectorAll('#teaching-demo-caption').length,
+      duplicateFigureCaptions: document.querySelectorAll('#teaching-demo-board figcaption').length,
+      legendText: document.querySelector('#demo-legend').textContent
+    })`);
+    assert.equal(demoStructure.captionNodes, 1);
+    assert.equal(demoStructure.duplicateFigureCaptions, 0);
+    assert.match(demoStructure.legendText, /金色小圈/);
+    assert.match(demoStructure.legendText, /金色大圈/);
+    assert.doesNotMatch(demoStructure.legendText, /紅叉|藍框/);
+
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 320, height: 812, deviceScaleFactor: 1, mobile: true });
+    const shortTalkNarrow = await evaluate(socket, `(() => {
+      const dialog = document.querySelector('#lesson-intro-dialog');
+      const stage = document.querySelector('.teaching-demo-stage');
+      const board = document.querySelector('#teaching-demo-board');
+      dialog.scrollTop = dialog.scrollHeight;
+      const dialogRect = dialog.getBoundingClientRect();
+      const startRect = document.querySelector('#lesson-intro-start-button').getBoundingClientRect();
+      return {
+        open: dialog.open,
+        columns: getComputedStyle(stage).gridTemplateColumns.split(/\\s+/).filter(Boolean).length,
+        pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        dialogOverflow: dialog.scrollWidth > dialog.clientWidth + 1,
+        boardOverflow: board.scrollWidth > board.clientWidth + 1,
+        ctaReachable: startRect.bottom <= dialogRect.bottom + 2
+      };
+    })()`);
+    assert.deepEqual(shortTalkNarrow, { open: true, columns: 1, pageOverflow: false, dialogOverflow: false, boardOverflow: false, ctaReachable: true });
+
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    const shortTalkZoom = await evaluate(socket, `(() => {
+      document.documentElement.style.fontSize = '32px';
+      const dialog = document.querySelector('#lesson-intro-dialog');
+      const result = {
+        open: dialog.open,
+        pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        dialogOverflow: dialog.scrollWidth > dialog.clientWidth + 1
+      };
+      document.documentElement.style.fontSize = '';
+      return result;
+    })()`);
+    assert.deepEqual(shortTalkZoom, { open: true, pageOverflow: false, dialogOverflow: false });
     const started = await evaluate(socket, `(async () => { document.querySelector('#lesson-intro-start-button').click(); await new Promise((resolve) => requestAnimationFrame(() => resolve())); return {introOpen: document.querySelector('#lesson-intro-dialog').open, label: document.querySelector('#resume-button').textContent, focused: document.activeElement.id, activeFlow: document.querySelector('.learning-steps li.active')?.id, seen: JSON.parse(localStorage.getItem('go-learning-prototype-v7')).seenLessonIntros, takeawayHidden: document.querySelector('.takeaway').hidden}; })()`);
     assert.deepEqual(started, { introOpen: false, label: "前往目前題目", focused: "question-prompt", activeFlow: "learning-step-1", seen: [0], takeawayHidden: true });
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const open = document.querySelector('#learning-flow-dialog').open; document.querySelector('#learning-flow-close-button').click(); return {inlineFlow: Boolean(inlineFlow), open, closed: !document.querySelector('#learning-flow-dialog').open}; })()`);
