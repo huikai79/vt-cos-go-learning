@@ -4,11 +4,13 @@
   const Go = window.GoCore;
   const Sgf = window.GoSgf;
   const Events = window.GoAdvancedDecisionReviewEvents;
+  const ReviewTools = window.GoAdvancedDecisionReviewTools;
+  const ReviewPackage = window.GoAdvancedDecisionReviewPackage;
   const Comparison = window.GoDecisionComparison;
   const ComparisonProvider = window.GoDecisionComparisonProvider;
   const ComparisonEvents = window.GoAdvancedDecisionComparisonEvents;
   const Replay = window.GoAdvancedDecisionReplay;
-  if (!Go || !Sgf || !Events) return;
+  if (!Go || !Sgf || !Events || !ReviewTools || !ReviewPackage) return;
 
   const $ = (id) => document.getElementById(id);
   const sessionId = "sgf-review-session-" + Date.now().toString(36);
@@ -22,12 +24,110 @@
   let firstPoint = null;
   let firstLegal = null;
   let comparisonPosition = null;
+  let reviewPerspective = "neutral";
+  let factualEvents = [];
+  let activeFactualEvent = null;
 
   function uid(prefix) {
     counter += 1;
     return prefix + "-" + Date.now().toString(36) + "-" + counter;
   }
   function now() { return new Date().toISOString(); }
+
+  function downloadText(filename, text, type = "application/json") {
+    const blob = new Blob([text], { type: type + ";charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function perspectiveMoveLabel(move) {
+    const actor = ReviewTools.actorLabel(move.color, reviewPerspective);
+    return "第 " + move.number + " 手 · " + actor;
+  }
+
+  function refreshMoveOptions(preferredMoveNumber = null) {
+    const select = $("decision-review-move");
+    if (!game) {
+      select.innerHTML = '<option value="">先匯入棋譜</option>';
+      select.disabled = true;
+      return;
+    }
+    const moves = ReviewTools.movesForPerspective(game, reviewPerspective);
+    select.innerHTML = '<option value="">選擇一手</option>' + moves.map((move) =>
+      '<option value="' + move.number + '">' + perspectiveMoveLabel(move) + "</option>"
+    ).join("");
+    select.disabled = false;
+    if (Number.isInteger(preferredMoveNumber) && moves.some((move) => move.number === preferredMoveNumber)) {
+      select.value = String(preferredMoveNumber);
+    }
+  }
+
+  function renderFactualEvents() {
+    const box = $("decision-review-events");
+    const lookback = $("decision-review-lookback");
+    activeFactualEvent = null;
+    lookback.hidden = true;
+    if (!game) {
+      box.textContent = "匯入棋譜後顯示。";
+      return;
+    }
+    factualEvents = ReviewTools.buildFactualEvents(game);
+    const navigation = ReviewTools.selectNavigationEvents(factualEvents, 8);
+    if (!navigation.length) {
+      box.textContent = "這盤棋目前沒有偵測到可列出的提子或重複佔點事件；仍可直接按手數複盤。";
+      return;
+    }
+    box.innerHTML = navigation.map((event, index) =>
+      '<button class="decision-review-event-item" type="button" data-review-event-index="' + index + '">' +
+      ReviewTools.describeEvent(event, reviewPerspective, game.boardSize) +
+      "</button>"
+    ).join("");
+    box._navigationEvents = navigation;
+  }
+
+  function resetReviewWorkspace(message) {
+    exp = null;
+    answers = 0;
+    revealed = false;
+    firstPoint = null;
+    firstLegal = null;
+    comparisonPosition = null;
+    $("decision-review-reveal").disabled = true;
+    $("decision-review-reflection").disabled = true;
+    $("decision-review-save-reflection").disabled = true;
+    $("decision-replay-queue").disabled = true;
+    $("decision-comparison-result").textContent = "";
+    $("decision-comparison-panel").open = false;
+    $("decision-review-board").innerHTML = "";
+    $("decision-review-meta").textContent = "原棋譜著手在你提出第一候選前保持隱藏。";
+    $("decision-review-feedback").textContent = message || "選一手，在看原棋譜著手之前先提出自己的候選。";
+  }
+
+  function loadReviewSource(text, name, options = {}) {
+    const parsed = Sgf.parseDecisionReviewSgf(text);
+    sgfText = text;
+    sourceName = name || "匯入的 19 路棋譜";
+    game = parsed;
+    reviewPerspective = ReviewTools.normalizePerspective(options.perspective);
+    $("decision-review-perspective").disabled = false;
+    $("decision-review-perspective").value = reviewPerspective;
+    $("decision-review-package-export").disabled = false;
+    refreshMoveOptions(options.selectedMoveNumber);
+    renderFactualEvents();
+    $("decision-review-source").textContent = sourceName + " · " + game.moves.length + " 個可回看的落子點";
+    resetReviewWorkspace("已匯入。選一手，在看原棋譜著手之前先提出自己的候選。");
+    if (Number.isInteger(options.selectedMoveNumber) &&
+        ReviewTools.movesForPerspective(game, reviewPerspective).some((move) => move.number === options.selectedMoveNumber)) {
+      $("decision-review-move").value = String(options.selectedMoveNumber);
+      selectMove();
+    }
+  }
 
   function reviewCommon() {
     return {
@@ -155,7 +255,7 @@
     $("decision-comparison-result").textContent = "";
     $("decision-comparison-panel").open = false;
     $("decision-review-feedback").textContent = "先在全盤提出你的第一候選；原棋譜著手現在還看不到。";
-    $("decision-review-meta").textContent = "第 " + moveNumber + " 手 · 輪到" + (exp.playerColor === 1 ? "黑" : "白") + "棋 · 原棋譜著手尚未顯示";
+    $("decision-review-meta").textContent = "第 " + moveNumber + " 手 · " + ReviewTools.actorLabel(exp.playerColor, reviewPerspective) + "下 · 原棋譜著手尚未顯示";
     renderBoard();
     setupComparisonInputs();
     record("review_presented", {
@@ -200,17 +300,82 @@
     const file = event.target.files && event.target.files[0];
     if (!file) return;
     try {
-      sgfText = await file.text();
-      sourceName = file.name;
-      game = Sgf.parseDecisionReviewSgf(sgfText);
-      const select = $("decision-review-move");
-      select.innerHTML = '<option value="">選擇一手</option>' + game.moves.map((move) => '<option value="' + move.number + '">第 ' + move.number + " 手 · " + (move.color === 1 ? "黑" : "白") + "</option>").join("");
-      select.disabled = false;
-      $("decision-review-source").textContent = file.name + " · " + game.moves.length + " 個可回看的落子點";
-      $("decision-review-feedback").textContent = "已匯入。選一手，在看原棋譜著手之前先提出自己的候選。";
+      loadReviewSource(await file.text(), file.name, { perspective: "neutral" });
+      $("decision-review-package-status").textContent = "已載入 SGF；可視需要匯出只含複盤脈絡的複盤包。";
     } catch (error) {
       $("decision-review-feedback").textContent = error.message;
       $("decision-review-move").disabled = true;
+      $("decision-review-perspective").disabled = true;
+      $("decision-review-package-export").disabled = true;
+    }
+  });
+
+  $("decision-review-perspective").addEventListener("change", () => {
+    reviewPerspective = ReviewTools.normalizePerspective($("decision-review-perspective").value);
+    const selected = Number($("decision-review-move").value) || null;
+    refreshMoveOptions(selected);
+    renderFactualEvents();
+    resetReviewWorkspace("複盤視角已更新。請選擇一手重新開始；系統只依你選的執棋方篩選手數，不會推定能力或錯誤。");
+  });
+
+  $("decision-review-events").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-review-event-index]");
+    if (!button || !game) return;
+    const navigation = $("decision-review-events")._navigationEvents || [];
+    activeFactualEvent = navigation[Number(button.dataset.reviewEventIndex)] || null;
+    if (!activeFactualEvent) return;
+    $("decision-review-lookback").hidden = false;
+    $("decision-review-lookback-note").textContent =
+      ReviewTools.describeEvent(activeFactualEvent, reviewPerspective, game.boardSize) +
+      "。這是結果事件，不代表造成結果的關鍵決策就在這一手；可往前回看。";
+  });
+
+  $("decision-review-lookback").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-review-lookback]");
+    if (!button || !activeFactualEvent || !game) return;
+    const lookbackMoves = Number(button.dataset.reviewLookback);
+    const target = ReviewTools.findReviewTarget(game, activeFactualEvent.moveNumber, lookbackMoves, reviewPerspective);
+    if (!target) {
+      $("decision-review-lookback-note").textContent = "這個範圍內找不到符合目前複盤視角的可落子手數；請直接從手數清單選擇。";
+      return;
+    }
+    $("decision-review-move").value = String(target.number);
+    selectMove();
+    $("decision-review-lookback-note").textContent =
+      "已移到第 " + target.number + " 手，距離事件至少 " + lookbackMoves + " 手；請先自己判斷，再決定是否顯示原棋譜著手。";
+  });
+
+  $("decision-review-package-export").addEventListener("click", () => {
+    if (!game || !sgfText) return;
+    try {
+      const selectedMoveNumber = Number($("decision-review-move").value) || null;
+      const text = ReviewPackage.stringifyPackage({
+        sgfText,
+        sourceName,
+        perspective: reviewPerspective,
+        selectedMoveNumber
+      });
+      downloadText("悟之一手_棋譜複盤包.json", text);
+      $("decision-review-package-status").textContent = "已匯出複盤包。它不含歷史作答、KataGo 結果或能力資料。";
+    } catch (_) {
+      $("decision-review-package-status").textContent = "複盤包無法匯出；既有複盤紀錄不受影響。";
+    }
+  });
+
+  $("decision-review-package-file").addEventListener("change", async (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    try {
+      const restored = ReviewPackage.parsePackage(await file.text());
+      loadReviewSource(restored.sgfText, restored.source.sourceName, {
+        perspective: restored.perspective,
+        selectedMoveNumber: restored.selectedMoveNumber
+      });
+      $("decision-review-package-status").textContent =
+        "已載入複盤包。只恢復棋譜、複盤視角與選定手數；沒有匯入任何歷史證據事件。";
+    } catch (_) {
+      $("decision-review-package-status").textContent =
+        "複盤包無法載入；沒有寫入或覆蓋任何歷史複盤事件。";
     }
   });
 
