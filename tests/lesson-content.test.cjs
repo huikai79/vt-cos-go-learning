@@ -232,7 +232,7 @@ test("劫示範的提子與回提符合規則引擎，不留下已被提走的�
 });
 
 test("Unit 2 明確區分同一串與功能性連絡，不把斜接誤教成一定可切", () => {
-  const lesson = content.lessons.find((entry) => entry.title === "辨認棋串");
+  const lesson = lessons.find((entry) => entry.title === "辨認棋串");
   assert.ok(lesson);
   assert.match(lesson.text, /不是同一串/);
   assert.match(lesson.text, /不等於一定沒有連絡作用/);
