@@ -146,8 +146,27 @@ function validateStore(store){
    if(shown.length>1||first.length>1)return{ok:false,error:"enclosure_store_decision_lifecycle_invalid",itemId:item.itemId};
    if(retries.length&&!first.length)return{ok:false,error:"enclosure_store_retry_without_first",itemId:item.itemId};
   }
+  const opponent=events.filter(e=>e.type==="enclosure_opponent_move");
   const completed=events.filter(e=>e.type==="enclosure_completed");
+  if(opponent.length>1)return{ok:false,error:"enclosure_store_multiple_opponent_moves",itemId:item.itemId};
   if(completed.length>1)return{ok:false,error:"enclosure_store_multiple_completion",itemId:item.itemId};
+  const first0=events.find(e=>e.type==="enclosure_move_first"&&e.decisionIndex===0);
+  const first1=events.find(e=>e.type==="enclosure_move_first"&&e.decisionIndex===1);
+  const retry0=events.filter(e=>e.type==="enclosure_move_retry"&&e.decisionIndex===0);
+  const retry1=events.filter(e=>e.type==="enclosure_move_retry"&&e.decisionIndex===1);
+  const shown0=events.filter(e=>e.type==="enclosure_decision_presented"&&e.decisionIndex===0);
+  const shown1=events.filter(e=>e.type==="enclosure_decision_presented"&&e.decisionIndex===1);
+  if((first0||retry0.length||opponent.length||shown1.length||first1||retry1.length||completed.length)&&shown0.length!==1)return{ok:false,error:"enclosure_store_first_decision_presentation_invalid",itemId:item.itemId};
+  if(retry0.length&&!first0)return{ok:false,error:"enclosure_store_retry0_without_first",itemId:item.itemId};
+  const cutCorrect=events.some(e=>["enclosure_move_first","enclosure_move_retry"].includes(e.type)&&e.decisionIndex===0&&e.correct===true);
+  if(opponent.length&&!cutCorrect)return{ok:false,error:"enclosure_store_opponent_before_correct_cut",itemId:item.itemId};
+  if((shown1.length||first1||retry1.length||completed.length)&&opponent.length!==1)return{ok:false,error:"enclosure_store_second_decision_without_forced_move",itemId:item.itemId};
+  if(retry1.length&&!first1)return{ok:false,error:"enclosure_store_retry1_without_first",itemId:item.itemId};
+  if(completed.length){
+   if(!first0||!first1)return{ok:false,error:"enclosure_store_completion_missing_first",itemId:item.itemId};
+   if(completed[0].decisionFirstCorrect[0]!==first0.correct||completed[0].decisionFirstCorrect[1]!==first1.correct)return{ok:false,error:"enclosure_store_completion_first_mismatch",itemId:item.itemId};
+   if(completed[0].decisionAttempts[0]!==1+retry0.length||completed[0].decisionAttempts[1]!==1+retry1.length)return{ok:false,error:"enclosure_store_completion_attempt_count_mismatch",itemId:item.itemId};
+  }
   let last=-Infinity,done=false;
   for(const event of events){
    const t=Date.parse(event.occurredAt);if(t<last)return{ok:false,error:"enclosure_store_time_order_invalid",itemId:item.itemId};last=t;
