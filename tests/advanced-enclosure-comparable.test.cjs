@@ -101,3 +101,17 @@ test("呈現後未答仍進 denominator",()=>{
  const summary=Analysis.summarizeStore(Events.read(s).store,base);
  const row=summary.items[0];assert.equal(row.denominator,1);assert.equal(row.unanswered,true);assert.equal(row.firstResponseObserved[0],false);
 });
+
+
+test("tampered delayed anchor 不得只靠 event 自洽通過 policy",()=>{
+ const s=storage(),base=Date.parse("2026-09-20T00:00:00Z"),[practice,process]=Contract.immediateItems(),[d24]=Contract.delayedItems();
+ completeItem(s,practice,base);const anchor=completeItem(s,process,base+5000);
+ const due=Date.parse(anchor.occurredAt)+Contract.MIN_DELAY_24H_MS;
+ completeItem(s,d24,due,anchor);
+ const store=Events.read(s).store;
+ const presented=store.events.find(e=>e.itemId===d24.itemId&&e.type==="enclosure_presented");
+ presented.anchorEventId="forged-anchor";
+ const status=Policy.statusFor(store,d24,due+1000);
+ assert.equal(status.ok,false);
+ assert.equal(status.error,"enclosure_delayed_anchor_mismatch");
+});
