@@ -189,7 +189,7 @@ test("throw-in transfer Teaching Candidate 要求結構改變與 negative case",
   assert.equal(item.taskFeatures.negativeCaseRequired, true);
   assert.equal(item.taskFeatures.falseEyeContextStatus, "research_candidate_not_promoted");
   assert.match(item.explanation, /犧牲本身不是價值/);
-  assert.match(item.explanation, /破假眼用途仍停在研究候選/);
+  assert.match(item.explanation, /破假眼用途仍停在研究階段/);
 });
 
 test("打吃方向新增不改寫既有 fixed-interleave sequence policy 或四個 family", () => {
