@@ -7,7 +7,7 @@
 - learner_runtime_authority: none
 - accessDate: 2026-09-30
 - snapshotVersion: 2
-- promotion_status: `SOURCE_VERIFIED_PARTIAL / NOT_YET_TEACHING_CANDIDATE`
+- promotion_status: `SOURCE_VERIFIED_PARTIAL / CONTENT_QA_APPLIED_PARTIAL / EXPLORE_NOT_YET_TEACHING_CANDIDATE`
 
 ## Method
 
@@ -145,6 +145,44 @@
 - 準備獨立 `concepts.html`／跨語 Explore；
 - 新的直接來源或人工內容審查對目前操作性定義提出實質反證。
 
+## 2026-09-30 Content-directed verification
+
+本輪依「現有教材是否會因此改寫」排序，不再擴張一般語言認知文獻。
+
+### 厚勢／外勢
+
+- 〔來源支持〕日本棋院課程把厚み、薄み、模様等分開教學；BGA 對 atsumi／moyo 等也使用不同術語範圍。這支持「不要把厚實棋形、向外影響與潛在圍地框架壓成同一概念」，但不能直接證明繁中「厚勢／外勢」存在唯一標準切法。
+- 〔內容決策〕Core 不宣稱字典式唯一等價，而改用課內操作定義：**厚勢**著重「本身較安定、能支援附近戰鬥的厚實棋形」；**外勢**著重「棋形朝中央或外側產生的力量與影響」。兩者都不等於固定實地。
+- 〔剩餘未知〕中文專業教材中的「厚／厚勢／勢／外勢」完整詞義邊界仍未完成，故 relation 保持 `Unknown / Overlap candidate`，不升格成跨語 exact map。
+
+### 先手／sente／initiative
+
+- 〔來源支持〕日本棋院課程把「先手・後手」與「先手・主導権」分層；BGA 亦指出 sente 沒有單一完全等價英文詞，常以需要回應／取得 initiative 說明。
+- 〔內容決策〕Core／Advanced 撤掉「必須回應」的無條件措辭，改成：若不回應會承受較大損失，對手**通常需要回應**；交換後自己仍有機會先到別處。這保留「行棋權」重點，也允許完整局面出現可脫先的反例。
+- 〔邊界〕這仍是教學操作定義，不把 sente、forcing move、initiative 或一般「先下」視為完全等價。
+
+### 味／aji／薄味
+
+- 〔來源支持〕日文 `味（aji）` 與英語借詞 `aji` 有可追溯定義；目前仍缺足以把繁中「味／餘味／薄味」穩定映射到同一概念範圍的主要來源。
+- 〔內容決策〕不把未完成查核的「薄味」設成 Core 必學詞。既有 learner-facing 題目改用可觀察的「弱點」「尚未安定」「後續手段」；Research Record 保留 `aji` anchor，未來有直接內容需求再重查。
+- 〔停止線〕在沒有具體 learner-facing 用途前，不再為了湊齊四語 term map 擴張搜尋。
+
+### 定石、急場／大場
+
+- 〔內容決策〕現有定石文案已明示「特定條件下合理的交換、不是脫離全局的唯一答案」，與目前來源邊界一致，暫不改寫。
+- 〔內容決策〕現有急場／大場文案已把「延後會造成重大損失」與「價值大但未必立即危險」分開；只作低成本確認，不另建新術語系統。
+
+### 本輪 Promotion Gate 結果
+
+- `厚勢／外勢`：`SOURCE_VERIFIED` → scope-limited learner wording applied；完整中文 lexical relation 仍 `UNKNOWN`。
+- `先手`：`SOURCE_VERIFIED` → conditional learner wording applied。
+- `味／薄味`：跨語 relation 仍 `UNKNOWN`；未升格術語，改用白話 learner wording。
+- `定石`、`急場／大場`：現有內容足夠 bounded，本輪 `NO_CHANGE`。
+- 以上只改內容表述；不改 KC、scoring、scheduler、evidence taxonomy、formal evaluation 或 learning-effect status。
+
 ## Stop / continuation rule
 
-目前**不得**建立「各語言思考模式」公開結論頁。下一輪只針對上述四個高價值未知補來源；若五個 anchor 大多只能得到 Equivalent／普通翻譯差異，停止擴張並改做單頁短知識卡。只有至少數個概念出現可重現、會改變教學解釋的邊界差異，才升格為 `TEACHING_CANDIDATE`，再決定是否建立獨立 Explore 頁。
+目前**不得**建立「各語言思考模式」公開結論頁。廣泛的 language × cognition 搜尋在網站內容目的下暫停；之後只有當既有教材用詞、即將發布內容或外部審查提出具體歧義時，才做定向查核。若至少數個概念出現可重現、會改變教學解釋的邊界差異，再重新評估獨立 Explore 頁；否則沿用現有課程／名型館容器，不新增平行內容系統。
+
+- stopReason: broad cross-language cognition research has low additional content decision value; current work switches to content-directed verification.
+- recheckTriggers: Core／Advanced 新增相關術語；外部棋理審查指出概念歧義；目標讀者 formative observation 顯示詞義混淆；決定建立跨語 Explore／多語介面時。
