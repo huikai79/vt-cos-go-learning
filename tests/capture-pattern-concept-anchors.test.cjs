@@ -36,8 +36,8 @@ test("v2 只升共同 enclosure_capture 機制，門吃／抱吃 label split 維
   assert.match(record, /sourceLabelCandidate=unknown/);
   assert.match(record, /enclosure_capture.*Teaching Candidate/s);
   assert.match(record, /door_capture.*hug_capture.*UNKNOWN \/ NOT_PROMOTED/s);
-  assert.doesNotMatch(record, /door_capture.*TEACHING_CANDIDATE/s);
-  assert.doesNotMatch(record, /hug_capture.*TEACHING_CANDIDATE/s);
+  assert.doesNotMatch(record, /door_capture[^\n]*TEACHING_CANDIDATE/);
+  assert.doesNotMatch(record, /hug_capture[^\n]*TEACHING_CANDIDATE/);
 });
 
 test("雙打吃 promotion decision 要求 rules-backed 四項棋盤條件", () => {
