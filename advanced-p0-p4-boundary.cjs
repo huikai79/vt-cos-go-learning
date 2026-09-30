@@ -2,6 +2,7 @@
 const Framework=require("./advanced-comparable-framework-v2.js");
 const Enclosure=require("./advanced-enclosure-comparable-contract.js");
 const Seven=require("./advanced-seven-day-comparable-contract.js");
+const Cross=require("./advanced-cross-family-analysis.js");
 
 const CONTRACT_VERSION="advanced-p0-p4-boundary-v1";
 function evaluate(){
@@ -9,7 +10,7 @@ function evaluate(){
   p0ComparableFrameworkV2:Framework.validateAll(),
   p1EnclosureMultiStep:Enclosure.validateAll(),
   p2SevenDayFresh:{ok:Seven.validateItem(Seven.item)===null,error:Seven.validateItem(Seven.item)},
-  p3CrossFamilyAnalysisPresent:true
+  p3CrossFamilyAnalysisPresent:Boolean(Cross&&Cross.VERSION==="advanced-cross-family-analysis-v1")
  };
  const engineeringReady=Object.values(checks).every(value=>value===true||(value&&value.ok===true));
  return{
