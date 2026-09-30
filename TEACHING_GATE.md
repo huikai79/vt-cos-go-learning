@@ -318,3 +318,12 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - Double Atari 的 19×19 practice／immediate／24h delayed items 全部是公開 process evidence；公開答案可取得，因此不得進 private unseen formal evaluation。
 - `double-atari-kc-v1` 只作 provisional hypothesis identity，`kcStatus=not_promoted`、`constructValidated=false`；工程 PASS 不解除 KC validity、R1a/R1b、usability、accessibility、retention／transfer 或 learning-effect gate。
 - v1 urgent-atari stores 保持 read-only legacy；v2 不 migration、不雙寫、不用新 scorer 重解釋舊事件。
+
+
+## 2026-09-30 Change note｜Advanced P0–P4 overlap audit completion
+
+- P0 Double Atari Comparable Framework v2 是本輪開始前既有 current truth；本輪沒有建立平行 writer 或重寫 legacy urgent-atari event。
+- P1 Enclosure Capture、P2 fresh 7-day public process-check、P3 cross-family descriptive analysis 均固定為公開 Practice／Process Check；所有 first response、retry、presentation、actual delay 與版本可重算，但都不能作 private unseen Independent Evaluation。
+- Enclosure／Double Atari 的 KC 仍為 provisional / not promoted；cross-family analysis 不輸出 mastery、retention success、transfer success 或 learning effect。
+- P4 的 engineering-expansion stop 只限制後續工程擴張：在沒有新真人 evidence 或 correctness bottleneck 前，不新增 family／spacing heuristic／adaptive scheduler／mastery probability；它不表示 R1a、R1b、usability、accessibility 或 formal evaluation 已通過。
+- Formal Teaching：仍 BLOCKED；Formal Evaluation：仍 BLOCKED；Learning Effect：仍 NOT_MEASURED。

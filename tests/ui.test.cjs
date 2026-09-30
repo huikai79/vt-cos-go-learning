@@ -290,8 +290,9 @@ async function main() {
     assert.deepEqual(shortTalkNarrow, { open: true, columns: 1, pageOverflow: false, dialogOverflow: false, boardOverflow: false, ctaReachable: true });
 
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
-    const shortTalkZoom = await evaluate(socket, `(() => {
+    const shortTalkZoom = await evaluate(socket, `(async () => {
       document.documentElement.style.fontSize = '32px';
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       const dialog = document.querySelector('#lesson-intro-dialog');
       const result = {
         open: dialog.open,
@@ -299,6 +300,7 @@ async function main() {
         dialogOverflow: dialog.scrollWidth > dialog.clientWidth + 1
       };
       document.documentElement.style.fontSize = '';
+      await new Promise((resolve) => requestAnimationFrame(resolve));
       return result;
     })()`);
     assert.deepEqual(shortTalkZoom, { open: true, pageOverflow: false, dialogOverflow: false });
@@ -1298,6 +1300,57 @@ async function main() {
     assert.equal(comparableV2Flow.delayedPresented.scheduler,false);
     assert.equal(comparableV2Flow.delayedFirst.correct,false);
     assert.deepEqual(comparableV2Flow.delayedCompleted,{firstCorrect:false,eventualCorrect:true,attempts:2});
+
+    const enclosureFlow = await evaluate(socket, `(() => {
+      const button=document.querySelector('#enclosure-comparable-list [data-enclosure-item="enclosure-fullboard-practice-v1"]');
+      if(!button || button.disabled) throw new Error('Enclosure practice unavailable');
+      button.click();
+      function clickEnclosure(x,y){
+        const point=document.querySelector('#enclosure-comparable-board [data-enclosure-x="'+x+'"][data-enclosure-y="'+y+'"]');
+        if(!point) throw new Error('Enclosure point missing '+x+','+y);
+        point.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+      }
+      clickEnclosure(0,0);
+      const wrong=document.querySelector('#enclosure-comparable-feedback').textContent;
+      clickEnclosure(5,4);
+      const afterCut=document.querySelector('#enclosure-comparable-feedback').textContent;
+      clickEnclosure(5,5);
+      const completedText=document.querySelector('#enclosure-comparable-feedback').textContent;
+      const raw=JSON.parse(localStorage.getItem('go-advanced-enclosure-comparable-events-v1'));
+      const first0=raw.events.find(e=>e.type==='enclosure_move_first'&&e.decisionIndex===0);
+      const retry0=raw.events.find(e=>e.type==='enclosure_move_retry'&&e.decisionIndex===0);
+      const forced=raw.events.find(e=>e.type==='enclosure_opponent_move');
+      const first1=raw.events.find(e=>e.type==='enclosure_move_first'&&e.decisionIndex===1);
+      const done=raw.events.find(e=>e.type==='enclosure_completed');
+      return {
+        wrong,afterCut,completedText,
+        types:raw.events.map(e=>e.type),
+        first0:{correct:first0.correct,transfer:first0.transferLevel,formal:first0.formalEligible},
+        retry0:{correct:retry0.correct},
+        forced:{point:forced.point,forced:forced.forced,correct:forced.correct},
+        first1:{correct:first1.correct},
+        done:{first:done.decisionFirstCorrect,attempts:done.decisionAttempts,eventual:done.eventualCorrect}
+      };
+    })()`);
+    assert.match(enclosureFlow.wrong,/還沒有完成|第一次作答已保存/);
+    assert.match(enclosureFlow.afterCut,/唯一一口氣延長|第二手/);
+    assert.match(enclosureFlow.completedText,/先切斷援兵|完成提子/);
+    assert.equal(enclosureFlow.first0.correct,false);
+    assert.equal(enclosureFlow.first0.transfer,"T0");
+    assert.equal(enclosureFlow.first0.formal,false);
+    assert.equal(enclosureFlow.retry0.correct,true);
+    assert.deepEqual(enclosureFlow.forced,{point:[4,5],forced:true,correct:null});
+    assert.equal(enclosureFlow.first1.correct,true);
+    assert.deepEqual(enclosureFlow.done,{first:[false,true],attempts:[2,1],eventual:true});
+
+    const sevenDayLocked = await evaluate(socket, `(() => ({
+      disabled: document.querySelector('#seven-day-comparable-start').disabled,
+      summary: document.querySelector('#seven-day-comparable-summary').textContent,
+      rawAbsent: localStorage.getItem('go-advanced-seven-day-comparable-events-v1')===null
+    }))()`);
+    assert.equal(sevenDayLocked.disabled,true);
+    assert.match(sevenDayLocked.summary,/七天|一天後|還沒/);
+    assert.equal(sevenDayLocked.rawAbsent,true);
 
     const comparisonStart = await evaluate(socket, `(() => {
       const Comparison = window.GoDecisionComparison;

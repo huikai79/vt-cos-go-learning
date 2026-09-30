@@ -1,3 +1,5 @@
+2026-09-30 Advanced P0–P4 completion：進階全盤流程目前以三個不同 response/scoring family 作公開教學候選：urgent-atari rescue（一手救唯一一氣己方棋串）、Double Atari（一手同時讓恰好兩串分離對方棋進入一氣）、Enclosure Capture（兩步 learner response，中間為 rules-verified unique forced extension）。Double Atari 與 Enclosure Capture 都有 immediate、24h fresh、7d fresh 的公開 process-check 路徑；所有延後題都是新的局面，不重播前題。這只是課程／工程覆蓋，不表示三個 family 難度等同、KC 已驗證或延後學習成效已建立。
+
 2026-09-30 Comparable Framework v2：Advanced 的全盤可比較練習新增第二種能力候選「雙打吃」。學習者完成前不先看到手筋名稱；三個 19×19 公開局面依序為練習、新局面流程檢查、至少 24 小時後的第三局面。成功只由 rules engine 判定「同一手不立即提子，卻讓恰好兩串彼此分開、原本各兩氣的對方棋同時變成各一氣」。這批題只驗新 framework 能承載另一個 scoring mechanism；Double Atari 仍不是已驗 KC，局面之間也未建立真人難度可比性。
 
 2026-09-29 Delayed Comparable Retrieval v1：進階全盤可比較練習新增第三種時間條件：先完成公開的不同局面檢查，再至少隔 24 小時才開放另一個新的 19×19 局面。新局面仍只判「找出唯一只剩一氣的己方棋串，下一手讓它增加到至少兩氣」，不判全盤最佳手。24 小時是第一版固定練習基準，不是已證明最佳間隔；此公開延後檢查不作 formal unseen evaluation，也不據此宣稱 retention 或 transfer 已成立。

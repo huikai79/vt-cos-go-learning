@@ -20,8 +20,8 @@ function storage(){
 test("空的 Advanced stores 仍能形成完整、無權威升格的備份",()=>{
  const s=storage();
  const bundle=Exporter.buildBundle(s,{exportedAt:"2026-09-29T09:00:00.000Z"});
- assert.equal(bundle.bundleVersion,"advanced-evidence-bundle-v3");
- assert.equal(bundle.schemaVersion,3);
+ assert.equal(bundle.bundleVersion,"advanced-evidence-bundle-v4");
+ assert.equal(bundle.schemaVersion,4);
  assert.equal(bundle.complete,true);
  assert.deepEqual(bundle.errors,[]);
  assert.equal(bundle.authority,"advanced_practice_backup_only");
@@ -48,6 +48,13 @@ test("空的 Advanced stores 仍能形成完整、無權威升格的備份",()=>
  assert.equal(bundle.delayedComparableAnalysisV2.familyId,"double_atari");
  assert.equal(bundle.delayedComparableAnalysisV2.retentionConclusion,null);
  assert.equal(bundle.delayedComparableAnalysisV2.transferConclusion,null);
+ assert.equal(bundle.streams.enclosureComparable.status,"ok");
+ assert.equal(bundle.streams.sevenDayComparable.status,"ok");
+ assert.equal(bundle.enclosureComparableAnalysis.familyId,"enclosure_capture");
+ assert.equal(bundle.sevenDayComparableAnalysis.familyId,"double_atari");
+ assert.equal(bundle.crossFamilyAnalysis.authority,"descriptive_cross_family_process_check_only");
+ assert.equal(bundle.crossFamilyAnalysis.aggregation,"no_combined_score");
+ assert.equal(bundle.crossFamilyAnalysis.learningEffect,null);
 });
 
 test("choice practice 健康事件會原樣保留在 bundle",()=>{
@@ -127,7 +134,10 @@ test("storage read exception 只污染對應 streams，不偽裝成空 store",()
 test("Advanced 頁提供單向原始事件備份，明示不屬正式評量",()=>{
  const html=fs.readFileSync(path.join(__dirname,"..","advanced.html"),"utf8");
  assert.match(html,/advanced-comparable-analysis\.js\?v=advanced-comparable-analysis-v1/);
- assert.match(html,/advanced-evidence-export\.js\?v=advanced-evidence-export-v3/);
+ assert.match(html,/advanced-evidence-export\.js\?v=advanced-evidence-export-v4/);
+ assert.match(html,/advanced-enclosure-comparable\.js\?v=advanced-enclosure-comparable-v1/);
+ assert.match(html,/advanced-seven-day-comparable\.js\?v=advanced-seven-day-comparable-v1/);
+ assert.match(html,/advanced-cross-family-analysis\.js\?v=advanced-cross-family-analysis-v1/);
  assert.match(html,/advanced-delayed-comparable-analysis\.js\?v=advanced-delayed-comparable-v1/);
  assert.match(html,/advanced-delayed-comparable\.js\?v=advanced-delayed-comparable-v1/);
  assert.match(html,/advanced-comparable-framework-v2\.js\?v=advanced-comparable-framework-v2/);
@@ -138,7 +148,7 @@ test("Advanced 頁提供單向原始事件備份，明示不屬正式評量",()=
  assert.match(html,/id="advanced-export-evidence"/);
  assert.match(html,/匯出進階練習原始事件/);
  assert.match(html,/只作備份與分析，不作正式評量/);
- assert.match(html,/兩組全盤可比較局面與延後全盤判斷紀錄/);
+ assert.match(html,/多組全盤可比較局面、兩步包圍吃子、一天與七天後流程檢查紀錄/);
 });
 
 
@@ -221,4 +231,30 @@ test("Comparable v2 malformed 只污染 v2 stream，不改寫 legacy v1",()=>{
  assert.equal(bundle.streams.comparableV2.status,"error");
  assert.equal(bundle.streams.comparableV2.store,null);
  assert.ok(bundle.errors.some(item=>item.stream==="comparableV2"));
+});
+
+
+test("seven-day malformed 只污染 seven-day stream，cross-family 不得 fallback 成成功",()=>{
+ const s=storage();
+ const Seven=require("../advanced-seven-day-comparable-events.js");
+ s.setItem(Seven.STORAGE_KEY,"{seven-day-broken");
+ const bundle=Exporter.buildBundle(s,{exportedAt:"2026-09-30T12:00:00.000Z"});
+ assert.equal(bundle.complete,false);
+ assert.equal(bundle.streams.sevenDayComparable.status,"error");
+ assert.equal(bundle.streams.comparableV2.status,"ok");
+ assert.equal(bundle.crossFamilyAnalysis,null);
+ assert.ok(bundle.errors.some(item=>item.stream==="sevenDayComparable"));
+});
+
+test("enclosure malformed 只污染 enclosure stream，其他 comparable streams 保留",()=>{
+ const s=storage();
+ const Enclosure=require("../advanced-enclosure-comparable-events.js");
+ s.setItem(Enclosure.STORAGE_KEY,"{enclosure-broken");
+ const bundle=Exporter.buildBundle(s,{exportedAt:"2026-09-30T12:00:00.000Z"});
+ assert.equal(bundle.complete,false);
+ assert.equal(bundle.streams.enclosureComparable.status,"error");
+ assert.equal(bundle.streams.comparablePosition.status,"ok");
+ assert.equal(bundle.streams.comparableV2.status,"ok");
+ assert.equal(bundle.enclosureComparableAnalysis,null);
+ assert.equal(bundle.crossFamilyAnalysis,null);
 });
