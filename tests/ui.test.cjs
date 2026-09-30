@@ -1091,6 +1091,99 @@ async function main() {
       {firstCorrect:false,eventualCorrect:true,attempts:2}
     );
 
+    const comparableV2Flow = await evaluate(socket, `(() => {
+      const legacyBefore = localStorage.getItem('go-advanced-comparable-position-events-v1');
+      const first = document.querySelector('#comparable-v2-list [data-comparable-v2-item="double-atari-fullboard-practice-v1"]');
+      if (!first || first.disabled) throw new Error('Double Atari practice unavailable');
+      first.click();
+
+      function clickV2(x,y){
+        const point=document.querySelector('#comparable-v2-board [data-comparable-v2-x="'+x+'"][data-comparable-v2-y="'+y+'"]');
+        if(!point) throw new Error('Comparable v2 point missing '+x+','+y);
+        point.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+      }
+
+      const beforeName=document.querySelector('#comparable-v2-feedback').textContent;
+      clickV2(0,0);
+      const practiceWrong=document.querySelector('#comparable-v2-feedback').textContent;
+      clickV2(6,5);
+      const practiceCorrect=document.querySelector('#comparable-v2-feedback').textContent;
+      document.querySelector('#comparable-v2-next').click();
+
+      const processRole=document.querySelector('#comparable-v2-role').textContent;
+      clickV2(0,0);
+      clickV2(13,10);
+      const processCorrect=document.querySelector('#comparable-v2-feedback').textContent;
+      document.querySelector('#comparable-v2-next').click();
+
+      const delayedBefore=document.querySelector('#comparable-v2-list [data-comparable-v2-delayed="double-atari-fullboard-delayed-v1"]');
+      const delayedBeforeState={disabled:delayedBefore.disabled,text:delayedBefore.textContent};
+
+      const key='go-advanced-comparable-events-v2';
+      const immediate=JSON.parse(localStorage.getItem(key));
+      const shift=25*60*60*1000;
+      immediate.events=immediate.events.map(event=>({...event,occurredAt:new Date(Date.parse(event.occurredAt)-shift).toISOString()}));
+      localStorage.setItem(key,JSON.stringify(immediate));
+      window.GoAdvancedComparableV2.renderList();
+
+      const delayed=document.querySelector('#comparable-v2-list [data-comparable-v2-delayed="double-atari-fullboard-delayed-v1"]');
+      if(!delayed || delayed.disabled) throw new Error('Double Atari delayed item did not become due');
+      const delayedDueText=delayed.textContent;
+      delayed.click();
+      clickV2(0,0);
+      const delayedWrong=document.querySelector('#comparable-v2-feedback').textContent;
+      clickV2(2,14);
+      const delayedCorrect=document.querySelector('#comparable-v2-feedback').textContent;
+
+      const raw=JSON.parse(localStorage.getItem('go-advanced-comparable-events-v2'));
+      const delayedRaw=JSON.parse(localStorage.getItem('go-advanced-delayed-comparable-events-v2'));
+      const practiceCompleted=raw.events.find(e=>e.itemId==='double-atari-fullboard-practice-v1'&&e.type==='comparable_completed');
+      const processPresented=raw.events.find(e=>e.itemId==='double-atari-fullboard-process-v1'&&e.type==='comparable_presented');
+      const processFirst=raw.events.find(e=>e.itemId==='double-atari-fullboard-process-v1'&&e.type==='comparable_first');
+      const processCompleted=raw.events.find(e=>e.itemId==='double-atari-fullboard-process-v1'&&e.type==='comparable_completed');
+      const delayedPresented=delayedRaw.events.find(e=>e.type==='delayed_presented');
+      const delayedFirst=delayedRaw.events.find(e=>e.type==='delayed_first');
+      const delayedCompleted=delayedRaw.events.find(e=>e.type==='delayed_completed');
+
+      return {
+        beforeName,practiceWrong,practiceCorrect,processRole,processCorrect,
+        delayedBeforeState,delayedDueText,delayedWrong,delayedCorrect,
+        legacyUnchanged:localStorage.getItem('go-advanced-comparable-position-events-v1')===legacyBefore,
+        immediateTypes:raw.events.map(e=>e.type),
+        practiceCompleted:{firstCorrect:practiceCompleted.firstCorrect,eventualCorrect:practiceCompleted.eventualCorrect,attempts:practiceCompleted.attempts},
+        processPresented:{family:processPresented.familyId,scoring:processPresented.scoringContractVersion,transfer:processPresented.transferLevel,formal:processPresented.formalEligible,skillUpdate:processPresented.skillUpdateEligible,scheduler:processPresented.schedulerEligible,kcStatus:processPresented.kcStatus},
+        processFirst:{correct:processFirst.correct},
+        processCompleted:{firstCorrect:processCompleted.firstCorrect,eventualCorrect:processCompleted.eventualCorrect,attempts:processCompleted.attempts},
+        delayedTypes:delayedRaw.events.map(e=>e.type),
+        delayedPresented:{family:delayedPresented.familyId,timing:delayedPresented.retrievalTiming,delay:delayedPresented.actualDelayMs,formal:delayedPresented.formalEligible,scheduler:delayedPresented.schedulerEligible},
+        delayedFirst:{correct:delayedFirst.correct},
+        delayedCompleted:{firstCorrect:delayedCompleted.firstCorrect,eventualCorrect:delayedCompleted.eventualCorrect,attempts:delayedCompleted.attempts}
+      };
+    })()`);
+    assert.doesNotMatch(comparableV2Flow.beforeName,/雙打吃/);
+    assert.match(comparableV2Flow.practiceWrong,/沒有同時讓恰好兩串|第一次作答已保存/);
+    assert.match(comparableV2Flow.practiceCorrect,/雙打吃/);
+    assert.equal(comparableV2Flow.processRole,"換個局面再判斷");
+    assert.match(comparableV2Flow.processCorrect,/雙打吃/);
+    assert.equal(comparableV2Flow.delayedBeforeState.disabled,true);
+    assert.match(comparableV2Flow.delayedBeforeState.text,/還沒到時間/);
+    assert.match(comparableV2Flow.delayedDueText,/已到時間/);
+    assert.match(comparableV2Flow.delayedWrong,/沒有同時讓恰好兩串|第一次作答已保存/);
+    assert.match(comparableV2Flow.delayedCorrect,/雙打吃/);
+    assert.equal(comparableV2Flow.legacyUnchanged,true);
+    assert.deepEqual(comparableV2Flow.practiceCompleted,{firstCorrect:false,eventualCorrect:true,attempts:2});
+    assert.deepEqual(comparableV2Flow.processPresented,{family:"double_atari",scoring:"double-atari-two-targets-rules-v1",transfer:"T2",formal:false,skillUpdate:false,scheduler:false,kcStatus:"not_promoted"});
+    assert.equal(comparableV2Flow.processFirst.correct,false);
+    assert.deepEqual(comparableV2Flow.processCompleted,{firstCorrect:false,eventualCorrect:true,attempts:2});
+    assert.deepEqual(comparableV2Flow.delayedTypes,["delayed_presented","delayed_first","delayed_retry","delayed_completed"]);
+    assert.equal(comparableV2Flow.delayedPresented.family,"double_atari");
+    assert.equal(comparableV2Flow.delayedPresented.timing,"delayed");
+    assert.ok(comparableV2Flow.delayedPresented.delay>=24*60*60*1000);
+    assert.equal(comparableV2Flow.delayedPresented.formal,false);
+    assert.equal(comparableV2Flow.delayedPresented.scheduler,false);
+    assert.equal(comparableV2Flow.delayedFirst.correct,false);
+    assert.deepEqual(comparableV2Flow.delayedCompleted,{firstCorrect:false,eventualCorrect:true,attempts:2});
+
     const comparisonStart = await evaluate(socket, `(() => {
       const Comparison = window.GoDecisionComparison;
       window.__originalDecisionComparisonProvider = window.GoDecisionComparisonProvider.requestComparison;

@@ -8,7 +8,11 @@
   comparable:require("./advanced-comparable-position-events.js"),
   comparableAnalysis:require("./advanced-comparable-analysis.js"),
   delayedComparable:require("./advanced-delayed-comparable-events.js"),
-  delayedComparableAnalysis:require("./advanced-delayed-comparable-analysis.js")
+  delayedComparableAnalysis:require("./advanced-delayed-comparable-analysis.js"),
+  comparableV2:require("./advanced-comparable-events-v2.js"),
+  comparableAnalysisV2:require("./advanced-comparable-analysis-v2.js"),
+  delayedComparableV2:require("./advanced-delayed-comparable-events-v2.js"),
+  delayedComparableAnalysisV2:require("./advanced-delayed-comparable-analysis-v2.js")
  }:{
   choice:root.GoAdvancedEvents,
   sequence:root.GoAdvancedSequenceEvents,
@@ -18,14 +22,18 @@
   comparable:root.GoAdvancedComparablePositionEvents,
   comparableAnalysis:root.GoAdvancedComparableAnalysis,
   delayedComparable:root.GoAdvancedDelayedComparableEvents,
-  delayedComparableAnalysis:root.GoAdvancedDelayedComparableAnalysis
+  delayedComparableAnalysis:root.GoAdvancedDelayedComparableAnalysis,
+  comparableV2:root.GoAdvancedComparableEventsV2,
+  comparableAnalysisV2:root.GoAdvancedComparableAnalysisV2,
+  delayedComparableV2:root.GoAdvancedDelayedComparableEventsV2,
+  delayedComparableAnalysisV2:root.GoAdvancedDelayedComparableAnalysisV2
  };
  const api=factory(deps);
  if(typeof module==="object"&&module.exports)module.exports=api;
  if(root)root.GoAdvancedEvidenceExport=api;
 })(typeof globalThis!=="undefined"?globalThis:this,function(D){"use strict";
 
- const BUNDLE_VERSION="advanced-evidence-bundle-v2";
+ const BUNDLE_VERSION="advanced-evidence-bundle-v3";
 
  function errorEntry(name,storageKey,error){
   return{name,storageKey,status:"error",error:String(error||"unknown_error"),store:null};
@@ -68,11 +76,15 @@
    decisionComparison:safeRead("decisionComparison",D.comparison.STORAGE_KEY,D.comparison.read,storage,D.comparison.validate),
    decisionReplay:safeRead("decisionReplay",D.replay.STORAGE_KEY,D.replay.read,storage,D.replay.validate),
    comparablePosition:safeRead("comparablePosition",D.comparable.STORAGE_KEY,D.comparable.read,storage,D.comparable.validate),
-   delayedComparable:safeRead("delayedComparable",D.delayedComparable.STORAGE_KEY,D.delayedComparable.read,storage,D.delayedComparable.validate,D.delayedComparable.validateStore)
+   delayedComparable:safeRead("delayedComparable",D.delayedComparable.STORAGE_KEY,D.delayedComparable.read,storage,D.delayedComparable.validate,D.delayedComparable.validateStore),
+   comparableV2:safeRead("comparableV2",D.comparableV2.STORAGE_KEY,D.comparableV2.read,storage,D.comparableV2.validate,D.comparableV2.validateStore),
+   delayedComparableV2:safeRead("delayedComparableV2",D.delayedComparableV2.STORAGE_KEY,D.delayedComparableV2.read,storage,D.delayedComparableV2.validate,D.delayedComparableV2.validateStore)
   };
   const errors=Object.values(streams).filter(entry=>entry.status==="error").map(entry=>({stream:entry.name,error:entry.error}));
   let comparableAnalysis=null;
   let delayedComparableAnalysis=null;
+  let comparableAnalysisV2=null;
+  let delayedComparableAnalysisV2=null;
   if(streams.comparablePosition.status==="ok"){
    try{
     const result=D.comparableAnalysis.summarizeStore({
@@ -106,8 +118,41 @@
     errors.push({stream:"delayedComparableAnalysis",error:"analysis_exception:"+(error&&error.message||"unknown")});
    }
   }
+  if(streams.comparableV2.status==="ok"){
+   try{
+    const result=D.comparableAnalysisV2.summarizeStore({
+     schemaVersion:streams.comparableV2.schemaVersion,
+     eventStreamVersion:streams.comparableV2.eventStreamVersion,
+     events:streams.comparableV2.events
+    });
+    if(result&&result.ok===true)comparableAnalysisV2=result;
+    else errors.push({stream:"comparableAnalysisV2",error:result&&result.error||"analysis_failed"});
+   }catch(error){
+    errors.push({stream:"comparableAnalysisV2",error:"analysis_exception:"+(error&&error.message||"unknown")});
+   }
+  }
+  if(streams.comparableV2.status==="ok"&&streams.delayedComparableV2.status==="ok"){
+   try{
+    const result=D.delayedComparableAnalysisV2.summarize(
+     {
+      schemaVersion:streams.comparableV2.schemaVersion,
+      eventStreamVersion:streams.comparableV2.eventStreamVersion,
+      events:streams.comparableV2.events
+     },
+     {
+      schemaVersion:streams.delayedComparableV2.schemaVersion,
+      eventStreamVersion:streams.delayedComparableV2.eventStreamVersion,
+      events:streams.delayedComparableV2.events
+     }
+    );
+    if(result&&result.ok===true)delayedComparableAnalysisV2=result;
+    else errors.push({stream:"delayedComparableAnalysisV2",error:result&&result.error||"analysis_failed"});
+   }catch(error){
+    errors.push({stream:"delayedComparableAnalysisV2",error:"analysis_exception:"+(error&&error.message||"unknown")});
+   }
+  }
   return{
-   schemaVersion:2,
+   schemaVersion:3,
    bundleVersion:BUNDLE_VERSION,
    exportedAt:exportedAt||new Date().toISOString(),
    scope:"advanced_local_evidence_backup",
@@ -122,7 +167,9 @@
    learningEffect:null,
    streams,
    comparableAnalysis,
-   delayedComparableAnalysis
+   delayedComparableAnalysis,
+   comparableAnalysisV2,
+   delayedComparableAnalysisV2
   };
  }
 

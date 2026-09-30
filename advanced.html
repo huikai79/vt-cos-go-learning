@@ -25,7 +25,13 @@
   <script defer src="advanced-delayed-comparable-events.js?v=advanced-delayed-comparable-v1"></script>
   <script defer src="advanced-delayed-comparable-policy.js?v=advanced-delayed-comparable-v1"></script>
   <script defer src="advanced-delayed-comparable-analysis.js?v=advanced-delayed-comparable-v1"></script>
-  <script defer src="advanced-evidence-export.js?v=advanced-evidence-export-v1"></script>
+  <script defer src="advanced-comparable-framework-v2.js?v=advanced-comparable-framework-v2"></script>
+  <script defer src="advanced-comparable-events-v2.js?v=advanced-comparable-framework-v2"></script>
+  <script defer src="advanced-comparable-analysis-v2.js?v=advanced-comparable-framework-v2"></script>
+  <script defer src="advanced-delayed-comparable-events-v2.js?v=advanced-comparable-framework-v2"></script>
+  <script defer src="advanced-delayed-comparable-policy-v2.js?v=advanced-comparable-framework-v2"></script>
+  <script defer src="advanced-delayed-comparable-analysis-v2.js?v=advanced-comparable-framework-v2"></script>
+  <script defer src="advanced-evidence-export.js?v=advanced-evidence-export-v3"></script>
   <script defer src="advanced-sequence-contract.js?v=advanced-sequence-v1"></script>
   <script defer src="advanced-sequence-policy.js?v=advanced-fixed-interleave-v1"></script>
   <script defer src="advanced.js?v=advanced-training-v3"></script>
@@ -34,6 +40,7 @@
   <script defer src="advanced-decision-review.js?v=advanced-decision-review-v2"></script>
   <script defer src="advanced-comparable-position.js?v=advanced-comparable-position-v1"></script>
   <script defer src="advanced-delayed-comparable.js?v=advanced-delayed-comparable-v1"></script>
+  <script defer src="advanced-comparable-v2.js?v=advanced-comparable-framework-v2"></script>
   <script defer src="advanced-evidence-export-ui.js?v=advanced-evidence-export-v1"></script>
 </head>
 <body class="advanced-page">
@@ -311,10 +318,40 @@
       </div>
     </section>
 
+    <section class="advanced-comparable-section" aria-labelledby="comparable-v2-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">第二種全盤判斷</span>
+          <h2 id="comparable-v2-title">在不同盤面同時限制兩串棋</h2>
+        </div>
+        <p id="comparable-v2-summary">尚未開始這組全盤判斷。</p>
+      </div>
+      <div class="decision-review-card">
+        <div class="decision-review-controls">
+          <p>這組題改用另一種棋盤條件。完成前不會先告訴你手筋名稱；請自己掃描全盤，找出一手能讓兩串彼此分開的對方棋同時各只剩一口氣，而且這一手本身不能立即提子。</p>
+          <div id="comparable-v2-list" class="decision-replay-list" aria-label="第二種全盤判斷局面"></div>
+          <p class="answer-policy">前兩個局面依固定順序完成；第三個會在第二個局面完成至少 24 小時後才開放。這些公開題只作練習與流程檢查，不作正式能力評量。</p>
+        </div>
+        <div id="comparable-v2-workspace" class="decision-review-board-wrap" hidden>
+          <div class="advanced-sequence-board-head">
+            <span id="comparable-v2-role">練習局面</span>
+            <span id="comparable-v2-side">黑棋下</span>
+          </div>
+          <p id="comparable-v2-prompt" class="advanced-prompt"></p>
+          <div id="comparable-v2-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="comparable-v2-board" class="decision-review-board" tabindex="0" role="application" aria-label="19 路第二種全盤判斷棋盤；方向鍵移動，Enter 鍵落子"></div>
+          <p class="decision-review-meta">方向鍵移動 · Enter 鍵落子；也可以直接點棋盤。</p>
+          <div class="advanced-actions">
+            <button class="primary-button" id="comparable-v2-next" type="button" disabled>下一個局面 →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="advanced-roadmap" aria-labelledby="advanced-data-title">
       <span class="advanced-kicker">本機資料備份</span>
       <h2 id="advanced-data-title">匯出進階練習原始事件</h2>
-      <p>把本頁的選擇題、多手棋盤、決策點複盤、KataGo 比較、稍後重做、全盤可比較局面與延後全盤判斷紀錄一起匯出。舊版多手事件會按原版本分開保存，不會被目前版本改寫。</p>
+      <p>把本頁的選擇題、多手棋盤、決策點複盤、KataGo 比較、稍後重做、兩組全盤可比較局面與延後全盤判斷紀錄一起匯出。舊版多手事件會按原版本分開保存，不會被目前版本改寫。</p>
       <p>這份 JSON 只作備份與分析，不作正式評量，也不會改變核心課程紀錄、能力判定或複習安排。</p>
       <div class="advanced-actions">
         <button class="subtle-button" id="advanced-export-evidence" type="button">匯出進階練習原始事件</button>

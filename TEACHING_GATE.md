@@ -295,3 +295,10 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 不讓公開題恢復 unseen 資格；
 - 不改 formal teaching candidate；
 - 未存在 verified private pool 時，formal evaluation 仍維持 `BLOCKED`。
+
+
+## 2026-09-30 Change note｜Comparable Framework v2 + Double Atari
+
+- Double Atari 的 19×19 practice／immediate／24h delayed items 全部是公開 process evidence；公開答案可取得，因此不得進 private unseen formal evaluation。
+- `double-atari-kc-v1` 只作 provisional hypothesis identity，`kcStatus=not_promoted`、`constructValidated=false`；工程 PASS 不解除 KC validity、R1a/R1b、usability、accessibility、retention／transfer 或 learning-effect gate。
+- v1 urgent-atari stores 保持 read-only legacy；v2 不 migration、不雙寫、不用新 scorer 重解釋舊事件。

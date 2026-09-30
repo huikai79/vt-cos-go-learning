@@ -20,8 +20,8 @@ function storage(){
 test("空的 Advanced stores 仍能形成完整、無權威升格的備份",()=>{
  const s=storage();
  const bundle=Exporter.buildBundle(s,{exportedAt:"2026-09-29T09:00:00.000Z"});
- assert.equal(bundle.bundleVersion,"advanced-evidence-bundle-v2");
- assert.equal(bundle.schemaVersion,2);
+ assert.equal(bundle.bundleVersion,"advanced-evidence-bundle-v3");
+ assert.equal(bundle.schemaVersion,3);
  assert.equal(bundle.complete,true);
  assert.deepEqual(bundle.errors,[]);
  assert.equal(bundle.authority,"advanced_practice_backup_only");
@@ -41,6 +41,13 @@ test("空的 Advanced stores 仍能形成完整、無權威升格的備份",()=>
  assert.equal(bundle.delayedComparableAnalysis.authority,"descriptive_delayed_process_check_only");
  assert.equal(bundle.delayedComparableAnalysis.retentionConclusion,null);
  assert.equal(bundle.delayedComparableAnalysis.transferConclusion,null);
+ assert.equal(bundle.streams.comparableV2.status,"ok");
+ assert.equal(bundle.streams.delayedComparableV2.status,"ok");
+ assert.equal(bundle.comparableAnalysisV2.familyId,"double_atari");
+ assert.equal(bundle.comparableAnalysisV2.transferConclusion,null);
+ assert.equal(bundle.delayedComparableAnalysisV2.familyId,"double_atari");
+ assert.equal(bundle.delayedComparableAnalysisV2.retentionConclusion,null);
+ assert.equal(bundle.delayedComparableAnalysisV2.transferConclusion,null);
 });
 
 test("choice practice 健康事件會原樣保留在 bundle",()=>{
@@ -120,14 +127,18 @@ test("storage read exception 只污染對應 streams，不偽裝成空 store",()
 test("Advanced 頁提供單向原始事件備份，明示不屬正式評量",()=>{
  const html=fs.readFileSync(path.join(__dirname,"..","advanced.html"),"utf8");
  assert.match(html,/advanced-comparable-analysis\.js\?v=advanced-comparable-analysis-v1/);
- assert.match(html,/advanced-evidence-export\.js\?v=advanced-evidence-export-v1/);
+ assert.match(html,/advanced-evidence-export\.js\?v=advanced-evidence-export-v3/);
  assert.match(html,/advanced-delayed-comparable-analysis\.js\?v=advanced-delayed-comparable-v1/);
  assert.match(html,/advanced-delayed-comparable\.js\?v=advanced-delayed-comparable-v1/);
+ assert.match(html,/advanced-comparable-framework-v2\.js\?v=advanced-comparable-framework-v2/);
+ assert.match(html,/advanced-comparable-events-v2\.js\?v=advanced-comparable-framework-v2/);
+ assert.match(html,/advanced-delayed-comparable-policy-v2\.js\?v=advanced-comparable-framework-v2/);
+ assert.match(html,/advanced-comparable-v2\.js\?v=advanced-comparable-framework-v2/);
  assert.match(html,/advanced-evidence-export-ui\.js\?v=advanced-evidence-export-v1/);
  assert.match(html,/id="advanced-export-evidence"/);
  assert.match(html,/匯出進階練習原始事件/);
  assert.match(html,/只作備份與分析，不作正式評量/);
- assert.match(html,/延後全盤判斷紀錄/);
+ assert.match(html,/兩組全盤可比較局面與延後全盤判斷紀錄/);
 });
 
 
@@ -195,4 +206,19 @@ test("delayed lifecycle corruption 不得被 bundle 標成健康 stream",()=>{
  assert.equal(bundle.complete,false);
  assert.equal(bundle.streams.delayedComparable.status,"error");
  assert.match(bundle.streams.delayedComparable.error,/delayed_store_presentation_count_invalid/);
+});
+
+
+test("Comparable v2 malformed 只污染 v2 stream，不改寫 legacy v1",()=>{
+ const s=storage();
+ const V1=require("../advanced-comparable-position-events.js");
+ const V2=require("../advanced-comparable-events-v2.js");
+ s.setItem(V1.STORAGE_KEY,JSON.stringify({schemaVersion:1,eventStreamVersion:V1.STREAM_VERSION,events:[]}));
+ s.setItem(V2.STORAGE_KEY,"{broken-v2");
+ const bundle=Exporter.buildBundle(s,{exportedAt:"2026-09-30T12:00:00.000Z"});
+ assert.equal(bundle.complete,false);
+ assert.equal(bundle.streams.comparablePosition.status,"ok");
+ assert.equal(bundle.streams.comparableV2.status,"error");
+ assert.equal(bundle.streams.comparableV2.store,null);
+ assert.ok(bundle.errors.some(item=>item.stream==="comparableV2"));
 });
