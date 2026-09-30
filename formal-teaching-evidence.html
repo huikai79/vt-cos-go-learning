@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="application-name" content="VT-COS｜悟之一手">
+  <title>VT-COS｜悟之一手｜正式教學真人證據收集</title>
+  <style>
+    :root{color-scheme:light;font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;color:#24211c;background:#f5f1e8}
+    *{box-sizing:border-box}body{margin:0}main{max-width:980px;margin:auto;padding:32px 20px 72px}
+    h1{font-size:31px;margin:0 0 12px}.brand{margin:0 0 8px;color:#315b44;font-size:13px;font-weight:750;letter-spacing:.08em}
+    .notice,.binding,.participant,.accessibility{background:#fffdf7;border:1px solid #d8cfbd;border-radius:14px;padding:18px;margin:16px 0}
+    .binding dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 14px}.binding dt{font-weight:750}.binding dd{margin:0;overflow-wrap:anywhere}
+    .participants{display:grid;gap:16px}.participant h2,.accessibility h2{margin:0 0 12px;font-size:20px}
+    label{display:grid;gap:6px;margin:10px 0}input,textarea,button{font:inherit}input[type="text"],textarea{width:100%;padding:10px;border:1px solid #aaa08e;border-radius:8px;background:white}
+    .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px 16px}.check{display:flex;gap:8px;align-items:flex-start;margin:4px 0}.check input{margin-top:4px}
+    textarea{min-height:72px;resize:vertical}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}button{border:0;border-radius:9px;padding:11px 16px;color:white;background:#315b44;cursor:pointer}button.secondary{color:#315b44;background:#e3ecdf;border:1px solid #315b44}
+    #message{margin-top:14px;min-height:1.5em;color:#6f311f;line-height:1.6}.stop{border-left:4px solid #8f3c2b;padding-left:14px;line-height:1.7}
+    @media(max-width:620px){h1{font-size:26px}.binding dl{grid-template-columns:1fr}.binding dd{margin-bottom:8px}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="brand">VT-COS｜悟之一手</p>
+  <h1>正式教學真人證據收集</h1>
+  <div class="notice">
+    本頁只記錄同一凍結 candidate 的三位 target novice usability 與真人 accessibility spot check。觀察者不能替參與者完成任務；失敗、中止或 blocking issue 必須保留。這不是學習成效評量，也不建立 private unseen holdout。
+  </div>
+  <section class="binding">
+    <dl>
+      <dt>Candidate</dt><dd id="candidate-id"></dd>
+      <dt>Candidate fingerprint</dt><dd id="candidate-fingerprint"></dd>
+      <dt>R1 content fingerprint</dt><dd id="r1-fingerprint"></dd>
+      <dt>Protocol</dt><dd><code>go-formal-teaching-evidence-v2</code></dd>
+    </dl>
+  </section>
+  <section class="participants" id="participants"></section>
+  <section class="accessibility">
+    <h2>真人 accessibility spot check</h2>
+    <div class="checks" id="accessibility-checks"></div>
+    <label>證據引用<input id="accessibility-reference" type="text" placeholder="例如 local-report/accessibility-2026-09-30"></label>
+    <label>Blocking issues（每行一項；沒有就留空）<textarea id="accessibility-blockers"></textarea></label>
+  </section>
+  <p class="stop"><strong>停止線：</strong>任一初學者不是 target novice、漏做任何 critical task、出現 blocking issue、缺 evidence reference，或 accessibility 任一檢查未通過，都不得匯出「完成回條」。可匯出草稿保存現況。</p>
+  <div class="actions"><button id="export-draft" class="secondary" type="button">匯出草稿</button><button id="export-final" type="button">匯出完成回條</button></div>
+  <div id="message" role="status">請逐位完成觀察；三位都必須使用上方同一 candidate。</div>
+</main>
+<script src="formal-teaching-evidence.js"></script>
+</body>
+</html>
