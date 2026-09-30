@@ -1,3 +1,5 @@
+2026-09-30 Comparable Framework v2：Advanced 的全盤可比較練習新增第二種能力候選「雙打吃」。學習者完成前不先看到手筋名稱；三個 19×19 公開局面依序為練習、新局面流程檢查、至少 24 小時後的第三局面。成功只由 rules engine 判定「同一手不立即提子，卻讓恰好兩串彼此分開、原本各兩氣的對方棋同時變成各一氣」。這批題只驗新 framework 能承載另一個 scoring mechanism；Double Atari 仍不是已驗 KC，局面之間也未建立真人難度可比性。
+
 2026-09-29 Delayed Comparable Retrieval v1：進階全盤可比較練習新增第三種時間條件：先完成公開的不同局面檢查，再至少隔 24 小時才開放另一個新的 19×19 局面。新局面仍只判「找出唯一只剩一氣的己方棋串，下一手讓它增加到至少兩氣」，不判全盤最佳手。24 小時是第一版固定練習基準，不是已證明最佳間隔；此公開延後檢查不作 formal unseen evaluation，也不據此宣稱 retention 或 transfer 已成立。
 
 2026-09-29 Comparable Position v1：Advanced 新增 4 個本站原創 19×19 全盤局面，前兩題作練習、後兩題換成不同棋串大小／拓撲／棋色／盤面位置等條件再判斷。v1 只問「找出唯一只剩一氣的己方棋串，下一手讓它脫離立即被提的危險」，由 rules engine 判定；不把這題型外推成全盤最佳手。後兩題是公開流程檢查，不是 formal unseen evaluation；完成率不能直接稱 mastery 或 learning effect。
