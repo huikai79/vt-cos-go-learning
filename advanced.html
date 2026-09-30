@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="advanced.css?v=advanced-training-v9">
   <script defer src="go.js"></script>
   <script defer src="sgf.js?v=sgf-decision-review-v1"></script>
+  <script defer src="advanced-decision-review-tools.js?v=advanced-decision-review-r1-r7-v1"></script>
+  <script defer src="advanced-decision-review-package.js?v=advanced-decision-review-r1-r7-v1"></script>
   <script defer src="advanced-decision-review-events.js?v=advanced-decision-review-v1"></script>
   <script defer src="decision-comparison.js?v=decision-comparison-v1"></script>
   <script defer src="decision-comparison-provider.js?v=decision-comparison-v1"></script>
@@ -47,7 +49,7 @@
   <script defer src="advanced.js?v=advanced-training-v3"></script>
   <script defer src="advanced-sequence.js?v=advanced-sequence-v6"></script>
   <script defer src="advanced-decision-replay.js?v=advanced-decision-replay-v1"></script>
-  <script defer src="advanced-decision-review.js?v=advanced-decision-review-v2"></script>
+  <script defer src="advanced-decision-review.js?v=advanced-decision-review-r1-r7-v1"></script>
   <script defer src="advanced-comparable-position.js?v=advanced-comparable-position-v1"></script>
   <script defer src="advanced-delayed-comparable.js?v=advanced-delayed-comparable-v1"></script>
   <script defer src="advanced-comparable-v2.js?v=advanced-comparable-framework-v2"></script>
@@ -196,9 +198,43 @@
           <label for="decision-review-file"><strong>1. 匯入 19 路 SGF</strong></label>
           <input id="decision-review-file" type="file" accept=".sgf,application/x-go-sgf">
           <p id="decision-review-source" class="decision-review-meta">尚未匯入棋譜。</p>
-          <label for="decision-review-move"><strong>2. 選擇一個可落子的決策點</strong></label>
+
+          <label for="decision-review-perspective"><strong>2. 這盤棋要怎麼複盤？</strong></label>
+          <select id="decision-review-perspective" disabled>
+            <option value="neutral">只查看棋譜</option>
+            <option value="black">我執黑</option>
+            <option value="white">我執白</option>
+          </select>
+          <p class="decision-review-meta">如果不是自己的棋譜或不確定執棋方，保持「只查看棋譜」；系統不會猜學習者是哪一方。</p>
+
+          <label for="decision-review-move"><strong>3. 選擇一個可落子的決策點</strong></label>
           <select id="decision-review-move" disabled><option value="">先匯入棋譜</option></select>
           <p id="decision-review-meta" class="decision-review-meta">原棋譜著手在你提出第一候選前保持隱藏。</p>
+
+          <div class="decision-review-event-panel">
+            <strong>棋盤事件候選</strong>
+            <p>只列規則重建可確認的事件，用來快速定位；它們不等於錯手、心理原因或能力診斷。</p>
+            <div id="decision-review-events" class="decision-review-event-list" aria-label="棋盤事件候選">匯入棋譜後顯示。</div>
+            <div id="decision-review-lookback" class="decision-review-lookback" hidden>
+              <p id="decision-review-lookback-note" class="decision-review-meta"></p>
+              <div class="advanced-actions">
+                <button class="subtle-button" type="button" data-review-lookback="3">往前 3 手</button>
+                <button class="subtle-button" type="button" data-review-lookback="5">往前 5 手</button>
+                <button class="subtle-button" type="button" data-review-lookback="10">往前 10 手</button>
+              </div>
+            </div>
+          </div>
+
+          <details class="decision-review-package-panel">
+            <summary>帶走／繼續這次複盤</summary>
+            <p>只保存棋譜、複盤視角與目前選定手數；不匯入或覆寫任何歷史作答／證據事件。</p>
+            <div class="advanced-actions">
+              <button class="subtle-button" id="decision-review-package-export" type="button" disabled>匯出複盤包</button>
+            </div>
+            <label for="decision-review-package-file"><strong>載入複盤包</strong></label>
+            <input id="decision-review-package-file" type="file" accept=".json,application/json">
+            <p id="decision-review-package-status" class="decision-review-meta" role="status" aria-live="polite">尚未載入複盤包。</p>
+          </details>
           <div id="decision-review-feedback" class="feedback" role="status" aria-live="polite">這裡只比較你的候選與原棋譜著手是否一致，不判定全局最佳手。</div>
           <div class="advanced-actions">
             <button class="primary-button" id="decision-review-reveal" type="button" disabled>顯示原棋譜著手並比較</button>
