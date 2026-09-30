@@ -221,7 +221,7 @@ jobs:
               name: "history",
               url: new URL(`history.html?deploy=${deploySha}`, base),
               checks: [
-                'history.css?v=history-explore-v5',
+                'history.css?v=history-explore-v6',
                 '歷史探索 v6',
                 '兩個 72 不能當成同一條歷史因果證據',
                 '132｜東漢望都',

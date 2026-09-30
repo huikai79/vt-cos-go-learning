@@ -188,7 +188,7 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /served-pages-content:/);
   assert.match(workflow, /github\.event_name == 'push'/);
   assert.match(workflow, /needs:\s*[\s\S]*node-contracts[\s\S]*sabaki-sgf-oracle[\s\S]*windows-ui-and-boundary/);
-  assert.match(workflow, /history\.css\?v=history-explore-v5/);
+  assert.match(workflow, /history\.css\?v=history-explore-v6/);
   assert.match(workflow, /兩個 72 不能當成同一條歷史因果證據/);
   assert.match(workflow, /132｜東漢望都/);
   assert.match(workflow, /1949 → 1989｜規則到近現代仍在成文化與修訂/);

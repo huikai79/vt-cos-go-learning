@@ -1089,3 +1089,12 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **Public/Private Hard Wall：** 公開 repo 只保存 builder／verifier／synthetic example／tests；真正 private 題、manifest、outcomes 仍只能位於 `.private-evaluation/`，不進 release。
 - **狀態不升格：** 本輪沒有建立任何真實 private pool，也沒有 outcome／真人資料；replacement private holdout 仍 `not_established`，formal evaluation 仍 `BLOCKED`，learning effect 仍 `NOT_MEASURED`。
 - **rollback：** 移除 freeze builder/example/test，保留既有 verifier；無 learner data migration。
+
+
+2026-09-30 Change note｜History Explore v6 transition grid layout
+
+- **Bottleneck：** 「證據與觀念的轉折」由 v5 的三張卡增至 v6 的四張卡後，仍沿用 `.frontier-grid` 的桌面三欄配置，形成 3+1 排列；第二列只剩一張卡，造成大面積視覺空白，容易被讀成內容缺漏。
+- **修正：** 只對 `.evidence-transitions .frontier-grid` 設定桌面兩欄，使四張卡形成 2×2；一般研究前沿 `.frontier-grid` 保持三欄。`max-width:760px` 明確把 transition grid 回復單欄，避免高 specificity 使手機保留兩欄。
+- **Cache／release：** 因 `history.css` bytes 實際改變，`history.html` cache-busting 由 `history-explore-v5` 升為 `history-explore-v6`，並同步 History regression、release-manifest contract 與 served Pages marker。
+- **不變範圍：** 不增刪歷史內容、不改 evidence status、來源、Claim Ladder、learner state、KC、scoring、scheduler、formal evaluation 或 Core critical candidate surface；formal candidate 不重凍結。
+- **驗收邊界：** 自動測試只驗桌面 2×2／研究前沿 3 欄／窄版 1 欄與公開 cache marker；視覺是否更舒服屬版面工程判斷，不升格為真人 usability 證據。正式教學仍 `BLOCKED`、formal evaluation 仍 `BLOCKED`、learning effect 仍 `NOT_MEASURED`。
