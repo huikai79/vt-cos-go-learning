@@ -57,6 +57,17 @@ test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 p
   }
 });
 
+test("進階先手定義保留回應條件，不把名稱當必然強迫手", () => {
+  const item = content.experiences.find((entry) => entry.title === "先手、後手與逆先手");
+  assert.ok(item);
+  const sente = item.terms.find(([term]) => term === "先手官子");
+  assert.ok(sente);
+  assert.match(sente[1], /不回應/);
+  assert.match(sente[1], /通常需要回應/);
+  assert.doesNotMatch(sente[1], /必須回應/);
+  assert.match(item.explanation, /是否.*需要回應|通常需要回應/);
+});
+
 test("打吃方向以 teaching candidate/task features 進入 choice practice，不直接升格 KC", () => {
   const items = content.experiences.filter((item) => item.candidateId === "capture-semeai-track-v1");
   assert.deepEqual(items.map((item) => item.id), ["adv-r09", "adv-r10"]);
