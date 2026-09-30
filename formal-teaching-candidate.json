@@ -38,5 +38,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "Core terminology content QA v1：Unit 7 將「厚勢／外勢」明示為本課操作性區分；Unit 10／12 的「先手」撤回絕對「必須回應」措辭，改為不回應會承受較大損失時通常需要回應；Unit 12／14 在中文概念邊界未核清前不把「薄味」當 Core 正式術語，改用「弱點／後續手段」。受影響 choice item 升 contentVersion 2。此次只改 learner-facing copy／content version，不改棋盤、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 或 formal evaluation。重新凍結只綁定 critical learner surface，不產生 R1a、真人 usability、accessibility 或 learning-effect 證據。"
+  "scopeNote": "UI version 維持 learner-flow-v55。Core terminology content QA v1：Unit 7 將「厚勢／外勢」明示為本課操作性區分；Unit 10／12 的「先手」撤回絕對「必須回應」措辭，改為不回應會承受較大損失時通常需要回應；Unit 12／14 在中文概念邊界未核清前不把「薄味」當 Core 正式術語，改用「弱點／後續手段」。受影響 choice item 升 contentVersion 2。此次只改 learner-facing copy／content version，不改棋盤、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 或 formal evaluation。重新凍結只綁定 critical learner surface，不產生 R1a、真人 usability、accessibility 或 learning-effect 證據。"
 }
