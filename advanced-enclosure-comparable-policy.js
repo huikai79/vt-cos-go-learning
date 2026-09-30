@@ -27,8 +27,13 @@ function statusFor(store,item,nowMs=Date.now()){
  const events=D.events.eventsForItem(store,item.itemId);
  const completed=events.find(e=>e.type==="enclosure_completed");
  const presented=events.find(e=>e.type==="enclosure_presented");
- if(completed)return{ok:true,status:STATUS.COMPLETED,itemId:item.itemId};
- if(presented)return{ok:true,status:STATUS.IN_PROGRESS,itemId:item.itemId};
+ if(item.minimumDelayMs>0&&(presented||completed)){
+  const a=anchor(store);if(!a.ok)return{ok:false,status:STATUS.INVALID,error:a.error};if(!a.ready)return{ok:false,status:STATUS.INVALID,error:"enclosure_delayed_anchor_missing"};
+  const expectedDue=new Date(a.anchorMs+item.minimumDelayMs).toISOString();
+  if(!presented||presented.anchorEventId!==a.anchorEvent.eventId||presented.anchorOccurredAt!==a.anchorEvent.occurredAt||presented.dueAt!==expectedDue||presented.minimumDelayMs!==item.minimumDelayMs)return{ok:false,status:STATUS.INVALID,error:"enclosure_delayed_anchor_mismatch"};
+ }
+ if(completed)return{ok:true,status:STATUS.COMPLETED,itemId:item.itemId,dueAt:presented&&presented.dueAt||null,actualDelayMs:presented&&presented.actualDelayMs||null};
+ if(presented)return{ok:true,status:STATUS.IN_PROGRESS,itemId:item.itemId,dueAt:presented.dueAt||null,actualDelayMs:presented.actualDelayMs};
  for(let i=0;i<index;i++){
   if(!store.events.some(e=>e.itemId===order[i].itemId&&e.type==="enclosure_completed"))return{ok:true,status:STATUS.LOCKED,itemId:item.itemId};
  }
