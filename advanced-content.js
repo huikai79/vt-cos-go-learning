@@ -273,6 +273,38 @@
         { boardSize: 7, stones: [[2,2,W],[4,2,W],[1,2,B],[2,1,B],[2,3,B]], highlights: [[3,2]], reference: [[4,2]], label: "錯的方向可能把白棋趕去接應", caption: "黑從下方打吃後，白棋唯一逃路正好是兩串之間。白若走到那裡，就會和右邊同伴連接。" },
         { boardSize: 7, stones: [[2,2,W],[4,2,W],[1,2,B],[2,1,B],[3,2,B]], highlights: [[2,3]], reference: [[4,2]], label: "先堵連接點，再迫使往另一邊逃", caption: "黑先佔兩串之間的連接點，同時形成打吃，白棋只剩往下延長。這仍是局部教學目標；後續能否吃到要繼續讀。" }
       ]
+    },
+    {
+      id: "adv-r11",
+      trackId: "reading-tesuji",
+      title: "雙打吃：一手同時逼兩串棋",
+      target: "辨認雙打吃的棋盤條件：同一手落下後，兩串彼此分開的對方棋都只剩一口氣。",
+      candidateId: "capture-patterns-v1",
+      candidateStatus: "teaching_candidate",
+      kcStatus: "not_promoted",
+      sourceReviewId: "capture-pattern-concept-anchors-v1",
+      taskFeatures: {
+        capturePattern: "double_atari",
+        simultaneousAtariTargets: 2,
+        targetsSeparate: true,
+        immediateCaptureCount: 0,
+        terminalCaptureResult: "not_asserted"
+      },
+      prompt: "哪一個條件才是這題要練的「雙打吃」？",
+      choices: ["同一手下完後，兩串彼此分開的白棋都只剩一口氣", "同一手直接提掉兩串白棋", "連續兩手分別去打吃兩串白棋"],
+      answer: 0,
+      hint: "先看『一手』和『兩串棋』：這手落下後，兩邊是不是同時只剩最後一口氣？",
+      explanation: "雙打吃的核心是同一手同時讓兩串彼此分開的對方棋進入打吃。它不等於一手直接提掉兩串，也不是連續兩手各打一邊。在這個局部示意裡，白棋通常只能先處理其中一邊；實戰若有反提、劫、連接或更大的反擊，仍要另外讀，不能把『雙打吃』當成無條件必得其一。",
+      takeaway: "先確認：一手落下，兩串分開的棋是否同時只剩一氣。",
+      terms: [
+        ["雙打吃", "同一手同時讓兩串彼此分開的對方棋各只剩一口氣。"],
+        ["一口氣", "一串棋只剩最後一個相鄰空點；對方下一手若能合法填掉，就可能被提走。"]
+      ],
+      demoSteps: [
+        { boardSize: 5, stones: [[1,1,B],[2,0,B],[3,3,B],[2,4,B],[2,1,W],[2,3,W]], highlights: [[2,2]], label: "先找同時碰到兩串白棋的點", caption: "上下兩顆白棋彼此不相連，而且目前各有兩口氣。中央空點同時鄰接兩串白棋。" },
+        { boardSize: 5, stones: [[1,1,B],[2,0,B],[3,3,B],[2,4,B],[2,1,W],[2,3,W],[2,2,B]], highlights: [[3,1],[1,3]], label: "黑下中央後，兩串白棋同時只剩一氣", caption: "黑棋下在中央沒有立即提子，但上下兩串白棋分別只剩右上與左下最後一口氣；這就是本題的雙打吃。" },
+        { boardSize: 5, stones: [[1,1,B],[2,0,B],[3,3,B],[2,4,B],[2,1,W],[3,1,W],[2,2,B],[1,3,B]], emphasis: [[2,1],[3,1]], label: "白先救一邊，另一邊仍可能被提走", caption: "白棋先往右延長救上方，黑棋再填左下最後一氣，提掉下方白子。這只驗證此局部示意；遇到反提、劫或外援時仍要重新讀。" }
+      ]
     }
   ];
 
@@ -732,7 +764,7 @@
   ];
 
   const api = {
-    version: 7,
+    version: 8,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
     experiences,
