@@ -35,7 +35,7 @@ test("v2 只升共同 enclosure_capture 機制，門吃／抱吃 label split 維
   assert.match(record, /四個本站原創、非單純鏡射/);
   assert.match(record, /`sourceLabelCandidate` 全部固定為 `unknown`/);
   assert.match(record, /enclosure_capture.*Teaching Candidate/s);
-  assert.match(record, /- `door_capture` \/ `hug_capture` label split：`UNKNOWN \/ NOT_PROMOTED`\./);
+  assert.ok(record.includes("- `door_capture` / `hug_capture` label split：`UNKNOWN / NOT_PROMOTED`。"));
 });
 
 test("雙打吃 promotion decision 要求 rules-backed 四項棋盤條件", () => {
