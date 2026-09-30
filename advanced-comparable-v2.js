@@ -82,6 +82,7 @@ function renderList(){
  list.innerHTML=rows.join("");
  const completed=done.size+(dstatus.ok&&dstatus.status===DelayedPolicy.STATUS.COMPLETED?1:0);
  summary.textContent=completed?("已完成 "+completed+" / 3 個局面。"):"尚未開始這組全盤判斷。";
+ if(root.GoAdvancedSevenDayComparable&&typeof root.GoAdvancedSevenDayComparable.render==="function")root.GoAdvancedSevenDayComparable.render();
 }
 function showWorkspace(item,mode){
  currentItem=item;currentMode=mode;cursor=[9,9];
