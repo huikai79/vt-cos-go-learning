@@ -5,9 +5,9 @@
 - decisionUse: 決定下一批 Capture & Semeai Track 內容；先建立 Concept Anchor／term relation，再只升格可由棋盤事實驗證的 Teaching Candidate。
 - scope: beginner capture patterns；中文來源為主，只在跨語資料能改變概念邊界時查日文／英文；不處理正式 KC 效度、正式評量或學習成效。
 - accessDate: 2026-09-30
-- snapshotVersion: 1
-- promotionStatus: `MIXED / DOUBLE_ATARI_TEACHING_CANDIDATE / DOOR_AND_HUG_TERM_CANDIDATES`
-- stopReason: 「雙打吃」已有清楚的跨語與棋盤操作定義，可進下一個 Teaching Candidate；「門吃／抱吃」目前足以保留為中文教學分類，但跨語等價與彼此邊界仍不足以升格為獨立 KC 或正式多語 term map。
+- snapshotVersion: 2
+- promotionStatus: `MIXED / DOUBLE_ATARI_TEACHING_CANDIDATE / ENCLOSURE_CAPTURE_TEACHING_CANDIDATE / DOOR_AND_HUG_LABEL_SPLIT_UNKNOWN`
+- stopReason: 「雙打吃」已可獨立操作化；「門吃／抱吃」的共同機制也已由四個本站原創、非單純鏡射的 rules-backed fixtures 重建，但目前沒有一個可由棋盤事實穩定判斷的分岔條件把四個 fixtures 分成「門吃」與「抱吃」。因此只升較粗的 `enclosure_capture` Teaching Candidate，兩個中文名稱的 label split 保持 UNKNOWN，不建立兩個 KC。
 
 ## Concept Anchor A｜同一手同時打吃兩串彼此分離的對方棋
 
@@ -127,7 +127,15 @@ learner-facing 文案只說明本題局部結構，不寫成「任何雙打吃�
 
 ### KEEP AS TERM / ITEM-FAMILY CANDIDATE
 
-`door_capture`（門吃）與 `hug_capture`（抱吃）：本輪不新增 learner-facing board item、不建立 KC。先等待原創棋形的 rules-backed validation 與人類棋理審查，確認兩者的可操作分岔條件不是單純教材命名差異。
+`door_capture`（門吃）與 `hug_capture`（抱吃）的**名稱分岔仍不升格**。本輪新增四個原創 rules-backed fixtures（center／edge × single-stone／two-stone target），全部都驗證同一個較粗機制：
+
+1. 目標棋串落子前有兩口氣；
+2. 其中一口氣同時是目標與援兵的連接點；
+3. 攻方先佔連接點後，目標只剩唯一延長；
+4. 目標延長後仍只有一口氣；
+5. 攻方下一手能局部提掉整串。
+
+這四個 fixtures 跨中央／邊線、單子／兩子目標，不只是旋轉或鏡射；但它們的 `sourceLabelCandidate` 全部固定為 `unknown`。目前可安全升格的是共同的 `enclosure_capture` Teaching Candidate，而不是把四題硬分成門吃／抱吃。若之後外部棋理審查能提供可重建、可反證的分岔規則，再另開 versioned label split。
 
 ## Counterevidence / failure cases
 
@@ -145,3 +153,24 @@ learner-facing 文案只說明本題局部結構，不寫成「任何雙打吃�
 ## Evidence boundary
 
 這份 record 是 Research / Content Evidence，不更新 learner state、KC、scheduler、正式評量或 mastery。所有公開題目一旦加入 repo 即視為 exposed，只能作 practice／process evidence；formal unseen evaluation 必須另有未公開池。
+## v2｜四個原創 fixtures 的 rules-backed 結果
+
+公開驗證資料放在 `enclosure-capture-fixtures.js`，測試在 `tests/enclosure-capture-fixtures.test.cjs`。fixtures 不複製任何外部教材棋形，只用本專案自行設計的座標。共同規則結果如下：
+
+| fixture | 盤面變化軸 | target size | cut 前 | cut 後 | 延長後 | finish | source label |
+|---|---|---:|---|---|---|---|---|
+| enclosure-center-single-v1 | center / single target | 1 | 2 氣 | 1 氣 | 1 氣 | 提 2 子 | UNKNOWN |
+| enclosure-center-chain-v1 | center / two-stone target | 2 | 2 氣 | 1 氣 | 1 氣 | 提 3 子 | UNKNOWN |
+| enclosure-edge-single-v1 | edge / single target | 1 | 2 氣 | 1 氣 | 1 氣 | 提 2 子 | UNKNOWN |
+| enclosure-edge-chain-v1 | edge / two-stone target | 2 | 2 氣 | 1 氣 | 1 氣 | 提 3 子 | UNKNOWN |
+
+反證也通過：若攻方不是先佔「同時也是連接點」的那口氣，白棋仍可在該點和援兵連成一串並取得至少兩口氣；因此「先切斷援兵」不是裝飾性描述，而是這批 fixtures 的共同必要條件。
+
+### v2 promotion decision
+
+- `double_atari`：維持 Teaching Candidate。
+- `enclosure_capture`：新增 Teaching Candidate；learner-facing 先用「包圍吃子」這個中性名稱，教共同機制，不要求背門吃／抱吃名稱。
+- `door_capture` / `hug_capture` label split：`UNKNOWN / NOT_PROMOTED`。
+- KC：全部維持 `not_promoted`。
+- formal unseen：所有公開 fixtures 與 learner item 都已 exposed，不具 formal holdout 資格。
+
