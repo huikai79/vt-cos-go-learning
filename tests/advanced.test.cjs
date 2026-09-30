@@ -175,7 +175,7 @@ test("semeai liberty-structure Teaching Candidate 不把一眼或增氣口訣升
   }
   assert.equal(eye.taskFeatures.universalProverbRule, false);
   assert.equal(increase.taskFeatures.universalRule, false);
-  assert.match(eye.explanation, /不能直接當成通用 scoring rule/);
+  assert.match(eye.explanation, /不能直接當成通用的勝負判定規則/);
   assert.match(increase.explanation, /不是「永遠先增氣」/);
 });
 
