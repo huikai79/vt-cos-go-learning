@@ -39,7 +39,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
 });
 
 test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 practice", () => {
-  assert.equal(content.version, 7);
+  assert.equal(content.version, 8);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 4);
   const full = content.tracks.find((track) => track.id === "full-board-review");
@@ -47,7 +47,7 @@ test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 p
   assert.equal(full.href, "live-game.html?size=19");
   assert.match(full.summary, /全盤實戰練習/);
   assert.match(html, /不納入正式能力評量/);
-  assert.equal(content.experiences.length, 10);
+  assert.equal(content.experiences.length, 11);
   for (const item of content.experiences) {
     assert.ok(content.tracks.some((track) => track.id === item.trackId));
     assert.ok(item.choices.length >= 3, item.id);
@@ -72,6 +72,55 @@ test("打吃方向以 teaching candidate/task features 進入 choice practice，
   }
   assert.equal(content.sequenceExperiences.some((item) => item.familyId === "atari-direction"), false);
   assert.equal(content.sequenceExperiences.some((item) => item.candidateId === "capture-semeai-track-v1"), false);
+});
+
+test("雙打吃 Teaching Candidate 由 rules engine 驗證同一手同時讓兩串分離白棋各剩一氣", () => {
+  const item = content.experiences.find((experience) => experience.id === "adv-r11");
+  assert.ok(item);
+  assert.equal(item.candidateId, "capture-patterns-v1");
+  assert.equal(item.candidateStatus, "teaching_candidate");
+  assert.equal(item.kcStatus, "not_promoted");
+  assert.equal(item.sourceReviewId, "capture-pattern-concept-anchors-v1");
+  assert.equal(item.taskFeatures.capturePattern, "double_atari");
+  assert.equal(item.taskFeatures.simultaneousAtariTargets, 2);
+  assert.equal(item.taskFeatures.immediateCaptureCount, 0);
+
+  const board = Go.boardFromStones(item.demoSteps[0].stones, item.demoSteps[0].boardSize);
+  const beforeUpper = Go.groupAt(board, 2, 1);
+  const beforeLower = Go.groupAt(board, 2, 3);
+  assert.equal(beforeUpper.liberties.length, 2);
+  assert.equal(beforeLower.liberties.length, 2);
+  assert.notDeepEqual(beforeUpper.stones, beforeLower.stones);
+
+  const move = Go.playMove(board, 2, 2, Go.BLACK);
+  assert.equal(move.legal, true);
+  assert.equal(move.captured.length, 0);
+  assert.equal(Go.groupAt(move.board, 2, 1).liberties.length, 1);
+  assert.equal(Go.groupAt(move.board, 2, 3).liberties.length, 1);
+
+  const simultaneous = [];
+  for (let y = 0; y < item.demoSteps[0].boardSize; y += 1) {
+    for (let x = 0; x < item.demoSteps[0].boardSize; x += 1) {
+      const trial = Go.playMove(board, x, y, Go.BLACK);
+      if (!trial.legal || trial.captured.length !== 0) continue;
+      const upper = Go.groupAt(trial.board, 2, 1);
+      const lower = Go.groupAt(trial.board, 2, 3);
+      if (upper && lower && upper.liberties.length === 1 && lower.liberties.length === 1) simultaneous.push([x, y]);
+    }
+  }
+  assert.deepEqual(simultaneous, [[2, 2]]);
+
+  const whiteSave = Go.playMove(move.board, 3, 1, Go.WHITE);
+  assert.equal(whiteSave.legal, true);
+  const blackCapture = Go.playMove(whiteSave.board, 1, 3, Go.BLACK);
+  assert.equal(blackCapture.legal, true);
+  assert.deepEqual(blackCapture.captured, [[2, 3]]);
+});
+
+test("門吃與抱吃仍停在研究術語候選，不偷塞進 learner-facing Experience 或 KC", () => {
+  assert.equal(content.experiences.some((item) => item.taskFeatures?.capturePattern === "door_capture"), false);
+  assert.equal(content.experiences.some((item) => item.taskFeatures?.capturePattern === "hug_capture"), false);
+  assert.equal(content.sequenceExperiences.some((item) => ["door-capture", "hug-capture", "double-atari"].includes(item.familyId)), false);
 });
 
 test("打吃方向新增不改寫既有 fixed-interleave sequence policy 或四個 family", () => {
