@@ -28,8 +28,8 @@
         },
         "blockingIssues": [],
         "evidenceReference": null,
-        "candidateId": "formal-teaching-candidate-2026-09-30-a",
-        "candidateFingerprint": "fnv1a32-js16-14e8f385"
+        "candidateId": "formal-teaching-candidate-2026-09-30-b",
+        "candidateFingerprint": "fnv1a32-js16-885b317c"
       },
       {
         "participantCode": "novice-02",
@@ -43,8 +43,8 @@
         },
         "blockingIssues": [],
         "evidenceReference": null,
-        "candidateId": "formal-teaching-candidate-2026-09-30-a",
-        "candidateFingerprint": "fnv1a32-js16-14e8f385"
+        "candidateId": "formal-teaching-candidate-2026-09-30-b",
+        "candidateFingerprint": "fnv1a32-js16-885b317c"
       },
       {
         "participantCode": "novice-03",
@@ -58,13 +58,13 @@
         },
         "blockingIssues": [],
         "evidenceReference": null,
-        "candidateId": "formal-teaching-candidate-2026-09-30-a",
-        "candidateFingerprint": "fnv1a32-js16-14e8f385"
+        "candidateId": "formal-teaching-candidate-2026-09-30-b",
+        "candidateFingerprint": "fnv1a32-js16-885b317c"
       }
     ],
     "observationProtocol": "Observe each participant separately. Mark a task true only after that participant completes it without the observer taking over. Keep failures/abandonment in the record. All participants must use the exact same frozen formal teaching candidate ID/fingerprint.",
-    "candidateId": "formal-teaching-candidate-2026-09-30-a",
-    "candidateFingerprint": "fnv1a32-js16-14e8f385"
+    "candidateId": "formal-teaching-candidate-2026-09-30-b",
+    "candidateFingerprint": "fnv1a32-js16-885b317c"
   },
   "accessibility": {
     "completedAt": null,
@@ -76,14 +76,14 @@
     },
     "openBlockingIssues": null,
     "evidenceReference": null,
-    "candidateId": "formal-teaching-candidate-2026-09-30-a",
-    "candidateFingerprint": "fnv1a32-js16-14e8f385"
+    "candidateId": "formal-teaching-candidate-2026-09-30-b",
+    "candidateFingerprint": "fnv1a32-js16-885b317c"
   },
   "formalEvaluation": {
     "privateUnexposedHoldoutEstablished": false,
     "r1bComparabilityEstablished": false,
     "evidenceReference": null
   },
-  "candidateId": "formal-teaching-candidate-2026-09-30-a",
-  "candidateFingerprint": "fnv1a32-js16-14e8f385"
+  "candidateId": "formal-teaching-candidate-2026-09-30-b",
+  "candidateFingerprint": "fnv1a32-js16-885b317c"
 }
