@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const gateDefinition = require("./teaching-gate.json");
 const ReviewVerifier = require("./r1-review-verify.cjs");
+const LessonReviewVerifier = require("./lesson-content-review-verify.cjs");
 const CandidateVerifier = require("./formal-teaching-candidate.cjs");
 const FormalEvaluationVerifier = require("./formal-evaluation-verify.cjs");
 const candidateManifest = require("./formal-teaching-candidate.json");
@@ -89,10 +90,12 @@ function evaluateHumanEvidence(evidence, definition = gateDefinition, candidate 
   return { usabilityPassed, accessibilityPassed, privateHoldoutPassed, r1bPassed, candidateUsable, errors };
 }
 
-function evaluateGate({ definition = gateDefinition, receipt = null, humanEvidence = null, candidate = null, privateEvaluationVerification = null } = {}) {
+function evaluateGate({ definition = gateDefinition, receipt = null, lessonReceipt = null, humanEvidence = null, candidate = null, privateEvaluationVerification = null } = {}) {
   const definitionErrors = [];
-  if (definition.schemaVersion !== 2 || definition.protocolId !== "go-formal-teaching-gate-v2") definitionErrors.push("正式教學 gate schema 或 protocol 不符");
+  if (definition.schemaVersion !== 3 || definition.protocolId !== "go-formal-teaching-gate-v3") definitionErrors.push("正式教學 gate schema 或 protocol 不符");
   if (definition.r1ProtocolId !== ReviewVerifier.PROTOCOL_ID) definitionErrors.push("R1 protocol 與 verifier 不一致");
+  if (definition.lessonContentReviewProtocolId !== LessonReviewVerifier.PROTOCOL_ID) definitionErrors.push("短講內容審查 protocol 與 verifier 不一致");
+  if (definition.lessonContentFingerprint !== LessonReviewVerifier.fingerprint()) definitionErrors.push("短講內容指紋與 gate 不一致");
   if (definition.formalTeachingCandidateProtocolId !== CandidateVerifier.PROTOCOL_ID) definitionErrors.push("formal teaching candidate protocol 與 verifier 不一致");
   if (definition.r1ContentFingerprint !== ReviewVerifier.fingerprint(ReviewVerifier.reviewItems)) definitionErrors.push("R1 內容指紋與 gate 不一致");
   if (!definition.currentStatus || definition.currentStatus.engineeringRelease !== "pass") definitionErrors.push("工程發布尚未通過");
@@ -107,11 +110,14 @@ function evaluateGate({ definition = gateDefinition, receipt = null, humanEviden
 
   const r1 = receipt ? ReviewVerifier.verifyReceipt(receipt) : null;
   const r1Passed = Boolean(r1 && r1.receiptValid && r1.r1IndependentReviewPassed);
+  const lessonReview = lessonReceipt ? LessonReviewVerifier.verifyReceipt(lessonReceipt) : null;
+  const lessonReviewPassed = Boolean(lessonReview && lessonReview.receiptValid && lessonReview.lessonContentReviewPassed);
   const human = evaluateHumanEvidence(humanEvidence, definition, candidateVerification, privateEvaluationVerification);
-  const formalTeachingPassed = definitionErrors.length === 0 && r1Passed && human.usabilityPassed && human.accessibilityPassed;
+  const formalTeachingPassed = definitionErrors.length === 0 && r1Passed && lessonReviewPassed && human.usabilityPassed && human.accessibilityPassed;
   const formalEvaluationPassed = formalTeachingPassed && human.privateHoldoutPassed && human.r1bPassed;
   const blockingReasons = [...definitionErrors];
-  if (!r1Passed) blockingReasons.push(receipt ? "R1a 外部回條未通過" : "尚未提供 R1a 外部回條");
+  if (!r1Passed) blockingReasons.push(receipt ? "R1a 題庫外部回條未通過" : "尚未提供 R1a 題庫外部回條");
+  if (!lessonReviewPassed) blockingReasons.push(lessonReceipt ? "19 課短講外部棋理回條未通過" : "尚未提供 19 課短講外部棋理回條");
   if (!human.usabilityPassed) blockingReasons.push("初學者真人關鍵任務尚未通過");
   if (!human.accessibilityPassed) blockingReasons.push("真人無障礙 spot check 尚未通過");
 
@@ -135,13 +141,14 @@ function evaluateGate({ definition = gateDefinition, receipt = null, humanEviden
     },
     learningEffect: "NOT_MEASURED",
     r1Verification: r1,
+    lessonContentReview: lessonReview,
     humanEvidenceErrors: human.errors
   };
 }
 
 function readJson(filePath) { return JSON.parse(fs.readFileSync(path.resolve(filePath), "utf8")); }
 
-module.exports = { evaluateHumanEvidence, evaluateGate, CandidateVerifier, FormalEvaluationVerifier };
+module.exports = { evaluateHumanEvidence, evaluateGate, CandidateVerifier, FormalEvaluationVerifier, LessonReviewVerifier };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
@@ -151,12 +158,13 @@ if (require.main === module) {
   };
   try {
     const receiptPath = valueAfter("--r1");
+    const lessonReviewPath = valueAfter("--lesson-review");
     const humanPath = valueAfter("--human");
     const privateManifestPath = valueAfter("--private-manifest");
     const privateRoot = valueAfter("--private-root");
     if ((privateManifestPath && !privateRoot) || (!privateManifestPath && privateRoot)) throw new Error("--private-manifest 與 --private-root 必須一起提供");
     const privateEvaluationVerification = privateManifestPath ? FormalEvaluationVerifier.verifyPrivateManifest(readJson(privateManifestPath), privateRoot) : null;
-    const result = evaluateGate({ receipt: receiptPath ? readJson(receiptPath) : null, humanEvidence: humanPath ? readJson(humanPath) : null, privateEvaluationVerification });
+    const result = evaluateGate({ receipt: receiptPath ? readJson(receiptPath) : null, lessonReceipt: lessonReviewPath ? readJson(lessonReviewPath) : null, humanEvidence: humanPath ? readJson(humanPath) : null, privateEvaluationVerification });
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
     if (!args.includes("--report-only") && result.formalTeachingUse.status !== "PASS") process.exitCode = 1;
   } catch (error) {
