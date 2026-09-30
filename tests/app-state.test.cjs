@@ -697,7 +697,8 @@ test("核心學習文字維持至少 16px，metadata 不被誤升格", () => {
   assert.match(css, /\.learning-guidance p\{[^}]*font-size:1rem;[^}]*line-height:1\.65/);
   assert.match(css, /\.answer-policy\{[^}]*font-size:1rem;[^}]*line-height:1\.65/);
   assert.match(css, /\.lesson-intro-first-use\{[^}]*font-size:1rem;[^}]*line-height:1\.7/);
-  assert.match(css, /\.teaching-demo,\.teaching-check\{[^}]*font-size:1rem!important;[^}]*line-height:1\.65!important/);
+  assert.match(css, /\.teaching-check\{[^}]*font-size:1rem!important;[^}]*line-height:1\.65!important/);
+  assert.match(css, /\.demo-stepper p\{[^}]*font-size:1rem!important;[^}]*line-height:1\.65!important/);
   assert.match(css, /\.learning-proof\{[^}]*font-size:\.875rem/);
 });
 
