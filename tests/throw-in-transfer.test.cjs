@@ -42,3 +42,11 @@ test("送子 fixture 不取得 scheduler/formal authority",()=>{
   assert.equal("formalEligible" in ThrowIn,false);
   assert.equal("mastery" in ThrowIn,false);
 });
+
+test("learner-facing送子正反例綁定已驗 fixture 起始局面",()=>{
+  const item=Advanced.experiences.find(entry=>entry.id==="adv-r15");
+  const positive=ThrowIn.semeaiFixtures.find(entry=>entry.role==="positive_liberty_change");
+  const negative=ThrowIn.semeaiFixtures.find(entry=>entry.role==="negative_no_change");
+  assert.deepEqual(item.demoSteps[0].stones,positive.setupStones);
+  assert.deepEqual(item.demoSteps[2].stones,negative.setupStones);
+});
