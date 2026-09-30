@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="application-name" content="VT-COS｜悟之一手">
+  <title>VT-COS｜悟之一手｜19 課短講外部棋理審查</title>
+  <style>
+    :root{color-scheme:light;font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;color:#24211c;background:#f5f1e8}
+    *{box-sizing:border-box}body{margin:0}main{max-width:1120px;margin:auto;padding:32px 20px 72px}
+    h1{font-size:31px;margin:0 0 12px}h2{font-size:20px;margin:0}.brand{margin:0 0 8px;color:#315b44;font-size:13px;font-weight:750;letter-spacing:.08em}
+    .notice,.reviewer,.lesson-card{background:#fffdf7;border:1px solid #d8cfbd;border-radius:14px}.notice{padding:16px 18px;line-height:1.7}
+    .reviewer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0;padding:18px}
+    label{display:grid;gap:6px;font-size:14px}.declaration{grid-column:1/-1;display:flex;align-items:flex-start;gap:9px}
+    input,select,textarea,button{font:inherit}input,select,textarea{padding:10px;border:1px solid #aaa08e;border-radius:8px;background:white}.declaration input{margin-top:4px}
+    .toolbar{display:flex;justify-content:space-between;gap:14px;align-items:center;position:sticky;top:0;z-index:3;background:#f5f1e8;padding:12px 0;margin:18px 0}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}button{border:0;border-radius:9px;padding:11px 16px;color:#fff;background:#315b44;cursor:pointer}button.secondary{color:#315b44;background:#e3ecdf;border:1px solid #315b44}
+    #message{min-height:1.5em;color:#6f311f;line-height:1.6}.lessons{display:grid;gap:18px}.lesson-card{padding:18px;scroll-margin-top:86px}
+    .meta{color:#5d5a51;font-size:14px;margin:4px 0 10px}.lesson-text,.takeaway{line-height:1.7}.takeaway{font-weight:700;color:#315b44}
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:14px 0}.step{border:1px solid #ddd3c1;border-radius:12px;padding:12px;background:#fff}
+    .board{max-width:300px;margin:auto}.board svg{display:block;width:100%;height:auto}.caption{line-height:1.6;font-size:14px}.fields{display:grid;gap:10px;margin-top:12px}
+    textarea{min-height:80px;resize:vertical}.status-consistent{border-color:#9fc39f}.status-problem{border-color:#d5a296}
+    @media(max-width:640px){.reviewer{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}h1{font-size:26px}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="brand">VT-COS｜悟之一手</p>
+  <h1>19 課短講外部棋理審查</h1>
+  <div class="notice">
+    <strong>這份回條只核對 learner-facing 短講的棋理、文字與棋盤示範是否一致。</strong>
+    它不測學習者是否理解，也不證明學習成效。審查者應未參與這批短講內容編寫、不是目前學習者，並具備核對基礎圍棋教學內容的能力。任何需修或歧義都應如實記錄；本 gate 不採多數決。
+  </div>
+  <section class="reviewer">
+    <label>審查者代碼<input id="reviewer-code" autocomplete="off" placeholder="例如 lesson-reviewer-01"></label>
+    <label>圍棋經驗<input id="reviewer-experience" autocomplete="off" placeholder="例如業餘 3 段／教學 5 年"></label>
+    <label class="declaration"><input id="independent-authoring" type="checkbox"><span>我沒有參與這批短講文字、棋盤示範或教學結論的編寫。</span></label>
+    <label class="declaration"><input id="separate-learner" type="checkbox"><span>我不是目前使用本平臺學習或參與個人流程試行的學習者。</span></label>
+    <label class="declaration"><input id="qualified-reviewer" type="checkbox"><span>我具備核對這 19 課基礎至進階圍棋教學內容的能力。</span></label>
+  </section>
+  <div class="toolbar">
+    <strong id="progress">已完成 0 / 19</strong>
+    <div class="actions"><button id="export-draft" class="secondary" type="button">匯出草稿</button><button id="export-final" type="button">匯出完成回條</button></div>
+  </div>
+  <div id="message" role="status">請逐課核對文字、棋盤步驟、caption 與 takeaway。</div>
+  <section class="lessons" id="lessons"></section>
+</main>
+<script src="content.js"></script>
+<script src="lesson-content-review.js"></script>
+</body>
+</html>
