@@ -87,3 +87,15 @@ test("7d presentation 進 denominator；未答不能消失",()=>{
  const summary=Analysis.summarize(immediate,d24,Events.read(ss).store,due);
  assert.equal(summary.denominator,1);assert.equal(summary.unanswered,true);assert.equal(summary.firstResponseObserved,false);
 });
+
+
+test("24h anchor 被污染時，7d policy 不得把 completed 當前置條件通過",()=>{
+ const is=storage(),base=Date.parse("2026-09-20T00:00:00Z"),immediate=completeImmediate(is,base),d24s=storage();
+ const d24=complete24(d24s,immediate);
+ d24.events[0].anchorEventId="forged-anchor";
+ const seven=Events.read(storage()).store;
+ const anchor=Policy.anchor(immediate);
+ const status=Policy.statusFor(immediate,d24,seven,anchor.anchorMs+Contract.MIN_DELAY_MS);
+ assert.equal(status.ok,false);
+ assert.match(status.error,/seven_day_24h_anchor_invalid/);
+});
