@@ -63,7 +63,7 @@ test("Pages 採無 Jekyll 的 repository root 靜態發布", () => {
     defaultProjectUrl: "https://huikai79.github.io/vt-cos-go-learning/",
     accountCustomDomainInherited: true,
     jekyllDisabled: true,
-    entrypoints: ["index.html", "advanced.html", "classic-shapes.html", "history.html", "math.html", "global-go-observatory.html", "live-game.html", "r1-review-start.html", "r1-review.html"]
+    entrypoints: ["index.html", "advanced.html", "classic-shapes.html", "history.html", "math.html", "global-go-observatory.html", "live-game.html", "r1-review-start.html", "r1-review.html", "lesson-content-review.html", "formal-teaching-evidence.html"]
   });
   assert.equal(fs.statSync(path.join(root, ".nojekyll")).isFile(), true);
 });
@@ -382,5 +382,27 @@ test("P0-P4 completion assets 列入公開發佈清單", () => {
   "tests/advanced-p0-p4-completion.test.cjs"
 ]) {
     assert.ok(manifest.publicFiles.includes(file), file);
+  }
+});
+
+
+test("final-phase evidence handoff tools 列入公開發佈，真人回條排除於 repository release", () => {
+  for (const file of [
+    "lesson-content-review.html",
+    "lesson-content-review.js",
+    "formal-teaching-evidence.html",
+    "formal-teaching-evidence.js",
+    "final-phase-status.cjs",
+    "tests/final-phase-evidence.test.cjs"
+  ]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+  for (const pattern of [
+    "19課短講外部審查草稿.json",
+    "19課短講外部棋理回條.json",
+    "正式教學真人證據草稿.json",
+    "正式教學真人證據.json"
+  ]) {
+    assert.ok(manifest.excludedPatterns.includes(pattern), pattern);
   }
 });
