@@ -7,7 +7,7 @@
   <meta name="description" content="VT-COS｜悟之一手的進階訓練：從核心課程轉入多路線、可回跳的讀棋與全局訓練。">
   <title>VT-COS｜悟之一手｜進階訓練</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v45">
-  <link rel="stylesheet" href="advanced.css?v=advanced-training-v8">
+  <link rel="stylesheet" href="advanced.css?v=advanced-training-v9">
   <script defer src="go.js"></script>
   <script defer src="sgf.js?v=sgf-decision-review-v1"></script>
   <script defer src="advanced-decision-review-events.js?v=advanced-decision-review-v1"></script>
@@ -31,7 +31,16 @@
   <script defer src="advanced-delayed-comparable-events-v2.js?v=advanced-comparable-framework-v2"></script>
   <script defer src="advanced-delayed-comparable-policy-v2.js?v=advanced-comparable-framework-v2"></script>
   <script defer src="advanced-delayed-comparable-analysis-v2.js?v=advanced-comparable-framework-v2"></script>
-  <script defer src="advanced-evidence-export.js?v=advanced-evidence-export-v3"></script>
+  <script defer src="advanced-enclosure-comparable-contract.js?v=advanced-enclosure-comparable-v1"></script>
+  <script defer src="advanced-enclosure-comparable-events.js?v=advanced-enclosure-comparable-v1"></script>
+  <script defer src="advanced-enclosure-comparable-policy.js?v=advanced-enclosure-comparable-v1"></script>
+  <script defer src="advanced-enclosure-comparable-analysis.js?v=advanced-enclosure-comparable-v1"></script>
+  <script defer src="advanced-seven-day-comparable-contract.js?v=advanced-seven-day-comparable-v1"></script>
+  <script defer src="advanced-seven-day-comparable-events.js?v=advanced-seven-day-comparable-v1"></script>
+  <script defer src="advanced-seven-day-comparable-policy.js?v=advanced-seven-day-comparable-v1"></script>
+  <script defer src="advanced-seven-day-comparable-analysis.js?v=advanced-seven-day-comparable-v1"></script>
+  <script defer src="advanced-cross-family-analysis.js?v=advanced-cross-family-analysis-v1"></script>
+  <script defer src="advanced-evidence-export.js?v=advanced-evidence-export-v4"></script>
   <script defer src="advanced-sequence-contract.js?v=advanced-sequence-v1"></script>
   <script defer src="advanced-sequence-policy.js?v=advanced-fixed-interleave-v1"></script>
   <script defer src="advanced.js?v=advanced-training-v3"></script>
@@ -41,6 +50,8 @@
   <script defer src="advanced-comparable-position.js?v=advanced-comparable-position-v1"></script>
   <script defer src="advanced-delayed-comparable.js?v=advanced-delayed-comparable-v1"></script>
   <script defer src="advanced-comparable-v2.js?v=advanced-comparable-framework-v2"></script>
+  <script defer src="advanced-enclosure-comparable.js?v=advanced-enclosure-comparable-v1"></script>
+  <script defer src="advanced-seven-day-comparable.js?v=advanced-seven-day-comparable-v1"></script>
   <script defer src="advanced-evidence-export-ui.js?v=advanced-evidence-export-v1"></script>
 </head>
 <body class="advanced-page">
@@ -348,10 +359,63 @@
       </div>
     </section>
 
+    <section class="advanced-comparable-section" aria-labelledby="enclosure-comparable-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">第三種全盤判斷 · 兩步讀棋</span>
+          <h2 id="enclosure-comparable-title">先切斷，再完成包圍吃子</h2>
+        </div>
+        <p id="enclosure-comparable-summary">尚未開始這組多手全盤判斷。</p>
+      </div>
+      <div class="decision-review-card">
+        <div class="decision-review-controls">
+          <p>這組題不先告訴你局部形狀名稱。先在全盤找出切斷援兵的一手；對方若只剩唯一延長，系統會依規則自動走出，再由你下第二手完成局部提子。</p>
+          <div id="enclosure-comparable-list" class="decision-replay-list" aria-label="包圍吃子全盤判斷局面"></div>
+          <p class="answer-policy">四個局面依固定順序開放：練習、不同新局面、至少隔一天的新局面、至少隔七天的新局面。它們都是公開流程檢查，不作正式能力評量。</p>
+        </div>
+        <div id="enclosure-comparable-workspace" class="decision-review-board-wrap" hidden>
+          <div class="advanced-sequence-board-head">
+            <span id="enclosure-comparable-role">練習局面</span>
+            <span id="enclosure-comparable-side">黑棋下</span>
+          </div>
+          <p id="enclosure-comparable-prompt" class="advanced-prompt"></p>
+          <div id="enclosure-comparable-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="enclosure-comparable-board" class="decision-review-board" tabindex="0" role="application" aria-label="19 路包圍吃子全盤棋盤；方向鍵移動，Enter 鍵落子"></div>
+          <p class="decision-review-meta">方向鍵移動 · Enter 鍵落子；也可以直接點棋盤。</p>
+          <div class="advanced-actions">
+            <button class="primary-button" id="enclosure-comparable-next" type="button" disabled>下一個局面 →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="advanced-comparable-section" aria-labelledby="seven-day-comparable-title">
+      <div class="advanced-section-head">
+        <div>
+          <span class="advanced-kicker">七天後再換新局面</span>
+          <h2 id="seven-day-comparable-title">七天後全盤判斷</h2>
+        </div>
+        <p id="seven-day-comparable-summary">先完成雙打吃的一天後新局面。</p>
+      </div>
+      <div class="decision-review-card">
+        <div class="decision-review-controls">
+          <p>這不是重做前面的題。完成雙打吃的一天後新局面後，系統仍以原本不同局面檢查的完成時間為基準，實際滿七天才開放另一個新的 19×19 局面。</p>
+          <button class="primary-button" id="seven-day-comparable-start" type="button" disabled>開始七天後局面</button>
+          <p class="answer-policy">七天是目前固定基準，不代表已證明最適間隔；這仍是公開流程檢查，保存第一次作答與實際相隔時間，但不作正式能力評量。</p>
+        </div>
+        <div id="seven-day-comparable-workspace" class="decision-review-board-wrap" hidden>
+          <p id="seven-day-comparable-prompt" class="advanced-prompt"></p>
+          <div id="seven-day-comparable-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="seven-day-comparable-board" class="decision-review-board" tabindex="0" role="application" aria-label="19 路七天後全盤判斷棋盤；方向鍵移動，Enter 鍵落子"></div>
+          <p class="decision-review-meta">方向鍵移動 · Enter 鍵落子；也可以直接點棋盤。</p>
+        </div>
+      </div>
+    </section>
+
     <section class="advanced-roadmap" aria-labelledby="advanced-data-title">
       <span class="advanced-kicker">本機資料備份</span>
       <h2 id="advanced-data-title">匯出進階練習原始事件</h2>
-      <p>把本頁的選擇題、多手棋盤、決策點複盤、KataGo 比較、稍後重做、兩組全盤可比較局面與延後全盤判斷紀錄一起匯出。舊版多手事件會按原版本分開保存，不會被目前版本改寫。</p>
+      <p>把本頁的選擇題、多手棋盤、決策點複盤、KataGo 比較、稍後重做、多組全盤可比較局面、兩步包圍吃子、一天與七天後流程檢查紀錄一起匯出。舊版多手事件會按原版本分開保存，不會被目前版本改寫。</p>
       <p>這份 JSON 只作備份與分析，不作正式評量，也不會改變核心課程紀錄、能力判定或複習安排。</p>
       <div class="advanced-actions">
         <button class="subtle-button" id="advanced-export-evidence" type="button">匯出進階練習原始事件</button>
