@@ -2,11 +2,11 @@
 
 - researchId: `cross-language-go-concepts-pilot-v1`
 - question: 中文、日文、韓文與英文圍棋資料對「厚、勢、味、先手、定石」是否只是不同翻譯，還是存在穩定的概念邊界差異？
-- decisionUse: 研究是否值得形成獨立 Explore 內容；目前不建立 `concepts.html`，不進 Core curriculum。
+- decisionUse: 先服務既有 Core／Advanced 術語內容 QA，再判斷是否值得形成獨立 Explore 內容；目前不建立 `concepts.html`，不建立跨語 learning-effect claim。
 - scope: 第一輪只做五個概念；優先棋院／棋協／專業教材與可追溯詞彙資料。語言數不是證據數。
 - learner_runtime_authority: none
-- accessDate: 2026-09-29
-- snapshotVersion: 1
+- accessDate: 2026-09-30
+- snapshotVersion: 2
 - promotion_status: `SOURCE_VERIFIED_PARTIAL / NOT_YET_TEACHING_CANDIDATE`
 
 ## Method
@@ -116,6 +116,34 @@
 2. 韓文 `세력`、`선수`、`정석`、`맛/뒷맛` 是否與中／日概念邊界相同？
 3. 中文「味／餘味／借用」是否真的能覆蓋日文 aji，還是只有部分重疊？
 4. 五詞中若只有 1–2 個出現實質跨語差異，是否仍值得獨立成頁，或只做 history／advanced 的知識卡？
+
+## 2026-09-30｜Targeted content QA decision
+
+本輪停止擴張「語言是否改變圍棋認知」的一般研究，只處理已經直接影響現有教材的概念邊界。這是 Research → Teaching Promotion Gate 的小型內容查核，不新增 learner runtime authority，也不把來源差異升格成 learning effect。
+
+### 已採用到現有教材的最小修正
+
+1. **厚勢／外勢**：現有 Core 可保留兩個詞，但 learner-facing 定義改成「本課的操作性區分」：`厚勢` 側重本身較安定、可支援戰鬥的厚實棋形；`外勢` 側重棋形朝中央／外側產生的力量與影響。這是教學用 boundary，不宣稱中文、日文、韓文、英文已存在一對一 canonical mapping。
+2. **先手**：撤回「必須回應」的過強字眼。Core 改成：若對手不回應會承受較大損失，通常需要回應；交換後己方仍有機會先到別處。這與 Advanced 已有「先讀清楚對方能不能不理，再談分類」的邊界一致。
+3. **味／薄味**：中文概念邊界仍不足以升格成 Core 正式術語。學習者文案先改用「可利用的弱點／後續手段」；研究層保留 `味 / aji` anchor 與 Unknown，不因白話化假裝跨語問題已解決。
+4. **定石**：現有「角上常見、在特定條件下合理的交換；不是不看全局就能照背的唯一答案」已足夠，沒有找到會改變目前 learner-facing 決策的缺口，因此本輪不擴寫。
+5. **急場／大場**：現有操作性對照已足以支援 Core 的「急迫損失 vs 大但不急」判斷，本輪不新增格言頁或額外題庫。
+
+### Promotion / stop decision
+
+- `厚勢／外勢`、`先手`：**ACCEPTED AS VERSIONED COPY CLARIFICATION**；只改 learner-facing 說明，不改 KC、scoring、scheduler 或 evidence taxonomy。
+- `味／薄味`：**UNKNOWN / NOT PROMOTED AS A FORMAL CORE TERM**；以白話 wording 避免把未核清的 lexical mapping 固定成教材真值。
+- `定石`、`急場／大場`：**NO CHANGE / STOP**；現有內容足夠，繼續搜尋的邊際資訊增益不足以改變教材。
+- broad cross-language cognition / proverb-effect research：**PAUSED**；除非未來要做正式 learning-effect study，否則不再為充實網站而擴張。
+
+### Recheck triggers
+
+只在以下情況重新開研究：
+- Core／Advanced 要正式新增 `味／薄味` 定義；
+- learner-facing 文案再次需要區分 `厚／厚勢／勢／外勢／模樣`；
+- 新增自然語言版本，需要判斷 term relation；
+- 準備獨立 `concepts.html`／跨語 Explore；
+- 新的直接來源或人工內容審查對目前操作性定義提出實質反證。
 
 ## Stop / continuation rule
 
