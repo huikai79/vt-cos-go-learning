@@ -8,6 +8,7 @@ const manifest = require("../release-manifest.json");
 const phase2 = require("../phase2-content.js");
 const foundationBank = require("../phase2-foundation-bank.js");
 const lifeAndDeathBank = require("../phase2-life-death-bank.js");
+const formalCandidate = require("../formal-teaching-candidate.json");
 
 test("公開發布決策與題庫用途為機器可讀契約", () => {
   assert.equal(manifest.schemaVersion, 1);
@@ -205,8 +206,8 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /class="advanced-evidence-details"/);
   assert.match(workflow, /查看資料來源與診斷/);
   assert.match(workflow, /formal-teaching-candidate\.json\?deploy=/);
-  assert.match(workflow, /formal-teaching-candidate-2026-09-29-w/);
-  assert.match(workflow, /fnv1a32-js16-30995be7/);
+  assert.ok(workflow.includes(formalCandidate.candidateId));
+  assert.ok(workflow.includes(formalCandidate.assetFingerprint));
   assert.match(workflow, /served-pages-status:/);
   assert.match(workflow, /permissions:\s*[\s\S]*statuses: write/);
   assert.match(workflow, /context:"verify\/served-pages-content"/);

@@ -19,11 +19,12 @@ test("Core 備份入口明確限定 Core/實戰，並指向獨立 Advanced 備�
   assert.match(advanced,/匯出進階練習原始事件/);
 });
 
-test("backup-scope 文案變更後 formal candidate 重新凍結且 gate/example 綁定一致",()=>{
+test("目前 formal candidate 動態指紋有效且 gate/example 綁定一致",()=>{
   const verification=Candidate.evaluateManifest(candidate,root);
   assert.equal(verification.valid,true,verification.errors.join("\n"));
-  assert.equal(candidate.candidateId,"formal-teaching-candidate-2026-09-29-w");
-  assert.equal(candidate.assetFingerprint,"fnv1a32-js16-30995be7");
+  assert.match(candidate.candidateId,/^formal-teaching-candidate-/);
+  assert.match(candidate.assetFingerprint,/^fnv1a32-js16-[0-9a-f]{8}$/);
+  assert.equal(verification.computedFingerprint,candidate.assetFingerprint);
   assert.equal(gate.formalTeachingCandidateId,candidate.candidateId);
   assert.equal(gate.formalTeachingCandidateFingerprint,candidate.assetFingerprint);
   assert.equal(example.candidateId,candidate.candidateId);

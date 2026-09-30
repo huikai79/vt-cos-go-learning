@@ -110,11 +110,59 @@ test("直三示範先呈現同一眼空間，再以中央急所分成兩眼", ()
 
 test("修改過的正式題目文案保留獨立 contentVersion", () => {
   const { problems } = require("../content.js");
-  assert.equal(problems.find((problem) => problem.id === "u4-06").contentVersion, 2);
-  assert.equal(problems.find((problem) => problem.id === "u9-06").contentVersion, 2);
+  for (const id of ["u4-06", "u9-06", "u10-06", "u12-02", "u12-04", "u14-04"]) {
+    assert.equal(problems.find((problem) => problem.id === id).contentVersion, 2, `${id} 應升為 contentVersion 2`);
+  }
   assert.equal(problems.find((problem) => problem.id === "u4-05").contentVersion, 1);
 });
 
+test("厚勢、外勢與先手使用有邊界的學習者定義", () => {
+  const thickness = lessons[10].terms.find((entry) => entry.term === "厚勢");
+  const influence = lessons[10].terms.find((entry) => entry.term === "外勢");
+  const sente = lessons[13].terms.find((entry) => entry.term === "先手");
+  assert.ok(thickness && influence && sente);
+  assert.notEqual(thickness.definition, influence.definition);
+  assert.match(thickness.definition, /安定|厚實棋形/);
+  assert.match(influence.definition, /中央|外側|力量|影響/);
+  assert.match(sente.definition, /不回應/);
+  assert.match(sente.definition, /通常需要回應/);
+  assert.doesNotMatch(sente.definition, /必須回應/);
+});
+
+test("尚未完成中文概念邊界查核的薄味不作 Core 必學術語", () => {
+  const { problems } = require("../content.js");
+  const learnerCopy = JSON.stringify({ lessons, problems });
+  assert.doesNotMatch(learnerCopy, /薄味/);
+  const weakPoint = problems.find((problem) => problem.id === "u12-04");
+  const josekiWeakness = problems.find((problem) => problem.id === "u14-04");
+  assert.match(weakPoint.title + " " + weakPoint.explanation, /弱點|尚未安定/);
+  assert.match(josekiWeakness.explanation, /弱點|後續手段/);
+});
+
+test("術語內容查核保留 Core 概念邊界並阻止舊用語回歸", () => {
+  const { problems } = require("../content.js");
+  const thicknessLesson = lessons.find((lesson) => lesson.title === "實地與厚勢");
+  const endgameLesson = lessons.find((lesson) => lesson.title === "收官與數目");
+
+  assert.ok(thicknessLesson, "缺少實地與厚勢課");
+  assert.ok(endgameLesson, "缺少收官與數目課");
+  assert.match(thicknessLesson.text, /本課把「厚勢」.*厚實棋形.*「外勢」.*力量與影響/);
+
+  const thickness = thicknessLesson.terms.find((entry) => entry.term === "厚勢");
+  const influence = thicknessLesson.terms.find((entry) => entry.term === "外勢");
+  const sente = endgameLesson.terms.find((entry) => entry.term === "先手");
+  assert.match(thickness.definition, /本課指.*安定.*厚實棋形/);
+  assert.match(influence.definition, /本課指.*中央或外側.*力量與影響/);
+  assert.match(sente.definition, /通常需要回應/);
+  assert.doesNotMatch(sente.definition, /必須回應/);
+
+  const learnerText = JSON.stringify({ lessons, problems });
+  assert.equal(learnerText.includes("薄味"), false, "中文概念邊界未核清前不把「薄味」當 Core 正式術語");
+
+  for (const id of ["u10-06", "u12-02", "u12-04", "u14-04"]) {
+    assert.equal(problems.find((problem) => problem.id === id).contentVersion, 2, `${id} 實質文案修改後必須升版`);
+  }
+});
 test("每課都有精簡關鍵詞定義，避免核心術語只靠上下文猜", () => {
   for (const lesson of lessons) {
     assert.ok(Array.isArray(lesson.terms) && lesson.terms.length >= 1, `${lesson.title} 缺少關鍵詞`);

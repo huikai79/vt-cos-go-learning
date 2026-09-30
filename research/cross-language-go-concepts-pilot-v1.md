@@ -2,11 +2,11 @@
 
 - researchId: `cross-language-go-concepts-pilot-v1`
 - question: 中文、日文、韓文與英文圍棋資料對「厚、勢、味、先手、定石」是否只是不同翻譯，還是存在穩定的概念邊界差異？
-- decisionUse: 研究是否值得形成獨立 Explore 內容；目前不建立 `concepts.html`，不進 Core curriculum。
+- decisionUse: 先服務既有 Core／Advanced 術語內容 QA，再判斷是否值得形成獨立 Explore 內容；目前不建立 `concepts.html`，不建立跨語 learning-effect claim。
 - scope: 第一輪只做五個概念；優先棋院／棋協／專業教材與可追溯詞彙資料。語言數不是證據數。
 - learner_runtime_authority: none
-- accessDate: 2026-09-29
-- snapshotVersion: 1
+- accessDate: 2026-09-30
+- snapshotVersion: 2
 - promotion_status: `SOURCE_VERIFIED_PARTIAL / NOT_YET_TEACHING_CANDIDATE`
 
 ## Method
@@ -116,6 +116,26 @@
 2. 韓文 `세력`、`선수`、`정석`、`맛/뒷맛` 是否與中／日概念邊界相同？
 3. 中文「味／餘味／借用」是否真的能覆蓋日文 aji，還是只有部分重疊？
 4. 五詞中若只有 1–2 個出現實質跨語差異，是否仍值得獨立成頁，或只做 history／advanced 的知識卡？
+
+## 2026-09-30｜Targeted content QA decision
+
+本輪停止擴張「語言是否改變圍棋認知」的一般研究，只處理已直接影響現有教材的概念邊界。這是 Research → Teaching Promotion Gate 的小型內容查核，不新增 learner runtime authority，也不把來源差異升格成 learning effect。
+
+- **厚勢／外勢**：Core 保留兩詞，但明示為本課操作性區分；厚勢側重較安定、可支援戰鬥的厚實棋形，外勢側重朝中央／外側產生的力量與影響。跨語 canonical relation 仍保持 Unknown。
+- **先手**：撤回絕對「必須回應」；改成不回應會承受較大損失時通常需要回應，交換後己方仍有機會先到別處。與 Advanced 既有「先讀清楚對方能不能不理，再談分類」一致。
+- **味／薄味**：中文概念邊界仍不足以升格成 Core 正式術語；學習者文案先用「可利用的弱點／後續手段」，研究層保留 `味 / aji` anchor 與 Unknown。
+- **定石、急場／大場**：現有操作性說明已足以支援當前教材，本輪不擴寫。
+
+### Promotion / stop decision
+
+- 厚勢／外勢、先手：`ACCEPTED` as versioned copy clarification；不改 KC、scoring、scheduler 或 evidence taxonomy。
+- 味／薄味：`UNKNOWN / NOT PROMOTED AS A FORMAL CORE TERM`。
+- 定石、急場／大場：`NO CHANGE / STOP`。
+- broad cross-language cognition / proverb-effect research：`PAUSED`；除非日後目標改為正式 learning-effect study。
+
+### Recheck triggers
+
+只有 Core／Advanced 要正式新增味／薄味定義、需要重新區分厚／厚勢／勢／外勢／模樣、新增自然語言版本、準備獨立跨語 Explore，或新的直接來源／人工審查提出實質反證時，才重新開研究。
 
 ## Stop / continuation rule
 
