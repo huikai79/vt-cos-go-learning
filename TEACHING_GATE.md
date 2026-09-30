@@ -327,3 +327,11 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - Enclosure／Double Atari 的 KC 仍為 provisional / not promoted；cross-family analysis 不輸出 mastery、retention success、transfer success 或 learning effect。
 - P4 的 engineering-expansion stop 只限制後續工程擴張：在沒有新真人 evidence 或 correctness bottleneck 前，不新增 family／spacing heuristic／adaptive scheduler／mastery probability；它不表示 R1a、R1b、usability、accessibility 或 formal evaluation 已通過。
 - Formal Teaching：仍 BLOCKED；Formal Evaluation：仍 BLOCKED；Learning Effect：仍 NOT_MEASURED。
+
+
+## 2026-09-30 Change note｜Final-phase Evidence Handoff v1
+
+- 新增 19 課外部棋理審查頁、正式 teaching usability/accessibility 收集頁與 final-phase status reporter；它們只建立可稽核 receipt，沒有 learner/scoring/scheduler/formal authority。
+- 兩個收集頁都綁目前 candidate / fingerprints；若 candidate critical surface 改變，既有真人 evidence 仍依 verifier fail closed，不跨版本拼接。
+- R1a 題庫回條、19 課短講回條、三位 target novice、accessibility 都仍尚未取得；因此 Formal Teaching 保持 BLOCKED。
+- R1b 與 private unseen 仍是 Formal Evaluation 的後續獨立 gate；本輪沒有建立 private item pool。Learning Effect 仍 NOT_MEASURED。
