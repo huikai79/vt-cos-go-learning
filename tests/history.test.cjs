@@ -260,16 +260,30 @@ test("History Explore v6 把 AI 寫成知識轉折，不寫成所有傳統棋理
   assert.ok(html.includes("pubmed.ncbi.nlm.nih.gov/40406610"));
 });
 
-test("跨語概念 pilot 維持 research-only，不把術語差異升格成民族認知結論", () => {
+test("跨語概念 pilot 維持 research-only，並鎖住非對稱 mapping、證據角色與 publication gate", () => {
   const pilot = fs.readFileSync(path.join(root, "research", "cross-language-go-concepts-pilot-v1.md"), "utf8");
+  assert.match(pilot, /snapshotVersion: 3/);
   assert.match(pilot, /NOT_YET_TEACHING_CANDIDATE/);
-  assert.match(pilot, /Equivalent/);
-  assert.match(pilot, /Overlap/);
-  assert.match(pilot, /Broader/);
-  assert.match(pilot, /Narrower/);
-  assert.match(pilot, /Non-equivalent/);
-  assert.match(pilot, /不能從術語差異推出「中國人／日本人／韓國人天生以不同方式思考」/);
-  assert.match(pilot, /目前\*\*不得\*\*建立「各語言思考模式」公開結論頁/);
+  assert.match(pilot, /HOLD_NO_CONCEPTS_PAGE/);
+  for (const relation of ["Equivalent", "Overlap", "Broader", "Narrower", "Non-equivalent", "Unknown"]) {
+    assert.ok(pilot.includes(relation), relation);
+  }
+  for (const role of ["definition", "usage", "curriculum classification", "borrowing / transmission", "historical change"]) {
+    assert.ok(pilot.includes(role), role);
+  }
+  assert.match(pilot, /不要求四語對稱/);
+  assert.match(pilot, /中文至少區分 `zh-TW` 與 `zh-CN`/);
+  assert.match(pilot, /institution curriculum 當成整個語言社群的 cognition evidence/);
+  assert.match(pilot, /usage evidence 當 formal definition/);
+  assert.match(pilot, /Theme-matched example/);
+  assert.match(pilot, /Exact-position comparison/);
+  assert.match(pilot, /至少 \*\*3 個 anchors\*\*/);
+  assert.match(pilot, /至少完成 \*\*1 個 exact-position comparison\*\*/);
+  assert.match(pilot, /術語／教材差異 ≠ 民族認知差異/);
+  assert.match(pilot, /目前 `concepts\.html` 維持不存在/);
+  assert.equal(fs.existsSync(path.join(root, "concepts.html")), false);
+  assert.match(pilot, /不能從術語差異推出「中國人／日本人／韓國人／英文使用者天生以不同方式思考」/);
+  assert.match(pilot, /不得.*建立「各語言思考模式」公開結論頁/s);
 });
 
 test("宇宙論與 AI 更新留下獨立 research record 與停止線", () => {
