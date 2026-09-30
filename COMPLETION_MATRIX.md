@@ -1,3 +1,10 @@
+2026-09-30 Change note｜Core terminology content QA v1
+
+- **Bottleneck：** Core 已直接使用厚勢／外勢、先手與薄味，但跨語 research record 仍把部分概念邊界列為 Unknown；若繼續用過強或未升格術語，會把 research candidate 偷換成教材真值。
+- **實作：** Unit 7 將厚勢／外勢改為「本課操作性區分」；Unit 10／12 的先手由「必須回應」改為條件式「不應會承受較大損失，因此通常需要回應」；Unit 12／14 不再把「薄味」當 Core 正式術語，改成「弱點／後續手段」。受影響 choice item 升 contentVersion 2。
+- **Research governance：** cross-language pilot snapshot 升版，明確停止 broad cognition／proverb-effect 搜尋；只在現有內容需要時做 targeted concept verification。定石、急場／大場本輪確認無需擴寫。
+- **不變 invariant：** 不改棋盤、答案、KC、scoring、scheduler、first response／retry、event schema、T2/T3、formal evaluation 或 learner state。研究查核不取得 learning-effect authority。
+- **Gate：** content.js 是 frozen Core critical asset，因此需在受影響測試穩定後重新凍結 formal teaching candidate；正式 R1a、target novice usability、accessibility 與 learning effect 狀態不因此升格。
 2026-09-30 Capture & Semeai Track v1：在不新增第 16 單元、不改 learner model 的前提下，加入跨單元「吃子與對殺能力主線」與兩個 Advanced choice-based「打吃方向」Teaching Candidate（往受限方向、阻止連接）。兩題帶 task features 與 `kcStatus=not_promoted`；既有倒撲／枷／對殺／征子 8 個 multi-step sequence、`advanced-fixed-interleave-v1` 與 v3 歷史事件語義完全保留，因此沒有 migration。來源不明的使用者教材截圖只作 DISCOVERED 線索，沒有進 public assets。這是工程／內容候選更新；R1a、正式 usability、accessibility、formal evaluation 與 learning effect 狀態不升格。
 
 2026-09-30 Change note｜AI-era concrete cases + Go decision-model research v1
