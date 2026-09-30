@@ -268,8 +268,8 @@ jobs:
               name: "formal-teaching-candidate",
               url: new URL(`formal-teaching-candidate.json?deploy=${deploySha}`, base),
               checks: [
-                '"candidateId": "formal-teaching-candidate-2026-09-30-b"',
-                '"assetFingerprint": "fnv1a32-js16-233592f9"',
+                '"candidateId": "formal-teaching-candidate-2026-09-30-c"',
+                '"assetFingerprint": "fnv1a32-js16-15b4184a"',
                 'learner-flow-v55'
               ]
             },
@@ -277,8 +277,8 @@ jobs:
               name: "teaching-gate",
               url: new URL(`teaching-gate.json?deploy=${deploySha}`, base),
               checks: [
-                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-09-30-b"',
-                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-233592f9"',
+                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-09-30-c"',
+                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-15b4184a"',
                 '"lessonContentReview": "awaiting_external_receipt"',
                 '"lessonContentFingerprint": "fnv1a32-8e153412"',
                 '"noviceUsability": "not_tested"',

@@ -292,3 +292,10 @@ M1 不重畫整個 workspace；保留桌面棋盤左／問題與作答右，以�
 - **語義：** auto intro 的「先跳過」與 manual rewatch 的「關閉」分開；`seenLessonIntros` 只表示自動顯示已處理。重看由 step 1 開始，one-step demo 不顯示無意義導航。
 - **證據邊界：** 自動測試只能證明 layout、focus、state 與 visual delta contract。短講棋理另需 19 課外部 review；初學者理解、accessibility 與 learning effect 仍需真人證據。
 
+### 2026-09-30｜200% text post-merge regression
+
+- main run #868 的真實 Windows browser regression 發現 Short Talk Modal 在 200% text 下有水平 overflow。
+- 原因是 `.lesson-intro-dialog .teaching-card>div{width:100%}` 與同一 flex row 的 icon／gap 疊加，內層實際寬度超過容器；不是 responsive media-query 本身回歸。
+- 修正只把該內容 wrapper 改成可收縮 flex item：`min-width:0; flex:1 1 auto; width:auto`。既有 320px one-column 與 200% text browser assertion 保留，不降低驗收條件。
+- 因 `styles.css` 屬 formal candidate critical asset，candidate 重新凍結為 `formal-teaching-candidate-2026-09-30-c`／`fnv1a32-js16-15b4184a`；19 課 lesson-content fingerprint 不變。
+
