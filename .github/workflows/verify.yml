@@ -199,6 +199,7 @@ jobs:
                 'advanced-delayed-comparable-policy-v2.js?v=advanced-comparable-framework-v2',
                 'advanced-delayed-comparable-analysis-v2.js?v=advanced-comparable-framework-v2',
                 'advanced-comparable-v2.js?v=advanced-comparable-framework-v2',
+                'advanced-evidence-export.js?v=advanced-evidence-export-v3',
                 'decision-comparison.js?v=decision-comparison-v1',
                 '用 KataGo 再比較這兩手（選用）',
                 '固定搜尋量下的估計',
