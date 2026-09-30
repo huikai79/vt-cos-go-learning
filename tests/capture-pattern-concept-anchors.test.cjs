@@ -14,7 +14,7 @@ test("capture pattern research 保留 Research→Teaching 邊界，不把教材�
   assert.match(record, /不證明「雙打吃」應是獨立 KC/);
   assert.match(record, /門吃.*Unknown/s);
   assert.match(record, /抱吃.*Unknown/s);
-  assert.match(record, /不得進 formal unseen holdout/);
+  assert.match(record, /公開題目.*exposed.*formal unseen evaluation/s);
 });
 
 test("跨語 term map 只把已核對的雙打吃標 Equivalent，不替門吃抱吃造外語同義詞", () => {
