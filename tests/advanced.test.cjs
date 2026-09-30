@@ -39,7 +39,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
 });
 
 test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 practice", () => {
-  assert.equal(content.version, 9);
+  assert.equal(content.version, 10);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 4);
   const full = content.tracks.find((track) => track.id === "full-board-review");
@@ -47,7 +47,7 @@ test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 p
   assert.equal(full.href, "live-game.html?size=19");
   assert.match(full.summary, /全盤實戰練習/);
   assert.match(html, /不納入正式能力評量/);
-  assert.equal(content.experiences.length, 12);
+  assert.equal(content.experiences.length, 15);
   for (const item of content.experiences) {
     assert.ok(content.tracks.some((track) => track.id === item.trackId));
     assert.ok(item.choices.length >= 3, item.id);
@@ -159,6 +159,37 @@ test("包圍吃子 learner-facing 文案明示重新數氣，不把教材名稱�
   assert.match(item.explanation, /不能硬套/);
   assert.equal(item.title.includes("門吃"), false);
   assert.equal(item.title.includes("抱吃"), false);
+});
+
+test("semeai liberty-structure Teaching Candidate 不把一眼或增氣口訣升格成 KC", () => {
+  const eye = content.experiences.find((entry) => entry.id === "adv-r13");
+  const increase = content.experiences.find((entry) => entry.id === "adv-r14");
+  assert.ok(eye);
+  assert.ok(increase);
+  for (const item of [eye, increase]) {
+    assert.equal(item.candidateId, "semeai-liberty-structure-v1");
+    assert.equal(item.candidateStatus, "teaching_candidate");
+    assert.equal(item.kcStatus, "not_promoted");
+    assert.equal(item.sourceReviewId, "mwa-module-a-content-gap-v1");
+    assert.equal(item.taskFeatures.terminalResult, "bounded_fixture_only");
+  }
+  assert.equal(eye.taskFeatures.universalProverbRule, false);
+  assert.equal(increase.taskFeatures.universalRule, false);
+  assert.match(eye.explanation, /不能直接當成通用 scoring rule/);
+  assert.match(increase.explanation, /不是「永遠先增氣」/);
+});
+
+test("throw-in transfer Teaching Candidate 要求結構改變與 negative case", () => {
+  const item = content.experiences.find((entry) => entry.id === "adv-r15");
+  assert.ok(item);
+  assert.equal(item.candidateId, "throw-in-transfer-v1");
+  assert.equal(item.candidateStatus, "teaching_candidate");
+  assert.equal(item.kcStatus, "not_promoted");
+  assert.equal(item.taskFeatures.mechanism, "sacrificial_insertion");
+  assert.equal(item.taskFeatures.negativeCaseRequired, true);
+  assert.equal(item.taskFeatures.falseEyeContextStatus, "research_candidate_not_promoted");
+  assert.match(item.explanation, /犧牲本身不是價值/);
+  assert.match(item.explanation, /破假眼用途仍停在研究候選/);
 });
 
 test("打吃方向新增不改寫既有 fixed-interleave sequence policy 或四個 family", () => {
