@@ -39,7 +39,7 @@ test("進階頁不是第 16 單元，且明示 practice-only 證據邊界", () =
 });
 
 test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 practice", () => {
-  assert.equal(content.version, 8);
+  assert.equal(content.version, 9);
   assert.equal(content.scoringContractVersion, "advanced-choice-v1");
   assert.equal(content.tracks.filter((track) => track.status === "active").length, 4);
   const full = content.tracks.find((track) => track.id === "full-board-review");
@@ -47,7 +47,7 @@ test("進階 choice scaffold 保留三條局部訓練線並提供 19 路全盤 p
   assert.equal(full.href, "live-game.html?size=19");
   assert.match(full.summary, /全盤實戰練習/);
   assert.match(html, /不納入正式能力評量/);
-  assert.equal(content.experiences.length, 11);
+  assert.equal(content.experiences.length, 12);
   for (const item of content.experiences) {
     assert.ok(content.tracks.some((track) => track.id === item.trackId));
     assert.ok(item.choices.length >= 3, item.id);
@@ -121,6 +121,33 @@ test("門吃與抱吃仍停在研究術語候選，不偷塞進 learner-facing E
   assert.equal(content.experiences.some((item) => item.taskFeatures?.capturePattern === "door_capture"), false);
   assert.equal(content.experiences.some((item) => item.taskFeatures?.capturePattern === "hug_capture"), false);
   assert.equal(content.sequenceExperiences.some((item) => ["door-capture", "hug-capture", "double-atari"].includes(item.familyId)), false);
+});
+
+test("包圍吃子 Teaching Candidate 只升共同機制，不替門吃／抱吃建立 KC 或來源標籤", () => {
+  const item = content.experiences.find((experience) => experience.id === "adv-r12");
+  assert.ok(item);
+  assert.equal(item.candidateId, "capture-patterns-v1");
+  assert.equal(item.candidateStatus, "teaching_candidate");
+  assert.equal(item.kcStatus, "not_promoted");
+  assert.equal(item.sourceReviewId, "capture-pattern-concept-anchors-v1");
+  assert.equal(item.taskFeatures.capturePattern, "enclosure_capture");
+  assert.deepEqual(item.taskFeatures.sourceTermCandidates, ["門吃", "抱吃"]);
+  assert.equal(item.taskFeatures.sourceLabelSplit, "unknown");
+  assert.equal(item.taskFeatures.connectionCut, true);
+  assert.equal(item.taskFeatures.targetLibertiesBefore, 2);
+  assert.equal(item.taskFeatures.targetLibertiesAfterCut, 1);
+  assert.equal(item.taskFeatures.forcedExtensionRemainsAtari, true);
+  assert.equal(item.taskFeatures.nextMoveCapturesTarget, true);
+  assert.equal(content.sequenceExperiences.some((entry) => entry.familyId === "enclosure-capture"), false);
+});
+
+test("包圍吃子 learner-facing 文案明示重新數氣，不把教材名稱當答案", () => {
+  const item = content.experiences.find((experience) => experience.id === "adv-r12");
+  assert.match(item.explanation, /先不要求背名稱/);
+  assert.match(item.explanation, /延長後若仍只有一口氣/);
+  assert.match(item.explanation, /不能硬套/);
+  assert.equal(item.title.includes("門吃"), false);
+  assert.equal(item.title.includes("抱吃"), false);
 });
 
 test("打吃方向新增不改寫既有 fixed-interleave sequence policy 或四個 family", () => {
