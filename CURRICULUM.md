@@ -51,7 +51,7 @@
 | 核心位置 | 教學焦點 | 目前邊界 |
 |---|---|---|
 | Unit 1｜氣與吃子 | 氣、打吃、一手提子；加入「打吃方向」概念：往受限方向趕、先看對方唯一逃路 | Core 題庫尚未新增正式打吃方向題；先在 Advanced choice practice 以兩個 Teaching Candidate 試行 |
-| Unit 2｜連與斷 | 連接／切斷與吃子互相影響；雙打吃已進 Advanced Teaching Candidate，阻止連接逃脫與門吃／抱吃維持後續候選 | 「雙打吃」目前只驗證局部 pattern，不升格 KC；「門吃」「抱吃」先保留為中文 term／item-family candidate，待 rules-backed 原創棋形與棋理審查確認邊界 |
+| Unit 2｜連與斷 | 連接／切斷與吃子互相影響；雙打吃與較粗的「包圍吃子」已進 Advanced Teaching Candidate | 「包圍吃子」只教先切斷援兵、延長後仍一氣的共同機制；「門吃／抱吃」名稱分岔仍 UNKNOWN，不因教材分項就各自建立 KC |
 | Unit 4｜眼與基礎死活 | 氣與眼形相互作用；簡單倒撲、接不歸等可作局部棋形支架 | 只有具備可重算 rules／scoring contract 的局面才可成為可評分題 |
 | Unit 9｜死活閱讀 | 征子、枷、基本無眼對殺，再逐步增加公氣、眼、特殊氣與較長分支 | 現有 Advanced 倒撲／枷／對殺／征子 sequence 均為 practice-only；複雜對殺不由簡單題自動升格 |
 

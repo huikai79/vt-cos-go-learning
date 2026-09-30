@@ -9,7 +9,8 @@ const record = fs.readFileSync(path.join(root, "research", "capture-pattern-conc
 test("capture pattern research 保留 Research→Teaching 邊界，不把教材術語直接升格 KC", () => {
   assert.match(record, /researchId: `capture-pattern-concept-anchors-v1`/);
   assert.match(record, /DOUBLE_ATARI_TEACHING_CANDIDATE/);
-  assert.match(record, /DOOR_AND_HUG_TERM_CANDIDATES/);
+  assert.match(record, /ENCLOSURE_CAPTURE_TEACHING_CANDIDATE/);
+  assert.match(record, /DOOR_AND_HUG_LABEL_SPLIT_UNKNOWN/);
   assert.match(record, /不代表每次出現 double atari 都必然「吃到一邊」/);
   assert.match(record, /不證明「雙打吃」應是獨立 KC/);
   assert.match(record, /門吃.*Unknown/s);
@@ -27,6 +28,14 @@ test("跨語 term map 只把已核對的雙打吃標 Equivalent，不替門吃�
   assert.match(record, /en \| — \| Unknown/);
   assert.doesNotMatch(record, /門吃.*\| (?:ゲタ|net) \| Equivalent/s);
   assert.doesNotMatch(record, /抱吃.*\| (?:ゲタ|net) \| Equivalent/s);
+});
+
+test("v2 只升共同 enclosure_capture 機制，門吃／抱吃 label split 維持 UNKNOWN", () => {
+  assert.match(record, /snapshotVersion: 2/);
+  assert.match(record, /四個本站原創、非單純鏡射/);
+  assert.match(record, /`sourceLabelCandidate` 全部固定為 `unknown`/);
+  assert.match(record, /enclosure_capture.*Teaching Candidate/s);
+  assert.ok(record.includes("- `door_capture` / `hug_capture` label split：`UNKNOWN / NOT_PROMOTED`。"));
 });
 
 test("雙打吃 promotion decision 要求 rules-backed 四項棋盤條件", () => {
