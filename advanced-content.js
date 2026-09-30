@@ -305,6 +305,43 @@
         { boardSize: 5, stones: [[1,1,B],[2,0,B],[3,3,B],[2,4,B],[2,1,W],[2,3,W],[2,2,B]], highlights: [[3,1],[1,3]], label: "黑下中央後，兩串白棋同時只剩一氣", caption: "黑棋下在中央沒有立即提子，但上下兩串白棋分別只剩右上與左下最後一口氣；這就是本題的雙打吃。" },
         { boardSize: 5, stones: [[1,1,B],[2,0,B],[3,3,B],[2,4,B],[2,1,W],[3,1,W],[2,2,B],[1,3,B]], emphasis: [[2,1],[3,1]], label: "白先救一邊，另一邊仍可能被提走", caption: "白棋先往右延長救上方，黑棋再填左下最後一氣，提掉下方白子。這只驗證此局部示意；遇到反提、劫或外援時仍要重新讀。" }
       ]
+    },
+    {
+      id: "adv-r12",
+      trackId: "reading-tesuji",
+      title: "包圍吃子：先斷援兵，再追最後一氣",
+      target: "對方一口氣能連到援兵時，先切斷連接，再確認它延長後是否仍只有一口氣。",
+      candidateId: "capture-patterns-v1",
+      candidateStatus: "teaching_candidate",
+      kcStatus: "not_promoted",
+      sourceReviewId: "capture-pattern-concept-anchors-v1",
+      taskFeatures: {
+        capturePattern: "enclosure_capture",
+        sourceTermCandidates: ["門吃", "抱吃"],
+        sourceLabelSplit: "unknown",
+        connectionCut: true,
+        targetLibertiesBefore: 2,
+        targetLibertiesAfterCut: 1,
+        forcedExtensionRemainsAtari: true,
+        nextMoveCapturesTarget: true,
+        terminalCaptureResult: "bounded_local_capture"
+      },
+      prompt: "對方弱棋有兩口氣，其中一口正好能和援兵連上。哪一種讀法最可靠？",
+      choices: ["先佔住連接點形成打吃，再確認它延長後是否仍只有一口氣", "只要靠近邊線就直接判定一定能吃", "先追著另一口氣走，不必檢查它能不能和援兵連上"],
+      answer: 0,
+      hint: "先找哪一口氣同時也是『連接點』。切斷後，再真的把對方延長一步，重新數氣。",
+      explanation: "有些中文入門教材會把相近棋形分成「門吃」與「抱吃」。這裡先不要求背名稱，只練兩者共同可驗證的結構：先切斷援兵，讓目標棋進入打吃；對方延長後若仍只有一口氣，下一手才有局部提子的依據。若延長後變成兩口以上，就不能硬套這個手段。",
+      takeaway: "先斷連接，再讓對方逃一步；逃完仍一氣，追擊才真的成立。",
+      terms: [
+        ["包圍吃子", "本課先用這個中性名稱練共同機制：切斷援兵後，讓對方延長仍不能增加到兩口以上的氣。"],
+        ["門吃／抱吃", "中文入門教材常用的相近吃子名稱；本課暫不把兩個名稱當成兩種獨立能力。"]
+      ],
+      demoSteps: [
+        { boardSize: 6, stones: [[0,1,B],[1,2,B],[2,0,B],[2,2,B],[1,1,W],[2,1,W],[4,1,W]], highlights: [[3,1],[1,0]], reference: [[4,1]], label: "先找連接點與另一口氣", caption: "左邊兩顆白棋只有兩口氣：右邊的空點能接到白色援兵，上邊的空點是另一條逃路。先分清這兩口氣的作用。" },
+        { boardSize: 6, stones: [[0,1,B],[1,2,B],[2,0,B],[2,2,B],[1,1,W],[2,1,W],[4,1,W],[3,1,B]], highlights: [[1,0]], reference: [[4,1]], label: "黑先佔連接點，白棋只剩最後一氣", caption: "黑棋先切斷白棋與右邊援兵，同時形成打吃。現在白棋只能往上延長。" },
+        { boardSize: 6, stones: [[0,1,B],[1,2,B],[2,0,B],[2,2,B],[1,1,W],[2,1,W],[4,1,W],[3,1,B],[1,0,W]], highlights: [[0,0]], label: "白延長後仍只有一口氣", caption: "白棋真的逃一步後，整串三顆白棋仍只剩左上角這一口氣。這一步重算是關鍵，不能只靠名稱判斷。" },
+        { boardSize: 6, stones: [[0,1,B],[1,2,B],[2,0,B],[2,2,B],[4,1,W],[3,1,B],[0,0,B]], emphasis: [[0,0]], label: "黑填最後一氣，局部提掉三子", caption: "黑棋填掉最後一氣後，左邊三顆白棋被提走。這只證明這個原創局部手順成立，不代表所有相似外形都一定能吃。" }
+      ]
     }
   ];
 
@@ -764,7 +801,7 @@
   ];
 
   const api = {
-    version: 8,
+    version: 9,
     scoringContractVersion: "advanced-choice-v1",
     tracks,
     experiences,
