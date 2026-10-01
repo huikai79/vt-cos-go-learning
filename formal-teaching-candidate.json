@@ -1,14 +1,18 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-01-b",
-  "frozenAt": "2026-10-01T08:42:00+08:00",
-  "assetSetVersion": 7,
-  "assetFingerprint": "fnv1a32-js16-6626020d",
+  "candidateId": "formal-teaching-candidate-2026-10-01-c",
+  "frozenAt": "2026-10-01T09:28:00+08:00",
+  "assetSetVersion": 8,
+  "assetFingerprint": "fnv1a32-js16-5ed041b3",
   "assetPaths": [
     "index.html",
     "styles.css",
     "assets/homepage/hero.png",
+    "assets/homepage/hero-atmosphere.svg",
+    "assets/homepage/philosophy-growth.svg",
+    "assets/homepage/philosophy-capability.svg",
+    "assets/homepage/footer-landscape.svg",
     "assets/homepage/stage-basic.webp",
     "assets/homepage/stage-local.webp",
     "assets/homepage/stage-global.webp",
@@ -38,5 +42,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v56／content catalog 5。首頁依核准 mockup 進行 presentation-only fidelity pass：保留 VT-COS 為學習引擎底盤品牌，重整 Header、Hero、三個核心課程入口、四步學習方法、理念／能力雙欄、FAQ 與 final CTA；局部／全局入口仍分別直達 Core 第 6／11 單元。既有 MWA Module A 第 4 課語義修正、direct-join KC、題目答案、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 與 formal evaluation authority 均未改。重新凍結不產生真人 usability、accessibility、content validity 或 learning-effect 證據。"
+  "scopeNote": "learner-flow-v57／content catalog 5。依使用者對照實際首頁與核准 Mockup 的 formative review，修正 v56 的視覺語義偏移：Hero 新增有機桌面／棋罐／植物舞台並把「從一手開始，看見更大的棋局」錨定在同一場景；移除重複的第二套四步方法 section，只保留一句研究邊界；三個合法 Core 入口採同等 CTA 權重；「我們的理念／我們的堅持」改用山水與石堆植物的語義 mood art；final CTA 改用同一家族山水資產。歷史／數學／全球觀察與完整研究來源仍保留為低優先入口。新 SVG 均為 decorative brand/mood assets，不作棋盤、rules、scoring 或答案 authority。題目、答案、KC、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 與 formal evaluation authority 均未改。重新凍結不產生真人 usability、accessibility、content validity 或 learning-effect 證據。"
 }
