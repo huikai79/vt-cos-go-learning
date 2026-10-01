@@ -40,7 +40,7 @@ test("研究頁不載入 learner runtime，也不取得學習評分 authority", 
 test("未知不被搜尋缺口改寫成零，且首頁提供低干擾入口", () => {
   assert.match(html, /未知不等於 0/);
   assert.match(html, /本輪未找到可與上述國家直接比較的現行全國玩家／學員總數/);
-  assert.match(index, /href="global-go-observatory\.html">全球觀察<\/a>/);
+  assert.match(index, /href="global-go-observatory\.html">全球圍棋觀察/);
 });
 
 test("公開來源保留 locator，且研究紀錄保存不支持範圍", () => {

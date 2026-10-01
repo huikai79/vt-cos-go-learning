@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v57";
+  const uiVersion = "learner-flow-v59";
   const contentCatalogVersion = 5;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -623,6 +623,7 @@
     });
     const coreStatus = $("core-entry-status");
     if (coreStatus) {
+      coreStatus.hidden = !state.hasStarted;
       const lesson = lessons[current().lesson];
       coreStatus.textContent = state.hasStarted && lesson
         ? `上次停在：${lesson.title}`
@@ -919,6 +920,15 @@
     startExternalProblem(problem, "evaluation");
     state.trial = Trial.markPresented(state.trial, decision.batch, problem, Date.now(), { uiVersion });
     save();
+  }
+
+  function renderSiteCourseCatalog() {
+    const list = $("intro-core-course-list");
+    if (!list) return;
+    list.innerHTML = units.map((unit, index) => {
+      const lessonCount = lessons.filter((lesson) => lesson.unit === index).length;
+      return `<li><button type="button" data-site-intro-unit="${index}"><span class="intro-unit-number">${String(index + 1).padStart(2, "0")}</span><span><strong>${escapeHtml(unit.title)}</strong><small>${lessonCount} 課</small></span><span aria-hidden="true">→</span></button></li>`;
+    }).join("");
   }
 
   function renderNav() {
@@ -1726,7 +1736,18 @@
     closeTools();
     setSiteIntroduction(true);
   });
+  renderSiteCourseCatalog();
   if (typeof document.querySelectorAll === "function") {
+    document.querySelectorAll("[data-site-intro-courses]").forEach((link) => link.addEventListener("click", (event) => {
+      const catalog = $("all-courses");
+      if (!catalog) return;
+      event.preventDefault();
+      catalog.open = true;
+      window.history.replaceState(null, "", "#all-courses");
+      catalog.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+      const summary = catalog.querySelector("summary");
+      if (summary) summary.focus({ preventScroll: true });
+    }));
     document.querySelectorAll("[data-site-intro-start]").forEach((button) => button.addEventListener("click", leaveSiteIntroductionForLearning));
     document.querySelectorAll("[data-site-intro-unit]").forEach((button) => button.addEventListener("click", () => {
       const unitIndex = Number(button.dataset.siteIntroUnit);

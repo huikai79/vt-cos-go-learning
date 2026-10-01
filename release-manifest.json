@@ -114,6 +114,7 @@
     "advanced.js",
     "app.js",
     "assets/homepage/evidence-delayed.webp",
+    "assets/homepage/evidence-feedback.webp",
     "assets/homepage/evidence-first.webp",
     "assets/homepage/evidence-new-shape.webp",
     "assets/homepage/footer-landscape.svg",
@@ -310,7 +311,9 @@
     "ui-audit-screenshots/first-entry-desktop.png",
     "ui-audit-screenshots/first-entry-mobile.png",
     "ui-audit-screenshots/go-learning-desktop.png",
-    "ui-audit-screenshots/go-learning-mobile.png"
+    "ui-audit-screenshots/go-learning-mobile.png",
+    "assets/homepage/philosophy-growth-v59.webp",
+    "assets/homepage/philosophy-capability-v59.webp"
   ],
   "excludedPatterns": [
     "gtp_logs/",

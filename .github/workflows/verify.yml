@@ -163,15 +163,18 @@ jobs:
               checks: [
                 'href="history.html"',
                 'href="math.html"',
-                'href="global-go-observatory.html">全球觀察</a>',
-                '歷史與典故另外讀，不擋住你的學習主線',
+                'href="global-go-observatory.html"',
+                '想多認識圍棋？也可以從這裡延伸閱讀。',
+                'href="#all-courses" data-site-intro-courses',
+                'id="intro-core-course-list"',
                 'assets/homepage/hero-atmosphere.svg',
-                'assets/homepage/philosophy-growth.svg',
-                'assets/homepage/philosophy-capability.svg',
+                'assets/homepage/evidence-feedback.webp',
+                'assets/homepage/philosophy-growth-v59.webp',
+                'assets/homepage/philosophy-capability-v59.webp',
                 'assets/homepage/footer-landscape.svg',
-                '完整來源與研究限制可在頁尾展開查看',
-                'styles.css?v=learner-flow-v57',
-                'app.js?v=learner-flow-v57',
+                '完整來源、研究限制與目前驗證狀態',
+                'styles.css?v=learner-flow-v59',
+                'app.js?v=learner-flow-v59',
                 '15 單元核心課程（參考）',
                 'class="advanced-priority-label">目前紀錄與證據</div>',
                 'id="advanced-evidence-brief"',
@@ -315,17 +318,17 @@ jobs:
               name: "formal-teaching-candidate",
               url: new URL(`formal-teaching-candidate.json?deploy=${deploySha}`, base),
               checks: [
-                '"candidateId": "formal-teaching-candidate-2026-10-01-c"',
-                '"assetFingerprint": "fnv1a32-js16-5ed041b3"',
-                'learner-flow-v57'
+                '"candidateId": "formal-teaching-candidate-2026-10-01-e"',
+                '"assetFingerprint": "fnv1a32-js16-2b602dc5"',
+                'learner-flow-v59'
               ]
             },
             {
               name: "teaching-gate",
               url: new URL(`teaching-gate.json?deploy=${deploySha}`, base),
               checks: [
-                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-10-01-c"',
-                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-5ed041b3"',
+                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-10-01-e"',
+                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-2b602dc5"',
                 '"lessonContentReview": "awaiting_external_receipt"',
                 '"lessonContentFingerprint": "fnv1a32-d1f8b40f"',
                 '"noviceUsability": "not_tested"',

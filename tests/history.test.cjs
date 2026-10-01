@@ -42,7 +42,7 @@ test("歷史探索頁至少連回主要學習入口與主要來源", () => {
 test("首頁以低優先級入口連到歷史探索，主要學習入口維持 mockup 三階段", () => {
   const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
   assert.ok(home.includes('href="history.html"'));
-  assert.match(home, /歷史與典故另外讀，不擋住你的學習主線/);
+  assert.match(home, /想多認識圍棋？也可以從這裡延伸閱讀。/);
   assert.equal((home.match(/class="intro-path-card/g) || []).length, 3);
   assert.doesNotMatch(home, /class="[^"]*intro-path-action[^"]*" href="advanced\.html"/);
   assert.match(home, /data-site-intro-unit="5"/);

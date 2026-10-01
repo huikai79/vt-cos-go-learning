@@ -206,8 +206,8 @@ test("main push verify 內建 served-content gate，不把 deploy success 當成
   assert.match(workflow, /本頁來源最後查核：2026-09-29/);
   assert.match(workflow, /href="advanced\.html">回進階訓練<\/a>/);
   assert.match(workflow, /attempt <= 12/);
-  assert.match(workflow, /styles\.css\?v=learner-flow-v57/);
-  assert.match(workflow, /app\.js\?v=learner-flow-v57/);
+  assert.match(workflow, /styles\.css\?v=learner-flow-v59/);
+  assert.match(workflow, /app\.js\?v=learner-flow-v59/);
   assert.match(workflow, /15 單元核心課程（參考）/);
   assert.match(workflow, /目前紀錄與證據/);
   assert.match(workflow, /id="advanced-evidence-brief"/);

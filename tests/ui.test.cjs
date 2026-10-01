@@ -187,7 +187,7 @@ async function main() {
         assessmentCards: document.querySelectorAll('.intro-evidence-grid > article').length,
         siteIntroSources: document.querySelectorAll('.intro-source-grid a').length,
         researchOpen: document.querySelector('.intro-research-details').open,
-        curriculumBoundary: document.querySelector('#learning-entry .intro-course-count').textContent,
+        curriculumBoundary: document.querySelector('.intro-course-count').textContent,
         courseEntryCards: document.querySelectorAll('.intro-path-card').length,
         evidenceSummaryCards: document.querySelectorAll('[data-evidence-role="summary"]').length,
         localCoreEntry: document.querySelector('[data-site-intro-unit="5"]')?.textContent.trim(),
@@ -234,9 +234,105 @@ async function main() {
       fs.writeFileSync(path.join(screenshotDirectory, "first-entry-mobile.png"), Buffer.from(firstMobile.data, "base64"));
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     }
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
+    const catalogNavigation = await evaluate(socket, `(() => {
+      const routeLink = document.querySelector('.landing-nav a[href="#learning-entry"]');
+      const catalogLink = document.querySelector('.landing-nav [data-site-intro-courses]');
+      const catalog = document.querySelector('#all-courses');
+      const summary = catalog.querySelector('summary');
+      const beforeStorage = JSON.stringify(Object.keys(localStorage).sort().map(key => [key, localStorage.getItem(key)]));
+      const beforeLesson = document.querySelector('#lesson-title').textContent;
+      const initiallyClosed = !catalog.open;
+      catalogLink.click();
+      const buttons = [...catalog.querySelectorAll('#intro-core-course-list [data-site-intro-unit]')];
+      const opened = catalog.open;
+      const focusInCatalog = catalog.contains(document.activeElement);
+      const titlesAndCountsMatch = buttons.length === window.GoContent.units.length && buttons.every((button, index) => {
+        const title = window.GoContent.units[index].title;
+        const count = window.GoContent.lessons.filter(lesson => lesson.unit === index).length;
+        return button.textContent.includes(title) && new RegExp(count + ' *課').test(button.textContent);
+      });
+      const visible = buttons.every(button => button.getBoundingClientRect().height > 0);
+      summary.click();
+      return { routeDestination: routeLink.getAttribute('href'), catalogDestination: catalogLink.getAttribute('href'),
+        initiallyClosed, opened, focusInCatalog, closedBySummary: !catalog.open,
+        unitIndices: buttons.map(button => Number(button.dataset.siteIntroUnit)), titlesAndCountsMatch, visible,
+        advancedDestination: catalog.querySelector('a[href="advanced.html"]')?.getAttribute('href'),
+        boardDestination: catalog.querySelector('a[href^="live-game.html"]')?.getAttribute('href'),
+        coreEntryPresent: Boolean(catalog.querySelector('[data-site-intro-start]')),
+        storageUnchanged: beforeStorage === JSON.stringify(Object.keys(localStorage).sort().map(key => [key, localStorage.getItem(key)])),
+        lessonUnchanged: beforeLesson === document.querySelector('#lesson-title').textContent };
+    })()`);
+    assert.equal(catalogNavigation.routeDestination, "#learning-entry");
+    assert.equal(catalogNavigation.catalogDestination, "#all-courses");
+    assert.notEqual(catalogNavigation.routeDestination, catalogNavigation.catalogDestination, "學習路線與全站課程必須有不同目的地");
+    assert.deepEqual(catalogNavigation.unitIndices, Array.from({ length: 15 }, (_, index) => index));
+    for (const flag of ["initiallyClosed", "opened", "focusInCatalog", "closedBySummary", "titlesAndCountsMatch", "visible", "coreEntryPresent", "storageUnchanged", "lessonUnchanged"]) {
+      assert.equal(catalogNavigation[flag], true, `全站課程目錄 ${flag} 未符合契約`);
+    }
+    assert.equal(catalogNavigation.advancedDestination, "advanced.html");
+    assert.match(catalogNavigation.boardDestination, /^live-game\.html(?:\?|$)/);
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+    const mobileCatalog = await evaluate(socket, `(() => {
+      const catalog = document.querySelector('#all-courses');
+      const summary = catalog.querySelector('summary');
+      const storage = localStorage.getItem('go-learning-prototype-v7');
+      summary.scrollIntoView({block: 'start', behavior: 'instant'});
+      const summaryRect = summary.getBoundingClientRect();
+      summary.click();
+      const result = { summaryVisible: summaryRect.height > 0 && summaryRect.width > 0,
+        opened: catalog.open, unitButtonsFit: [...catalog.querySelectorAll('[data-site-intro-unit]')].every(button => {
+          const rect = button.getBoundingClientRect(); return rect.height > 0 && rect.left >= 0 && rect.right <= innerWidth + 1;
+        }), overflow: document.documentElement.scrollWidth > innerWidth + 1 };
+      summary.click();
+      return { ...result, closed: !catalog.open, storageUnchanged: storage === localStorage.getItem('go-learning-prototype-v7') };
+    })()`);
+    assert.deepEqual(mobileCatalog, { summaryVisible: true, opened: true, unitButtonsFit: true, overflow: false, closed: true, storageUnchanged: true });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
     const landingMobile = await evaluate(socket, "({overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth, siteIntroVisible: !document.querySelector('#site-introduction').hidden, sidebarDisplay: getComputedStyle(document.querySelector('.sidebar')).display, topbarDisplay: getComputedStyle(document.querySelector('.topbar')).display, pathColumns: getComputedStyle(document.querySelector('.intro-path-grid')).gridTemplateColumns.split(' ').length})");
     assert.deepEqual(landingMobile, { overflow: false, siteIntroVisible: true, sidebarDisplay: "none", topbarDisplay: "none", pathColumns: 1 });
+    // Check both sides of the responsive breakpoint, including the restored
+    // capability list and disclaimer that must remain clear of decorative art.
+    for (const width of [320, 390, 760, 768, 1024, 1440, 1920]) {
+      await command(socket, "Emulation.setDeviceMetricsOverride", { width, height: 960, deviceScaleFactor: 1, mobile: width <= 760 });
+      const layout = await evaluate(socket, `(() => {
+        const artwork = document.querySelector('.intro-philosophy-capability').getBoundingClientRect();
+        const textOverlapsArtwork = [...document.querySelectorAll('.intro-outcome .intro-section-head h3, .intro-outcome .intro-section-head > p, .intro-outcome .intro-outcome-list, .intro-outcome .intro-boundary')].some(element => {
+          const text = element.getBoundingClientRect();
+          return text.left < artwork.right - 1 && text.right > artwork.left + 1 && text.top < artwork.bottom - 1 && text.bottom > artwork.top + 1;
+        });
+        return { width: innerWidth, scrollWidth: document.documentElement.scrollWidth,
+          textOverlapsArtwork,
+          entryButtonsFit: [...document.querySelectorAll('.intro-path-action')].every(button => {
+            const rect = button.getBoundingClientRect(); return rect.width > 0 && rect.left >= 0 && rect.right <= innerWidth + 1;
+          }) };
+      })()`);
+      assert.ok(layout.scrollWidth <= layout.width + 1, `${width}px landing horizontal overflow: ${JSON.stringify(layout)}`);
+      assert.equal(layout.entryButtonsFit, true, `${width}px course entry button outside viewport`);
+      if (width <= 760) assert.equal(layout.textOverlapsArtwork, false, `${width}px philosophy text overlaps stones: ${JSON.stringify(layout)}`);
+    }
+    const retainedDisclosures = await evaluate(socket, `(() => {
+      const research = document.querySelector('.intro-research-details');
+      const readingLinks = [...document.querySelectorAll('#explore-go .intro-explore-links a')];
+      const capabilityList = document.querySelector('#intro-outcome .intro-outcome-list');
+      const boundary = document.querySelector('#intro-outcome .intro-boundary');
+      research.open = true;
+      const result = { visible: research.getBoundingClientRect().height > 0, researchOutsideFaq: !research.closest('#faq'),
+        sourceLinks: research.querySelectorAll('.intro-source-grid a').length,
+        researchReadingLinks: research.querySelectorAll('.intro-explore-links a').length,
+        readingDestinations: readingLinks.map(link => link.getAttribute('href')),
+        readingVisible: readingLinks.every(link => link.getBoundingClientRect().height > 0 && !link.closest('details')),
+        uniqueReadingGroup: document.querySelectorAll('.intro-explore-links').length === 1,
+        capabilityItems: capabilityList.children.length,
+        capabilityVisible: capabilityList.getBoundingClientRect().height > 0 && !capabilityList.closest('details'),
+        boundaryVisible: boundary.getBoundingClientRect().height > 0 && !boundary.closest('details'),
+        boundaryKeepsLimit: boundary.textContent.includes('目前不能換算') && boundary.textContent.includes('本站尚未做外部棋力對照與真人校準'),
+        freshStatusHidden: document.querySelector('#core-entry-status').hidden };
+      research.open = false; return result;
+    })()`);
+    assert.deepEqual(retainedDisclosures, { visible: true, researchOutsideFaq: true, sourceLinks: 9, researchReadingLinks: 0,
+      readingDestinations: ["history.html", "math.html", "global-go-observatory.html"], readingVisible: true,
+      uniqueReadingGroup: true, capabilityItems: 3, capabilityVisible: true, boundaryVisible: true, boundaryKeepsLimit: true, freshStatusHidden: true });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const landingStart = await evaluate(socket, `(() => { document.querySelector('[data-site-intro-start]').click(); return {siteIntroHidden: document.querySelector('#site-introduction').hidden, introOpen: document.querySelector('#lesson-intro-dialog').open, introTitle: document.querySelector('#lesson-intro-title').textContent, hash: location.hash}; })()`);
     assert.deepEqual(landingStart, { siteIntroHidden: true, introOpen: true, introTitle: "現在先學：認識氣", hash: "#core" });
@@ -385,7 +481,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v57"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v59"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -518,7 +614,7 @@ async function main() {
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v57");
+    assert.equal(rawEvents.uiVersion, "learner-flow-v59");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -535,9 +631,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v57");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v59");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v57");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v59");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
@@ -915,6 +1011,27 @@ async function main() {
       };
     })()`);
     assert.deepEqual(directGlobalEntry, { siteIntroHidden: true, hash: "#core", selectedUnit: "10", introOpen: true });
+    await command(socket, "Page.navigate", { url: rootUrl });
+    for (let retry = 0; retry < 30; retry += 1) {
+      if (await evaluate(socket, "Boolean(document.querySelector('#intro-core-course-list [data-site-intro-unit=\"14\"]'))")) break;
+      await delay(100);
+    }
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+    const catalogUnitEntry = await evaluate(socket, `(() => {
+      const catalog = document.querySelector('#all-courses');
+      catalog.querySelector('summary').click();
+      const lastUnit = catalog.querySelector('#intro-core-course-list [data-site-intro-unit="14"]');
+      lastUnit.scrollIntoView({block: 'center', behavior: 'instant'});
+      const rect = lastUnit.getBoundingClientRect();
+      const reachable = catalog.open && rect.height > 0 && rect.left >= 0 && rect.right <= innerWidth + 1;
+      lastUnit.click();
+      return { reachable, siteIntroHidden: document.querySelector('#site-introduction').hidden, hash: location.hash,
+        selectedUnit: document.querySelector('#unit-select').value, introOpen: document.querySelector('#lesson-intro-dialog').open,
+        lessonTitle: document.querySelector('#lesson-title').textContent };
+    })()`);
+    assert.deepEqual(catalogUnitEntry, { reachable: true, siteIntroHidden: true, hash: "#core", selectedUnit: "14",
+      introOpen: true, lessonTitle: "從一局找到下一個課題" });
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     await command(socket, "Page.navigate", { url: advancedPage });
     let advancedReady = false;
     for (let retry = 0; retry < 30; retry += 1) {

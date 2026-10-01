@@ -45,7 +45,7 @@ test("數學探索頁保留主要直接證據與限制證據", () => {
 
 test("首頁只提供低優先 Explore 入口，不改三個 Core 路徑", () => {
   assert.ok(home.includes('href="math.html"'));
-  assert.match(home, /圍棋 × 數學：到底有多直接？/);
+  assert.match(home, /href="math\.html">圍棋與數學/);
   assert.equal((home.match(/class="intro-path-card/g) || []).length, 3);
 });
 
