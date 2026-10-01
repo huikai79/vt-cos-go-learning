@@ -165,8 +165,8 @@ jobs:
                 'href="math.html"',
                 'href="global-go-observatory.html">全球觀察</a>',
                 '歷史與典故另外讀，不擋住你的學習主線',
-                'styles.css?v=learner-flow-v55',
-                'app.js?v=learner-flow-v55',
+                'styles.css?v=learner-flow-v56',
+                'app.js?v=learner-flow-v56',
                 '15 單元核心課程（參考）',
                 'class="advanced-priority-label">目前紀錄與證據</div>',
                 'id="advanced-evidence-brief"',
@@ -310,17 +310,17 @@ jobs:
               name: "formal-teaching-candidate",
               url: new URL(`formal-teaching-candidate.json?deploy=${deploySha}`, base),
               checks: [
-                '"candidateId": "formal-teaching-candidate-2026-10-01-a"',
-                '"assetFingerprint": "fnv1a32-js16-4dcfe38d"',
-                'learner-flow-v55'
+                '"candidateId": "formal-teaching-candidate-2026-10-01-b"',
+                '"assetFingerprint": "fnv1a32-js16-6626020d"',
+                'learner-flow-v56'
               ]
             },
             {
               name: "teaching-gate",
               url: new URL(`teaching-gate.json?deploy=${deploySha}`, base),
               checks: [
-                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-10-01-a"',
-                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-4dcfe38d"',
+                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-10-01-b"',
+                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-6626020d"',
                 '"lessonContentReview": "awaiting_external_receipt"',
                 '"lessonContentFingerprint": "fnv1a32-d1f8b40f"',
                 '"noviceUsability": "not_tested"',

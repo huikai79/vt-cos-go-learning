@@ -1,10 +1,10 @@
-# 前端操作與視覺稽核
+2026-10-01 Homepage Mockup Fidelity v56：本輪依已核准 Mockup 進行高擬真 UI 對齊，保留 VT-COS 底盤品牌，收斂 Header、Hero、入口卡、四步循環、雙欄理念與 FAQ 的視覺節奏；不改 learner/evidence semantics。已新增 desktop／mobile CSS breakpoint 與可見 focus 既有基線，仍需 PR browser regression 與真人 target-novice observation 才能判斷實際理解、操作與可讀性。\n\n# 前端操作與視覺稽核
 
 審核日期：2026-09-20  
 範圍：`index.html`、`styles.css`、`app.js` 的學習頁，以及 `r1-review.html` 的獨立審題頁。  
 定位：此文件是個人離線版的設計稽核與下一輪修改規格；它不是使用者研究或無障礙合規宣告。
 
-> 當前補遺：介面版本為 `learner-flow-v55`、棋盤練習頁為 `live-game-ui-v11`、儲存 schema 為 7、內容目錄版本為 5。主畫面只保留目前行動及「查看本課短講／查看學習流程」入口；每課短講只在第一次進入時自動開啟，之後仍可手動重看。`seenLessonIntros` 只控制 auto-display suppression，不是短講完成或 learner evidence；狀態會跨重新載入保存。Short Talk UX v2 以 `demoSteps` 作唯一棋盤示範來源，每課至少一個有效 state，多步只在相鄰棋盤／marker 有可見差異時成立；第 1 課先聚焦角上黑棋，再揭示兩口氣。step caption 單一來源、legend 只顯示該課使用的 marker，最後一步可「從頭再看」。320px 開啟 Modal 與 200% text 由 browser regression 檢查單欄、無水平 overflow 與 CTA 可到達；manual Close／Esc 回短講按鈕，manual Start／auto Esc 回問題。工具面板、跨課短講銜接、9×9 局部觀察、首頁今日到期、R1a reviewer-only 與 `personal-pilot-v3` 既有契約不變。R1a 77 題不再被當作短講內容審查；19 課另有獨立外部棋理回條。R1b 難度可比性仍未知。下段歷史快照與本補遺衝突時以本補遺及 `COMPLETION_MATRIX.md` 為準。
+> 當前補遺：介面版本為 `learner-flow-v56`、棋盤練習頁為 `live-game-ui-v11`、儲存 schema 為 7、內容目錄版本為 5。主畫面只保留目前行動及「查看本課短講／查看學習流程」入口；每課短講只在第一次進入時自動開啟，之後仍可手動重看。`seenLessonIntros` 只控制 auto-display suppression，不是短講完成或 learner evidence；狀態會跨重新載入保存。Short Talk UX v2 以 `demoSteps` 作唯一棋盤示範來源，每課至少一個有效 state，多步只在相鄰棋盤／marker 有可見差異時成立；第 1 課先聚焦角上黑棋，再揭示兩口氣。step caption 單一來源、legend 只顯示該課使用的 marker，最後一步可「從頭再看」。320px 開啟 Modal 與 200% text 由 browser regression 檢查單欄、無水平 overflow 與 CTA 可到達；manual Close／Esc 回短講按鈕，manual Start／auto Esc 回問題。工具面板、跨課短講銜接、9×9 局部觀察、首頁今日到期、R1a reviewer-only 與 `personal-pilot-v3` 既有契約不變。R1a 77 題不再被當作短講內容審查；19 課另有獨立外部棋理回條。R1b 難度可比性仍未知。下段歷史快照與本補遺衝突時以本補遺及 `COMPLETION_MATRIX.md` 為準。
 
 2026-09-29 證據概覽收斂（v55）：重新檢討 v54 後，保留 progressive disclosure，但修正「四張 compact cards 就等於 learner-centered」的前提。第一層改為單一「目前紀錄與證據」，只呈現資料不足、已有練習紀錄、資料累積中、仍需繼續觀察、已有延後與實戰紀錄或讀取失敗；activity 分母、可分析機會、首答錯誤與技能診斷統一下沉到「查看資料來源與診斷」。這是 presentation mapping，不改 evidence semantics；真人能否更快理解仍需目標讀者任務，不能由 DOM／CI 自證。
 

@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="從氣與提子開始，以短教學、落子練習、具體回饋與新棋形，一步一步學圍棋。">
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
   <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v55">
+  <link rel="stylesheet" href="styles.css?v=learner-flow-v56">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -41,7 +41,7 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v55"></script>
+  <script defer src="app.js?v=learner-flow-v56"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
@@ -178,81 +178,117 @@
         <header class="landing-header" aria-label="悟之一手首頁導覽">
           <div class="landing-header-inner">
             <a class="landing-brand" href="#site-introduction" aria-label="悟之一手首頁">
-              <span class="landing-brand-mark" aria-hidden="true">●○</span>
-              <span><strong>悟之一手</strong><small>VT-COS · 從 0 開始，也能繼續進階</small></span>
+              <span class="landing-brand-mark" aria-hidden="true"><i></i></span>
+              <span class="landing-brand-copy">
+                <strong>悟之一手</strong>
+                <small>VT-COS｜學習引擎底盤</small>
+              </span>
             </a>
             <div class="landing-header-tools">
               <nav class="landing-nav" aria-label="首頁段落">
                 <a href="#course-features">課程特色</a>
-                <a href="#learning-entry">學習路徑</a>
-                <a href="global-go-observatory.html">全球觀察</a>
+                <a href="#learning-entry">學習路線</a>
+                <a href="#learning-entry">全站課程</a>
                 <a href="#faq">常見問題</a>
               </nav>
-              <button class="landing-header-action" type="button" data-site-intro-start data-fresh-label="開始學習" data-return-label="繼續核心課程">開始學習 <span aria-hidden="true">→</span></button>
+              <button class="landing-header-action" type="button" data-site-intro-start data-fresh-label="開始核心課程" data-return-label="繼續核心課程">開始核心課程 <span aria-hidden="true">→</span></button>
             </div>
           </div>
         </header>
 
         <div class="site-introduction-inner">
-          <section class="intro-hero">
+          <section class="intro-hero" aria-labelledby="site-introduction-title">
             <div class="intro-hero-copy">
-              <span class="intro-kicker">完全零基礎也可以從這裡開始</span>
-              <h2 id="site-introduction-title" tabindex="-1">從 0 開始，先學氣與提子，再走進 9 路棋局。</h2>
-              <p>每次只學一個概念：先看懂，再在棋盤上落子，得到具體回饋；之後隔一段時間換一個新棋形，看看自己還會不會。</p>
+              <span class="intro-kicker">從看得見的棋形，走向看得全的棋局</span>
+              <h2 id="site-introduction-title" tabindex="-1">從 0 開始，<br>先學氣與提子，<br>再走進 9 路棋局。</h2>
+              <p>每一次只學一個概念，先看懂、再在棋盤上動手；從可觀察的棋形開始，慢慢建立全局的判斷力。</p>
               <div class="intro-actions">
                 <button class="primary-button intro-primary" type="button" data-site-intro-start data-fresh-label="從第一課開始" data-return-label="繼續核心課程">從第一課開始 <span aria-hidden="true">→</span></button>
-                <a class="intro-secondary" href="#learning-entry">先選擇學習入口</a>
+                <a class="intro-secondary" href="#learning-entry">找適合我的入口</a>
               </div>
-              <div class="intro-trust-row" aria-label="使用方式">
-                <span><strong>5 → 7 → 9 路</strong><small>從局部規則逐步走到完整小棋局</small></span>
-                <span><strong>免帳號</strong><small>進度只保存在這台瀏覽器</small></span>
+              <div class="intro-trust-row" aria-label="學習路徑">
+                <span>
+                  <i class="intro-mini-board" aria-hidden="true"></i>
+                  <span><strong>5 × 5 ／ 7 × 7</strong><small>練習局部規則與棋形</small></span>
+                </span>
+                <span class="intro-trust-next">
+                  <i class="intro-mini-board intro-mini-board-nine" aria-hidden="true"></i>
+                  <span><strong>9 × 9</strong><small>走進完整小局</small></span>
+                </span>
               </div>
             </div>
+
             <figure class="intro-hero-art">
-              <img class="intro-hero-image" src="assets/homepage/hero.png" alt="九路棋盤風格插畫，金色標記強調一個觀察落點" width="960" height="720">
+              <div class="intro-hero-visual-card">
+                <div class="intro-hero-image-shell">
+                  <img class="intro-hero-image" src="assets/homepage/hero.png" alt="" aria-hidden="true" width="960" height="720" fetchpriority="high">
+                </div>
+                <figcaption class="intro-hero-explainer">
+                  <span class="intro-explainer-kicker">第一個棋盤概念</span>
+                  <h3>提子是什麼？</h3>
+                  <p>一串棋的「氣」都被佔住時，這串棋就會從棋盤上被提掉。</p>
+                  <div class="intro-hero-legend" aria-label="棋子示意">
+                    <span><i class="intro-stone intro-stone-black" aria-hidden="true"></i>黑子</span>
+                    <span><i class="intro-stone intro-stone-white" aria-hidden="true"></i>白子</span>
+                  </div>
+                  <p class="intro-hero-tip">先看上下左右相鄰的空點；沒有氣的棋串會被提掉。</p>
+                </figcaption>
+              </div>
+              <p class="intro-hero-note" aria-hidden="true">從一手開始，<br>看見更大的棋局。</p>
               <ol class="intro-loop intro-loop-sr" aria-label="每次學習的四個步驟">
-                <li><span>1</span><div><strong>看懂</strong><small>一次先抓一個棋盤概念</small></div></li>
-                <li><span>2</span><div><strong>落子</strong><small>自己先做，不先看答案</small></div></li>
-                <li><span>3</span><div><strong>回饋</strong><small>看見哪個棋盤線索值得重算</small></div></li>
-                <li><span>4</span><div><strong>換新棋形</strong><small>隔一段時間再自己判斷</small></div></li>
+                <li><span>1</span><div><strong>先自己做</strong><small>答案揭露前先作答</small></div></li>
+                <li><span>2</span><div><strong>看清楚問題</strong><small>回到棋盤找關鍵線索</small></div></li>
+                <li><span>3</span><div><strong>隔一段時間再做</strong><small>延後重新提取</small></div></li>
+                <li><span>4</span><div><strong>換新棋形</strong><small>在陌生局面重新判斷</small></div></li>
               </ol>
             </figure>
           </section>
 
           <section class="intro-section intro-learning-path" id="learning-entry" aria-labelledby="learning-entry-title">
             <div class="intro-section-head">
-              <span>選擇你的學習入口</span>
-              <h3 id="learning-entry-title">第一次學圍棋，和已有基礎的人，不需要走同一條入口</h3>
-              <p>完全零基礎從基礎建立開始；已熟悉規則的人，可以直接走進局部判斷或較完整的全局應用。</p>
+              <span>多元學習入口</span>
+              <h3 id="learning-entry-title">第一次學圍棋，和已有基礎的人，不需要走同一條路。</h3>
+              <p>依照你現在能理解與處理的棋形選擇起點；三個入口都沿用同一套核心課程，不先用級位替你下結論。</p>
             </div>
             <div class="intro-path-grid intro-entry-grid">
               <article class="intro-path-card intro-path-card-primary">
-                <span>01</span>
+                <span class="intro-card-number">01</span>
                 <img class="intro-path-image" src="assets/homepage/stage-basic.webp" alt="" aria-hidden="true" width="480" height="415" loading="lazy">
                 <small class="intro-path-tag">從零開始</small>
                 <h4>基礎建立</h4>
-                <p>氣、提子、連接與切斷、禁著與劫、眼與基礎死活，最後進入 9 路小局。</p>
-                <small>原課綱：初級 · 單元 1–5</small>
+                <strong class="intro-path-subtitle">從氣、提子、連接與切斷開始</strong>
+                <p>用小棋盤先掌握圍棋最核心的規則與棋形，再逐步走進 9 路小局。</p>
+                <div class="intro-chip-row" aria-label="這個入口的內容">
+                  <span>氣與提子</span><span>連接與切斷</span><span>簡單棋形</span>
+                </div>
                 <p class="course-entry-status" id="core-entry-status">適合完全零基礎，從第一口氣開始。</p>
-                <button class="primary-button intro-path-action" type="button" data-site-intro-start data-fresh-label="開始核心課程" data-return-label="繼續核心課程">開始核心課程 <span aria-hidden="true">→</span></button>
+                <button class="primary-button intro-path-action" type="button" data-site-intro-start data-fresh-label="開始這個單元" data-return-label="繼續核心課程">開始這個單元 <span aria-hidden="true">→</span></button>
               </article>
+
               <article class="intro-path-card">
-                <span>02</span>
+                <span class="intro-card-number">02</span>
                 <img class="intro-path-image" src="assets/homepage/stage-local.webp" alt="" aria-hidden="true" width="360" height="323" loading="lazy">
                 <small class="intro-path-tag">已有規則基礎</small>
-                <h4>局部與棋局判斷</h4>
-                <p>佈局、地與厚勢、攻守與弱棋、死活閱讀、官子與數目，開始比較不同選擇的後果。</p>
-                <small>原課綱：中級 · 單元 6–10</small>
-                <button class="course-entry-link intro-path-action" type="button" data-site-intro-unit="5">從這裡開始 <span aria-hidden="true">→</span></button>
+                <h4>局部閱讀與判斷</h4>
+                <strong class="intro-path-subtitle">看懂棋形，做出正確選擇</strong>
+                <p>從局部棋形比較攻守、弱棋、死活與官子，逐步練習候選手和短讀。</p>
+                <div class="intro-chip-row" aria-label="這個入口的內容">
+                  <span>棋形判斷</span><span>攻守意識</span><span>簡單計算</span>
+                </div>
+                <button class="course-entry-link intro-path-action" type="button" data-site-intro-unit="5">開始這個單元 <span aria-hidden="true">→</span></button>
               </article>
+
               <article class="intro-path-card">
-                <span>03</span>
+                <span class="intro-card-number">03</span>
                 <img class="intro-path-image" src="assets/homepage/stage-global.webp" alt="" aria-hidden="true" width="360" height="332" loading="lazy">
                 <small class="intro-path-tag">已有局部基礎</small>
-                <h4>全局與綜合應用</h4>
-                <p>全局方向、戰鬥與棄子、劫爭、定石條件與棋譜複盤，把局部技巧放回完整棋局思考。</p>
-                <small>原課綱：高級 · 單元 11–15</small>
-                <button class="course-entry-link intro-path-action" type="button" data-site-intro-unit="10">從這裡開始 <span aria-hidden="true">→</span></button>
+                <h4>全局判斷與應用</h4>
+                <strong class="intro-path-subtitle">從局部走向全局的思考</strong>
+                <p>把局部技巧放回完整棋局，練習全局方向、戰鬥、劫爭、定石條件與複盤。</p>
+                <div class="intro-chip-row" aria-label="這個入口的內容">
+                  <span>全局觀念</span><span>形勢判斷</span><span>實戰應用</span>
+                </div>
+                <button class="course-entry-link intro-path-action" type="button" data-site-intro-unit="10">開始這個單元 <span aria-hidden="true">→</span></button>
               </article>
             </div>
             <p class="intro-course-count">目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。</p>
@@ -260,44 +296,50 @@
 
           <section class="intro-section intro-assessment" id="site-introduction-assessment" aria-labelledby="intro-assessment-title">
             <div class="intro-section-head">
-              <span>怎樣才算真的學會</span>
-              <h3 id="intro-assessment-title">不是看做了幾題，而是看隔一段時間後還能不能自己做</h3>
-              <p>好的練習，應該讓你在不同時間、不同棋形下，仍能重新做出判斷。</p>
+              <span>我們的學習方法</span>
+              <h3 id="intro-assessment-title">不是看做了幾題，而是看隔一段時間後還能不能自己做。</h3>
+              <p>一次答對只代表當下完成。課程會把「自己先做、看清楚問題、延後再做、新棋形再判斷」串成一個循環。</p>
             </div>
-            <div class="intro-evidence-grid intro-evidence-flow">
+            <div class="intro-evidence-grid intro-method-grid">
               <article>
                 <span class="evidence-step">1</span>
                 <img class="intro-evidence-image" src="assets/homepage/evidence-first.webp" alt="" aria-hidden="true" width="360" height="315" loading="lazy">
-                <strong>第一次自己作答</strong>
-                <p>答案揭露前先保存第一個判斷；重試後答對不會回頭抹掉首答。</p>
+                <strong>先自己做</strong>
+                <p>答案揭露前先保存第一個判斷；重試後答對不會抹掉首答。</p>
               </article>
               <article>
                 <span class="evidence-step">2</span>
+                <img class="intro-evidence-image" src="assets/homepage/stage-local.webp" alt="" aria-hidden="true" width="360" height="323" loading="lazy">
+                <strong>看清楚問題</strong>
+                <p>對照具體回饋，回到棋盤找出下次還能再次觀察的線索。</p>
+              </article>
+              <article>
+                <span class="evidence-step">3</span>
                 <img class="intro-evidence-image" src="assets/homepage/evidence-delayed.webp" alt="" aria-hidden="true" width="360" height="284" loading="lazy">
                 <strong>隔一段時間再做</strong>
                 <p>重要概念之後會再次出現，避免只因剛看過答案而覺得自己會了。</p>
               </article>
               <article>
-                <span class="evidence-step">3</span>
+                <span class="evidence-step">4</span>
                 <img class="intro-evidence-image" src="assets/homepage/evidence-new-shape.webp" alt="" aria-hidden="true" width="360" height="315" loading="lazy">
-                <strong>換一個沒見過的新棋形</strong>
-                <p>改變方向、位置或棋形，並逐步減少題型提示，檢查能不能把原理帶到陌生局面。</p>
+                <strong>換一個沒見過的棋形</strong>
+                <p>改變方向、位置或棋形，逐步減少題型提示，再重新自己判斷。</p>
               </article>
             </div>
-            <p class="intro-evidence-outcome"><strong>真正要看的結果：</strong>隔一段時間或換新棋形後，仍能自己判斷。這只是前三項紀錄的總結，不是另外一種分數。</p>
+            <p class="intro-evidence-outcome"><strong>真正重要的結果：</strong>不是累積做題數，而是隔一段時間、遇到不同棋形後，仍能自己重新判斷，並把同一原理用到新的情境中。</p>
           </section>
 
           <section class="intro-section intro-science" id="course-features" aria-labelledby="intro-science-title">
             <div class="intro-section-head">
               <span>為什麼這樣設計</span>
-              <h3 id="intro-science-title">把學習研究轉成簡單的練習動作</h3>
-              <p>先自己想、看懂答案、隔幾天再試、換個棋形再做；這些是目前採用的設計方向。</p>
+              <h3 id="intro-science-title">把研究方向收斂成四個看得見的練習動作。</h3>
+              <p>先自己想、得到具體回饋、隔一段時間再試、換一個棋形再做；研究只支持這些設計方向，不替學習結果預先下結論。</p>
             </div>
             <div class="intro-science-grid">
               <article><span class="science-icon" aria-hidden="true">◌</span><strong>先自己想</strong><p>先做出自己的判斷，再看答案。</p></article>
-              <article><span class="science-icon" aria-hidden="true">▤</span><strong>看懂答案</strong><p>答錯時回到棋盤，找出可以重新判斷的線索。</p></article>
-              <article><span class="science-icon" aria-hidden="true">◫</span><strong>隔幾天再試</strong><p>隔一段時間再做一次，看看自己是不是還記得。</p></article>
-              <article><span class="science-icon" aria-hidden="true">↻</span><strong>換個棋形再做</strong><p>換成沒看過的棋形、減少提示，再自己判斷。</p></article>
+              <article><span class="science-icon" aria-hidden="true">▤</span><strong>具體回饋</strong><p>答錯時回到棋盤，找能再次觀察的線索。</p></article>
+              <article><span class="science-icon" aria-hidden="true">◫</span><strong>延後再做</strong><p>隔一段時間重新提取，不只靠剛看過的記憶。</p></article>
+              <article><span class="science-icon" aria-hidden="true">↻</span><strong>換形應用</strong><p>用不同棋形檢查能不能把原理帶過去。</p></article>
             </div>
             <p class="intro-boundary">這些研究支持的是設計方向；目前沒有證據證明這套圍棋課程是所有人的最佳方法。</p>
           </section>
@@ -305,25 +347,31 @@
           <div class="intro-split-grid">
             <section class="intro-section intro-split-card intro-history" id="explore-go" aria-labelledby="explore-go-title">
               <div class="intro-section-head">
-                <span>想知道圍棋為什麼是今天這個樣子？</span>
-                <h3 id="explore-go-title">歷史與典故另外讀，不擋住你的學習主線</h3>
-                <p>從「為什麼是 19×19？」、「古人玩的和今天一樣嗎？」到典故的史實與傳說分層。歷史探索頁不寫入課程進度，也不影響複習安排或正式評量。</p>
+                <span>我們的理念</span>
+                <h3 id="explore-go-title">歷史與數量之外，<br>不只用做了幾題來衡量進步。</h3>
+                <p>做題只是過程的一部分。更重要的是：你開始看懂更多棋形、做出更好的判斷，並能在新的情境中重新運用。</p>
               </div>
-              <a class="course-entry-link" href="history.html">探索圍棋的來路 <span aria-hidden="true">→</span></a>
-              <a class="course-entry-link" href="math.html">圍棋 × 數學：到底有多直接？ <span aria-hidden="true">→</span></a>
+              <p class="intro-explore-note">歷史與典故另外讀，不擋住你的學習主線。</p>
+              <div class="intro-explore-links" aria-label="延伸閱讀">
+                <a class="course-entry-link" href="history.html">探索圍棋的來路 <span aria-hidden="true">→</span></a>
+                <a class="course-entry-link" href="math.html">圍棋 × 數學：到底有多直接？ <span aria-hidden="true">→</span></a>
+                <a class="course-entry-link" href="global-go-observatory.html">全球觀察</a>
+              </div>
             </section>
 
             <section class="intro-section intro-split-card intro-outcome" aria-labelledby="intro-outcome-title">
               <div class="intro-section-head">
-                <span>完成核心課程，大約會到哪裡</span>
-                <h3 id="intro-outcome-title">先看你能做什麼，不先貼 K 級或段位</h3>
+                <span>我們的堅持</span>
+                <h3 id="intro-outcome-title">先看你能做什麼，<br>不先貼 K 級或段位。</h3>
+                <p>每個人的起點不同。我們先看你現在能看懂什麼、能解決什麼問題，再安排下一個更有價值的練習。</p>
               </div>
               <ul class="intro-outcome-list">
                 <li><strong>規則與小棋盤</strong>：合法落子、氣與提子、連斷、眼、劫與基本死活。</li>
                 <li><strong>局部讀棋與取捨</strong>：候選手、攻守、厚勢、死活與官子。</li>
-                <li><strong>全局與複盤入口</strong>：全局方向、戰鬥、棄子、劫材、定石條件與棋譜單點複盤。</li>
+                <li><strong>全局與複盤入口</strong>：全局方向、戰鬥、棄子、劫材、定石條件與棋譜複盤。</li>
               </ul>
               <p class="intro-boundary"><strong>目前不能換算：</strong>完成課程不等同 15K、10K、5K 或某個段位；本站尚未做外部棋力對照與真人校準。</p>
+              <div class="intro-stone-stack" aria-hidden="true"><i></i><i></i><i></i></div>
             </section>
           </div>
 
@@ -333,9 +381,9 @@
               <h3 id="faq-title">開始前先知道這三件事</h3>
             </div>
             <div class="intro-faq-grid">
-              <details><summary>需要帳號嗎？</summary><p>不需要。核心進度目前保存在這台瀏覽器；若要備份，Core 與實戰資料可在核心課程工具中匯出；獨立進階訓練則在進階頁另行匯出。</p></details>
+              <details><summary>需要先懂規則嗎？</summary><p>不用。第一課就是從棋子的氣與提子開始，核心進度目前保存在這台瀏覽器，不需要先建立帳號。</p></details>
               <details><summary>完成課程等於幾 K 或幾段？</summary><p>目前不能換算。本站尚未做外部棋力對照與真人校準，因此不把完成課程直接換成級位或段位。</p></details>
-              <details><summary>進階訓練是第 16 單元嗎？</summary><p>不是。進階訓練是一條獨立、可隨時回來練的進階路線，不影響核心課程進度，也不納入正式棋力評量。</p></details>
+              <details><summary>這個課程需要每天練多久？</summary><p>不要求每天固定時數。可以用短時間持續練習；重點是之後再回來做，並在新的棋形中重新判斷。</p></details>
             </div>
           </section>
 
@@ -352,15 +400,22 @@
               </div>
               <div class="intro-status-note">
                 <strong>目前驗證狀態</strong>
-                <p>正式教學目前尚未開放：外部棋理審查、三位目標初學者的實際操作測試，以及真人無障礙抽查都還沒有完成。正式的新題評量目前停用，學習成效也還沒有足夠資料可以判定。進階訓練目前只作練習紀錄，不納入正式學習評量。</p>
+                <p>正式教學目前尚未開放：外部棋理審查、三位目標初學者的實際操作測試，以及真人無障礙抽查都還沒有完成。正式的新題評量目前停用，學習成效也還沒有足夠資料可以判定。進階訓練目前只作練習紀錄，不納入正式學習評量。</p><p>核心與實戰資料可由 Core 工具備份；獨立進階訓練則在進階頁另行匯出，兩邊不會假裝成同一份完整備份。</p>
                 <p>最新狀態以 GitHub 原始碼庫中的 <a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/COMPLETION_MATRIX.md" target="_blank" rel="noreferrer">完成矩陣</a>、<a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/TEACHING_GATE.md" target="_blank" rel="noreferrer">正式教學閘門</a>、<a href="https://github.com/huikai79/vt-cos-go-learning/blob/main/RESEARCH_LEARNING_METRICS.md" target="_blank" rel="noreferrer">研究查核</a>為準。</p>
               </div>
             </div>
           </details>
 
           <section class="intro-final-cta" aria-label="開始學習">
-            <div><span>先從第一口氣開始</span><h3>第一課只先學會看「氣」。</h3><p>不用背完整規則，也不用先知道自己的棋力。</p></div>
-            <button class="primary-button intro-primary" type="button" data-site-intro-start data-fresh-label="開始第一課" data-return-label="繼續核心課程">開始第一課 <span aria-hidden="true">→</span></button>
+            <div>
+              <span>悟之一手 × VT-COS</span>
+              <h3>第一課只先學會看「氣」。</h3>
+              <p>不用背完整規則，也不用先知道自己的棋力；先看懂棋子和空點的關係，再走下一手。</p>
+            </div>
+            <div class="intro-final-action">
+              <button class="primary-button intro-primary" type="button" data-site-intro-start data-fresh-label="開始核心課程" data-return-label="繼續核心課程">開始核心課程 <span aria-hidden="true">→</span></button>
+              <small>從第一課，打開你的圍棋之路</small>
+            </div>
           </section>
         </div>
       </section>
