@@ -884,8 +884,8 @@ async function main() {
     assert.equal(returningHome.sidebarDisplay, "none");
     assert.equal(returningHome.landingAction, "繼續核心課程 →");
     assert.match(returningHome.coreEntryStatus, /^上次停在：/);
-    assert.equal(returningHome.localCoreEntry, "從這裡開始 →");
-    assert.equal(returningHome.globalCoreEntry, "從這裡開始 →");
+    assert.equal(returningHome.localCoreEntry, "開始這個單元 →");
+    assert.equal(returningHome.globalCoreEntry, "開始這個單元 →");
     const directLocalEntry = await evaluate(socket, `(() => {
       document.querySelector('[data-site-intro-unit="5"]').click();
       return {
