@@ -6,8 +6,8 @@ const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 
 const browser = [
-  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 ].find((candidate) => fs.existsSync(candidate));
 const requestedBaseUrl = process.env.GO_UI_BASE_URL;
 const baseUrl = requestedBaseUrl ? new URL(requestedBaseUrl.endsWith("/") ? requestedBaseUrl : `${requestedBaseUrl}/`) : null;

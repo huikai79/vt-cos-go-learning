@@ -1,3 +1,5 @@
+2026-10-01 375px responsive hotfix v59.1：GitHub Windows UI 在 375px 報出首頁水平溢位；修正前提：本機單一瀏覽器通過不足以證明不同 Windows 字型度量下可閱讀。首頁容器與卡片補上最小／最大寬度約束，理念三連結可自然換行；UI 自動測試改為優先使用 Edge，以對齊 Windows CI。首頁的資訊架構、連結、課程行為、事件語義不變。candidate 重凍為 `formal-teaching-candidate-2026-10-01-f`／`fnv1a32-js16-4bc20e83`；舊真人回條不得沿用。只有工程／視覺候選成功；正式 usability/accessibility NOT_TESTED、正式教學／評量 BLOCKED、learning effect NOT_MEASURED。
+
 2026-10-01 Homepage Navigation & Reading Priority v59：修正前提：視覺對齊不等於入口用途與資訊保留；v58將延伸閱讀／能力範圍放入第三FAQ，且學習路線與全站課程同指三入口，降低可發現性。依使用者新要求保留Mockup視覺系統，學習路線維持三個Core起點；全站課程改為獨立、預設收合的Core全15單元目錄（GoContent生成標題／課數）＋Advanced／自由對弈入口，手機也可由可見summary開啟。三個閱讀連結回理念卡；三項能力範圍與級位不能換算提醒回右卡，文字精簡、新透明山水／石堆配圖依自然高度與留白安排；研究來源移成FAQ後獨立disclosure。開關目錄不改localStorage／進度／曝光，明確單元選擇沿用原行為。修正頁首目錄焦點及760px配圖碰撞，完整Edge功能／320–1920px responsive PASS。candidate重凍為 `formal-teaching-candidate-2026-10-01-e`／`fnv1a32-js16-2b602dc5`，asset set version 10；舊真人回條不得沿用。只有工程／視覺候選成功；正式usability/accessibility NOT_TESTED、正式教學／評量 BLOCKED、learning effect NOT_MEASURED。本機預覽未提交／推送／合併／部署，公開main與served-content未驗證。
 
 本輪本機驗證：57 份程式測試檔、602 項測試 PASS；完整Edge瀏覽器功能與320／390／760／768／1024／1440／1920px responsive PASS；candidate fingerprint、273檔repository boundary與git diff --check PASS。畫面與開目錄不污染學習資料的檢查為工程證據，未升格為真人可用性、正式評量或學習成效。
@@ -633,4 +635,3 @@ History Explore 的證據呈現遵守「claim → evidence unit → source recor
 ### 2026-09-30 Short Talk UX v2 設計契約
 
 短講的最小單位是「一個有意義的 observable state」，不是固定步驟數。多步只有在下一步改變棋子或教學 marker 時成立，相鄰完全相同畫面屬 regression。資料來源收斂為 `lesson.text → demoSteps[] → takeaway → terms[]`，不維護 `lesson.demo`／`demoBoard` 平行真值。學習者主流程為「核心概念 → 棋盤變化 → 單一 caption → 進題前一句 → 練習」，圖例與關鍵詞屬輔助層。自動短講與手動重看只在顯示／焦點語義上區分，不新增 learner mastery 或觀看進度；`seenLessonIntros` 只是 auto-display suppression。短講棋理的外部 review 與 R1a 題庫 review 分開，兩者都不等於 learner comprehension 或 learning effect。
-

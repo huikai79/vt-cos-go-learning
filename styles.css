@@ -347,7 +347,7 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
 }
 
 
-/* learner-flow-v59: preserve the reference layout and restore navigation/content priorities; reproduce the supplied 941 × 1672 mockup.
+/* learner-flow-v59.1: preserve the reference layout and restore navigation/content priorities; reproduce the supplied 941 × 1672 mockup.
    One reference pixel scales proportionally up to the requested 1440px desktop.
    Artwork is decorative; rules, scoring and learner records retain their authority. */
 .site-introduction{--u:calc(min(100vw,1440px) / 941);--landing-ink:#0e2925;--landing-muted:#737c7e;font-family:var(--font-zh);color:var(--landing-ink);font-weight:500;background:#f7f5ec}
@@ -517,6 +517,8 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
 .intro-method-research-note{margin:12px 0;font-size:14px;color:#637464}
 @media(max-width:760px){
   .site-introduction{--u:1px}
+  .site-introduction{min-width:0;overflow-x:clip}
+  .site-introduction-inner,.intro-hero,.intro-hero-copy,.intro-hero-art,.intro-section,.intro-split-grid,.intro-split-grid .intro-section,.intro-path-card,.intro-method-grid article,.intro-course-catalog{min-width:0;max-width:100%}
   .landing-header-inner{height:72px;max-width:none;padding:0 16px;gap:8px}
   .landing-brand{gap:9px}.landing-brand-copy strong{font-size:16px}.landing-brand-copy small{font-size:10px}.landing-brand-mark{width:32px;height:32px}
   .landing-nav{display:none}.landing-header-tools{gap:0}.landing-header-action{height:40px;min-height:40px;padding:0 12px;font-size:12px;white-space:nowrap}
@@ -526,7 +528,7 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
   .intro-hero-copy>p{max-width:none;margin-top:14px;font-size:15px;line-height:1.8;letter-spacing:0}
   .intro-actions{gap:10px;margin-top:18px}.intro-primary,.intro-secondary{flex:1;height:auto;min-height:44px;padding:10px 9px;font-size:13px}
   .intro-trust-row{grid-template-columns:1.2fr 1fr;width:100%;height:auto;margin-top:16px}.intro-trust-row>span{gap:9px;padding:12px 10px}.intro-trust-row>span+span{padding-left:16px;border:0}
-  .intro-trust-row strong{font-size:13px;line-height:20px}.intro-trust-row small{font-size:10px;line-height:17px}.intro-mini-board{width:30px;height:30px}.intro-trust-row>span+span::before{left:-11px;top:50%;transform:translateY(-50%);font-size:17px}
+  .intro-trust-row strong,.intro-trust-row small{min-width:0;white-space:normal}.intro-trust-row strong{font-size:13px;line-height:20px}.intro-trust-row small{font-size:10px;line-height:17px}.intro-mini-board{width:30px;height:30px}.intro-trust-row>span+span::before{left:-11px;top:50%;transform:translateY(-50%);font-size:17px}
   .intro-hero-atmosphere{left:-16px;top:auto;bottom:0;width:calc(100% + 32px);height:330px;object-fit:cover;object-position:right;opacity:.65}
   .intro-hero-art{width:100%;height:auto;min-height:0;margin:0;padding:16px 0 0;overflow:visible;background:transparent;border-radius:0}
   .intro-hero-visual-card{position:relative;left:0;top:0;width:100%;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px;padding:16px;border-radius:18px}
@@ -540,7 +542,7 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
   .intro-method-grid article{height:auto;min-height:215px;padding:18px 24px}.intro-method-grid article::after{display:none!important}.intro-method-grid strong{padding-left:32px;margin:0;font-size:14px;line-height:23px;white-space:normal}.intro-method-grid .intro-evidence-image{width:115px;height:88px;margin:12px 0}.intro-method-grid p{font-size:14px;line-height:23px;letter-spacing:0}
   .intro-evidence-outcome{font-size:13px;line-height:23px;padding:12px;letter-spacing:0}
   .intro-split-grid{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:16px;padding:10px}.intro-split-grid .intro-section{min-height:195px;padding:16px}.intro-split-card h3{font-size:20px;line-height:28px}.intro-split-card .intro-section-head>p{font-size:13px;line-height:22px;letter-spacing:0}.intro-outcome .intro-section-head{max-width:calc(100% - 100px);min-height:139px}.intro-outcome .intro-section-head>p{max-width:100%}.intro-philosophy-growth{right:0;top:auto;bottom:0;width:150px;height:100px;opacity:.55}.intro-philosophy-capability{width:95px;height:117px;right:0;bottom:auto;top:42px}
-  .intro-history .intro-explore-note{margin-top:16px;font-size:13px;line-height:22px}.intro-history .intro-explore-links{flex-direction:row;align-items:flex-start;gap:8px}.intro-history .intro-explore-links .course-entry-link{width:auto;flex:none;font-size:12px;padding:8px 9px;border-radius:6px}
+  .intro-history .intro-explore-note{margin-top:16px;font-size:13px;line-height:22px}.intro-history .intro-explore-links{flex-direction:row;align-items:flex-start;gap:8px}.intro-history .intro-explore-links .course-entry-link{width:auto;min-width:0;max-width:100%;flex:none;white-space:normal;overflow-wrap:anywhere;font-size:12px;padding:8px 9px;border-radius:6px}
   .intro-outcome-list{font-size:13px;line-height:22px;gap:8px;margin-top:16px}.intro-outcome .intro-boundary{font-size:12px;line-height:21px;padding:12px;margin-top:14px}
   .intro-course-catalog{margin-top:16px;border-radius:14px;scroll-margin-top:86px}.intro-course-catalog>summary{padding:14px 16px;gap:12px}.intro-course-catalog>summary strong{font-size:18px}.intro-course-catalog>summary small{font-size:12px}.intro-catalog-toggle,.intro-course-catalog[open] .intro-catalog-toggle::after{font-size:12px}
   .intro-course-catalog-body{padding:16px}.intro-course-catalog .intro-course-count{font-size:13px}.intro-course-catalog .course-entry-grid{grid-template-columns:minmax(0,1fr);margin-top:14px;gap:12px}.intro-course-catalog .course-entry-card{padding:16px}.intro-course-catalog .course-entry-card h4{font-size:21px}.intro-course-catalog .course-entry-card>p{font-size:14px}.intro-course-catalog .course-entry-tag{font-size:12px}.intro-course-catalog .course-entry-action,.intro-course-catalog .course-entry-link{font-size:14px}.intro-catalog-practice{font-size:12px}.intro-core-catalog-title{font-size:16px;margin-top:22px}.intro-core-course-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.intro-core-course-list button{padding:10px 8px;gap:7px}.intro-core-course-list .intro-unit-number{font-size:12px}.intro-core-course-list strong{font-size:13px}.intro-core-course-list small{font-size:11px}
