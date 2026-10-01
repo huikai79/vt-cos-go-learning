@@ -380,7 +380,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v56");
+  assert.equal(exported.uiVersion, "learner-flow-v57");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -550,7 +550,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v56");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v57");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -707,8 +707,14 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-flow-v56/);
+  assert.match(html, /styles\.css\?v=learner-flow-v57/);
   assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
+  assert.match(html, /class="intro-hero-atmosphere"[^>]+assets\/homepage\/hero-atmosphere\.svg/);
+  assert.match(html, /class="intro-philosophy-art intro-philosophy-growth"[^>]+assets\/homepage\/philosophy-growth\.svg/);
+  assert.match(html, /class="intro-philosophy-art intro-philosophy-capability"[^>]+assets\/homepage\/philosophy-capability\.svg/);
+  assert.match(html, /class="intro-final-landscape"[^>]+assets\/homepage\/footer-landscape\.svg/);
+  assert.doesNotMatch(html, /class="intro-section intro-science"/);
+  assert.match(html, /完整來源與研究限制可在頁尾展開查看/);
   assert.equal((html.match(/class="intro-path-image"/g) || []).length, 3);
   assert.equal((html.match(/class="intro-evidence-image"/g) || []).length, 4);
   const evidenceSection = html.match(/<div class="[^"]*intro-evidence-grid[^"]*">([\s\S]*?)<\/div>/)?.[1] || "";
