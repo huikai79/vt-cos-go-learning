@@ -514,7 +514,8 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
   .intro-trust-row{grid-template-columns:1fr}
   .intro-trust-row>span+span{border-left:0;border-top:1px solid #e6decf}
   .intro-trust-row>span+span::before{left:50%;top:-10px;transform:translateX(-50%) rotate(90deg)}
-  .intro-hero-art{padding-bottom:34px}
+  .intro-hero-art{overflow:hidden;padding-bottom:34px;border-radius:24px}
+  .intro-hero-art::before{inset:0}
   .intro-hero-visual-card{padding:12px;border-radius:20px}
   .intro-hero-image{min-height:230px}
   .intro-hero-note{right:8px;bottom:0;font-size:1rem}
