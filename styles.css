@@ -540,3 +540,278 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
   .intro-hero h2{font-size:2.05rem}
   .intro-section{padding:20px 15px}
 }
+
+
+/* learner-flow-v57: organic visual fidelity restoration.
+   The images below are decorative brand/mood assets only; board truth remains in existing teaching/rules surfaces. */
+.site-introduction{
+  background:
+    radial-gradient(circle at 88% 5%,rgba(225,198,155,.19),transparent 28rem),
+    radial-gradient(circle at 8% 18%,rgba(194,211,190,.13),transparent 25rem),
+    #f5f1e8;
+}
+.site-introduction-inner{max-width:1320px;padding-top:30px}
+.intro-hero{grid-template-columns:minmax(0,.95fr) minmax(540px,1.05fr);gap:42px;min-height:620px;padding-top:18px}
+.intro-hero-copy{position:relative;z-index:2}
+.intro-hero-art{
+  min-height:570px;
+  padding:0;
+  overflow:hidden;
+  border-radius:30px;
+  isolation:isolate;
+  background:#ead7bb;
+  box-shadow:0 26px 58px rgba(79,60,35,.15)
+}
+.intro-hero-art::before{display:none}
+.intro-hero-atmosphere{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  pointer-events:none
+}
+.intro-hero-visual-card{
+  position:absolute;
+  z-index:2;
+  left:7.5%;
+  top:18%;
+  width:77%;
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(190px,.9fr);
+  gap:14px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.86);
+  border-radius:21px;
+  background:rgba(255,252,245,.84);
+  box-shadow:0 20px 42px rgba(64,47,28,.16);
+  backdrop-filter:blur(7px)
+}
+.intro-hero-image-shell{border-radius:14px}
+.intro-hero-image{min-height:275px;border-radius:14px;object-fit:cover;object-position:left center}
+.intro-hero-explainer{padding:8px 8px 8px 10px;background:rgba(255,253,248,.76)}
+.intro-hero-explainer h3{font-size:1.2rem}
+.intro-hero-explainer>p{font-size:.82rem}
+.intro-hero-tip{padding:11px 12px;font-size:.78rem!important}
+.intro-hero-note{
+  position:absolute;
+  z-index:3;
+  right:7.5%;
+  bottom:7.5%;
+  margin:0;
+  color:#5d625b;
+  font-family:"DFKai-SB","BiauKai","Noto Serif TC",serif;
+  font-size:1.05rem;
+  line-height:1.5;
+  letter-spacing:.04em;
+  transform:rotate(-5deg);
+  text-shadow:0 1px 0 rgba(255,255,255,.6)
+}
+.intro-hero-note::before{
+  content:"";
+  position:absolute;
+  width:54px;
+  height:1px;
+  left:-62px;
+  top:15px;
+  background:rgba(80,89,78,.38);
+  transform:rotate(-8deg)
+}
+
+/* Equal visual authority for all three legitimate Core-entry actions. */
+.intro-path-card .intro-path-action{
+  border:0;
+  background:linear-gradient(180deg,#245c45,#194632);
+  color:#fff;
+  box-shadow:0 8px 16px rgba(31,78,58,.14)
+}
+.intro-path-card .intro-path-action:hover{background:linear-gradient(180deg,#2b674e,#1d4e38)}
+.intro-path-card-primary{
+  border-color:#cbd8cb!important;
+  box-shadow:0 11px 22px rgba(42,56,41,.045)!important
+}
+.intro-path-card-primary::after{
+  content:"適合完全新手";
+  position:absolute;
+  right:15px;
+  top:15px;
+  z-index:3;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#eff5ec;
+  color:#45644d;
+  font-size:.68rem;
+  font-weight:800
+}
+
+/* Keep research rationale present but subordinate instead of repeating the four-step method. */
+.intro-method-research-note{
+  margin:12px 6px 0;
+  color:#7a847e;
+  font-size:.78rem;
+  line-height:1.6
+}
+
+/* Philosophy cards: replace placeholder geometry with semantic mood art. */
+.intro-split-grid{gap:18px}
+.intro-split-grid .intro-section{
+  position:relative;
+  min-height:330px;
+  overflow:hidden;
+  padding:29px 31px 28px
+}
+.intro-history,.intro-outcome{background:#fffdf8}
+.intro-history::after{display:none}
+.intro-history .intro-section-head,
+.intro-history .intro-explore-note,
+.intro-history .intro-explore-links,
+.intro-outcome .intro-section-head,
+.intro-outcome .intro-outcome-list,
+.intro-outcome .intro-boundary{position:relative;z-index:2}
+.intro-history .intro-section-head,
+.intro-outcome .intro-section-head{max-width:64%}
+.intro-history .intro-section-head>p,
+.intro-outcome .intro-section-head>p{max-width:38rem}
+.intro-history .intro-explore-note{max-width:56%;margin-top:20px}
+.intro-history .intro-explore-links{max-width:58%}
+.intro-outcome-list{max-width:67%;padding-right:0}
+.intro-outcome .intro-boundary{max-width:67%;margin-top:15px}
+.intro-stone-stack{display:none!important}
+.intro-philosophy-art{
+  position:absolute;
+  z-index:1;
+  right:0;
+  bottom:0;
+  width:57%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  pointer-events:none;
+  opacity:.92
+}
+.intro-philosophy-growth{
+  width:62%;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,rgba(0,0,0,.22) 18%,#000 48%);
+  mask-image:linear-gradient(to right,transparent 0,rgba(0,0,0,.22) 18%,#000 48%)
+}
+.intro-philosophy-capability{
+  width:52%;
+  object-position:right center;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,rgba(0,0,0,.28) 22%,#000 50%);
+  mask-image:linear-gradient(to right,transparent 0,rgba(0,0,0,.28) 22%,#000 50%)
+}
+
+/* Research/detail panel is retained for governance, but visually demoted below learner-facing story. */
+.intro-research-details{
+  margin-top:16px;
+  border-color:#e8e5dc;
+  background:rgba(250,249,245,.7);
+  box-shadow:none
+}
+.intro-research-details>summary{
+  min-height:54px;
+  color:#66726b;
+  font-size:.82rem
+}
+.intro-research-details>summary strong{color:#55645b}
+
+/* Final CTA gets the same landscape family as the mockup. */
+.intro-final-cta{
+  min-height:180px;
+  margin-top:18px;
+  padding:30px 32px;
+  background:#163f31;
+  box-shadow:0 20px 42px rgba(28,62,47,.16)
+}
+.intro-final-cta::after{display:none}
+.intro-final-landscape{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  pointer-events:none
+}
+.intro-final-cta::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(90deg,rgba(15,54,40,.88) 0%,rgba(15,54,40,.68) 56%,rgba(15,54,40,.12) 100%);
+  pointer-events:none
+}
+.intro-final-cta>div,
+.intro-final-action{z-index:2}
+.intro-final-action .intro-primary{
+  background:linear-gradient(180deg,#f0c96c,#ddb04d);
+  color:#23382f;
+  box-shadow:0 10px 20px rgba(0,0,0,.18)
+}
+
+/* Softer editorial rhythm: reduce dashboard-panel feeling. */
+.intro-section{
+  border-color:#e6e3d8;
+  background:rgba(255,253,248,.86);
+  box-shadow:0 12px 30px rgba(61,52,36,.035)
+}
+.intro-learning-path,.intro-assessment{padding-top:30px;padding-bottom:30px}
+.intro-faq{margin-top:18px}
+.intro-faq-grid details{box-shadow:none}
+
+@media(max-width:1050px){
+  .intro-hero{grid-template-columns:minmax(0,.9fr) minmax(470px,1.1fr)}
+  .intro-hero-visual-card{left:5%;width:82%}
+  .intro-history .intro-section-head,.intro-outcome .intro-section-head{max-width:70%}
+}
+@media(max-width:900px){
+  .intro-hero{grid-template-columns:1fr;gap:22px}
+  .intro-hero-art{max-width:760px;width:100%;min-height:560px;margin-inline:auto}
+  .intro-hero-visual-card{left:7%;top:15%;width:78%}
+  .intro-history .intro-section-head,.intro-outcome .intro-section-head{max-width:66%}
+}
+@media(max-width:760px){
+  .intro-hero-art{min-height:430px;overflow:hidden;border-radius:22px}
+  .intro-hero-atmosphere{object-position:63% center}
+  .intro-hero-visual-card{
+    left:5%;
+    top:8%;
+    width:90%;
+    grid-template-columns:1fr;
+    gap:9px;
+    padding:10px;
+    border-radius:16px
+  }
+  .intro-hero-image{min-height:188px;max-height:210px;object-fit:cover}
+  .intro-hero-explainer{padding:9px 10px}
+  .intro-hero-explainer>p,.intro-hero-legend{font-size:.76rem}
+  .intro-hero-tip{display:none}
+  .intro-hero-note{right:6%;bottom:5%;font-size:.88rem}
+  .intro-hero-note::before{width:32px;left:-38px}
+  .intro-path-card-primary::after{right:11px;top:11px}
+  .intro-split-grid .intro-section{min-height:365px}
+  .intro-history .intro-section-head,
+  .intro-outcome .intro-section-head,
+  .intro-history .intro-explore-note,
+  .intro-history .intro-explore-links,
+  .intro-outcome-list,
+  .intro-outcome .intro-boundary{max-width:100%}
+  .intro-history,.intro-outcome{padding-bottom:170px!important}
+  .intro-philosophy-art{width:100%;height:180px;top:auto;bottom:0;opacity:.82}
+  .intro-philosophy-growth,
+  .intro-philosophy-capability{
+    width:100%;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 38%);
+    mask-image:linear-gradient(to bottom,transparent 0,#000 38%)
+  }
+  .intro-philosophy-capability{object-position:80% 58%}
+  .intro-final-cta{min-height:230px}
+  .intro-final-cta::before{background:linear-gradient(180deg,rgba(15,54,40,.87) 0%,rgba(15,54,40,.76) 68%,rgba(15,54,40,.25) 100%)}
+}
+@media(max-width:420px){
+  .intro-hero-art{min-height:405px}
+  .intro-hero-image{min-height:168px;max-height:184px}
+  .intro-hero-note{font-size:.8rem}
+}
