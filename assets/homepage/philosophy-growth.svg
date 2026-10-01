@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-label="">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbfaf4"/>
+      <stop offset="1" stop-color="#edf2ea"/>
+    </linearGradient>
+    <linearGradient id="far" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9d7c7"/><stop offset="1" stop-color="#e2e9de"/></linearGradient>
+    <linearGradient id="mid" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fb5a2"/><stop offset="1" stop-color="#c8d7c5"/></linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6e8b73"/><stop offset="1" stop-color="#9db29e"/></linearGradient>
+    <radialGradient id="sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e7bf69"/><stop offset="1" stop-color="#e7bf69" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="720" height="360" rx="30" fill="url(#sky)"/>
+  <circle cx="585" cy="84" r="46" fill="url(#sun)" opacity=".55"/>
+  <path d="M0 252 C74 215 112 209 166 167 C217 128 255 178 304 149 C350 122 395 94 443 147 C490 199 538 177 592 147 C643 119 688 165 720 178 L720 360 L0 360Z" fill="url(#far)" opacity=".62"/>
+  <path d="M0 287 C76 249 116 258 171 215 C220 177 261 231 311 202 C363 171 408 128 466 194 C514 249 566 219 617 199 C663 181 697 213 720 230 L720 360 L0 360Z" fill="url(#mid)" opacity=".55"/>
+  <path d="M0 324 C83 286 132 302 196 256 C247 219 290 277 342 246 C401 210 455 181 511 244 C560 299 611 276 659 259 C687 249 705 255 720 264 L720 360 L0 360Z" fill="url(#near)" opacity=".5"/>
+  <g opacity=".16" stroke="#6c8770" stroke-width="1">
+    <path d="M52 312 H670"/><path d="M100 286 H621"/><path d="M156 260 H566"/>
+    <path d="M192 234 H524"/><path d="M226 208 H487"/>
+  </g>
+</svg>
