@@ -714,7 +714,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const evidenceSection = html.match(/<div class="[^"]*intro-evidence-grid[^"]*">([\s\S]*?)<\/div>/)?.[1] || "";
   assert.equal((evidenceSection.match(/<article/g) || []).length, 4);
   assert.doesNotMatch(evidenceSection, /data-evidence-role="summary"/);
-  assert.match(html, /class="intro-evidence-outcome"[^>]*><strong>真正要看的結果：<\/strong>隔一段時間或換新棋形後，仍能自己判斷/);
+  assert.match(html, /class="intro-evidence-outcome"[^>]*><strong>真正重要的結果：<\/strong>不是累積做題數，而是隔一段時間、遇到不同棋形後/);
   assert.match(html, /data-site-intro-unit="5"/);
   assert.match(html, /data-site-intro-unit="10"/);
   assert.equal((html.match(/>開始這個單元 <span aria-hidden="true">→<\/span><\/button>/g) || []).length, 2);
