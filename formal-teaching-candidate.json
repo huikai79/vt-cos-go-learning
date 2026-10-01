@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-01-a",
-  "frozenAt": "2026-10-01T01:31:00+08:00",
-  "assetSetVersion": 6,
-  "assetFingerprint": "fnv1a32-js16-4dcfe38d",
+  "candidateId": "formal-teaching-candidate-2026-10-01-b",
+  "frozenAt": "2026-10-01T08:30:00+08:00",
+  "assetSetVersion": 7,
+  "assetFingerprint": "fnv1a32-js16-39087ead",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -38,5 +38,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v55／content catalog 5。保留 2026-09-30 Short Talk UX v2 與 terminology QA；2026-10-01 MWA Module A selective intake v1 只修改 Core 第 4 課「辨認棋串」的 learner-facing 語義邊界：斜接／間隔棋仍不是同一串，但不得由此推成沒有連絡作用或一定容易被切斷。既有 direct-join KC、題目答案、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 與 formal evaluation authority 均未改。Advanced 新增的 semeai／sacrificial-insertion Teaching Candidate 不在 formal Core critical asset set。重新凍結不產生真人 usability、accessibility、content validity 或 learning-effect 證據。"
+  "scopeNote": "learner-flow-v56／content catalog 5。首頁依核准 mockup 進行 presentation-only fidelity pass：保留 VT-COS 為學習引擎底盤品牌，重整 Header、Hero、三個核心課程入口、四步學習方法、理念／能力雙欄、FAQ 與 final CTA；局部／全局入口仍分別直達 Core 第 6／11 單元。既有 MWA Module A 第 4 課語義修正、direct-join KC、題目答案、scoring、scheduler、first response／retry、event schema、evidence taxonomy、learner state 與 formal evaluation authority 均未改。重新凍結不產生真人 usability、accessibility、content validity 或 learning-effect 證據。"
 }
