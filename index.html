@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="從氣與提子開始，以短教學、落子練習、具體回饋與新棋形，一步一步學圍棋。">
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
   <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-flow-v59.1">
+  <link rel="stylesheet" href="styles.css?v=learner-workspace-v67">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -41,13 +41,14 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-flow-v59"></script>
+  <script defer src="app.js?v=learner-workspace-v67"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand"><span class="brand-mark" aria-hidden="true">●○</span><span>悟之一手<small>VT-COS · 個人圍棋練習</small></span></div>
+      <button class="sidebar-home-button" id="sidebar-home-button" type="button">⌂ <span>首頁</span></button>
       <div class="side-label">核心課程</div>
       <div class="current-course-context" aria-label="目前課程位置">
         <span>目前</span>
@@ -58,6 +59,13 @@
         <div class="progress-track"><div id="progress-bar"></div></div>
         <small id="progress-caption">先從第一題開始</small>
       </div>
+      <ol class="sidebar-learning-steps" aria-label="目前學習階段">
+        <li id="sidebar-learning-step-0"><span class="step-dot" aria-hidden="true"></span><span><strong>S1 看懂</strong><small>理解題目與棋形重點</small></span></li>
+        <li id="sidebar-learning-step-1"><span class="step-dot" aria-hidden="true"></span><span><strong>S2 自己判斷</strong><small>先想，再落下一手</small></span></li>
+        <li id="sidebar-learning-step-2"><span class="step-dot" aria-hidden="true"></span><span><strong>S3 修正重算</strong><small>看結果並重新思考</small></span></li>
+        <li id="sidebar-learning-step-3"><span class="step-dot" aria-hidden="true"></span><span><strong>S4 隔時再判</strong><small>依任務重做或換形</small></span></li>
+        <li id="sidebar-learning-step-4"><span class="step-dot" aria-hidden="true"></span><span><strong>S5 局面應用</strong><small>在局面中辨認時機</small></span></li>
+      </ol>
       <button id="course-nav-toggle" class="course-nav-toggle" type="button" aria-expanded="false" aria-controls="course-navigation">課程與單元 <span aria-hidden="true">⌄</span></button>
       <div id="course-navigation" class="course-navigation">
         <div class="side-label course-label">查看單元</div>
@@ -71,6 +79,7 @@
           <button id="previous-unit-button" type="button">← 上一單元</button>
           <button id="next-unit-button" type="button">下一單元 →</button>
         </div>
+      </div>
         <div id="today-navigation" class="today-navigation" hidden>
           <div class="side-label">今天</div>
           <button class="sidebar-task-link" id="sidebar-due-review-button" type="button" hidden>到期複習 <span id="sidebar-due-review-count">0</span></button>
@@ -121,13 +130,12 @@
             <button id="sidebar-tools-button" type="button">開啟工具與資料</button>
           </div>
         </details>
-      </div>
       <div class="sidebar-bottom"><span id="unit-meta">第 1 單元 · 氣與吃子</span><span>9 路棋盤</span></div>
     </aside>
 
     <main class="main-content" id="learning-main">
       <header class="topbar">
-        <span class="eyebrow">悟之一手 <span class="eyebrow-dot">●</span> 個人學習空間</span>
+        <span class="eyebrow">核心課程 <span class="eyebrow-dot">·</span> <span id="top-course-context">第 1 單元 · 課程 1</span></span>
         <div class="top-actions">
           <button class="text-button about-course-action" id="about-course-button" type="button">課程首頁</button>
           <button class="primary-top-action" id="resume-button" type="button">開始第 1 題</button>
@@ -160,7 +168,7 @@
                     <h2 id="policy-tools-title">複習安排（試行）</h2>
                     <p class="tool-intro">這只改變「間隔練習」的出題順序，不會跳過新課。平日請保留固定間隔；兩種安排都尚未證明較能提升棋力。</p>
                     <label class="policy-choice"><input id="policy-fixed" name="scheduler-policy" type="radio" value="fixed-spacing-v1">固定間隔（建議）：依 1、3、7、14 天安排。</label>
-                    <label class="policy-choice"><input id="policy-adaptive" name="scheduler-policy" type="radio" value="adaptive-candidate-v1">候選自適應（試行）：首答錯誤後，優先安排未見變形。</label>
+                    <label class="policy-choice"><input id="policy-adaptive" name="scheduler-policy" type="radio" value="adaptive-candidate-v1">候選自適應（試行）：首答錯誤後，優先安排尚未練過的變形。</label>
                   </section>
                   <section class="tool-group" aria-labelledby="data-tools-title">
                     <h2 id="data-tools-title">匯出與備份</h2>
@@ -347,7 +355,7 @@
               <article>
                 <span class="evidence-step">4</span>
                 <img class="intro-evidence-image" src="assets/homepage/evidence-new-shape.webp" alt="" aria-hidden="true" width="360" height="315" loading="lazy">
-                <strong>換一個沒見過的棋形</strong>
+                <strong>換一個不同的棋形</strong>
                 <p>在新的棋形中應用所學，<br>學會舉一反三，而不是只<br>記住答案。</p>
               </article>
             </div>
@@ -437,7 +445,6 @@
         <div class="section-head"><span id="lesson-kicker">第 1 / 19 課</span><span class="current-stage-badge" id="learning-stage-badge">目前 1/5 · 先看懂</span><span id="question-number">題目 01 / 98</span></div>
         <div class="title-row"><div><h2 id="lesson-title" tabindex="-1">認識氣</h2><p id="lesson-subtitle"></p></div><span class="lesson-badge" id="lesson-badge">基礎概念</span></div>
         <section class="lesson-context-bar" aria-label="目前學習提示">
-          <p><span>現在</span><strong id="learning-now-summary">先看本課短講，再開始作答。</strong></p>
           <div class="lesson-context-actions">
             <button class="subtle-button" id="lesson-intro-button" type="button">查看本課短講</button>
             <a class="subtle-button stage-board-link" id="stage-board-practice-link" href="live-game.html?size=5">本階段棋盤練習 · 5×5</a>
@@ -455,6 +462,7 @@
             </div>
             <span class="question-prompt-label">問題</span>
             <h3 class="question-prompt" id="question-prompt" tabindex="-1"></h3>
+            <p class="workspace-task-cue"><strong>現在</strong><span id="learning-now-summary">先看本課短講，再開始作答。</span></p>
           </section>
 
           <section class="board-card" id="board-card" aria-label="題目棋盤">
@@ -502,11 +510,20 @@
             <div id="hint-feedback" class="aux-feedback hint-feedback" role="status" aria-live="polite" hidden></div>
             <div class="question-actions">
               <button class="subtle-button" id="hint-button" type="button">給我一點提示</button>
-              <button class="primary-button" id="next-button" type="button" disabled>下一題 <span aria-hidden="true">→</span></button>
+              <button class="primary-button" id="next-button" type="button" disabled hidden>下一題 <span aria-hidden="true">→</span></button>
             </div>
             <div class="takeaway" id="takeaway" hidden><span>記住這句</span><p id="takeaway-text"></p></div>
           </section>
         </div>
+        <aside class="workspace-aside" aria-label="學習指引與進階工具" hidden>
+          <span id="workspace-next-summary" hidden>看完後，自己完成第一題。</span>
+          <details class="workspace-aside-tools">
+            <summary>進階工具與資料</summary>
+            <p>需要時再開啟練習、棋譜、紀錄與備份；不會改變目前題目。</p>
+            <button id="workspace-tools-button" type="button">開啟工具與資料</button>
+            <button id="workspace-records-button" type="button">查看我的紀錄</button>
+          </details>
+        </aside>
         <p class="footer-note">悟之一手學習實驗。教材參照棋協課程順序重新編寫；題目與棋形為本原型原創。進度只存於此瀏覽器。</p>
       </div>
     </main>
@@ -555,7 +572,7 @@
         <li id="learning-step-0"><span>1</span><strong>先看懂</strong><small>短講與示範</small></li>
         <li id="learning-step-1"><span>2</span><strong>自己作答</strong><small>不看答案先算</small></li>
         <li id="learning-step-2"><span>3</span><strong>修正重算</strong><small>理解理由再做</small></li>
-        <li id="learning-step-3"><span>4</span><strong>延後新題</strong><small>隔日換形再測</small></li>
+        <li id="learning-step-3"><span>4</span><strong>隔時再判</strong><small>原題複習或換形判斷</small></li>
         <li id="learning-step-4"><span>5</span><strong>局面應用</strong><small>9 路自行發現</small></li>
       </ol>
       <div class="learning-guidance" role="status" aria-live="polite">

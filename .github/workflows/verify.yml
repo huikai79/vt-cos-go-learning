@@ -173,8 +173,8 @@ jobs:
                 'assets/homepage/philosophy-capability-v59.webp',
                 'assets/homepage/footer-landscape.svg',
                 '完整來源、研究限制與目前驗證狀態',
-                'styles.css?v=learner-flow-v59.1',
-                'app.js?v=learner-flow-v59',
+                'styles.css?v=learner-workspace-v67',
+                'app.js?v=learner-workspace-v67',
                 '15 單元核心課程（參考）',
                 'class="advanced-priority-label">目前紀錄與證據</div>',
                 'id="advanced-evidence-brief"',
@@ -318,17 +318,17 @@ jobs:
               name: "formal-teaching-candidate",
               url: new URL(`formal-teaching-candidate.json?deploy=${deploySha}`, base),
               checks: [
-                '"candidateId": "formal-teaching-candidate-2026-10-01-f"',
-                '"assetFingerprint": "fnv1a32-js16-4bc20e83"',
-                'learner-flow-v59'
+                '"candidateId": "formal-teaching-candidate-2026-10-02-e"',
+                '"assetFingerprint": "fnv1a32-js16-a369954a"',
+                'learner-workspace-v67'
               ]
             },
             {
               name: "teaching-gate",
               url: new URL(`teaching-gate.json?deploy=${deploySha}`, base),
               checks: [
-                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-10-01-f"',
-                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-4bc20e83"',
+                '"formalTeachingCandidateId": "formal-teaching-candidate-2026-10-02-e"',
+                '"formalTeachingCandidateFingerprint": "fnv1a32-js16-a369954a"',
                 '"lessonContentReview": "awaiting_external_receipt"',
                 '"lessonContentFingerprint": "fnv1a32-d1f8b40f"',
                 '"noviceUsability": "not_tested"',

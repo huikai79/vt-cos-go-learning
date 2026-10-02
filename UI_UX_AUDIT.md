@@ -1,4 +1,143 @@
+2026-10-02 Learning Workspace v67 Johari color review：公開區保留新版淺側欄降低導航競爭；盲點區修正舊／新版共同沿用的低對比金色 focus（白底約 2.43:1）及 active／passed 同用綠色；隱藏區把「統一色調」重新定義為「統一色彩職責」，避免整頁同色反而抹平 Question→Response→Feedback→Next；未知區保留真人是否更快辨識任務與下一步。實作後主畫布 `#f4f5ef`、Question 白、Response 淡綠；暖金 current/focus、綠 complete/success/next、橙 error/recalculate。焦點與 option control boundary static contrast ≥3:1，正誤另有圖示及文字。UI version `learner-workspace-v67`；candidate `formal-teaching-candidate-2026-10-02-e`／`fnv1a32-js16-a369954a`。Rollback 為移除 v67 semantic-tone override 並另立 candidate；真人 usability／accessibility `NOT_TESTED`，learning effect `NOT_MEASURED`。
+
+v67 工程驗證：57 份非瀏覽器測試檔／607 項、完整 Edge UI、Edge smoke、320px／375px／200% reflow、candidate、gate report、repository boundary、syntax 與 diff check `PASS`；更新後桌面棋盤題、純文字題、作答後與手機截圖已人工檢視。這只確認角色色、層級與操作未回歸；真人能否更快找到問題、結果與下一步仍 `NOT_TESTED`。
+
+2026-10-02 Learning Workspace v66 production rhythm／Next correction：公開舊版桌面節奏為 content top 30px、title margin 10／20px、context padding 12／15px、context bottom 20px；v66 恢復上述值，mobile 仍用既有 13px／5／2px／8px 緊湊規則。首答前 disabled Next 沒有操作價值且形成右下假主動作，因此 hidden；正答或 masked evaluation 首答記錄完成後才顯示，固定與 feedback 左對齊。錯答 retry 時不顯示 Next，避免跳過修正。Question 題卡內容、sidebar、hint lifecycle 與 evidence semantics 不變。UI version `learner-workspace-v66`；candidate `formal-teaching-candidate-2026-10-02-d`／`fnv1a32-js16-3db9e78a`。Rollback 為還原 v65 spacing／Next visibility 並另立 candidate；真人 usability／accessibility仍 `NOT_TESTED`。
+
+2026-10-02 Learning Workspace v63 design pipeline：依使用者要求，先停止 production UI 微調，建立 `design-candidates/learning-workspace-v63/` 暫時審查包，依序完成 Business Rules Registry、Sitemap／IA、5 條核心 User Flow、S1–S5 與負面狀態矩陣、6 張各附 Award Intent 的 Wireframe、Award Experience Brief、Creative Direction、Visual System、High-Fi Mockup、Motion Prototype 與 Frontend Craft Review。候選移除文字題右下孤立的 Advanced 長方格，將工具保留為全域第二層入口；配圖採功能必要且不洩題原則，桌機採共享對齊基準，手機採 task-first 單欄。Edge 審查原型 6 views／6 Award Intents、桌機、文字題、375px、320px 與 200% reflow `PASS`；首次渲染發現 `.review-view` 覆蓋原生 `hidden` 導致六稿串接，已修正並重驗。此包是 `NON_NORMATIVE_DESIGN_CANDIDATE`，沒有載入或寫入 learner state，不改 production `index.html`／`styles.css`／`app.js`，不需重凍 candidate；真人 usability／accessibility `NOT_TESTED`，正式教學／評量仍 `BLOCKED`，learning effect `NOT_MEASURED`。下一 gate 是使用者審查與明確 implementation approval；未批准前不得把候選版面 promotion 到 production。
+
+2026-10-01 Learning Workspace v62 corrective implementation：使用者以 v61 實際畫面要求喬哈里視窗嚴格檢討；結果為桌面核心流水線 `FAIL`：Question→Board→Response 的單欄排列使首答與首答後資訊需要額外捲動，而右側 guidance 占用可承載操作的欄位。修正後桌機採 board 左、Question／Response／Feedback／Next 右，board 上限 440px；metadata 集中靠左、S rail 保留但縮短，`learning-now-summary` 進題目卡，重複 `workspace-next-summary` 保留資料節點但不再顯示，Advanced／紀錄入口仍在後段收合層。1079px 以下維持 Question→Board→Response，不要求 mobile 單屏。Edge 以 1440×900 驗證首答前題目／完整棋盤／作答／提示／Next 均在 viewport，首答後棋盤／Feedback／Next 仍在 viewport 且 `scrollY=0`；這只支持工程版面，不是 usability 或 learning-effect evidence。UI version `learner-workspace-v62`；candidate `formal-teaching-candidate-2026-10-01-j`／`fnv1a32-js16-cc64381a`。Rollback 為還原 v61 grid／guidance 呈現並另立 candidate，不改寫已產生的 v62 事件。未 commit／push／merge；正式真人觀察仍 `NOT_TESTED`。
+
+2026-10-01 Learning Workspace v61 implementation：使用者明確改為要求直接實作附圖方向，故下方 `REVIEW_CANDIDATE` 的「等待批准」只保留為先前審查紀錄，不再代表目前工作狀態。已保留題目／棋盤／回饋與原入口，桌機用左側 S rail、中央 task、右側按需指引；手機不永久展開 rail，進階紀錄由後段入口開啟。提示前仍 S2，立即變形 S2，首次 pilot S2，到期同題 S4 改稱原題再判。原圖藍色答案點與底部四塊 annotation 未採納。新 UI version `learner-workspace-v61`；candidate `formal-teaching-candidate-2026-10-01-i`／`fnv1a32-js16-9cea90da`；舊回條不沿用，正式真人觀察仍 `NOT_TESTED`。
+
+2026-10-01 Core S1–S5 terminology v60：以下 latest-main audit 完成後只實作 S4 的 `REFINE`。畫面改用「隔時新棋形／到期時換形再做」，公開／已曝光流程不再稱 formal unseen；新增 learner-language negative test 與 Edge 動態斷言。57 份非瀏覽器測試、Edge UI／smoke、375px、320px、200% text、candidate fingerprint、teaching gate report、repository boundary、syntax 與 diff-check PASS；真人可用性與無障礙證據仍 `NOT_TESTED`，PR CI／部署／served-content 尚未驗證。
+
 2026-10-01 Homepage Visual Fidelity v57：使用者並排比較實際首頁與核准 Mockup 後，確認 v56 的主要缺口不是色盤，而是 asset system／visual anchoring：Hero 手寫句失去場景錨點，理念／堅持以 CSS 幾何與簡化石頭代替語義圖像，另有第二套四步方法造成重複。v57 改用四張正式 decorative SVG，將 Hero note 錨定在桌面場景，移除重複方法 section，三入口 CTA 同權；新增 desktop/tablet/mobile CSS 規則。自動測試只能驗結構、overflow、焦點與資產存在，不能證明讀者覺得畫面自然；正式 target-novice observation 仍待後續 gate。\n\n2026-10-01 Homepage Mockup Fidelity v56：本輪依已核准 Mockup 進行高擬真 UI 對齊，保留 VT-COS 底盤品牌，收斂 Header、Hero、入口卡、四步循環、雙欄理念與 FAQ 的視覺節奏；不改 learner/evidence semantics。已新增 desktop／mobile CSS breakpoint 與可見 focus 既有基線，仍需 PR browser regression 與真人 target-novice observation 才能判斷實際理解、操作與可讀性。\n\n# 前端操作與視覺稽核
+
+## 2026-10-01｜Mockup v1 功能與連結保全盤點
+
+狀態：`REVIEW_CANDIDATE`，尚未批准實作。遠端 `main` 與本機 HEAD 均為 `ed4066f`（`learner-flow-v59`、candidate `2026-10-01-f`）；本機未提交工作樹另有 v59.2 Hero 修正與 `learner-flow-v60`／candidate `2026-10-01-h`。本節以實際 `index.html`、`app.js`、測試與 v60 截圖核對；使用者附圖「悟之一手：眼與死活課程」只作 `NON_NORMATIVE_REFERENCE`。既有工作樹保持原狀。
+
+修正前提：原 v60 gap audit 把 S1–S5 的動態 mapping 評為 `KEEP`；逐條檢查 `renderLearningFlow()` 與 `Scheduler.chooseNext()` 後，發現「首答前先看提示」會顯示 S3，立即變形與七天流程試行的第一次批次會顯示 S4；到期複習又會重出同一 `problem.id`，卻被 S4「隔時新棋形」概括。這些是 `FAIL` 的 learner-facing state-label 邊界，不表示 first-response、scheduler 或 trial event 本身已改寫；後續設計須先釐清各分支的顯示名稱與入口條件。
+
+### 附圖逐項判定
+
+| 附圖元素 | 判定 | 現行功能與保全條件 |
+|---|---|---|
+| 品牌、首頁、核心課程、目前單元／課目 | `MODIFY` | 保留 `VT-COS` 首次品牌歸屬、課程首頁回到 root、Core `#core` 與動態目前課目；附圖文字不能寫死。 |
+| 左側完整 S1–S5 rail | `MODIFY` | 現行由狀態 badge、短講與「查看學習流程」對話框表達；五步不是可任意跳轉的路由。手機宜用 compact indicator。 |
+| 「今天到期 2」與「繼續學習」 | `MODIFY` | due／wrong 只在真實非零時顯示；無到期題時另可開始新間隔練習。沿用目前課程的繼續／返回行為。 |
+| 「單元一覽」「我的紀錄」「設定」 | `DEFER` | 目前沒有這三個獨立頁面；功能分別位於單元 selector＋19 課目錄、目前紀錄與證據、進階設定與資料。若另開頁面需另立需求與路由，不能留下空連結。 |
+| 題目、棋盤、作答、提示、回饋、下一題 | `KEEP` | 題目與棋盤由當前 item 產生；保留選項、數氣、連斷、落子、找點等作答方式，以及首答、重試、短講銜接與鍵盤操作。 |
+| 附圖 C4 藍點／落點框 | `REMOVE` | 若標示正確落點，S2 首答前會洩漏答案；只有 item 契約已核准的中性 focus marker 可呈現。附圖棋形不能成為 scoring 來源。 |
+| 右側「這一步要做什麼」「接下來」 | `MODIFY` | 沿用現有目前狀態摘要、作答後回饋與 next；S2 不預告正誤，非法操作仍留 S2，不能無條件宣稱進 S3。 |
+| S2／S3／S4 動態標籤 | `MODIFY` | 首答前提示、立即變形、到期原題重出、個人流程試行首次批次都是已確認的反例；Mockup v2 需分別呈現「提示後仍待首答」「立即換形練習」「隔時原題再判」「第一次流程試行」，不得一概寫成答後修正或隔時新棋形。 |
+| 「進階工具與資料」 | `KEEP` | 可收合為第二層，但必須保留下面列出的每一項操作與連結，不能只留說明文字。 |
+| 底部四個編號說明 | `ANNOTATION_ONLY` | 這是設計註解，不放入 learner-facing 頁面。 |
+
+### 不得遺漏的現有入口與目的地
+
+| 範圍 | 實際入口／連結 | 後續驗收 |
+|---|---|---|
+| 課程位置與返回 | 課程首頁 root、Core `#core`、skip link `#learning-main`、目前題目、單元 selector、上一／下一單元、19 課動態目錄、短講重看、學習流程對話框 | 桌機與手機都可到達；選單元只查看目錄，明確點課名才切換目前課程；跨課短講與焦點返回保留。 |
+| 今日任務與作答 | 到期複習、錯題重做、繼續課程、題幹／棋盤／答案選項、提示、分區回饋、下一題 | due／wrong 為 0 時隱藏相應入口；`count`／`connect`／`choice`／`move`／`spot` 各自仍可完成。 |
+| 本階段延伸 | `stage-board-practice-link` 依單元指向 `live-game.html?size=5/7/9`；第 4 單元且非 external mode 才顯示 `classic-shapes.html` | 保留盤面尺寸參數與條件顯示；名型館及自由棋盤不升格正式評量。 |
+| 工具第一層 | 間隔練習、局面應用、`live-game.html?size=9` 自由練習、`advanced.html` 進階訓練、示範 SGF、自有 9 路 SGF 匯入 | topbar 與 sidebar disclosure 仍可抵達工具；Advanced 的獨立匯出仍留在進階頁。 |
+| 工具第二層 | 七天流程試行、固定／候選自適應排程選項、Markdown 學習摘要、Core＋實戰 JSON 備份；SGF 復盤內另有原判斷、確認紀錄與可攜 SGF 匯出 | 保留遮蔽、資料用途、失敗提示及匯出範圍；簡化卡片不能移除功能。 |
+| 紀錄與診斷 | 課程完成量、目前紀錄與證據、實戰紀錄、可分析的 9×9 實戰機會、整合學習證據、錯誤修正 | 可維持收合；資料不足與讀取失敗不能顯示成能力結論。 |
+| 首頁延伸（本輪不改 Landing） | 三個 Core 起點與 15 單元目錄、`advanced.html`、`live-game.html`、`history.html`、`math.html`、`global-go-observatory.html`、FAQ／研究來源／GitHub current-truth 連結 | Core 版面變動不得改斷首頁；learner 頁不新增 reviewer-only R1a 入口。 |
+
+本機檢查 `index.html` 中 11 個非 HTTP、非 hash 的靜態 `href`，目標檔均存在；`app.js` 的 5／7／9 路動態連結仍須由後續瀏覽器回歸逐一檢查。路徑存在只證明本機檔案，不能替代點擊流程、外部網址可達性或真人理解。
+
+首頁同頁錨點還有 `#site-introduction`、`#site-introduction-assessment`、`#learning-entry`、`#all-courses`、`#faq`；研究 disclosure 內另有 12 個外部連結：日本棋院兩處、British Go Association、Roediger／Butler／Cepeda 三篇研究、Online Go Server、Go Magic、Brilliant，以及 GitHub 的完成矩陣／正式教學閘門／研究查核。它們不是 Core 首答操作，但後續改版不得因搬動 Landing 容器而失聯；本輪未對外部站點做 HTTP 可達性驗證。
+
+### 候選版面與實作邊界
+
+`NON_NORMATIVE_DESIGN_CANDIDATE`：桌機順序為位置／課程導航（含條件式今日入口）→題目→棋盤→作答→回饋→下一題；右側只在需要時顯示簡短「現在」與答後重算指引，工具與紀錄收合。手機 375／320px 與 200% reflow 改成 compact 位置與 S-state→題目→棋盤→作答→分區回饋→下一步；課程目錄、今日任務、紀錄與工具仍有明確開啟入口。S2 首答前不顯示正確落點；S3 才顯示結果與修正。現行 375px 截圖的首屏導覽高度使題目接近折線，是候選版面要降低的摩擦，但尚無真人完成率證據。
+
+S1 短講仍可重看；S2 保留未提示首答與曝光，首答前看提示應另顯示「提示後待作答」；S3 承接有效首答後的 correct／wrong／retry／eventual correction；S4 不得固定叫「隔時新棋形」：排程到期的同一題應叫「隔時原題再判」，實際有時間間隔且換了可比較局面才可叫「隔時換形再判」，立即變形與第一次流程試行另用較弱、準確的標籤；公開已曝光題也不變 formal unseen。S5 固定應用、自然實戰與 SGF 各保留獨立用途。非法落子、無到期／無錯題、儲存警告、資料 ERROR 與 masked evaluation 均沿用既有分區和資格，不能因版面乾淨而消失。
+
+### S1–S5 顯示契約候選（不是新的 KC／證據分類）
+
+| 狀態 | 用途與進入條件 | 可見／隱藏及可操作控制 | 主要動作、下一狀態與回饋權限 | 證據、焦點、朗讀與手機 |
+|---|---|---|---|---|
+| S1 看懂 | 新課短講與可手動重看的示範 | 只顯示教學棋盤、短講、關鍵詞及開始；未作答結果、正式資格隱藏 | 看完進 S2；示範不作題目評分 | `seenLessonIntros` 只抑制重開；dialog 標題取得焦點，關閉到題幹；手機示範單欄、步進控制可達。 |
+| S2 自己判斷 | 一張題目已呈現，尚無有效首答；提示前與提示後需分別顯示 | 題幹、棋盤、作答、可請求提示可見；正確點、takeaway、正誤與下一題禁用或隱藏；masked 題禁用提示 | 第一個有效答案才進 S3；非法手仍留 S2；提示由 item 的 hint 提供，不能代替答案 | 保留 exposure、first response、`unhinted` 與 qualified 差異；題幹先聚焦，棋盤單一 Tab 停駐點；輔助技術朗讀任務與提示；手機題目在棋盤前。 |
+| S3 修正重算 | 有效首答後的 correct／wrong；重試後仍屬此狀態 | 顯示 task contract 允許的結果及觀察線索；correct 隱藏 hint、啟用 next；wrong 保留 retry 與可用 hint | wrong 由規則／scoring 給具體結果，再試或看提示；correct 比較理由後進下一題；不推測心理根因 | first response 與 retry／eventual correction 分開；結果 `feedback` 朗讀，hint／illegal／storage 各用原區域；手機回饋緊接作答，next 隨後。 |
+| S4 隔時再判（視題型補充原題／換形） | 確有時間間隔的到期原題，或可比較的延後換形；立即變形及首次 pilot 不具此條件 | 顯示具體任務、原題或換形、已知的實際間隔；pilot 整批完成前仍遮蔽正誤，不能展示 formal unseen 標記 | 作答後按當前 scheduled 或 pilot policy 繼續；UI 不改排程或 eligibility | 保留 selection reason、presentedAt、首答及版本；題幹聚焦，masked 只朗讀「首答已記錄」；手機先交代任務再到棋盤。 |
+| S5 局面應用 | 明確啟動固定局面、自由對弈或 SGF 單點復盤 | 降低技能 cue，顯示各模式範圍；引擎估計與原棋譜著手不能預先當答案 | 固定應用依其題目契約回饋；實戰與 SGF 各維持自己的操作與說明 | practice／live／SGF stream 分開；焦點到題幹或各頁主標題；朗讀目前模式及限制；手機不把進階工具攤在作答前。 |
+
+### 例外與負面狀態矩陣候選
+
+| 狀態 | 顯示／隱藏、啟用／停用 | 主要／次要動作；權威與資料效果 | 焦點、朗讀與手機 |
+|---|---|---|---|
+| 未答、離題、中斷 | 保留任務；沒有正誤或虛構下一步成功 | 繼續或離開；呈現／中斷由現有 event policy 記錄，不刪分母 | 返回題幹；狀態可讀，手機不讓收合導覽遮題。 |
+| 正確 | 顯示結果與理由，啟用 next，隱藏 hint | 下一題為主動作；score 由題目契約決定，首答獨立 | `feedback` 宣讀，next 可見且可達。 |
+| 錯誤、重試、最終修正 | 顯示結果與可觀察線索，保留 retry 與必要時 hint；未完成前 next 停用 | 重試／看提示；重試不改寫第一次結果或 qualified opportunity | 結果與提示不同區域朗讀；手機保留原錯誤訊息。 |
+| 非法落子 | 只顯示獨立互動訊息，正誤與 takeaway 隱藏 | 回棋盤重新選點；合法性由 rules 決定，不建立答錯事件 | 棋盤焦點不失，`interaction-feedback` 宣讀。 |
+| 提示請求／已顯示 | 明確點擊才顯示 hint；顯示後按鈕停用，原 wrong 保留 | 再作答；提示事件獨立，首答若在提示後仍標 first response 但 `unhinted=false` | `hint-feedback` 宣讀，手機不覆蓋結果。 |
+| 無可用提示 | 若未來 item 缺 hint，顯示不可用或停用按鈕；目前 Core 題庫是否存在此分支待實測 | 不建立虛假的 hint event；不得從空字串推測線索 | 保留題幹／棋盤操作，宣讀不可用原因。 |
+| 流程試行遮蔽 | 先顯示用途說明，禁用 hint；整批結束前隱藏 correctness、takeaway 與結果棋盤差異 | 記首答後續批次；`Trial` 決定 masking，UI 不升 formal eligibility | 只朗讀「首答已記錄」，手機同等遮蔽。 |
+| 到期複習／錯題重做 | 真實非零才顯示入口；兩者都可能是同一原題，但前者有到期間隔、後者是修正練習 | 依現有 scheduler／missed queue 選題；不以按鈕名稱改 evidence role | 進題後題幹聚焦；手機入口可由明確導覽開啟。 |
+| 無到期／無錯題 | 對應入口隱藏；間隔練習仍可選新 practice 題 | 保持目前課程或開新練習；不製造零件數任務 | 不建立空按鈕；手機不占首屏。 |
+| 儲存警告／資料 ERROR | `system-status` 或相應資料區顯示失敗；已產生的 answer feedback 保留 | 匯出可用資料或重試；storage／parser failure 不回報保存成功 | `role=alert` 或既有狀態區朗讀；手機仍能看到警告。 |
+| 載入中／不可用 | Core 本機靜態啟動無獨立 loading 畫面；若資產／外部工具不可用，停用受影響動作並顯示原因 | 不把 provider／資料讀取失敗降成成功；不影響未受阻的 No-AI Core | 焦點留在可用控制或錯誤標題，手機不得只剩空白區塊。 |
+
+上述是候選顯示契約；表中「無可用提示」及「載入中」未由本輪證實為既有可觸發 Core 狀態，標為 `UNKNOWN`，不能宣稱已有相應 UI。S3／S4 的四類已知錯標則是 `FAIL`，需要在實作時修正並加反證測試。
+
+後續實作優先沿用 `index.html` DOM／ID、`styles.css` reflow、`app.js` handler、board renderer、feedback regions、course navigation、scheduler 與 storage。實作前記錄受影響 ID／`href`／handler 對照；完成後逐項驗上表、鍵盤、320／375px、200% reflow、首答遮蔽、no-due／no-wrong、hint／wrong／illegal／storage 分區，並加入首答前提示、立即變形、到期原題與首次流程試行的 S-state 反證。`index.html`、`styles.css`、`app.js` 是 formal candidate critical assets；實際改動時須由 `formal-teaching-candidate.cjs` 重算指紋、更新 candidate／gate／current-truth／served-content，舊真人證據不得沿用。若入口失聯或證據狀態誤報，回復該版面差異及 candidate 引用，保留歷史事件。本節稽核不改 critical assets、不重凍 candidate。
+
+驗證：`app-state.test.cjs` 38／38 PASS、`release-manifest.test.cjs` 36／36 PASS、Edge `ui.test.cjs` PASS、靜態本機目標存在 PASS。真人可用性／真人無障礙 `NOT_TESTED`，正式教學／正式評量 `BLOCKED`，學習效果 `NOT_MEASURED`。
+
+## 2026-10-01｜S1–S5 Learning Workspace gap audit（latest main `ed4066f`）
+
+基準：遠端 `main`、本機 `HEAD` 與 `origin/main` 均為 `ed4066f`；handoff 的 `884b70b`／`learner-flow-v55` snapshot 已過期。稽核使用目前 `learner-flow-v59`、Edge file-URL runtime、1440×960、375×812、320 CSS px 與 200% text。工作樹另有尚未提交的 Hero 背景淡出 v59.2，只改 Landing decorative presentation，不改下列 Core 判定。
+
+### Desktop
+
+| 檢查 | 判定 | 實際依據與處理 |
+|---|---|---|
+| Landing → Core workspace | `KEEP` | Core CTA 進入 `#core` 並先開 S1 短講；Landing 與 workspace 仍分離。 |
+| 目前課程與瀏覽單元 | `KEEP` | sidebar 保存目前課程；unit selector 只篩目錄，只有明確點 lesson 才切換內容。 |
+| topbar／sidebar 位置資訊 | `UNKNOWN_REQUIRES_HUMAN` | sidebar、section header 各自提供持續位置與目前題目；尚無真人證據證明重複造成找題成本，不先刪除。 |
+| 真正問題的層級 | `KEEP` | 題型／topic 降為 context；「問題」與實際 question 是題卡最高層級，且進題後 focus 到 question。 |
+| Board 操作空間 | `KEEP` | 1440px 下棋盤是主要視覺物件，沒有被 evidence／tools 壓縮；工具與診斷預設收合。 |
+| Response 與題目／棋盤關係 | `KEEP` | desktop 以 board 左、question＋answer 右呈現；回饋與下一步留在同一 answer card。 |
+| 首答前 answer／takeaway leakage | `KEEP` | takeaway 在有效作答前 hidden；hint 需明確點擊；evaluation 禁用 hint 並遮蔽結果。 |
+| Wrong／Hint／Illegal／Storage | `KEEP` | answer result、hint、interaction、system status 使用不同 live region；hint 不覆寫 wrong，非法操作不冒充內容錯答。 |
+| Correct 後 CTA competition | `KEEP` | correct 後 hint 隱藏，主要下一步只留「下一題」。 |
+| Advanced／evidence disclosure | `KEEP` | 第一層只有「目前紀錄與證據」摘要；診斷、課程層次與工具按需展開。 |
+| due／wrong entry | `KEEP` | 只有非零時才顯示；due=0 不製造今日任務。 |
+
+### Mobile / reflow
+
+| 檢查 | 判定 | 實際依據與處理 |
+|---|---|---|
+| 375×812 主流程順序 | `KEEP` | CSS 與 runtime 都是目前位置 → question → board → answer／feedback → next；不是 desktop 欄位直接 stack。 |
+| 320 CSS px / 200% text | `KEEP` | Edge regression 無 page／dialog horizontal overflow；Short Talk CTA 可到達。 |
+| 棋盤操作空間 | `KEEP` | ≤760px card padding 收斂，board 保留方向鍵等效操作；roving tabindex 只有一個 Tab stop。 |
+| focus 可見且不被遮住 | `KEEP` | mobile sidebar 改為非 sticky；開始、換題、due review 都把 focus 帶到 question，現有檢查未見 author-created overlay 完全遮蔽。 |
+| 常用控制 target | `KEEP` | 主要按鈕、選項與課程控制維持約 44px；棋盤交叉點保留 keyboard equivalent。 |
+| 工具展開位置 | `KEEP` | 工具從 topbar 明確開啟，啟動任務後自動關閉，沒有把 tools 留在主作答上方。 |
+| 重複位置資訊負擔 | `UNKNOWN_REQUIRES_HUMAN` | mobile 首屏同時含 sidebar current lesson 與內容 header；目前沒有目標初學者資料可判定應刪哪一層。 |
+
+### S1–S5 與動態狀態
+
+| 狀態／契約 | 判定 | 實際依據與處理 |
+|---|---|---|
+| S1 看懂 | `KEEP` | 每課短講、board demo、最短 check 與術語 disclosure 已存在；看過不寫成 mastery。 |
+| S2 自己判斷 | `KEEP` | question → board → response；首答前不顯示 answer／takeaway；first response 與 retry 分開。 |
+| S3 修正重算 | `KEEP` | correct／wrong 後都進理由比較或重算；retry 不覆寫 first response。 |
+| S4 隔時新棋形 | `REFINE` | 實際 label 仍寫「延後新題／隔日換形再測」，但 scheduler 有多個間隔；公開／已曝光流程另使用「未見」字樣。改為不承諾固定隔日、也不暗示 formal unseen 的自然語言。 |
+| S5 局面應用 | `KEEP` | fixed application 與 SGF reconstruction 分開說明，不更新 mastery／scheduler／formal evaluation。 |
+| fresh / returning / no due / due / wrong review | `KEEP` | runtime 與 regression 已分開處理，沒有 due=0 假任務，原題重做不冒充延後新棋形。 |
+| wrong / correct / illegal / hint / storage warning | `KEEP` | 各自 region 與事件語義分離；storage failure 不偽裝保存成功。 |
+| evaluation masking | `KEEP` | 提示禁用，整批完成前只顯示首答已記錄，不揭露正誤。 |
+| malformed / UNKNOWN / ERROR | `KEEP` | storage、event、analysis 等失敗維持可辨識失敗，沒有 fallback 成成功。 |
+
+### 本輪最小實作決定
+
+只處理 S4 的已確認語義落差：把「隔日」改為不綁死間隔的「隔時／到期時」，把 learner-facing「未見」改為「不同／尚未練過／這批延後棋形」。內部 selection reason、scoring、scheduler、item、KC、event、storage、evidence taxonomy 與 formal evaluation 均不變。由於 `index.html`／`app.js` 屬 frozen critical learner surface，完成後必須 refreeze candidate，舊真人證據不得沿用。
 
 審核日期：2026-09-20  
 範圍：`index.html`、`styles.css`、`app.js` 的學習頁，以及 `r1-review.html` 的獨立審題頁。  

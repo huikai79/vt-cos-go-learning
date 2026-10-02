@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>悟之一手｜Learning Workspace v63 Design Candidate</title>
+  <link rel="stylesheet" href="wireframes.css">
+</head>
+<body>
+  <a class="skip-link" href="#review-stage">跳到設計候選</a>
+  <header class="review-header">
+    <div>
+      <p class="eyebrow">NON_NORMATIVE_DESIGN_CANDIDATE · v63</p>
+      <h1>Learning Workspace 設計審查</h1>
+      <p>6 張 Wireframe＋Award Intent／High‑Fi＋Motion Prototype。這不是 production learner UI。</p>
+    </div>
+    <a href="README.md">查看規則、流程與驗收契約</a>
+  </header>
+
+  <nav class="review-tabs" aria-label="Wireframe 選擇">
+    <button type="button" aria-selected="true" data-view="w1">W1 桌機 S2</button>
+    <button type="button" aria-selected="false" data-view="w2">W2 桌機 S3</button>
+    <button type="button" aria-selected="false" data-view="w3">W3 文字選擇</button>
+    <button type="button" aria-selected="false" data-view="w4">W4 Review／Masked</button>
+    <button type="button" aria-selected="false" data-view="w5">W5 手機 S2</button>
+    <button type="button" aria-selected="false" data-view="w6">W6 手機 S3</button>
+  </nav>
+
+  <main id="review-stage">
+    <section class="review-view active" id="w1" aria-labelledby="w1-title">
+      <div class="prototype desktop-prototype" data-prototype-state="s2">
+        <header class="product-bar">
+          <a class="brand" href="#" aria-label="悟之一手設計候選首頁"><span class="brand-mark" aria-hidden="true">●○</span><span><strong>悟之一手</strong><small>圍棋學習平台</small></span></a>
+          <nav aria-label="候選頁面導覽"><button type="button">課程與單元</button><button type="button">今日到期 <b>2</b></button><button type="button">工具與資料</button></nav>
+        </header>
+        <div class="task-shell">
+          <div class="task-context">
+            <p>核心課程 <span>·</span> 第 4 單元 <span>·</span> 眼與基礎死活</p>
+            <div><span class="state-chip">S2 自己判斷</span><span>本課第 1 / 5 題</span></div>
+          </div>
+          <section class="question-block">
+            <p class="task-kind">死活基礎</p>
+            <h2 id="w1-title">這一手，哪裡能做出第二個眼？</h2>
+            <p>黑棋要在這個局面中做出兩個眼，請選擇你認為最合適的一手。</p>
+          </section>
+          <div class="task-grid">
+            <div class="board-panel">
+              <div class="board-meta"><span>9 × 9 練習棋盤</span><span>● 黑棋</span></div>
+              <svg class="go-board" viewBox="0 0 500 500" role="img" aria-label="9 路圍棋題目棋盤；黑棋作答">
+                <defs><pattern id="grid-w1" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="#55472d" stroke-width="1.4"/></pattern><radialGradient id="black-w1" cx="35%" cy="28%"><stop offset="0" stop-color="#435047"/><stop offset=".48" stop-color="#17221d"/><stop offset="1" stop-color="#07100c"/></radialGradient><radialGradient id="white-w1" cx="35%" cy="28%"><stop offset="0" stop-color="#fff"/><stop offset=".72" stop-color="#f3f0e8"/><stop offset="1" stop-color="#c9c8bf"/></radialGradient></defs>
+                <rect x="0" y="0" width="500" height="500" rx="12" fill="#d7a957"/><rect x="50" y="50" width="400" height="400" fill="url(#grid-w1)" stroke="#55472d" stroke-width="1.5"/>
+                <g fill="#55472d"><circle cx="150" cy="150" r="4"/><circle cx="350" cy="150" r="4"/><circle cx="150" cy="350" r="4"/><circle cx="350" cy="350" r="4"/></g>
+                <g fill="url(#black-w1)"><circle cx="100" cy="150" r="22"/><circle cx="100" cy="200" r="22"/><circle cx="100" cy="250" r="22"/><circle cx="100" cy="300" r="22"/><circle cx="100" cy="350" r="22"/><circle cx="250" cy="250" r="22"/><circle cx="250" cy="300" r="22"/></g>
+                <g fill="url(#white-w1)" stroke="#aaa" stroke-width="1"><circle cx="150" cy="150" r="22"/><circle cx="200" cy="150" r="22"/><circle cx="300" cy="200" r="22"/><circle cx="300" cy="250" r="22"/><circle cx="150" cy="350" r="22"/><circle cx="200" cy="350" r="22"/><circle cx="250" cy="350" r="22"/><circle cx="300" cy="350" r="22"/><circle cx="350" cy="300" r="22"/></g>
+                <circle class="cursor-point" tabindex="0" cx="200" cy="300" r="17" fill="transparent" aria-label="目前選擇交叉點 C4"/>
+              </svg>
+              <p class="board-help">方向鍵移動焦點，Enter／空白鍵落子；也可以直接點選棋盤。</p>
+            </div>
+            <section class="response-panel" aria-label="作答區">
+              <div class="response-copy"><span class="step-number">現在</span><div><h3>先自己判斷，再落下一手。</h3><p>答案與結果會在第一次有效作答後出現。</p></div></div>
+              <div class="quiet-space" aria-hidden="true"><span>觀察形狀</span><span>找出兩個獨立的眼位</span><span>確認對方不能同時破壞</span></div>
+              <div class="feedback-slot" aria-live="polite"></div>
+              <div class="task-actions"><button class="secondary" type="button">需要提示</button><button class="primary" type="button" disabled>下一題 <span>→</span></button></div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <aside class="award-card"><h2>W1 Award Intent</h2><dl><dt>Memorable Moment</dt><dd>棋盤成為安靜、無答案暗示的注意力場。</dd><dt>Emotional Intent</dt><dd>沉著專注。</dd><dt>Interaction Signature</dt><dd>焦點環像一次精準呼吸，落在單一交叉點。</dd><dt>Visual Opportunity</dt><dd>溫潤木質、象牙白與墨綠形成品牌材質感。</dd><dt>Restraint</dt><dd>不放裝飾插圖、統計 dashboard 或永久工具卡。</dd><dt>Non-negotiables</dt><dd>首答保存、首答前不洩漏、鍵盤可完成、既有工具可達。</dd><dt>Award Risk</dt><dd>留白過多可能像未完成；靠比例與排版解決，不增加卡片。</dd></dl></aside>
+    </section>
+
+    <section class="review-view" id="w2" aria-labelledby="w2-title" hidden>
+      <div class="prototype desktop-prototype result-state">
+        <header class="product-bar"><a class="brand" href="#"><span class="brand-mark">●○</span><span><strong>悟之一手</strong><small>圍棋學習平台</small></span></a><nav><button type="button">課程與單元</button><button type="button">今日到期 <b>2</b></button><button type="button">工具與資料</button></nav></header>
+        <div class="task-shell">
+          <div class="task-context"><p>核心課程 <span>·</span> 第 4 單元 <span>·</span> 眼與基礎死活</p><div><span class="state-chip result">S3 修正重算</span><span>本課第 1 / 5 題</span></div></div>
+          <section class="question-block"><p class="task-kind">死活基礎</p><h2 id="w2-title">這一手，哪裡能做出第二個眼？</h2><p>保留原本的判斷，對照棋盤結果重新計算。</p></section>
+          <div class="task-grid">
+            <div class="board-panel">
+              <div class="board-meta"><span>9 × 9 練習棋盤</span><span>原選點已保留</span></div>
+              <svg class="go-board" viewBox="0 0 500 500" role="img" aria-label="作答後棋盤；原選點以金色外環保留">
+                <defs><pattern id="grid-w2" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="#55472d" stroke-width="1.4"/></pattern><radialGradient id="black-w2" cx="35%" cy="28%"><stop offset="0" stop-color="#435047"/><stop offset=".48" stop-color="#17221d"/><stop offset="1" stop-color="#07100c"/></radialGradient><radialGradient id="white-w2" cx="35%" cy="28%"><stop offset="0" stop-color="#fff"/><stop offset=".72" stop-color="#f3f0e8"/><stop offset="1" stop-color="#c9c8bf"/></radialGradient></defs>
+                <rect width="500" height="500" rx="12" fill="#d7a957"/><rect x="50" y="50" width="400" height="400" fill="url(#grid-w2)" stroke="#55472d" stroke-width="1.5"/><g fill="#55472d"><circle cx="150" cy="150" r="4"/><circle cx="350" cy="150" r="4"/><circle cx="150" cy="350" r="4"/><circle cx="350" cy="350" r="4"/></g>
+                <g fill="url(#black-w2)"><circle cx="100" cy="150" r="22"/><circle cx="100" cy="200" r="22"/><circle cx="100" cy="250" r="22"/><circle cx="100" cy="300" r="22"/><circle cx="100" cy="350" r="22"/><circle cx="250" cy="250" r="22"/><circle cx="250" cy="300" r="22"/><circle cx="200" cy="300" r="22"/></g><g fill="url(#white-w2)" stroke="#aaa"><circle cx="150" cy="150" r="22"/><circle cx="200" cy="150" r="22"/><circle cx="300" cy="200" r="22"/><circle cx="300" cy="250" r="22"/><circle cx="150" cy="350" r="22"/><circle cx="200" cy="350" r="22"/><circle cx="250" cy="350" r="22"/><circle cx="300" cy="350" r="22"/><circle cx="350" cy="300" r="22"/></g><circle cx="200" cy="300" r="28" fill="none" stroke="#e4ac4d" stroke-width="6"/>
+              </svg>
+              <p class="board-help">你的第一手保留在棋盤上；重試不會改寫第一次作答。</p>
+            </div>
+            <section class="response-panel feedback-open" aria-label="結果與重算區">
+              <div class="result-banner wrong" role="status"><span>×</span><div><strong>這一手還不能形成兩個獨立的眼。</strong><p>右側空間仍可被白棋由同一處破壞。先沿著黑棋內部空點重新計算。</p></div></div>
+              <div class="reconstruction"><p class="mini-label">重新計算</p><h3>哪一個空點能把內部空間真正分開？</h3><ol><li>找出目前已成立的一眼。</li><li>檢查另一個空間是否有獨立邊界。</li><li>再選一個交叉點重試。</li></ol></div>
+              <div class="task-actions"><button class="secondary" type="button">需要提示</button><button class="primary" type="button">回棋盤重試</button></div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <aside class="award-card"><h2>W2 Award Intent</h2><dl><dt>Memorable Moment</dt><dd>學習者的一手轉成可觀察的後果，而不是一則泛用 toast。</dd><dt>Emotional Intent</dt><dd>坦率，但可恢復。</dd><dt>Interaction Signature</dt><dd>回饋在右欄展開，棋盤位置完全不跳動。</dd><dt>Visual Opportunity</dt><dd>原選點的金色外環把棋盤、結果與文字連成一條因果線。</dd><dt>Restraint</dt><dd>沒有全屏紅色、沒有虛構心理歸因、沒有搶焦點動畫。</dd><dt>Non-negotiables</dt><dd>first response、retry、hint、illegal、storage 分離。</dd><dt>Award Risk</dt><dd>過度戲劇化會拖慢練習；動畫需短且支援 reduced motion。</dd></dl></aside>
+    </section>
+
+    <section class="review-view" id="w3" aria-labelledby="w3-title" hidden>
+      <div class="prototype desktop-prototype text-task">
+        <header class="product-bar"><a class="brand" href="#"><span class="brand-mark">●○</span><span><strong>悟之一手</strong><small>圍棋學習平台</small></span></a><nav><button type="button">課程與單元</button><button type="button">今日到期 <b>2</b></button><button type="button">工具與資料</button></nav></header>
+        <div class="task-shell narrow-reading">
+          <div class="task-context"><p>核心課程 <span>·</span> 第 15 單元 <span>·</span> 從一局找到下一個課題</p><div><span class="state-chip">S2 自己判斷</span><span>本課第 4 / 6 題</span></div></div>
+          <section class="editorial-task">
+            <p class="task-kind">複盤方法 · 一次一個課題</p>
+            <h2 id="w3-title">一局複盤發現很多問題，下一局最有效的練習安排是？</h2>
+            <p class="prompt-note">先判斷哪一個安排最能形成可觀察、可重做的下一步。</p>
+            <fieldset class="choice-grid"><legend>選擇一個答案</legend><label><input type="radio" name="w3"><span><b>選一個可觀察的課題帶進下一局</b><small>把下一局當作一次聚焦的練習機會。</small></span></label><label><input type="radio" name="w3"><span><b>同時改完所有問題</b><small>把全部發現一次放進下一局。</small></span></label><label><input type="radio" name="w3"><span><b>不再下棋</b><small>先停止新的實際練習。</small></span></label></fieldset>
+            <div class="task-actions"><button class="secondary" type="button">給我一點提示</button><button class="primary" type="button" disabled>下一題 <span>→</span></button></div>
+          </section>
+        </div>
+      </div>
+      <aside class="award-card"><h2>W3 Award Intent</h2><dl><dt>Memorable Moment</dt><dd>題目像一頁精心編輯的練習，而不是資料庫表單。</dd><dt>Emotional Intent</dt><dd>清楚、有自主感。</dd><dt>Interaction Signature</dt><dd>選項形成一個連貫的推理群組。</dd><dt>Visual Opportunity</dt><dd>用字級、行長與細線建立節奏；S2 不塞配圖。</dd><dt>Restraint</dt><dd>不放裝飾圖；若圖會暗示答案，只能在 S3 解說出現。</dd><dt>Non-negotiables</dt><dd>沒有右下方孤立的「進階工具」長方格，工具仍在全域入口。</dd><dt>Award Risk</dt><dd>按鈕造型過重會掩蓋 radio 語義與焦點。</dd></dl></aside>
+    </section>
+
+    <section class="review-view" id="w4" aria-labelledby="w4-title" hidden>
+      <div class="prototype desktop-prototype review-task">
+        <header class="product-bar"><a class="brand" href="#"><span class="brand-mark">●○</span><span><strong>悟之一手</strong><small>圍棋學習平台</small></span></a><nav><button type="button">課程與單元</button><button class="active-review" type="button">今日到期 <b>2</b></button><button type="button">工具與資料</button></nav></header>
+        <div class="task-shell">
+          <div class="source-ribbon"><span>流程試行 · 結果遮蔽中</span><p>這是已看過題目的無提示流程檢查；不作正式未見評量。</p></div>
+          <div class="task-context"><p>核心課程 <span>·</span> 到期複習 <span>·</span> 原題再判</p><div><span class="state-chip masked">S4 隔時再判</span><span>第 1 / 4 題</span></div></div>
+          <section class="editorial-task compact-review">
+            <p class="task-kind">判斷題</p><h2 id="w4-title">這串棋現在是否還有兩口氣？</h2><p class="prompt-note">請依目前局面作答。整批完成前不顯示正誤與解答。</p>
+            <div class="binary-actions"><button type="button">是，仍有兩口氣</button><button type="button">否，不足兩口氣</button></div>
+            <div class="masked-receipt" role="status"><span>✓</span><div><b>第一次作答已記錄</b><p>正確結果會依這次流程的遮蔽規則，在整批結束後才顯示。</p></div></div>
+            <div class="system-warning" role="alert"><span>!</span><div><b>示範：本機儲存暫時不可用</b><p>作答結果與系統狀態分開顯示；這則警告不代表答案正確或錯誤。</p></div></div>
+            <div class="task-actions end-only"><button class="primary" type="button">繼續下一題 <span>→</span></button></div>
+          </section>
+        </div>
+      </div>
+      <aside class="award-card"><h2>W4 Award Intent</h2><dl><dt>Memorable Moment</dt><dd>即使不能或不該揭露答案，介面仍值得信任。</dd><dt>Emotional Intent</dt><dd>在不確定中仍有掌握。</dd><dt>Interaction Signature</dt><dd>先用結構與文字表達狀態，顏色只是輔助。</dd><dt>Visual Opportunity</dt><dd>一條克制的來源帶說清楚任務從哪裡來。</dd><dt>Restraint</dt><dd>沒有假成功、空 review queue 或 masked 正誤暗示。</dd><dt>Non-negotiables</dt><dd>公開／已曝光不稱 unseen；system warning 不覆蓋 answer feedback。</dd><dt>Award Risk</dt><dd>中性色若對比不足仍會誤導，需要實機及輔助科技驗證。</dd></dl></aside>
+    </section>
+
+    <section class="review-view mobile-review" id="w5" aria-labelledby="w5-title" hidden>
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <header class="mobile-product-bar"><button type="button" aria-label="返回">←</button><strong>悟之一手</strong><button type="button">工具</button></header>
+          <main class="mobile-task">
+            <div class="mobile-context"><span class="state-chip">S2 自己判斷</span><span>1 / 5</span></div>
+            <p class="task-kind">死活基礎</p><h2 id="w5-title">哪裡能做出第二個眼？</h2><p>黑棋先走，請選擇最合適的一手。</p>
+            <svg class="go-board mobile-board" viewBox="0 0 500 500" role="img" aria-label="手機版 9 路圍棋題目棋盤"><defs><pattern id="grid-w5" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="#55472d" stroke-width="1.4"/></pattern></defs><rect width="500" height="500" rx="10" fill="#d7a957"/><rect x="50" y="50" width="400" height="400" fill="url(#grid-w5)" stroke="#55472d"/><g fill="#142019"><circle cx="100" cy="150" r="22"/><circle cx="100" cy="200" r="22"/><circle cx="100" cy="250" r="22"/><circle cx="100" cy="300" r="22"/><circle cx="100" cy="350" r="22"/><circle cx="250" cy="250" r="22"/><circle cx="250" cy="300" r="22"/></g><g fill="#f5f2e9" stroke="#999"><circle cx="150" cy="150" r="22"/><circle cx="200" cy="150" r="22"/><circle cx="300" cy="200" r="22"/><circle cx="300" cy="250" r="22"/><circle cx="150" cy="350" r="22"/><circle cx="200" cy="350" r="22"/><circle cx="250" cy="350" r="22"/><circle cx="300" cy="350" r="22"/></g><circle class="cursor-point" tabindex="0" cx="200" cy="300" r="18" fill="transparent"/></svg>
+            <p class="mobile-instruction">點選棋盤落子；答案會在第一次有效作答後出現。</p>
+            <div class="task-actions"><button class="secondary" type="button">需要提示</button><button class="primary" type="button" disabled>下一題</button></div>
+          </main>
+        </div>
+      </div>
+      <aside class="award-card"><h2>W5 Award Intent</h2><dl><dt>Memorable Moment</dt><dd>從讀題到落子是一段不失去上下文的單手節奏。</dd><dt>Emotional Intent</dt><dd>平靜推進。</dd><dt>Interaction Signature</dt><dd>compact context 取代永久大型 sidebar。</dd><dt>Visual Opportunity</dt><dd>棋盤接近滿寬，但保留安全觸控邊界。</dd><dt>Restraint</dt><dd>第一屏不展示工具內容，不用橫向 carousel。</dd><dt>Non-negotiables</dt><dd>320／375px、200% reflow、鍵盤與 switch 可完成。</dd><dt>Award Risk</dt><dd>棋盤過大仍會把回應推走，需依 viewport height 限制。</dd></dl></aside>
+    </section>
+
+    <section class="review-view mobile-review" id="w6" aria-labelledby="w6-title" hidden>
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <header class="mobile-product-bar"><button type="button" aria-label="返回">←</button><strong>悟之一手</strong><button type="button">工具</button></header>
+          <main class="mobile-task mobile-result">
+            <div class="mobile-context"><span class="state-chip result">S3 修正重算</span><span>1 / 5</span></div>
+            <p class="task-kind">死活基礎</p><h2 id="w6-title">哪裡能做出第二個眼？</h2>
+            <svg class="go-board mobile-board compact-board" viewBox="0 0 500 500" role="img" aria-label="作答後手機棋盤，保留原落點"><defs><pattern id="grid-w6" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="#55472d" stroke-width="1.4"/></pattern></defs><rect width="500" height="500" rx="10" fill="#d7a957"/><rect x="50" y="50" width="400" height="400" fill="url(#grid-w6)" stroke="#55472d"/><g fill="#142019"><circle cx="100" cy="150" r="22"/><circle cx="100" cy="200" r="22"/><circle cx="100" cy="250" r="22"/><circle cx="100" cy="300" r="22"/><circle cx="100" cy="350" r="22"/><circle cx="250" cy="250" r="22"/><circle cx="250" cy="300" r="22"/><circle cx="200" cy="300" r="22"/></g><g fill="#f5f2e9" stroke="#999"><circle cx="150" cy="150" r="22"/><circle cx="200" cy="150" r="22"/><circle cx="300" cy="200" r="22"/><circle cx="300" cy="250" r="22"/><circle cx="150" cy="350" r="22"/><circle cx="200" cy="350" r="22"/><circle cx="250" cy="350" r="22"/><circle cx="300" cy="350" r="22"/></g><circle cx="200" cy="300" r="29" fill="none" stroke="#e4ac4d" stroke-width="7"/></svg>
+            <div class="result-banner wrong" role="status"><span>×</span><div><strong>還不能形成兩個獨立的眼。</strong><p>原選點保留在棋盤上。沿內部空點重新計算。</p></div></div>
+            <div class="task-actions"><button class="secondary" type="button">需要提示</button><button class="primary" type="button">回棋盤重試</button></div>
+          </main>
+        </div>
+      </div>
+      <aside class="award-card"><h2>W6 Award Intent</h2><dl><dt>Memorable Moment</dt><dd>回饋出現時，學習者仍看得到自己的棋與原題。</dd><dt>Emotional Intent</dt><dd>辨認，而非獎懲。</dd><dt>Interaction Signature</dt><dd>結果緊接棋盤展開，不把使用者彈到另一張卡。</dd><dt>Visual Opportunity</dt><dd>金色原選點持續錨定解說。</dd><dt>Restraint</dt><dd>不自動跳過棋盤、不隱藏原回應。</dd><dt>Non-negotiables</dt><dd>live regions 分離、首答保留、reduced motion、next/retry 清楚。</dd><dt>Award Risk</dt><dd>自動捲動會讓輔助科技迷失；prototype 不強制移動焦點。</dd></dl></aside>
+    </section>
+  </main>
+
+  <footer class="review-footer"><p>Prototype data is illustrative only. No scoring, scheduler, storage, or learner evidence is written.</p><button id="motion-demo" type="button">播放 S2 → S3 動態示意</button></footer>
+  <script src="wireframes.js"></script>
+</body>
+</html>

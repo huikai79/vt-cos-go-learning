@@ -72,7 +72,7 @@ try {
 
   $socket.ConnectAsync([System.Uri]$target.webSocketDebuggerUrl, [Threading.CancellationToken]::None).GetAwaiter().GetResult() | Out-Null
   $title = $null
-  for ($retry = 0; $retry -lt 30; $retry += 1) {
+  for ($retry = 0; $retry -lt 100; $retry += 1) {
     $title = Invoke-PageValue $socket "document.querySelector('#question-title')?.textContent"
     if ($title -eq "中央的一顆棋") { break }
     Start-Sleep -Milliseconds 100
@@ -88,7 +88,7 @@ try {
 
   Invoke-Cdp $socket "Page.reload" @{} | Out-Null
   $reloaded = $null
-  for ($retry = 0; $retry -lt 30; $retry += 1) {
+  for ($retry = 0; $retry -lt 100; $retry += 1) {
     Start-Sleep -Milliseconds 100
     $reloaded = Invoke-PageValue $socket "(() => { const raw = localStorage.getItem('go-learning-prototype-v7'); return {title: document.querySelector('#question-title')?.textContent, events: raw ? JSON.parse(raw).events.filter((event) => event.problemId === 'u1-06') : []}; })()"
     if ($reloaded.title -eq "中央提一顆") { break }

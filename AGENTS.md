@@ -27,6 +27,14 @@ For curriculum/content changes also read `CURRICULUM.md` and `R1_CONTENT_AUDIT.m
 
 For publication/release changes also read `PUBLICATION_ARCHITECTURE.md`, `RELEASE_CHECKLIST.md`, and `release-manifest.json`.
 
+For learner-facing UI, copy, or accessibility changes also read `UI_UX_AUDIT.md` and `BRAND.md`.
+
+## Evidence claim discipline
+
+- Keep claims on this ladder: engineering behavior -> content/Go validity -> human usability -> formal evaluation validity -> learning effect -> generalization. Evidence from one layer does not automatically support a higher layer.
+- Keep Research/Content Evidence separate from Learner Evidence. Research may change a versioned teaching asset, KC, or item candidate through the existing promotion path; it must not directly change learner state, scoring, scheduling, or formal eligibility.
+- Browser and automated accessibility checks are engineering evidence. They do not by themselves establish human usability, accessibility conformance, formal evaluation validity, or learning effect.
+
 ## Hard invariants
 
 - Preserve first response separately from eventual correction.

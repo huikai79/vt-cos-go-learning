@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-01-f",
-  "frozenAt": "2026-10-01T04:49:00.000Z",
+  "candidateId": "formal-teaching-candidate-2026-10-02-e",
+  "frozenAt": "2026-10-02T00:00:00.000Z",
   "assetSetVersion": 10,
-  "assetFingerprint": "fnv1a32-js16-4bc20e83",
+  "assetFingerprint": "fnv1a32-js16-a369954a",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -43,5 +43,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-flow-v59／content catalog 5。保留既有Mockup的Header、Hero、三入口、四步方法與final CTA；修正首頁資訊取捨與導覽用途。學習路線保留三起點；全站課程為獨立、預設收合的Core 15單元／19課目錄（標題及課數來自GoContent），另有Advanced與自由對弈入口。展開／收合目錄不建立學習曝光或變更進度；明確選單元才沿用既有入口行為。理念卡恢復歷史／數學／全球觀察三連結，能力卡恢復三項範圍與級位不能換算提醒；兩卡精簡說明、自然增高並改用新生成透明装飾山水／石堆圖。手機閱讀連結2＋1排列，保留主次。研究來源移成FAQ後的獨立收合區。新事件標記目前UI version，歷史版本／首答／重試不覆寫；item、答案、KC、scoring、scheduler、event schema與正式資格均不變。工程與截圖檢查不產生真人usability/accessibility或學習成效證據。"
+  "scopeNote": "learner-workspace-v67／content catalog 5（承接 v66）。以學習流程而非裝飾一致性統一色彩職責：暖中性主畫布承接白色 Question 與淡綠 Response；暖金只表示目前階段與鍵盤焦點，綠色只表示完成／正確／可前進，橙色只表示錯誤／重算。焦點金色與作答控制邊界提升到至少 3:1；S rail 目前與完成狀態不再共用綠色。保留既有首頁、sidebar 寬度、Question 內容、棋盤、選項、feedback、Next lifecycle、全部功能與連結；首答、重試、提示、曝光、遮蔽、scoring、scheduler、KC、event schema 與 formal eligibility 均不變。新事件標記目前 UI version，歷史事件不改寫；舊 candidate 人工回條不可沿用。工程與截圖檢查不產生真人 usability／accessibility 或學習成效證據。"
 }

@@ -1,3 +1,15 @@
+2026-10-02 Learning Workspace v67：以學習效率的可操作代理指標（辨識目前任務、作答控制、結果與下一步）重新檢討色調，不把視覺一致性升格為學習成效。暖金固定為目前／焦點，綠固定為完成／正確／前進，橙固定為錯誤／重算，暖中性畫布承接白色 Question 與淡綠 Response；S1–S5、Phase 1–5、scoring、first response、retry、scheduler 與 evidence semantics 不變。UI version `learner-workspace-v67`；candidate `formal-teaching-candidate-2026-10-02-e`／`fnv1a32-js16-a369954a`；真人 usability／accessibility `NOT_TESTED`，learning effect `NOT_MEASURED`。
+
+2026-10-02 Learning Workspace v66：Phase 1–5 與 S1–S5 語義不變；桌面 Question 上方恢復公開舊版垂直節奏，首答前 Next action 隱藏，完成有效作答後才在 feedback 左基準出現。sidebar、Question 題卡內容、scoring、first response、retry、evaluation masking 與工具功能均不變。UI version `learner-workspace-v66`；candidate `formal-teaching-candidate-2026-10-02-d`／`fnv1a32-js16-3db9e78a`；不產生 mastery、retention、transfer 或 learning-effect evidence。
+
+2026-10-01 Learning Workspace v62：Phase 1–5 與 S1–S5 語義不變；本輪只修正 v61 把「棋盤是主體」誤作垂直占滿所造成的操作斷裂。桌機以棋盤左、Question／Response／Feedback／Next 右維持完整回路，窄螢幕仍按語義順序單欄；不改 KC、mastery、排程、scoring 或正式評量 taxonomy。新事件標記 `learner-workspace-v62`，candidate `formal-teaching-candidate-2026-10-01-j`／`fnv1a32-js16-cc64381a`；真人可用性與學習效果仍未驗證。
+
+2026-10-01 Learning Workspace v61：Phase 1–5 仍是 engine／research／evidence roadmap；S1–S5 僅是 learner-facing interaction grammar，不作 KC、mastery 或正式評量 taxonomy。依使用者明確批准的附圖方向重排 Core 工作區，修正 S2 提示後及 S4 同題到期／立即換形／pilot 首次的標籤，不改排程或證據資格。新事件標記 `learner-workspace-v61`，candidate `formal-teaching-candidate-2026-10-01-i`／`fnv1a32-js16-9cea90da`；真人可用性與學習效果仍未驗證。
+
+2026-10-01 Core S1–S5 terminology v60：保留既有五步 learner interaction grammar，不把它改成 KC、T0–T3、mastery 或每題同 session wizard。latest-main audit 只修 S4 的表達：改用「隔時新棋形／到期時換形再做」，避免固定「隔日」與 formal unseen 暗示。排程、證據資格、題目與資料語義均不變；新事件標記 `learner-flow-v60`，candidate 重凍為 `formal-teaching-candidate-2026-10-01-h`／`fnv1a32-js16-a98dbcf4`。本機 57 份非瀏覽器測試、Edge UI／smoke、candidate／gate、repository boundary、syntax 與 diff-check PASS；PR CI、merge 後 main、公開部署與 served-content 尚未驗證，真人與學習效果狀態不變。
+
+2026-10-01 Hero background fade v59.2：依使用者指出的左右硬邊，僅對Hero背景圖增加雙側透明漸層，並更新CSS快取版本。中央棋盤與文案、資訊架構、課程功能、題目與歷史證據語義不變。candidate重凍為 `formal-teaching-candidate-2026-10-01-g`／`fnv1a32-js16-77a6fee0`；舊真人回條不得沿用。此紀錄僅為本機候選，桌機與手機瀏覽器截圖以及公開部署仍待驗證；正式usability/accessibility NOT_TESTED、正式教學／評量 BLOCKED、learning effect NOT_MEASURED。
+
 2026-10-01 Deploy verification：首頁來源 commit `6f03552` 已完成 GitHub Pages 部署；GitHub verify 的 Windows UI／repository boundary、Node contracts、Sabaki oracle 與 served Pages content 全數 PASS。公開頁面已確認載入 `learner-flow-v59.1` 樣式與 candidate `formal-teaching-candidate-2026-10-01-f`。
 
 2026-10-01 375px responsive hotfix v59.1：GitHub Windows UI 在 375px 報出首頁水平溢位；修正前提：本機單一瀏覽器通過不足以證明不同 Windows 字型度量下可閱讀。首頁容器與卡片補上最小／最大寬度約束，理念三連結可自然換行；UI 自動測試改為優先使用 Edge，以對齊 Windows CI。首頁的資訊架構、連結、課程行為、事件語義不變。candidate 重凍為 `formal-teaching-candidate-2026-10-01-f`／`fnv1a32-js16-4bc20e83`；舊真人回條不得沿用。只有工程／視覺候選成功；正式 usability/accessibility NOT_TESTED、正式教學／評量 BLOCKED、learning effect NOT_MEASURED。

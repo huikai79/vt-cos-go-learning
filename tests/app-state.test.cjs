@@ -50,7 +50,10 @@ class Element {
   }
 
   addEventListener(type, callback) { this.listeners[type] = callback; }
+  querySelector() { return new Element(); }
   querySelectorAll() { return []; }
+  focus() {}
+  scrollIntoView() {}
   setAttribute(name, value) { this.attributes[name] = String(value); }
   getAttribute(name) { return Object.prototype.hasOwnProperty.call(this.attributes, name) ? this.attributes[name] : null; }
   showModal() { this.open = true; }
@@ -67,6 +70,7 @@ function pointTarget(dataset, selector) {
 
 function createApp(saved = {}, options = {}) {
   const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "demo-legend", "lesson-terms", "lesson-term-count", "lesson-term-list", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "current-course-context", "course-nav-toggle", "course-navigation", "today-navigation", "sidebar-due-review-button", "sidebar-due-review-count", "sidebar-review-button", "sidebar-review-count", "sidebar-tools-button", "system-status", "feedback", "interaction-feedback", "hint-feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "scheduled-practice-description", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "advanced-evidence-brief", "advanced-evidence-note", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary"];
+  ids.push("sidebar-home-button", "top-course-context", "workspace-tools-button", "workspace-records-button", "workspace-next-summary", ...Array.from({ length: 5 }, (_, index) => `sidebar-learning-step-${index}`));
   const elements = Object.fromEntries(ids.map((id) => [id, new Element()]));
   const storage = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   for (const [key, value] of Object.entries(options.rawStorage || {})) storage.set(key, value);
@@ -75,7 +79,7 @@ function createApp(saved = {}, options = {}) {
   let blobId = 0;
   const document = {
     getElementById(id) { return elements[id]; },
-    querySelector(selector) { return selector === ".practice-grid" ? new Element() : null; },
+    querySelector(selector) { return [".practice-grid", ".advanced-sidebar-tools"].includes(selector) ? new Element() : null; },
     createElement() {
       const element = new Element();
       element.onClick = () => downloads.push({ filename: element.download, blob: blobs.get(element.href) });
@@ -380,7 +384,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-flow-v59");
+  assert.equal(exported.uiVersion, "learner-workspace-v67");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -443,7 +447,9 @@ test("候選自適應將先錯後對保存為一次機會，下一題優先同�
   assert.equal(saved.scheduler.responses[0].attemptCount, 2);
   assert.equal(saved.scheduler.selections[1].selectionReason, "immediate_unseen_variant_after_error");
   assert.equal(saved.scheduler.selections[1].familyId, saved.scheduler.selections[0].familyId);
-  assert.match(elements["learning-why"].textContent, /未見變形/);
+  assert.match(elements["learning-why"].textContent, /尚未練過的變形/);
+  assert.equal(elements["learning-stage-badge"].textContent, "目前 2/5 · 立即換形練習");
+  assert.equal(elements["sidebar-learning-step-1"].classList.contains("active"), true);
 });
 
 test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且可匯出反思提示", async () => {
@@ -541,16 +547,18 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.match(elements["question-number"].textContent, /個人流程試行.*第一次/);
   assert.equal(elements["question-tag"].textContent, "無提示流程試行");
   assert.equal(elements["hint-button"].disabled, true);
+  assert.equal(elements["next-button"].hidden, true);
   elements.board.listeners.click({ target: pointTarget({ x: "8", y: "8" }, "[data-x]") });
   assert.match(elements.feedback.textContent, /完成整批前不顯示正誤/);
   assert.equal(elements["next-button"].disabled, false);
+  assert.equal(elements["next-button"].hidden, false);
   const saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.equal(saved.trial.reviewGate, "personal_pilot_only");
   assert.equal(saved.trial.claimMode, "personal_descriptive");
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-flow-v59");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-workspace-v67");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -702,12 +710,42 @@ test("核心學習文字維持至少 16px，metadata 不被誤升格", () => {
   assert.match(css, /\.learning-proof\{[^}]*font-size:\.875rem/);
 });
 
+test("Learning Workspace 色調依目前、完成、成功與錯誤分工，焦點及主要控制邊界達 3:1", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
+  const token = (name) => css.match(new RegExp(`${name}:(#[0-9a-f]{6})`, "i"))?.[1];
+  const luminance = (hex) => {
+    const channels = [1, 3, 5].map((start) => Number.parseInt(hex.slice(start, start + 2), 16) / 255);
+    const linear = channels.map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+  };
+  const contrast = (left, right) => {
+    const values = [luminance(left), luminance(right)].sort((a, b) => b - a);
+    return (values[0] + 0.05) / (values[1] + 0.05);
+  };
+  const current = token("--workspace-current");
+  const complete = token("--workspace-complete");
+  const controlBorder = token("--workspace-control-border");
+  const success = token("--workspace-success");
+  const error = token("--workspace-error");
+  assert.equal(token("--workspace-canvas"), "#f4f5ef");
+  assert.equal(token("--focus-accent"), current);
+  assert.notEqual(current, complete, "目前階段不得再與完成／正確共用同一色彩角色");
+  assert.ok(contrast(current, "#ffffff") >= 3);
+  assert.ok(contrast(current, "#f7faf7") >= 3);
+  assert.ok(contrast(controlBorder, "#ffffff") >= 3);
+  assert.ok(contrast(success, "#ffffff") >= 4.5);
+  assert.ok(contrast(error, "#ffffff") >= 4.5);
+  assert.match(css, /\.sidebar-learning-steps li\.active\{background:var\(--workspace-current-soft\)\}/);
+  assert.match(css, /\.sidebar-learning-steps li\.passed \.step-dot\{[^}]*var\(--workspace-complete\)/);
+  assert.match(css, /\.option-button\{border-color:var\(--workspace-control-border\)\}/);
+});
+
 
 test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行策略", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-flow-v59\.1/);
+  assert.match(html, /styles\.css\?v=learner-workspace-v67/);
   assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
   assert.match(html, /class="intro-hero-atmosphere"[^>]+assets\/homepage\/hero-atmosphere\.svg/);
   assert.match(html, /class="intro-philosophy-art intro-philosophy-growth"[^>]+assets\/homepage\/philosophy-growth-v59\.webp/);
@@ -726,7 +764,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   assert.equal((html.match(/>開始這個單元 <span aria-hidden="true">→<\/span><\/button>/g) || []).length, 3);
   assert.match(html, /href="#all-courses" data-site-intro-courses/);
   assert.match(html, /<details class="intro-course-catalog" id="all-courses">/);
-  assert.match(html, /悟之一手 <span class="eyebrow-dot">●<\/span> 個人學習空間/);
+  assert.match(html, /核心課程 <span class="eyebrow-dot">·<\/span> <span id="top-course-context">/);
   assert.doesNotMatch(html, /PERSONAL GO STUDIO · OFFLINE/);
   assert.match(html, /VT-COS · 個人圍棋練習/);
   assert.match(html, /VT-COS｜學習引擎底盤/);
@@ -821,4 +859,46 @@ test("M2：答對後 learning flow 仍進入修正／比較階段", () => {
   elements["answer-area"].listeners.click({ target: pointTarget({ answer: "4" }, "[data-answer]") });
   assert.equal(elements["learning-step-2"].classList.contains("active"), true);
   assert.equal(elements["learning-step-1"].classList.contains("active"), false);
+});
+
+test("Workspace：首答前提示仍屬自己判斷，側欄與指引同步", () => {
+  const { elements, storage } = createApp();
+  elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "4" }, "[data-lesson]") });
+  elements["hint-button"].listeners.click();
+  assert.equal(elements["learning-stage-badge"].textContent, "目前 2/5 · 提示後待作答");
+  assert.equal(elements["sidebar-learning-step-1"].classList.contains("active"), true);
+  assert.equal(elements["sidebar-learning-step-2"].classList.contains("active"), false);
+  assert.match(elements["workspace-next-summary"].textContent, /作答後再看結果/);
+  const answers = JSON.parse(storage.get(STORAGE_KEY)).events.filter((event) => event.type === "answer");
+  assert.equal(answers.length, 0);
+});
+
+test("Workspace：既有核心入口與連結仍存在，未加入設計註解", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  for (const id of ["sidebar-home-button", "about-course-button", "resume-button", "tools-menu", "course-nav-toggle", "today-navigation", "sidebar-due-review-button", "sidebar-review-button", "lesson-nav", "lesson-intro-button", "stage-board-practice-link", "classic-shapes-link", "learning-flow-button", "workspace-tools-button", "workspace-records-button", "scheduled-practice-button", "application-button", "sample-sgf-button", "sgf-file-input", "evaluation-button", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "feedback", "interaction-feedback", "hint-feedback", "system-status", "hint-button", "next-button"]) {
+    assert.match(html, new RegExp(`id="${id}"`), `缺少既有入口：${id}`);
+  }
+  for (const href of ["advanced.html", "live-game.html?size=9", "classic-shapes.html"]) {
+    assert.ok(html.includes(`href="${href}"`), `缺少既有連結：${href}`);
+  }
+  assert.doesNotMatch(html, /棋盤是主體|首答前不洩漏答案|全站共同互動語法/);
+});
+
+test("Workspace v67：保留 v66 左欄與 Question 上方節奏基準", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
+  assert.match(css, /grid-template-areas:"board question" "board answer"/);
+  assert.match(css, /\.app-shell\{grid-template-columns:clamp\(320px,20vw,344px\) minmax\(0,1fr\)\}/);
+  assert.match(css, /\.content-wrap\{display:block;max-width:1180px;padding:30px 36px 38px\}/);
+  assert.match(css, /\.title-row\{[^}]*margin:10px 0 20px/);
+  assert.match(css, /\.lesson-context-bar\{margin:0 0 20px;padding:12px 15px/);
+  assert.match(css, /\.board\{width:min\(100%,440px\);max-width:none/);
+  assert.match(css, /@media\(max-width:1079px\)\{\.practice-grid\{grid-template-areas:"question" "board" "answer"/);
+  assert.match(html, /class="workspace-task-cue"[^>]*><strong>現在<\/strong><span id="learning-now-summary"/);
+  assert.match(html, /id="workspace-next-summary" hidden/);
+  assert.match(html, /class="workspace-aside"[^>]*hidden/);
+  assert.match(css, /\.workspace-aside\[hidden\]\{display:none\}/);
+  assert.match(css, /\.practice-grid\.text-practice\{[^}]*width:min\(100%,960px\)[^}]*margin-inline:auto[^}]*grid-template-columns:minmax\(0,1fr\)[^}]*justify-content:center/);
+  assert.match(css, /\.content-wrap\.text-practice-layout>\.section-head[^}]*width:min\(100%,960px\)[^}]*margin-left:auto[^}]*margin-right:auto/);
+  assert.doesNotMatch(html, /class="workspace-guidance/);
 });

@@ -5,8 +5,8 @@
 })(typeof globalThis!=="undefined"?globalThis:this,function(){"use strict";
  const PROTOCOL_ID="go-formal-teaching-evidence-v2";
  const R1_CONTENT_FINGERPRINT="fnv1a32-c34ef6a4";
- const CANDIDATE_ID="formal-teaching-candidate-2026-10-01-f";
- const CANDIDATE_FINGERPRINT="fnv1a32-js16-4bc20e83";
+ const CANDIDATE_ID="formal-teaching-candidate-2026-10-02-e";
+ const CANDIDATE_FINGERPRINT="fnv1a32-js16-a369954a";
  const CRITICAL_TASKS=["start_course","complete_board_answer","recover_after_wrong_answer","reload_and_resume","export_learning_data"];
  const TASK_LABELS={start_course:"開始課程",complete_board_answer:"完成棋盤作答",recover_after_wrong_answer:"答錯後自行恢復並繼續",reload_and_resume:"重新整理後繼續",export_learning_data:"匯出學習資料"};
  const ACCESSIBILITY_CHECKS=["keyboard_only","screen_reader_spot_check","zoom_200","viewport_320"];

@@ -427,8 +427,122 @@ async function main() {
     assert.deepEqual(finalLessonDemo.before, {lesson: "從一局找到下一個課題", step: "第 1 / 2 步", hidden: false, label: "複盤時先標記原本的轉折手"});
     assert.equal(finalLessonDemo.after.step, "第 2 / 2 步");
     assert.match(finalLessonDemo.after.caption, /比較原棋譜著手|候選方向/);
+    const reproducedTextTask = await evaluate(socket, `(() => {
+      const select = document.querySelector('#unit-select');
+      select.value = '8';
+      select.dispatchEvent(new Event('change', {bubbles:true}));
+      document.querySelector('[data-lesson="12"]').click();
+      const intro = document.querySelector('#lesson-intro-dialog');
+      if (intro.open) document.querySelector('#lesson-intro-start-button').click();
+      return {id: GoContent.problems.find((item) => item.title === document.querySelector('#question-title').textContent)?.id, title: document.querySelector('#question-title').textContent};
+    })()`);
+    assert.deepEqual(reproducedTextTask, {id:"u9-01", title:"死活不是猜圖"});
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+    const textTaskLayout = await evaluate(socket, `(() => {
+      const grid = document.querySelector('.practice-grid');
+      const wrap = document.querySelector('.content-wrap');
+      const sidebar = document.querySelector('.sidebar');
+      const sectionHead = document.querySelector('.section-head');
+      const titleRow = document.querySelector('.title-row');
+      const context = document.querySelector('.lesson-context-bar');
+      const question = document.querySelector('.question-card');
+      const answer = document.querySelector('.answer-card');
+      const aside = document.querySelector('.workspace-aside');
+      const rect = (node) => { const value = node.getBoundingClientRect(); return {top:value.top,bottom:value.bottom,left:value.left,right:value.right,width:value.width}; };
+      const typeCounts = GoContent.problems.reduce((counts, problem) => { counts[problem.type] = (counts[problem.type] || 0) + 1; return counts; }, {});
+      const textChoiceCount = GoContent.problems.filter((problem) => problem.type === 'choice' && problem.stones.length === 0).length;
+      const wrapStyle = getComputedStyle(wrap);
+      const titleStyle = getComputedStyle(titleRow);
+      const contextStyle = getComputedStyle(context);
+      const activeStep = document.querySelector('.sidebar-learning-steps li.active');
+      const passedStepDot = document.querySelector('.sidebar-learning-steps li.passed .step-dot');
+      const option = document.querySelector('.option-button');
+      return {
+        isTextPractice: grid.classList.contains('text-practice'),
+        sidebar: rect(sidebar), wrap: rect(wrap), grid: rect(grid), sectionHead: rect(sectionHead), titleRow: rect(titleRow), context: rect(context), question: rect(question), answer: rect(answer),
+        cueInContext: context.contains(document.querySelector('#learning-now-summary')),
+        cueInQuestion: question.contains(document.querySelector('#learning-now-summary')),
+        spacing: {
+          contentPaddingTop: parseFloat(wrapStyle.paddingTop),
+          titleMarginTop: parseFloat(titleStyle.marginTop),
+          titleMarginBottom: parseFloat(titleStyle.marginBottom),
+          contextPaddingTop: parseFloat(contextStyle.paddingTop),
+          contextPaddingBottom: parseFloat(contextStyle.paddingBottom),
+          contextMarginBottom: parseFloat(contextStyle.marginBottom)
+        },
+        palette: {
+          canvas: getComputedStyle(document.querySelector('.main-content')).backgroundColor,
+          question: getComputedStyle(question).backgroundColor,
+          answer: getComputedStyle(answer).backgroundColor,
+          currentStep: activeStep ? getComputedStyle(activeStep).backgroundColor : null,
+          completedStep: passedStepDot ? getComputedStyle(passedStepDot).backgroundColor : null,
+          optionBorder: option ? getComputedStyle(option).borderTopColor : null,
+          focusAccent: getComputedStyle(document.documentElement).getPropertyValue('--focus-accent').trim()
+        },
+        asideHidden: aside.hidden && getComputedStyle(aside).display === 'none',
+        overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+        typeCounts,
+        textChoiceCount
+      };
+    })()`);
+    assert.equal(textTaskLayout.isTextPractice, true);
+    assert.ok(textTaskLayout.sidebar.width > 304, `桌面左欄必須比公開舊版 304px 更寬：${JSON.stringify(textTaskLayout)}`);
+    assert.equal(textTaskLayout.asideHidden, true, `純文字題不得再顯示孤立的進階工具卡：${JSON.stringify(textTaskLayout)}`);
+    assert.equal(textTaskLayout.cueInContext, false, `題卡內容不得移入外部學習提示列：${JSON.stringify(textTaskLayout)}`);
+    assert.equal(textTaskLayout.cueInQuestion, true, `目前任務提示應維持在 Question 題卡內：${JSON.stringify(textTaskLayout)}`);
+    assert.deepEqual(textTaskLayout.spacing, {contentPaddingTop:30,titleMarginTop:10,titleMarginBottom:20,contextPaddingTop:12,contextPaddingBottom:12,contextMarginBottom:20});
+    assert.deepEqual(textTaskLayout.palette, {
+      canvas:"rgb(244, 245, 239)",
+      question:"rgb(255, 255, 255)",
+      answer:"rgb(247, 250, 247)",
+      currentStep:"rgb(255, 243, 220)",
+      completedStep:"rgb(71, 141, 104)",
+      optionBorder:"rgb(113, 132, 119)",
+      focusAccent:"#a86a10"
+    });
+    for (const name of ['sectionHead', 'titleRow', 'context', 'grid', 'question', 'answer']) {
+      assert.ok(Math.abs(textTaskLayout[name].left - textTaskLayout.question.left) <= 1 && Math.abs(textTaskLayout[name].right - textTaskLayout.question.right) <= 1, `純文字題 ${name} 未與 Question 共用寬度基準：${JSON.stringify(textTaskLayout)}`);
+    }
+    const leftGap = textTaskLayout.question.left - textTaskLayout.wrap.left;
+    const rightGap = textTaskLayout.wrap.right - textTaskLayout.question.right;
+    assert.ok(Math.abs(leftGap - rightGap) <= 1, `純文字作答欄未在主要內容區置中：${JSON.stringify({leftGap,rightGap,textTaskLayout})}`);
+    assert.ok(Math.abs(textTaskLayout.question.left - textTaskLayout.answer.left) <= 1 && Math.abs(textTaskLayout.question.right - textTaskLayout.answer.right) <= 1, `純文字題 Question／Response 未對齊：${JSON.stringify(textTaskLayout)}`);
+    assert.ok(textTaskLayout.grid.width >= 900 && textTaskLayout.grid.width <= 960, `純文字題寬度不符候選契約：${JSON.stringify(textTaskLayout)}`);
+    assert.equal(textTaskLayout.overflow, false);
+    assert.deepEqual(textTaskLayout.typeCounts, {count:4, connect:5, move:19, choice:68, spot:10});
+    assert.equal(textTaskLayout.textChoiceCount, 68);
+    if (screenshotDirectory) {
+      const textTaskDesktop = await command(socket, "Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+      fs.writeFileSync(path.join(screenshotDirectory, "go-learning-text-choice-desktop.png"), Buffer.from(textTaskDesktop.data, "base64"));
+    }
     await evaluate(socket, "(() => { const select = document.querySelector('#unit-select'); select.value = '0'; select.dispatchEvent(new Event('change', {bubbles: true})); document.querySelector('[data-lesson=\"0\"]').click(); })()");
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+    const desktopTaskBefore = await evaluate(socket, `(async () => {
+      scrollTo(0, 0);
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const ids = ['question-prompt', 'board-card', 'answer-area', 'hint-button', 'next-button'];
+      const rects = Object.fromEntries(ids.map((id) => { const rect = document.getElementById(id).getBoundingClientRect(); return [id, {top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right}]; }));
+      const withinViewport = Object.values(rects).every((rect) => rect.top >= -1 && rect.bottom <= innerHeight + 1 && rect.left >= -1 && rect.right <= innerWidth + 1);
+      return {withinViewport, rects, nextHidden: document.querySelector('#next-button').hidden, scrollY, width: innerWidth, height: innerHeight, scrollWidth: document.documentElement.scrollWidth};
+    })()`);
+    assert.equal(desktopTaskBefore.withinViewport, true, `1440×900 首答前核心操作未同屏：${JSON.stringify(desktopTaskBefore)}`);
+    assert.ok(desktopTaskBefore.scrollWidth <= desktopTaskBefore.width + 1, `1440×900 工作區水平溢位：${JSON.stringify(desktopTaskBefore)}`);
+    assert.equal(desktopTaskBefore.nextHidden, true, `首答前不得顯示不可用的下一題：${JSON.stringify(desktopTaskBefore)}`);
+    assert.equal(desktopTaskBefore.scrollY, 0);
     let response = await evaluate(socket, `document.querySelector('[data-answer="4"]').click(); (() => { const feedback = document.querySelector('#feedback'); return {feedback: feedback.textContent, feedbackClass: feedback.className, feedbackTitle: feedback.querySelector('.feedback-title')?.textContent, feedbackBadge: feedback.querySelector('.feedback-badge')?.textContent, explanation: feedback.querySelector('.answer-explanation')?.textContent, takeawayHidden: document.querySelector('.takeaway').hidden, nextDisabled: document.querySelector('#next-button').disabled, progress: document.querySelector('#progress-count').textContent}; })()`);
+    const desktopTaskAfter = await evaluate(socket, `(() => {
+      const ids = ['board-card', 'feedback', 'next-button'];
+      const rects = Object.fromEntries(ids.map((id) => { const rect = document.getElementById(id).getBoundingClientRect(); return [id, {top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right}]; }));
+      return {withinViewport: Object.values(rects).every((rect) => rect.top >= -1 && rect.bottom <= innerHeight + 1 && rect.left >= -1 && rect.right <= innerWidth + 1), nextHidden: document.querySelector('#next-button').hidden, rects, scrollY};
+    })()`);
+    assert.equal(desktopTaskAfter.withinViewport, true, `1440×900 首答後回饋／下一步未同屏：${JSON.stringify(desktopTaskAfter)}`);
+    assert.equal(desktopTaskAfter.nextHidden, false, `有效作答後必須顯示下一題：${JSON.stringify(desktopTaskAfter)}`);
+    assert.ok(Math.abs(desktopTaskAfter.rects['feedback'].left - desktopTaskAfter.rects['next-button'].left) <= 1, `首答後下一題應固定在回饋左基準：${JSON.stringify(desktopTaskAfter)}`);
+    assert.equal(desktopTaskAfter.scrollY, 0, `作答後不應要求額外捲動：${JSON.stringify(desktopTaskAfter)}`);
+    if (screenshotDirectory) {
+      const answeredDesktop = await command(socket, "Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+      fs.writeFileSync(path.join(screenshotDirectory, "go-learning-answered-desktop.png"), Buffer.from(answeredDesktop.data, "base64"));
+    }
     assert.match(response.feedback, /答對了/);
     assert.match(response.feedbackClass, /answer-result/);
     assert.match(response.feedbackClass, /success/);
@@ -481,7 +595,7 @@ async function main() {
       { type: "answer", outcome: "incorrect", firstAnswer: true, unhinted: true, qualifiedOpportunity: true, skillId: "capture-last-liberty-v1", skillVersion: 1 },
       { type: "answer", outcome: "correct", firstAnswer: false, unhinted: true, qualifiedOpportunity: false, skillId: "capture-last-liberty-v1", skillVersion: 1 }
     ]);
-    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-flow-v59"));
+    assert.ok(captureEvents.every((event) => event.uiVersion === "learner-workspace-v67"));
     assert.equal(captureEvents[1].errorTypeId, "capture-last-liberty-outcome-miss-v1");
     assert.match(await evaluate(socket, "document.querySelector('#diagnostic-summary').textContent"), /最後一口氣未找對：1 次首答錯誤/);
     const expectedReloadedTitle = await evaluate(socket, "document.querySelector('#question-title').textContent");
@@ -577,11 +691,12 @@ async function main() {
     })()`);
     assert.deepEqual(mobileReturnReview, { dueVisible: true, dueCount: "1", navCollapsed: true, resumeVisible: true, overflow: false });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
-    const dueReview = await evaluate(socket, `(() => { const button = document.querySelector('#due-review-button'); const before = {hidden: button.hidden, count: document.querySelector('#due-review-count').textContent, label: button.getAttribute('aria-label')}; button.click(); return {...before, number: document.querySelector('#question-number').textContent}; })()`);
+    const dueReview = await evaluate(socket, `(() => { const button = document.querySelector('#due-review-button'); const before = {hidden: button.hidden, count: document.querySelector('#due-review-count').textContent, label: button.getAttribute('aria-label')}; button.click(); return {...before, number: document.querySelector('#question-number').textContent, stage: document.querySelector('#learning-stage-badge').textContent}; })()`);
     assert.equal(dueReview.hidden, false);
     assert.equal(dueReview.count, "1");
     assert.match(dueReview.label, /1 題到期複習/);
     assert.match(dueReview.number, /間隔練習/);
+    assert.equal(dueReview.stage, "目前 4/5 · 隔時原題再判");
     await delay(30);
     assert.equal(await evaluate(socket, "document.activeElement.id"), "question-prompt");
     const phase4 = await evaluate(socket, `document.querySelector('#tools-menu').open = true; document.querySelector('#application-button').click(); const application = {number: document.querySelector('#question-number').textContent, tag: document.querySelector('#question-tag').textContent, why: document.querySelector('#learning-why').textContent, toolsClosed: !document.querySelector('#tools-menu').open, focused: document.activeElement.id}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sample-sgf-button').click(); const picker = {open: document.querySelector('#sgf-picker-dialog').open, choices: document.querySelector('#sgf-picker-move').options.length}; document.querySelector('#sgf-picker-confirm-button').click(); const candidate = document.querySelector('#sgf-candidate-input'); const reason = document.querySelector('#sgf-reason-input'); const expectedResponse = document.querySelector('#sgf-opponent-response-input'); candidate.value = '第 5 行第 5 列'; reason.value = '先確認中央氣數'; expectedResponse.value = '預期白棋會先補氣'; document.querySelector('#sgf-reflection-save-button').click(); const local = {number: document.querySelector('#question-number').textContent, player: document.querySelector('#player-color').textContent, status: document.querySelector('#sgf-reflection-status').textContent}; document.querySelector('[data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); document.querySelector('#sgf-review-status-input').value = 'original_confirmed'; document.querySelector('#sgf-acceptable-answer-input').value = '人工複盤確認原棋譜著手可接受'; document.querySelector('#sgf-review-save-button').click(); const review = document.querySelector('#sgf-review-status').textContent; ({application, picker, local, review, feedback: document.querySelector('#feedback').textContent})`);
@@ -602,19 +717,21 @@ async function main() {
     assert.match(localSgfExport.text, /^\(;GM\[1\]FF\[4\]CA\[UTF-8\]SZ\[9\]AB/);
     assert.match(localSgfExport.text, /預期對方應手：預期白棋會先補氣/);
     assert.match(await evaluate(socket, "document.querySelector('#sgf-export-help').textContent"), /可用 KaTrain 開啟/);
-    const evaluation = await evaluate(socket, `document.querySelector('#evaluation-button').click(); const preflight = {open: document.querySelector('#evaluation-dialog').open, text: document.querySelector('#evaluation-dialog').textContent}; document.querySelector('#evaluation-confirm-button').click(); const evaluationMeta = {number: document.querySelector('#question-number').textContent, tag: document.querySelector('#question-tag').textContent, hintDisabled: document.querySelector('#hint-button').disabled}; document.querySelector('[data-x="8"][data-y="8"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); ({preflight, ...evaluationMeta, feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent, missed: document.querySelector('#review-count').textContent})`);
+    const evaluation = await evaluate(socket, `document.querySelector('#evaluation-button').click(); const preflight = {open: document.querySelector('#evaluation-dialog').open, text: document.querySelector('#evaluation-dialog').textContent}; document.querySelector('#evaluation-confirm-button').click(); const evaluationMeta = {number: document.querySelector('#question-number').textContent, tag: document.querySelector('#question-tag').textContent, hintDisabled: document.querySelector('#hint-button').disabled, stage: document.querySelector('#learning-stage-badge').textContent, guidance: document.querySelector('#learning-now').textContent}; document.querySelector('[data-x="8"][data-y="8"]').dispatchEvent(new MouseEvent('click', {bubbles:true})); ({preflight, ...evaluationMeta, feedback: document.querySelector('#feedback').textContent, progress: document.querySelector('#progress-count').textContent, missed: document.querySelector('#review-count').textContent})`);
     assert.equal(evaluation.preflight.open, true);
     assert.match(evaluation.preflight.text, /每題只記第一次作答/);
     assert.match(evaluation.preflight.text, /已在舊 R1 自我審查中看過/);
     assert.match(evaluation.number, /個人流程試行.*第一次/);
     assert.equal(evaluation.tag, "無提示流程試行");
     assert.equal(evaluation.hintDisabled, true);
+    assert.equal(evaluation.stage, "目前 2/5 · 首次流程試行");
+    assert.match(evaluation.guidance, /已看過題目的無提示首答/);
     assert.match(evaluation.feedback, /完成整批前不顯示正誤/);
     assert.equal(evaluation.progress, "7 / 106");
     assert.equal(evaluation.missed, "0");
     const rawEvents = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__rawEventBlob = blob; return 'blob:captured'; }; document.querySelector('#export-events-button').click(); return JSON.parse(await window.__rawEventBlob.text()); })()`);
     assert.equal(rawEvents.eventPolicyVersion, "trial-events-v4");
-    assert.equal(rawEvents.uiVersion, "learner-flow-v59");
+    assert.equal(rawEvents.uiVersion, "learner-workspace-v67");
     assert.equal(rawEvents.claimMode, "personal_descriptive");
     assert.equal(rawEvents.formalEvaluationAvailable, false);
     assert.equal(rawEvents.schedulerPolicy, "fixed-spacing-v1");
@@ -631,9 +748,9 @@ async function main() {
     assert.equal(rawEvents.localExercises[0].reflection.savedBeforeAnswer, true);
     assert.equal(rawEvents.localExercises[0].review.status, "original_confirmed");
     assert.equal(rawEvents.applicationResults.length, 1);
-    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-flow-v59");
+    assert.equal(rawEvents.applicationResults[0].uiVersion, "learner-workspace-v67");
     assert.equal(rawEvents.trial.answers.length, 1);
-    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-flow-v59");
+    assert.equal(rawEvents.trial.answers[0].uiVersion, "learner-workspace-v67");
     assert.equal(rawEvents.trial.answers[0].formalEligible, false);
     assert.equal(rawEvents.trialSummary.status, "data_insufficient");
     assert.equal(rawEvents.learningDiagnostics.metricPolicyVersion, "skill-correction-diagnostics-v1");
@@ -952,7 +1069,8 @@ async function main() {
     await evaluate(socket, "document.querySelector('#lesson-intro-start-button').click()");
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const typography = await evaluate(socket, `({body: getComputedStyle(document.querySelector('.teaching-card p')).fontSize, topic: getComputedStyle(document.querySelector('.question-topic')).fontSize, prompt: getComputedStyle(document.querySelector('.question-prompt')).fontSize, policy: getComputedStyle(document.querySelector('.answer-policy')).fontSize, heading: getComputedStyle(document.querySelector('.title-row h2')).fontSize, promptLabel: document.querySelector('.question-prompt-label').textContent, contextText: document.querySelector('.question-context').textContent.replace(/\\s+/g,' ').trim(), labelledBy: document.querySelector('.question-card').getAttribute('aria-labelledby'), promptOutline: getComputedStyle(document.querySelector('.question-prompt')).outlineStyle})`);
-    assert.deepEqual(typography, { body: "16px", topic: "16px", prompt: "24px", policy: "16px", heading: "32px", promptLabel: "問題", contextText: "觀察題 · 中央的一顆棋", labelledBy: "question-prompt", promptOutline: "none" });
+    assert.ok(parseFloat(typography.prompt) >= 24 && parseFloat(typography.prompt) >= parseFloat(typography.heading) * 1.5, `題目未成為主層級：${JSON.stringify(typography)}`);
+    assert.deepEqual({ ...typography, prompt: "readable", heading: "readable" }, { body: "16px", topic: "16px", prompt: "readable", policy: "16px", heading: "readable", promptLabel: "問題", contextText: "觀察題 · 中央的一顆棋", labelledBy: "question-prompt", promptOutline: "none" });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 320, height: 812, deviceScaleFactor: 1, mobile: true });
     const narrowOverflow = await evaluate(socket, "({width: innerWidth, scrollWidth: document.documentElement.scrollWidth})");
     assert.ok(narrowOverflow.scrollWidth <= narrowOverflow.width + 1, `320px horizontal overflow: ${JSON.stringify(narrowOverflow)}`);
@@ -963,6 +1081,8 @@ async function main() {
     const enlargedText = await evaluate(socket, `(() => { document.documentElement.style.fontSize = '32px'; const result = {width: innerWidth, scrollWidth: document.documentElement.scrollWidth}; document.documentElement.style.fontSize = ''; return result; })()`);
     assert.ok(enlargedText.scrollWidth <= enlargedText.width + 1, `200% text horizontal overflow: ${JSON.stringify(enlargedText)}`);
     if (screenshotDirectory) {
+      const previousScrollY = await evaluate(socket, "scrollY");
+      await evaluate(socket, "scrollTo(0, 0)");
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
       const desktop = await command(socket, "Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
       fs.writeFileSync(path.join(screenshotDirectory, "go-learning-desktop.png"), Buffer.from(desktop.data, "base64"));
@@ -971,6 +1091,7 @@ async function main() {
       assert.ok(mobileOverflow.scrollWidth <= mobileOverflow.width + 1, `mobile horizontal overflow: ${JSON.stringify(mobileOverflow)}`);
       const mobile = await command(socket, "Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
       fs.writeFileSync(path.join(screenshotDirectory, "go-learning-mobile.png"), Buffer.from(mobile.data, "base64"));
+      await evaluate(socket, `scrollTo(0, ${previousScrollY})`);
     }
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const rootUrl = await evaluate(socket, "location.href.split('#')[0]");

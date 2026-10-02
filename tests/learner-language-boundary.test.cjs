@@ -89,3 +89,21 @@ test("必要外部名稱與跨語圍棋名稱仍可保留", () => {
   assert.match(observatory, /European Go Database/);
   assert.match(observatory, /EGD/);
 });
+
+test("S4 文案不把公開／已曝光流程寫成 formal unseen，也不綁死隔日", () => {
+  const index = read("index.html");
+  const app = read("app.js");
+
+  assert.match(index, /<strong>S4 隔時再判<\/strong><small>依任務重做或換形<\/small>/);
+  assert.match(index, /<strong>隔時再判<\/strong><small>原題複習或換形判斷<\/small>/);
+  assert.match(index, /優先安排尚未練過的變形/);
+  assert.match(index, /換一個不同的棋形/);
+  assert.doesNotMatch(index, /隔日換形再測|優先安排未見變形|換一個沒見過的棋形/);
+
+  assert.match(app, /用這批延後棋形完成首答/);
+  assert.match(app, /改用尚未練過的變形確認規則/);
+  assert.match(app, /隔時原題再判/);
+  assert.match(app, /提示後待作答/);
+  assert.match(app, /日後仍要用不同棋形與局面應用驗證/);
+  assert.doesNotMatch(app, /用未見新棋形|改用未見變形|未見新棋形與局面應用驗證/);
+});

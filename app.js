@@ -16,7 +16,7 @@
   const storageRecoveryKey = "go-learning-prototype-recovery-v1";
   const legacyStorageKeys = ["go-learning-prototype-v6", "go-learning-prototype-v5", "go-learning-prototype-v4", "go-learning-prototype-v3", "go-learning-prototype-v2", "go-learning-prototype-v1"];
   const eventPolicyVersion = "trial-events-v4";
-  const uiVersion = "learner-flow-v59";
+  const uiVersion = "learner-workspace-v67";
   const contentCatalogVersion = 5;
   let pendingSgf = null;
   let storageReadIssue = null;
@@ -938,6 +938,7 @@
     const currentLesson = lessons[currentLessonIndex];
     const currentUnitIndex = currentLesson.unit;
     $("current-course-context").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
+    $("top-course-context").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
     $("unit-select").innerHTML = units.map((item, index) => `<option value="${index}" ${index === unitIndex ? "selected" : ""}>第 ${index + 1} 單元 · ${escapeHtml(item.title)}</option>`).join("");
     $("unit-select").value = String(unitIndex);
     $("previous-unit-button").disabled = unitIndex === 0;
@@ -950,40 +951,47 @@
   }
   function renderLearningFlow() {
     let activeStep = 1;
+    let stageLabel = "自己判斷";
     let now = "不看答案，先自己數氣、找候選手或落子。";
     let why = "這是本課的第一個獨立判斷機會，用來分辨已理解與只是看過。";
     let next = "作答後比較具體理由；答錯時回到棋盤重算。";
     const atLessonOpening = state.lessonIntroPending && !state.externalMode && !state.reviewMode && state.answersThisTurn === 0 && !state.hintShown;
     if (atLessonOpening) {
       activeStep = 0;
+      stageLabel = "先看懂";
       now = "先看本課短講，再用棋盤示範確認要觀察的變化。";
       why = "先抓住本課要觀察的核心線索，再進入不看答案的練習。";
       next = !state.hasStarted && state.index === 0 ? "按下開始後，不看答案自己回答第一題。" : "看完示範後，向下進入本課第一題。";
     } else if (state.reviewMode) {
       activeStep = 2;
+      stageLabel = "錯題重算";
       now = "回看這道錯題時，先不看答案，重新數氣、找候選手或落子。";
-      why = "這是同一原題的修正練習，目的是釐清剛才漏看的資訊；它不是延後新棋形驗證。";
-      next = "答對後處理下一張錯題；延後新題會在之後的今日複習或七天檢查出現。";
+      why = "這是同一原題的修正練習，目的是釐清剛才漏看的資訊；它不是隔時新棋形檢查。";
+      next = "答對後處理下一張錯題；隔時新棋形會在之後的今日複習或七天檢查出現。";
     } else if (state.externalMode === "scheduled" || state.externalMode === "evaluation") {
       if (state.externalMode === "evaluation") {
-        activeStep = 3;
-        now = "用未見新棋形完成延後首答；整批完成前不揭露答案。";
-        why = "這是七天後的個人流程檢查，用來觀察保留情況，不能單獨證明棋力改變。";
+        const followup = state.evaluationBatch && state.evaluationBatch.role === "followup";
+        activeStep = followup ? 3 : 1;
+        stageLabel = followup ? "七天後流程試行" : "首次流程試行";
+        now = followup ? "用這批延後棋形完成首答；整批完成前不揭露答案。" : "先完成這批已看過題目的無提示首答；整批完成前不揭露答案。";
+        why = followup ? "這是七天後的個人流程檢查，只描述本次作答，不能單獨證明棋力改變。" : "這是第一次流程試行，記錄操作與首答，不是隔時檢查。";
       } else {
         const selection = [...state.scheduler.selections].reverse().find((item) => item.problemId === current().id);
         const reasons = {
           scheduled_review_due: "這題已到複習時間；目的是檢查隔一段時間後是否仍能自行判斷。",
-          immediate_unseen_variant_after_error: "剛才首答未成功；改用未見變形確認規則，而不是立刻重播同一題。",
+          immediate_unseen_variant_after_error: "剛才首答未成功；改用尚未練過的變形確認規則，而不是立刻重播同一題。",
           new_practice_item: "目前沒有到期題；安排一題新練習，讓複習時間仍有具體任務。"
         };
         const reason = selection && selection.selectionReason;
-        activeStep = reason === "new_practice_item" ? 1 : 3;
-        now = reason === "new_practice_item" ? "這是一題新練習；不看答案，先自己數氣、找候選手或落子。" : "隔一段時間重新提取，不直接回放原答案。";
+        activeStep = reason === "scheduled_review_due" ? 3 : 1;
+        stageLabel = reason === "scheduled_review_due" ? "隔時原題再判" : reason === "immediate_unseen_variant_after_error" ? "立即換形練習" : "自己判斷";
+        now = reason === "scheduled_review_due" ? "這是到期的原題；先不看舊答案，重新獨立判斷。" : reason === "immediate_unseen_variant_after_error" ? "這是立即換形練習；先自行判斷，不能當成隔時保留檢查。" : "這是一題新練習；不看答案，先自己數氣、找候選手或落子。";
         why = reasons[selection && selection.selectionReason] || "這是你主動開啟的間隔練習；它不會改變新課進度。";
       }
       next = "保存首答與實際間隔；結果不足時維持待驗證。";
     } else if (state.externalMode === "application" || state.externalMode === "local_sgf") {
       activeStep = 4;
+      stageLabel = "局面應用";
       if (state.externalMode === "local_sgf") {
         now = "在棋譜局面先回想自己的候選手，再重建原棋譜中的一手。";
         why = "這是單點記憶重建；與原棋譜一致只代表重建了棋譜記錄，不代表該手唯一最佳或棋力較高。";
@@ -994,29 +1002,40 @@
       next = state.externalMode === "local_sgf"
         ? "把與原棋譜一致／不同和人工確認分開保存；這筆復盤不會直接改變能力紀錄、複習安排或正式評量。"
         : "把局面結果與課內題分開保存；局部答對不等於完整棋力。";
-    } else if (state.solved || state.answersThisTurn > 0 || state.hintShown) {
+    } else if (state.solved || state.answersThisTurn > 0) {
       activeStep = 2;
+      stageLabel = "修正重算";
       if (state.solved) {
         now = "比較答案理由，先用自己的話或棋盤重建為什麼這手成立。";
         why = "答對只表示當下題目完成；理解理由才能降低下次犯同類錯誤的距離。";
-        next = "進入下一題；日後仍要用未見新棋形與局面應用驗證。";
+        next = "進入下一題；日後仍要用不同棋形與局面應用驗證。";
       } else {
         now = "找出剛才漏看的氣、連接或反擊，再從頭重算。";
         why = "首答未成功時，先定位漏看的資訊；重試答對不會覆蓋第一次錯誤。";
         next = "回到棋盤重新作答；重試答對不會改寫第一次錯誤。";
       }
+    } else if (state.hintShown) {
+      stageLabel = "提示後待作答";
+      now = "提示已顯示；仍請自己完成這題的第一個有效答案。";
+      why = "提示不等於作答；這次首答會保留提示已顯示的狀態。";
+      next = "作答後再看結果與理由。";
     }
     for (let index = 0; index < 5; index += 1) {
       const step = $(`learning-step-${index}`);
       step.classList.toggle("active", index === activeStep);
       step.classList.toggle("passed", index < activeStep);
       step.setAttribute("aria-current", index === activeStep ? "step" : "false");
+      const sidebarStep = $(`sidebar-learning-step-${index}`);
+      sidebarStep.classList.toggle("active", index === activeStep);
+      sidebarStep.classList.toggle("passed", index < activeStep);
+      sidebarStep.setAttribute("aria-current", index === activeStep ? "step" : "false");
     }
     $("learning-now").textContent = now;
     $("learning-now-summary").textContent = now;
+    $("workspace-next-summary").textContent = next;
     $("learning-why").textContent = why;
     $("learning-next").textContent = next;
-    $("learning-stage-badge").textContent = `目前 ${activeStep + 1}/5 · ${["先看懂", "自己作答", "修正重算", "延後新題", "局面應用"][activeStep]}`;
+    $("learning-stage-badge").textContent = `目前 ${activeStep + 1}/5 · ${stageLabel}`;
 
     const courseUnit = lessons[problems[state.index].lesson].unit;
     const courseLevel = courseUnit < 5 ? 0 : courseUnit < 10 ? 1 : 2;
@@ -1223,7 +1242,9 @@
   function render() {
     const problem = current();
     const lesson = currentLesson();
-    document.querySelector(".practice-grid").classList.toggle("text-practice", problem.type === "choice" && problem.stones.length === 0);
+    const isTextPractice = problem.type === "choice" && problem.stones.length === 0;
+    document.querySelector(".practice-grid").classList.toggle("text-practice", isTextPractice);
+    document.querySelector(".content-wrap")?.classList.toggle("text-practice-layout", isTextPractice);
     const courseUnitIndex = Number.isInteger(lesson.unit) ? lesson.unit : 0;
     const lessonProblems = Number.isInteger(problem.lesson) ? problems.filter((item) => item.lesson === problem.lesson) : [];
     const lessonQuestionIndex = lessonProblems.findIndex((item) => item.id === problem.id);
@@ -1273,6 +1294,7 @@
     $("hint-button").disabled = state.externalMode === "evaluation";
     $("answer-policy").hidden = false;
     $("next-button").disabled = true;
+    $("next-button").hidden = true;
     const nextCourseProblem = !state.scheduledProblem && state.index < problems.length - 1 ? problems[state.index + 1] : null;
     const nextLesson = nextCourseProblem ? lessons[nextCourseProblem.lesson] : null;
     const nextUnit = nextLesson ? nextLesson.unit : null;
@@ -1362,6 +1384,8 @@
       feedback.className = "feedback";
       feedback.textContent = "首答已記錄；完成整批前不顯示正誤。";
       $("next-button").disabled = false;
+      $("next-button").hidden = false;
+      $("hint-button").hidden = true;
       for (const button of $("answer-area").querySelectorAll("button")) button.disabled = true;
       renderLearningFlow();
       save();
@@ -1405,6 +1429,7 @@
         ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原棋譜一致</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`
         : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">答對了</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
       $("next-button").disabled = false;
+      $("next-button").hidden = false;
       $("hint-button").hidden = true;
       $("answer-policy").hidden = true;
       clearAuxiliaryFeedback("hint-feedback");
@@ -1778,6 +1803,20 @@
   $("sidebar-tools-button").addEventListener("click", () => {
     const tools = $("tools-menu");
     if (tools) tools.open = true;
+  });
+  $("sidebar-home-button").addEventListener("click", () => $("about-course-button").click());
+  $("workspace-tools-button").addEventListener("click", () => {
+    const tools = $("tools-menu");
+    tools.open = true;
+    tools.querySelector("summary").focus();
+    tools.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
+  });
+  $("workspace-records-button").addEventListener("click", () => {
+    const records = document.querySelector(".advanced-sidebar-tools");
+    records.classList.add("mobile-records-open");
+    records.open = true;
+    records.querySelector("summary").focus();
+    records.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
   });
     $("unit-select").addEventListener("change", (event) => selectUnit(Number(event.target.value)));
   $("previous-unit-button").addEventListener("click", () => selectUnit(Math.max(0, state.navUnitIndex - 1)));
