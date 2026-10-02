@@ -69,3 +69,10 @@ GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=t
 - **資料契約：** 第一版只把 European Go Database 的年度 active players 作同源跨國排名；中國、韓國、日本、臺灣、新加坡、泰國、法國、馬來西亞採國家資料卡，逐筆標示調查／行政紀錄／協會估算／UNKNOWN。
 - **Research governance：** provenance、支持與不支持範圍、source independence、license／redistribution 與 known unknowns 保存於 `research/global-go-observatory-v1.md`。外部研究不升格為 learner evidence 或 teaching authority。
 - **Rollback：** 移除研究頁、樣式、首頁入口、research record 與 manifest／test 對應項目即可；無 learner storage migration。
+
+## 2026-10-02 Change note｜Learning Workspace 審查資產發布邊界
+
+- **範圍：** `design-candidates/learning-workspace-v63/` 的非規範性審查原型，以及 `ui-audit-screenshots/` 的新增桌面狀態截圖，列入公開 `release-manifest.json`。
+- **權威邊界：** 這些檔案只供設計稽核與視覺回歸查閱；`index.html` 不載入候選原型，候選不讀寫 learner state，也不改 scoring、scheduler、event、exposure 或 formal evaluation semantics。
+- **證據限制：** 截圖與自動 wireframe 檢查只支持工程呈現可檢視，不建立真人 usability、accessibility 或 learning effect 證據。
+- **Rollback：** 移除候選與新增截圖、manifest 項目及對應 release test 即可；不需要 storage 或歷史 evidence migration。
