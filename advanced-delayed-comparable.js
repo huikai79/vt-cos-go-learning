@@ -159,7 +159,7 @@ function handlePoint(point){
  if(score.correct){
   const completed=append("delayed_completed",{firstCorrect:firstCorrect===true,eventualCorrect:true,attempts:responseCount});
   if(!completed.ok){$("delayed-comparable-feedback").textContent="這手已解除危險，但完成紀錄沒有成功保存。";return;}
-  $("delayed-comparable-feedback").textContent="這手讓那串棋脫離立即被提的危險。這次紀錄會保留實際相隔時間與第一次作答，但仍只是公開的延後流程檢查。";
+  $("delayed-comparable-feedback").textContent="這手讓那串棋脫離立即被提的危險。這次紀錄會保留實際相隔時間與第一次作答，但仍只是公開的延後再判。";
   $("delayed-comparable-next").disabled=false;
   render();
   return;

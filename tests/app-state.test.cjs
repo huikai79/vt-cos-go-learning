@@ -70,7 +70,7 @@ function pointTarget(dataset, selector) {
 
 function createApp(saved = {}, options = {}) {
   const ids = ["lesson-nav", "unit-select", "previous-unit-button", "next-unit-button", "resume-button", "due-review-button", "due-review-count", "lesson-intro-dialog", "lesson-intro-title", "lesson-intro-kicker", "lesson-intro-first-use", "lesson-intro-button", "lesson-intro-dismiss-button", "lesson-intro-start-button", "learning-flow-button", "learning-flow-dialog", "learning-flow-close-button", "tools-menu", "evaluation-dialog", "evaluation-cancel-button", "evaluation-confirm-button", "sgf-picker-dialog", "sgf-picker-move", "sgf-picker-cancel-button", "sgf-picker-confirm-button", "board-card", "board", "answer-area", "answer-policy", "board-instruction", "player-color", "lesson-kicker", "question-number", "unit-meta", "lesson-title", "lesson-subtitle", "lesson-badge", "teaching-text", "teaching-demo-board", "teaching-demo-stepper", "teaching-demo-caption", "teaching-demo-count", "teaching-demo-previous", "teaching-demo-next", "demo-legend", "lesson-terms", "lesson-term-count", "lesson-term-list", "teaching-check", "question-tag", "question-title", "question-prompt", "takeaway", "takeaway-text", "sgf-reflection", "sgf-candidate-input", "sgf-reason-input", "sgf-opponent-response-input", "sgf-reflection-save-button", "sgf-reflection-status", "sgf-review", "sgf-review-status-input", "sgf-acceptable-answer-input", "sgf-next-cue-input", "sgf-review-save-button", "sgf-export-button", "sgf-export-help", "sgf-review-status", "current-course-context", "course-nav-toggle", "course-navigation", "today-navigation", "sidebar-due-review-button", "sidebar-due-review-count", "sidebar-review-button", "sidebar-review-count", "sidebar-tools-button", "system-status", "feedback", "interaction-feedback", "hint-feedback", "hint-button", "next-button", "progress-count", "progress-bar", "progress-caption", "diagnostic-summary", "review-count", "review-button", "scheduled-practice-button", "scheduled-practice-description", "application-button", "evaluation-button", "sample-sgf-button", "sgf-file-input", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "learning-now", "learning-now-summary", "learning-why", "learning-next", "learning-stage-badge", "learning-step-0", "learning-step-1", "learning-step-2", "learning-step-3", "learning-step-4", "level-beginner", "level-intermediate", "level-advanced", "advanced-evidence-brief", "advanced-evidence-note", "live-practice-summary", "live-evidence-summary", "integrated-progress-summary"];
-  ids.push("sidebar-home-button", "top-course-context", "workspace-tools-button", "workspace-records-button", "workspace-next-summary", ...Array.from({ length: 5 }, (_, index) => `sidebar-learning-step-${index}`));
+  ids.push("sidebar-home-button", "top-course-context", "workspace-tools-button", "workspace-records-button", "workspace-next-summary", "sidebar-current-task-label", "sidebar-current-task-description", "sidebar-question-phase");
   const elements = Object.fromEntries(ids.map((id) => [id, new Element()]));
   const storage = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   for (const [key, value] of Object.entries(options.rawStorage || {})) storage.set(key, value);
@@ -124,6 +124,9 @@ test("每課短講只自動顯示一次，並可隨時重開", () => {
   elements["lesson-intro-start-button"].listeners.click();
   assert.equal(Boolean(elements["lesson-intro-dialog"].open), false);
   assert.deepEqual(JSON.parse(storage.get(STORAGE_KEY)).seenLessonIntros, [0]);
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：自己判斷");
+  assert.equal(elements["sidebar-current-task-label"].textContent, "練習");
+  assert.equal(elements["sidebar-question-phase"].textContent, "自己判斷");
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "4" }, "[data-lesson]") });
   assert.equal(elements["lesson-intro-dialog"].open, true);
   assert.match(elements["teaching-demo-board"].innerHTML, /兩顆黑棋的直接連接點/);
@@ -384,7 +387,7 @@ test("間隔練習保存選題政策與作答後的下一次到期時間", async
   assert.equal(downloads[0].filename, "個人圍棋原始事件.json");
   const exported = JSON.parse(await downloads[0].blob.text());
   assert.equal(exported.scheduler.selections.length, 1);
-  assert.equal(exported.uiVersion, "learner-workspace-v67");
+  assert.equal(exported.uiVersion, "learner-workspace-v70");
 });
 
 test("首頁只在確實有題目到期時顯示直接複習入口", () => {
@@ -403,6 +406,10 @@ test("首頁只在確實有題目到期時顯示直接複習入口", () => {
   assert.match(due.elements["scheduled-practice-description"].textContent, /今天有 1 題到期/);
   due.elements["due-review-button"].listeners.click();
   assert.match(due.elements["question-number"].textContent, /間隔練習/);
+  assert.equal(due.elements["learning-stage-badge"].textContent, "目前任務：到期複習 · 本題：重新判斷");
+  assert.equal(due.elements["sidebar-current-task-label"].textContent, "到期複習");
+  assert.equal(due.elements["sidebar-current-task-description"].textContent, "到期原題重新判斷");
+  assert.equal(due.elements["sidebar-question-phase"].textContent, "重新判斷");
 });
 
 test("錯題複習與沒有到期題的新練習不冒充延後新棋形驗證", () => {
@@ -412,11 +419,14 @@ test("錯題複習與沒有到期題的新練習不冒充延後新棋形驗證",
   elements["review-button"].listeners.click();
   assert.match(elements["learning-now"].textContent, /回看這道錯題/);
   assert.match(elements["learning-why"].textContent, /同一原題/);
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：重新判斷");
+  assert.equal(elements["sidebar-question-phase"].textContent, "重新判斷");
 
   const fresh = createApp();
   fresh.elements["scheduled-practice-button"].listeners.click();
   assert.match(fresh.elements["learning-now"].textContent, /新練習/);
   assert.match(fresh.elements["learning-why"].textContent, /目前沒有到期題/);
+  assert.equal(fresh.elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：自己判斷");
 });
 
 test("單元選擇只篩選課程，並在重開後保留目前題目與選定單元", () => {
@@ -448,8 +458,9 @@ test("候選自適應將先錯後對保存為一次機會，下一題優先同�
   assert.equal(saved.scheduler.selections[1].selectionReason, "immediate_unseen_variant_after_error");
   assert.equal(saved.scheduler.selections[1].familyId, saved.scheduler.selections[0].familyId);
   assert.match(elements["learning-why"].textContent, /尚未練過的變形/);
-  assert.equal(elements["learning-stage-badge"].textContent, "目前 2/5 · 立即換形練習");
-  assert.equal(elements["sidebar-learning-step-1"].classList.contains("active"), true);
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：自己判斷");
+  assert.equal(elements["sidebar-current-task-label"].textContent, "練習");
+  assert.equal(elements["sidebar-current-task-description"].textContent, "新題或立即換形");
 });
 
 test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且可匯出反思提示", async () => {
@@ -458,6 +469,8 @@ test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且
   assert.match(elements["question-number"].textContent, /局面應用練習/);
   assert.equal(elements["question-tag"].textContent, "局面應用練習");
   assert.match(elements["learning-why"].textContent, /固定局面應用練習/);
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：局面應用 · 本題：自己判斷");
+  assert.equal(elements["sidebar-current-task-label"].textContent, "局面應用");
   elements.board.listeners.click({ target: pointTarget({ x: "4", y: "5" }, "[data-x]") });
   let saved = JSON.parse(storage.get(STORAGE_KEY));
   assert.equal(saved.scheduler.responses.length, 0);
@@ -468,6 +481,9 @@ test("固定應用探測與本機 SGF 單點復盤不會進入間隔排程，且
   elements["sgf-picker-confirm-button"].listeners.click();
   assert.match(elements["question-number"].textContent, /棋譜單點復盤/);
   assert.equal(elements["sgf-reflection"].hidden, false);
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：回想候選手");
+  assert.equal(elements["sidebar-current-task-label"].textContent, "練習");
+  assert.equal(elements["sidebar-current-task-description"].textContent, "棋譜單點復盤");
   elements["sgf-candidate-input"].value = "第 5 行第 5 列";
   elements["sgf-reason-input"].value = "先看中央的氣，還不確定是否能直接提子。";
   elements["sgf-opponent-response-input"].value = "預期白棋會先補氣。";
@@ -548,6 +564,7 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(elements["question-tag"].textContent, "無提示流程試行");
   assert.equal(elements["hint-button"].disabled, true);
   assert.equal(elements["next-button"].hidden, true);
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：自己判斷");
   elements.board.listeners.click({ target: pointTarget({ x: "8", y: "8" }, "[data-x]") });
   assert.match(elements.feedback.textContent, /完成整批前不顯示正誤/);
   assert.equal(elements["next-button"].disabled, false);
@@ -558,7 +575,8 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(saved.trial.formalEligible, false);
   assert.equal(saved.trial.answers.length, 1);
   assert.equal(saved.trial.answers[0].correct, false);
-  assert.equal(saved.trial.answers[0].uiVersion, "learner-workspace-v67");
+  assert.equal(saved.trial.answers[0].uiVersion, "learner-workspace-v70");
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：首答已記錄");
   assert.equal(saved.trial.answers[0].useMode, "pilot_disposable");
   assert.equal(saved.trial.answers[0].formalEligible, false);
   assert.deepEqual(saved.completed, []);
@@ -570,6 +588,21 @@ test("個人 pilot 禁用提示、只收首答，而且不污染課程進度與�
   assert.equal(exported.claimMode, "personal_descriptive");
   assert.equal(exported.formalEvaluationAvailable, false);
   assert.equal(exported.trialSummary.status, "data_insufficient");
+});
+
+test("七天後 pilot 明確顯示延後再判，不與一般練習或局面應用混用", () => {
+  let decision = GoTrial.startOrResume(null, GoPhase2Content.phase2Problems, 0);
+  let trial = decision.state;
+  for (const problemId of decision.batch.problemIds) {
+    const problem = GoPhase2Content.phase2Problems.find((item) => item.id === problemId);
+    trial = GoTrial.recordAnswer(trial, decision.batch, problem, true, "test", 1, 1);
+  }
+  const { elements } = createApp({ [STORAGE_KEY]: { schemaVersion: 7, trial } });
+  elements["evaluation-button"].listeners.click();
+  elements["evaluation-confirm-button"].listeners.click();
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：延後再判 · 本題：自己判斷");
+  assert.equal(elements["sidebar-current-task-label"].textContent, "延後再判");
+  assert.equal(elements["sidebar-current-task-description"].textContent, "間隔後換局面再判");
 });
 
 
@@ -735,8 +768,8 @@ test("Learning Workspace 色調依目前、完成、成功與錯誤分工，焦�
   assert.ok(contrast(controlBorder, "#ffffff") >= 3);
   assert.ok(contrast(success, "#ffffff") >= 4.5);
   assert.ok(contrast(error, "#ffffff") >= 4.5);
-  assert.match(css, /\.sidebar-learning-steps li\.active\{background:var\(--workspace-current-soft\)\}/);
-  assert.match(css, /\.sidebar-learning-steps li\.passed \.step-dot\{[^}]*var\(--workspace-complete\)/);
+  assert.match(css, /\.sidebar-current-task\{background:var\(--workspace-current-soft\)\}/);
+  assert.doesNotMatch(css, /\.sidebar-task-types li\.active/);
   assert.match(css, /\.option-button\{border-color:var\(--workspace-control-border\)\}/);
 });
 
@@ -745,7 +778,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
-  assert.match(html, /styles\.css\?v=learner-workspace-v67/);
+  assert.match(html, /styles\.css\?v=learner-workspace-v70/);
   assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
   assert.match(html, /class="intro-hero-atmosphere"[^>]+assets\/homepage\/hero-atmosphere\.svg/);
   assert.match(html, /class="intro-philosophy-art intro-philosophy-growth"[^>]+assets\/homepage\/philosophy-growth-v59\.webp/);
@@ -853,21 +886,40 @@ test("M2：沒有到期題或錯題時不顯示假的今天區塊", () => {
 });
 
 
-test("M2：答對後 learning flow 仍進入修正／比較階段", () => {
+test("Workspace：答對後只有本題狀態更新，學習循環不冒充目前進度", () => {
   const { elements } = createApp();
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "0" }, "[data-lesson]") });
   elements["answer-area"].listeners.click({ target: pointTarget({ answer: "4" }, "[data-answer]") });
-  assert.equal(elements["learning-step-2"].classList.contains("active"), true);
-  assert.equal(elements["learning-step-1"].classList.contains("active"), false);
+  for (let index = 0; index < 5; index += 1) {
+    assert.equal(elements[`learning-step-${index}`].classList.contains("active"), false);
+    assert.equal(elements[`learning-step-${index}`].classList.contains("passed"), false);
+    assert.equal(elements[`learning-step-${index}`].getAttribute("aria-current"), null);
+  }
+  assert.equal(elements["sidebar-current-task-label"].textContent, "練習");
+  assert.equal(elements["sidebar-question-phase"].textContent, "比較理由");
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：比較理由");
 });
 
-test("Workspace：首答前提示仍屬自己判斷，側欄與指引同步", () => {
+test("Workspace：錯答與重試成功會更新本題狀態，但不冒充另一種任務", () => {
+  const { elements } = createApp();
+  elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "0" }, "[data-lesson]") });
+  elements["answer-area"].listeners.click({ target: pointTarget({ answer: "3" }, "[data-answer]") });
+  assert.equal(elements["sidebar-current-task-label"].textContent, "練習");
+  assert.equal(elements["sidebar-question-phase"].textContent, "修正重算");
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：修正重算");
+  elements["answer-area"].listeners.click({ target: pointTarget({ answer: "4" }, "[data-answer]") });
+  assert.equal(elements["sidebar-current-task-label"].textContent, "練習");
+  assert.equal(elements["sidebar-question-phase"].textContent, "完成修正");
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：完成修正");
+});
+
+test("Workspace：進入題目後提示仍維持練習任務，側欄與指引同步", () => {
   const { elements, storage } = createApp();
   elements["lesson-nav"].listeners.click({ target: pointTarget({ lesson: "4" }, "[data-lesson]") });
   elements["hint-button"].listeners.click();
-  assert.equal(elements["learning-stage-badge"].textContent, "目前 2/5 · 提示後待作答");
-  assert.equal(elements["sidebar-learning-step-1"].classList.contains("active"), true);
-  assert.equal(elements["sidebar-learning-step-2"].classList.contains("active"), false);
+  assert.equal(elements["learning-stage-badge"].textContent, "目前任務：練習 · 本題：提示後待作答");
+  assert.equal(elements["sidebar-current-task-label"].textContent, "練習");
+  assert.equal(elements["sidebar-question-phase"].textContent, "提示後待作答");
   assert.match(elements["workspace-next-summary"].textContent, /作答後再看結果/);
   const answers = JSON.parse(storage.get(STORAGE_KEY)).events.filter((event) => event.type === "answer");
   assert.equal(answers.length, 0);

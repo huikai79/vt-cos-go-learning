@@ -162,7 +162,7 @@ function handlePoint(point){
    :appendImmediate("comparable_completed",{firstCorrect:firstCorrect===true,eventualCorrect:true,attempts:responseCount});
   if(!completed.ok){$("comparable-v2-feedback").textContent="這手符合條件，但完成紀錄沒有成功保存。";return;}
   $("comparable-v2-feedback").textContent=currentMode==="delayed"
-   ?"這一手讓兩串彼此分開的棋同時各只剩一氣。這種結構常稱「雙打吃」。這次只保留延後流程檢查紀錄，不作正式能力判定。"
+   ?"這一手讓兩串彼此分開的棋同時各只剩一氣。這種結構常稱「雙打吃」。這次只保留延後再判紀錄，不作正式能力判定。"
    :"這一手讓兩串彼此分開的棋同時各只剩一氣，而且沒有立即提子。這種結構常稱「雙打吃」。";
   $("comparable-v2-next").disabled=false;renderList();return;
  }

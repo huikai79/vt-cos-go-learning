@@ -124,7 +124,9 @@ function handlePoint(point){
  if(!finish.legal){$("enclosure-comparable-feedback").textContent="規則重播失敗，這題暫停。";return;}
  board=finish.board;
  const completed=append("enclosure_completed",{decisionFirstCorrect:[firstCorrect[0]===true,firstCorrect[1]===true],decisionAttempts:responseCounts.slice(),eventualCorrect:true});if(!completed.ok)return;
- $("enclosure-comparable-feedback").textContent="兩步都完成：先切斷援兵，再利用對方唯一延長後仍只剩一氣的局面完成提子。這仍只是公開練習／流程檢查。";
+ $("enclosure-comparable-feedback").textContent=currentItem.minimumDelayMs>0
+  ?"兩步都完成：先切斷援兵，再利用對方唯一延長後仍只剩一氣的局面完成提子。這仍只是公開的延後再判。"
+  :"兩步都完成：先切斷援兵，再利用對方唯一延長後仍只剩一氣的局面完成提子。這仍只是公開練習或換形再判。";
  $("enclosure-comparable-next").disabled=false;renderBoard(currentItem.finishMove);renderList();
 }
 function next(){

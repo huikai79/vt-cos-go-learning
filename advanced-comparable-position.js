@@ -118,7 +118,7 @@ function next(){
  else{
   currentItem=null;
   $("comparable-workspace").hidden=true;
-  $("comparable-summary").textContent="這組全盤判斷已完成。公開題只作練習與流程檢查，不會被當成正式未見評量。";
+  $("comparable-summary").textContent="這組全盤判斷已完成。公開題只記為練習或換形再判，不會被當成正式未見評量。";
  }
 }
 $("comparable-list").addEventListener("click",event=>{const button=event.target.closest("[data-comparable-item]");if(button&&!button.disabled)startItem(button.dataset.comparableItem);});

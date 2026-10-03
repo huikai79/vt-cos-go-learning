@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="從氣與提子開始，以短教學、落子練習、具體回饋與新棋形，一步一步學圍棋。">
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
   <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
-  <link rel="stylesheet" href="styles.css?v=learner-workspace-v67">
+  <link rel="stylesheet" href="styles.css?v=learner-workspace-v70">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -41,7 +41,7 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
-  <script defer src="app.js?v=learner-workspace-v67"></script>
+  <script defer src="app.js?v=learner-workspace-v70"></script>
 </head>
 <body>
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
@@ -59,13 +59,22 @@
         <div class="progress-track"><div id="progress-bar"></div></div>
         <small id="progress-caption">先從第一題開始</small>
       </div>
-      <ol class="sidebar-learning-steps" aria-label="目前學習階段">
-        <li id="sidebar-learning-step-0"><span class="step-dot" aria-hidden="true"></span><span><strong>S1 看懂</strong><small>理解題目與棋形重點</small></span></li>
-        <li id="sidebar-learning-step-1"><span class="step-dot" aria-hidden="true"></span><span><strong>S2 自己判斷</strong><small>先想，再落下一手</small></span></li>
-        <li id="sidebar-learning-step-2"><span class="step-dot" aria-hidden="true"></span><span><strong>S3 修正重算</strong><small>看結果並重新思考</small></span></li>
-        <li id="sidebar-learning-step-3"><span class="step-dot" aria-hidden="true"></span><span><strong>S4 隔時再判</strong><small>依任務重做或換形</small></span></li>
-        <li id="sidebar-learning-step-4"><span class="step-dot" aria-hidden="true"></span><span><strong>S5 局面應用</strong><small>在局面中辨認時機</small></span></li>
-      </ol>
+      <section class="sidebar-current-task" aria-labelledby="sidebar-current-task-title">
+        <span class="sidebar-status-kicker" id="sidebar-current-task-title">目前任務</span>
+        <div class="sidebar-current-task-name"><span class="current-task-mark" aria-hidden="true"></span><strong id="sidebar-current-task-label">課程</strong></div>
+        <p id="sidebar-current-task-description">短講與核心課程</p>
+        <div class="sidebar-question-phase"><span>本題狀態</span><strong id="sidebar-question-phase">先看懂</strong></div>
+      </section>
+      <details class="sidebar-task-guide">
+        <summary>認識任務類型</summary>
+        <ul class="sidebar-task-types" aria-label="任務類型說明">
+          <li><strong>課程</strong><small>短講與核心課程</small></li>
+          <li><strong>練習</strong><small>新題、錯題與立即換形</small></li>
+          <li><strong>到期複習</strong><small>到期原題重新判斷</small></li>
+          <li><strong>延後再判</strong><small>間隔後換局面再判</small></li>
+          <li><strong>局面應用</strong><small>低線索局面中應用</small></li>
+        </ul>
+      </details>
       <button id="course-nav-toggle" class="course-nav-toggle" type="button" aria-expanded="false" aria-controls="course-navigation">課程與單元 <span aria-hidden="true">⌄</span></button>
       <div id="course-navigation" class="course-navigation">
         <div class="side-label course-label">查看單元</div>
@@ -360,6 +369,7 @@
               </article>
             </div>
             <p class="intro-evidence-outcome"><strong>真正重要的結果：</strong>不是做了多少題，而是過一段時間後，遇到不同的棋形，仍然能自己想出正確的下法，並應用到新的情境中。</p>
+            <p class="intro-task-type-note"><strong>進入學習後，畫面會標示目前任務：</strong>課程／練習／到期複習／延後再判／局面應用。這是任務類型，不是能力等級；上方四個動作則是在說明練習方法。</p>
           </section>
 
           <div class="intro-split-grid">
@@ -442,14 +452,14 @@
       </section>
 
       <div class="content-wrap">
-        <div class="section-head"><span id="lesson-kicker">第 1 / 19 課</span><span class="current-stage-badge" id="learning-stage-badge">目前 1/5 · 先看懂</span><span id="question-number">題目 01 / 98</span></div>
+        <div class="section-head"><span id="lesson-kicker">第 1 / 19 課</span><span class="current-stage-badge" id="learning-stage-badge" role="status" aria-live="polite" aria-atomic="true">目前任務：課程 · 本題：先看懂</span><span id="question-number">題目 01 / 98</span></div>
         <div class="title-row"><div><h2 id="lesson-title" tabindex="-1">認識氣</h2><p id="lesson-subtitle"></p></div><span class="lesson-badge" id="lesson-badge">基礎概念</span></div>
         <section class="lesson-context-bar" aria-label="目前學習提示">
           <div class="lesson-context-actions">
             <button class="subtle-button" id="lesson-intro-button" type="button">查看本課短講</button>
             <a class="subtle-button stage-board-link" id="stage-board-practice-link" href="live-game.html?size=5">本階段棋盤練習 · 5×5</a>
             <a class="subtle-button" id="classic-shapes-link" href="classic-shapes.html" hidden>世界死活名型館</a>
-            <button class="subtle-button" id="learning-flow-button" type="button">查看學習流程</button>
+            <button class="subtle-button" id="learning-flow-button" type="button">查看學習循環</button>
           </div>
         </section>
 
@@ -565,13 +575,13 @@
   <dialog class="learning-flow-dialog" id="learning-flow-dialog" aria-labelledby="learning-flow-title">
     <section class="learning-flow">
       <div class="learning-flow-head">
-        <div><span>學習流程</span><h2 id="learning-flow-title">從看懂，到在棋局裡用得出來</h2></div>
-        <p>一次答對只算完成當下題目。</p>
+        <div><span>學習循環說明</span><h2 id="learning-flow-title">從理解概念，到在棋局裡用得出來</h2></div>
+        <p>這是可能反覆使用的方法，不是每題都要依序走完的目前進度；當下任務與本題狀態請看題目上方。</p>
       </div>
-      <ol class="learning-steps">
-        <li id="learning-step-0"><span>1</span><strong>先看懂</strong><small>短講與示範</small></li>
-        <li id="learning-step-1"><span>2</span><strong>自己作答</strong><small>不看答案先算</small></li>
-        <li id="learning-step-2"><span>3</span><strong>修正重算</strong><small>理解理由再做</small></li>
+      <ol class="learning-steps" aria-label="學習循環的五種方法">
+        <li id="learning-step-0"><span>1</span><strong>理解概念</strong><small>短講與示範</small></li>
+        <li id="learning-step-1"><span>2</span><strong>獨立作答</strong><small>不看答案先算</small></li>
+        <li id="learning-step-2"><span>3</span><strong>比較與修正</strong><small>核對理由或重新計算</small></li>
         <li id="learning-step-3"><span>4</span><strong>隔時再判</strong><small>原題複習或換形判斷</small></li>
         <li id="learning-step-4"><span>5</span><strong>局面應用</strong><small>9 路自行發現</small></li>
       </ol>

@@ -1,3 +1,9 @@
+2026-10-03 Learning Task Context v70：修正 v69 只建立兩軸、卻未納入既有五步學習流程的契約缺口。介面現在明分三層：目前任務描述來源，本題狀態描述即時互動，學習循環只說明可反覆使用的方法。五步不再標 active／passed／`aria-current`，首答正確不會在任何第二套進度中被稱為修正重算。題目上方 badge 是跨桌機與手機唯一任務狀態 live region；側欄為非 live 的視覺摘要。這是 presentation／accessibility contract 修正，不新增 learner state、schema migration 或歷史事件改寫，不變更 first response、scheduler、scoring、KC、formal eligibility 或 evidence semantics。Advanced、經典棋形與自由棋盤經重新稽核無須增加 Core 題內生命週期。rollback 只還原 v70 顯示與 candidate binding。UI version `learner-workspace-v70`；candidate `formal-teaching-candidate-2026-10-03-e`／`fnv1a32-js16-347e1cb4`。
+
+2026-10-03 Learning Task Context v69：修正 v68 的單軸呈現盲點。五種「任務類型」是互斥的工作來源，不是每答一題就前進的流程；Core 側欄改為單一目前任務卡，其他類型只在說明層列出。另由既有 `lessonIntroPending`、`hintShown`、`answersThisTurn`、`solved`、`wrongThisTurn` 與 mode 純衍生「本題狀態」：先看懂、自己判斷、提示後待作答、比較理由、修正重算、完成修正，以及 masked pilot 的首答已記錄。首答正確不得稱修正重算；普通作答不得切成到期複習、延後再判或局面應用。Advanced、經典棋形與自由棋盤只保留適用 task-context，不強造 Core 題內狀態。無 learner-state／schema migration，歷史事件保留原 UI version；rollback 只還原 presentation mapping 並重凍 candidate。UI version `learner-workspace-v69`；candidate `formal-teaching-candidate-2026-10-03-d`／`fnv1a32-js16-e8420a1a`。
+
+2026-10-03 Learning Task Context v68：learner-facing 導覽新增「課程／練習／到期複習／延後再判／局面應用」五種任務類型，與既有「看懂→自己作答→修正重算→隔時再判→局面應用」題內流程分層。本次專用 P0–P5 工作包定義於 `UI_UX_AUDIT.md`，不與既有研究／Advanced roadmap 同名階段混用。任務類型只由既有 runtime state、selection reason 與 trial role 即時計算，不新增 learner state、不回寫歷史事件，也不修改 first response、retry、hint、exposure、scoring、scheduler、Evidence Taxonomy 或 formal eligibility。正常 Core 在短講／課程導入時屬課程，按「開始本課練習」後切成練習；錯題、新練習、立即換形與首次 pilot 也屬練習。只有 `scheduled_review_due` 屬到期複習；只有實際到期的 follow-up／delayed comparable 屬延後再判；固定低線索 application probe 屬局面應用。Advanced 的立即公開題稱練習／換形再判，達 24 小時／7 天條件者才稱延後再判；SGF 單點復盤與自由棋盤保留自身用途，不因頁面或棋盤尺寸自動升格為局面應用。舊 S1–S5 歷史顯示紀錄保留原語義；rollback 只需還原 presentation mapping，無資料 migration。UI version `learner-workspace-v68`；candidate `formal-teaching-candidate-2026-10-03-c`／`fnv1a32-js16-f4a5abb7`。
+
 2026-10-02 Learning Workspace v67：以學習效率的可操作代理指標（辨識目前任務、作答控制、結果與下一步）重新檢討色調，不把視覺一致性升格為學習成效。暖金固定為目前／焦點，綠固定為完成／正確／前進，橙固定為錯誤／重算，暖中性畫布承接白色 Question 與淡綠 Response；S1–S5、Phase 1–5、scoring、first response、retry、scheduler 與 evidence semantics 不變。UI version `learner-workspace-v67`；candidate `formal-teaching-candidate-2026-10-02-e`／`fnv1a32-js16-a369954a`；真人 usability／accessibility `NOT_TESTED`，learning effect `NOT_MEASURED`。
 
 2026-10-02 Learning Workspace v66：Phase 1–5 與 S1–S5 語義不變；桌面 Question 上方恢復公開舊版垂直節奏，首答前 Next action 隱藏，完成有效作答後才在 feedback 左基準出現。sidebar、Question 題卡內容、scoring、first response、retry、evaluation masking 與工具功能均不變。UI version `learner-workspace-v66`；candidate `formal-teaching-candidate-2026-10-02-d`／`fnv1a32-js16-3db9e78a`；不產生 mastery、retention、transfer 或 learning-effect evidence。
@@ -303,7 +309,7 @@ engagement、frustration、boredom、session completion 與 learner agency 分�
 | 4｜延後新題 | 隔日或數日後做不同棋形的無提示首答 | 實際間隔、未見資格與 T1／T2 首答 | 一次延後答對代表永久保留 |
 | 5｜局面應用 | 在 9 路或棋譜局面沒有技能名稱提示時自行發現 | 固定應用探測或另列 T3 | 局部探測等同完整棋力 |
 
-介面必須同時回答四件事：目前位於哪一步、現在要做什麼、做完後去哪裡、怎樣的證據才比「完成題數」更接近學會。首頁顯示初級 1–5、中級 6–10、高級 11–15 的課程方向；題目上方顯示上述五步與動態下一步。側欄原「學習進度」改稱「課程完成」，避免把完成題數偷換成能力進步。重做同一張錯題只能標為第 3 步的修正練習；只有不同未見棋形的延後首答才可標為第 4 步。若今日複習沒有到期題而提供新練習，仍是第 2 步的獨立作答，不偷換成延後證據。
+介面必須同時回答四件事：目前是哪一類任務、題內位於哪個動作、做完後去哪裡、怎樣的證據才比「完成題數」更接近學會。首頁顯示初級 1–5、中級 6–10、高級 11–15 的課程方向；工作區側欄顯示任務類型，題目上方顯示任務類型＋題內狀態，完整五步保留在「查看學習流程」。側欄原「學習進度」改稱「課程完成」，避免把完成題數偷換成能力進步。重做同一張錯題屬「練習」中的修正重算；只有 `scheduled_review_due` 可標為「到期複習」；只有確有時間間隔的 follow-up 或 delayed comparable 可標為「延後再判」。若今日沒有到期題而提供新練習，仍是「練習」中的獨立作答，不偷換成到期或延後證據。
 
 晉級採建議而非鎖課：學習者可以自由選課；系統只在有資料時分別呈現「當下作答、延後新題、局面應用」。缺少延後或應用資料時顯示待驗證，不以猜測補成通過。正式掌握門檻仍依第 1.1 節的 T0–T3 與獨立題規則，介面五步不另創一套分數。
 
@@ -315,7 +321,7 @@ engagement、frustration、boredom、session completion 與 learner agency 分�
 - 提取練習相較只重讀通常有利延後保留；分散效果會隨再測時間而變，沒有一組間隔適合所有目標。[Rowland, 2014](https://pubmed.ncbi.nlm.nih.gov/25150680/)／[Cepeda et al., 2008](https://pubmed.ncbi.nlm.nih.gov/19076480/)
 - 教育回饋的效果高度異質，資訊內容比單純稱讚或只報正誤更重要。因此回饋需指出棋形線索、理由與下一步，不能把任何形式的回饋都當作同樣有效。[Wisniewski et al., 2020](https://pmc.ncbi.nlm.nih.gov/articles/PMC6987456/)
 
-實作驗收：首次進入不用閱讀研究文件，也能辨認「先看懂、自己作答、修正、延後新題、局面應用」；作答前後、錯題複習、間隔練習與局面小測驗會顯示不同的目前步驟及下一動作；320px 寬度無橫向溢出；鍵盤與螢幕閱讀器可讀到目前步驟。真人是否覺得清楚仍依短任務觀察，不由自動測試代替。
+實作驗收：首次進入不用閱讀研究文件，也能分辨「任務類型」與「題內狀態」；作答前後、錯題、新練習、到期原題、首次／後續 pilot 與固定局面應用依既有權威欄位顯示，不以頁名、棋盤尺寸或完成順序猜測；320px 寬度無橫向溢出；鍵盤與螢幕閱讀器可讀到目前任務及狀態。真人能否區分「到期複習」與「延後再判」仍依短任務觀察，不由自動測試代替。
 
 簡單題與困難題分工如下：
 

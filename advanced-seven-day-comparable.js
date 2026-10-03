@@ -47,7 +47,7 @@ function handle(point){
  if(!attemptId)return;const score=Contract.scoreResponse(point),type=responseCount===0?"seven_day_first":"seven_day_retry";
  const saved=Events.append(localStorage,common(type,{point:point.slice(),legal:score.legal,correct:score.correct,hintUsed:false}));if(!saved.ok){$("seven-day-comparable-feedback").textContent="這次落子沒有成功保存。";return;}
  if(responseCount===0)firstCorrect=score.correct;responseCount+=1;renderBoard(point);
- if(score.correct){const done=Events.append(localStorage,common("seven_day_completed",{firstCorrect:firstCorrect===true,eventualCorrect:true,attempts:responseCount}));if(!done.ok)return;$("seven-day-comparable-feedback").textContent="這手同時限制了兩串棋。系統保留七天後的實際相隔時間與第一次作答；這仍是公開流程檢查。";render();return;}
+ if(score.correct){const done=Events.append(localStorage,common("seven_day_completed",{firstCorrect:firstCorrect===true,eventualCorrect:true,attempts:responseCount}));if(!done.ok)return;$("seven-day-comparable-feedback").textContent="這手同時限制了兩串棋。系統保留七天後的實際相隔時間與第一次作答；這仍是公開延後再判。";render();return;}
  $("seven-day-comparable-feedback").textContent=score.legal?"這手可以下，但沒有同時讓恰好兩串分離的對方棋各只剩一口氣。第一次作答已保存，可以再找。":(score.reason||"這手依目前規則不能下。");
 }
 $("seven-day-comparable-start").addEventListener("click",begin);

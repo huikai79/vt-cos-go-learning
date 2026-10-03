@@ -153,3 +153,4 @@ body[data-classic-mode="atlas"] [data-classic-mode-panel="practice"]{display:non
 @media(max-width:390px){
   .classic-practice-jumps{grid-template-columns:1fr}
 }
+.task-type-context{display:flex;align-items:center;gap:8px;width:max-content;max-width:100%;margin:12px 0 0!important;padding:7px 10px;border:1px solid #d9c18c;border-radius:999px;background:#fff8e8;color:#6d5730!important;font-size:.82rem!important;line-height:1.35!important}.task-type-context span,.task-type-context small{color:#79694d}.task-type-context strong{color:#4c3b1d}

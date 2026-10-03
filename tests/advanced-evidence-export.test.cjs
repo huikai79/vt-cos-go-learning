@@ -135,20 +135,20 @@ test("Advanced 頁提供單向原始事件備份，明示不屬正式評量",()=
  const html=fs.readFileSync(path.join(__dirname,"..","advanced.html"),"utf8");
  assert.match(html,/advanced-comparable-analysis\.js\?v=advanced-comparable-analysis-v1/);
  assert.match(html,/advanced-evidence-export\.js\?v=advanced-evidence-export-v4/);
- assert.match(html,/advanced-enclosure-comparable\.js\?v=advanced-enclosure-comparable-v1/);
- assert.match(html,/advanced-seven-day-comparable\.js\?v=advanced-seven-day-comparable-v1/);
+ assert.match(html,/advanced-enclosure-comparable\.js\?v=learning-task-context-v68/);
+ assert.match(html,/advanced-seven-day-comparable\.js\?v=learning-task-context-v68/);
  assert.match(html,/advanced-cross-family-analysis\.js\?v=advanced-cross-family-analysis-v1/);
  assert.match(html,/advanced-delayed-comparable-analysis\.js\?v=advanced-delayed-comparable-v1/);
- assert.match(html,/advanced-delayed-comparable\.js\?v=advanced-delayed-comparable-v1/);
+ assert.match(html,/advanced-delayed-comparable\.js\?v=learning-task-context-v68/);
  assert.match(html,/advanced-comparable-framework-v2\.js\?v=advanced-comparable-framework-v2/);
  assert.match(html,/advanced-comparable-events-v2\.js\?v=advanced-comparable-framework-v2/);
  assert.match(html,/advanced-delayed-comparable-policy-v2\.js\?v=advanced-comparable-framework-v2/);
- assert.match(html,/advanced-comparable-v2\.js\?v=advanced-comparable-framework-v2/);
+ assert.match(html,/advanced-comparable-v2\.js\?v=learning-task-context-v68/);
  assert.match(html,/advanced-evidence-export-ui\.js\?v=advanced-evidence-export-v1/);
  assert.match(html,/id="advanced-export-evidence"/);
  assert.match(html,/匯出進階練習原始事件/);
  assert.match(html,/只作備份與分析，不作正式評量/);
- assert.match(html,/多組全盤可比較局面、兩步包圍吃子、一天與七天後流程檢查紀錄/);
+ assert.match(html,/多組全盤可比較局面、兩步包圍吃子，以及一天與七天後的延後再判紀錄/);
 });
 
 

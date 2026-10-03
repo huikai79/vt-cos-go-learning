@@ -1,3 +1,90 @@
+## 2026-10-03｜Learning Task Context v70 三層語意修復
+
+v69 正確拆開「目前任務」與「本題狀態」，但漏接仍會標示 active／passed 的五步學習流程：首答正確時即時狀態為「比較理由」，對話框卻仍把「修正重算」標成目前步驟；手機又隱藏唯一帶 `aria-live` 的側欄卡。v70 因此把介面定義成三層：任務類型、本題狀態、靜態學習循環說明。只有題目上方 badge 是跨桌機與手機的即時 status 權威；側欄是視覺摘要；五步只說明可反覆使用的方法，不再表示目前或完成進度。
+
+以下 P0–P5 是 v70 三層語意修復工作包；v69 同名項目保留為歷史紀錄：
+
+| 優先級 | 完成條件 | 狀態 |
+|---|---|---|
+| P0 | 固定三層契約：任務類型、本題狀態與學習循環說明不得互相冒充。 | COMPLETE |
+| P1 | Core 五步移除 active／passed／`aria-current`，改為靜態「理解概念／獨立作答／比較與修正／間隔再判／局面應用」。 | COMPLETE |
+| P2 | 題目上方 badge 成為桌機／手機唯一任務狀態 live region；側欄移除重複 status 語意。 | COMPLETE |
+| P3 | Advanced、經典棋形與自由棋盤重新稽核；無 Core 單題生命週期者維持既有 task-context，記為無須修改。 | COMPLETE |
+| P4 | 反證首答正確、錯答、重試、到期、延後、application、local SGF 與手機 status；五步不得出現目前／完成狀態。 | COMPLETE |
+| P5 | 更新 current truth、快取、candidate、gate 與 evidence binding；真人與公開環境證據維持分開。 | COMPLETE |
+
+| 顯示層 | 權威內容 | 變更時機 | 禁止事項 |
+|---|---|---|---|
+| 目前任務 | 課程／練習／到期複習／延後再判／局面應用 | mode 或題目來源改變 | 不隨普通正答、錯答或提示移動 |
+| 本題狀態 | 先看懂／自己判斷／提示後待作答／比較理由／修正重算／完成修正等 | 本題互動改變 | 不冒充跨題能力或證據結論 |
+| 學習循環說明 | 理解、作答、比較與修正、間隔、應用五種方法 | 靜態 | 不使用 active、passed、`aria-current` 或目前進度外觀 |
+
+Accessibility contract：`#learning-stage-badge` 使用 `role=status`、`aria-live=polite`、`aria-atomic=true` 並在桌機／手機都存在；側欄卡不再是 live region，避免桌機重複公告。自動化只能證明 DOM、CSS 與 accessibility-tree 前提，不等同 NVDA／Narrator／VoiceOver 真人公告品質。
+
+UI version `learner-workspace-v70`；candidate `formal-teaching-candidate-2026-10-03-e`／`fnv1a32-js16-347e1cb4`。不新增 storage 或 migration，不改首答、重試、提示、曝光、scoring、scheduler、KC、event schema 或 formal eligibility；歷史事件保留原 `uiVersion`。rollback 為還原 v70 presentation 與 candidate binding，不改寫 learner events。本機 57 份非瀏覽器測試／612 項、Sabaki oracle 7 項、完整 Edge UI（含桌機／手機 accessibility tree status）、Edge smoke、KaTrain autodiscovery、repository boundary 282／282、candidate fingerprint、teaching gate report、deterministic R1 bank、181 份 JavaScript／5 份 PowerShell syntax 與 diff check 全數 `PASS`；正答／錯答／修正完成與手機截圖已人工檢視。PR CI、公開部署、真人 comprehension／實際 screen-reader 公告、formal teaching／evaluation 與 learning effect 不由本輪工程修復建立。
+
+## 2026-10-03｜Learning Task Context v69 兩軸修復
+
+v68 修正了 Core 從短講「課程」進入題目後仍停在課程的映射錯誤，但作答後實際畫面證明五列任務仍停在「練習」；這符合任務分類語義，卻與垂直圓點列的進度暗示衝突。v69 因此不再要求任務分類隨每題作答移動，而是把「任務類型」與「本題狀態」拆成兩個同時可見、各有單一責任的顯示軸。
+
+以下 P0–P5 是 v69 兩軸修復工作包；v68 同名項目保留為歷史紀錄：
+
+| 優先級 | 完成條件 | 狀態 |
+|---|---|---|
+| P0 | 固定兩軸契約：任務類型只在 mode／來源改變時切換；本題狀態才隨提示、正答、錯答與重試改變。 | COMPLETE |
+| P1 | Core 移除五列假進度圓點，改為單一目前任務卡＋本題狀態；其他任務類型退到按需說明。 | COMPLETE |
+| P2 | 由既有 runtime state 純衍生本題狀態；正答、錯答、錯後答對分別顯示比較理由、修正重算、完成修正。 | COMPLETE |
+| P3 | 稽核 Advanced、經典棋形與自由棋盤；沒有 Core 單題生命週期者只保留既有 task-context chip，不強造本題進度。 | COMPLETE |
+| P4 | 單元與 Edge 反證覆蓋課程→練習、提示、正答、錯答、重試成功、新練習、到期原題、延後 pilot、application 與 local SGF。 | COMPLETE |
+| P5 | 更新 current-truth／發布快取／candidate／gate／evidence binding，並分開回報工程、真人與公開部署狀態。 | COMPLETE |
+
+| 任務／互動 | 目前任務 | 本題狀態 |
+|---|---|---|
+| 本課短講尚未結束 | 課程 | 先看懂 |
+| 正常新題／立即換形／首次 pilot | 練習 | 自己判斷 |
+| 首答前查看提示 | 練習 | 提示後待作答 |
+| 首答正確 | 練習 | 比較理由 |
+| 首答錯誤、尚未答對 | 練習 | 修正重算 |
+| 錯後答對，或錯題複習完成 | 練習 | 完成修正 |
+| `scheduled_review_due` 尚未作答 | 到期複習 | 重新判斷 |
+| follow-up pilot 尚未作答 | 延後再判 | 自己判斷 |
+| 固定 application probe 尚未作答 | 局面應用 | 自己判斷 |
+| local SGF 尚未作答／完成 | 練習 | 回想候選手／比對原棋譜 |
+| masked pilot 已作答 | 練習或延後再判 | 首答已記錄 |
+
+顯示契約：桌面側欄只突出一個目前任務，並在同一卡片顯示本題狀態；五種分類的完整清單放入「認識其他任務類型」收合說明，不使用空心圓、序號、連線、passed 或待辦外觀。手機不展開桌面卡，但題目上方 badge 必須同時顯示「目前任務：類型 · 本題：狀態」。`role=status`／`aria-live=polite` 只包住側欄兩軸狀態，不新增第二套資料來源。所有值皆由現有 state 即時計算，不持久化、不 migration；歷史事件保留其原 `uiVersion`。rollback 為還原 v69 presentation 與 candidate binding，不改寫事件。
+
+UI version `learner-workspace-v69`；candidate `formal-teaching-candidate-2026-10-03-d`／`fnv1a32-js16-e8420a1a`。本機狀態測試與完整 Edge 已確認開始題目為「練習／自己判斷」、正答為「練習／比較理由」、錯答為「練習／修正重算」、錯後答對為「練習／完成修正」；桌機四張狀態截圖及手機 badge 已人工檢視。57 份非瀏覽器測試／612 項、Sabaki oracle 7 項、完整 Edge UI、Edge smoke、KaTrain autodiscovery、repository boundary、candidate fingerprint、teaching gate report、deterministic R1 bank、181 份 JavaScript／3 份 PowerShell syntax 與 diff check 全數 `PASS`。這些仍只支持工程行為與顯示一致性；真人是否不再誤解為五步進度、screen reader 實際公告品質、PR CI、公開部署與 served-content 尚未由本輪建立證據。
+
+## 2026-10-03｜Learning Task Context v68 顯示契約與映射矩陣
+
+本輪把全域「任務類型」與題內「目前狀態」分開；不是把 S1–S5 換成另一套 evidence taxonomy，也不建立五個可任意跳轉的新路由。Core 側欄使用「課程／練習／到期複習／延後再判／局面應用」標示目前任務來源，題目上方另保留「先看懂／自己判斷／提示後待作答／修正重算／隔時原題再判／首次或七天後流程試行」等精確狀態。「查看學習流程」仍說明看懂、作答、修正、隔時與應用的證據順序。
+
+以下 P0–P5 是本次 Learning Task Context 工作包，不沿用其他研究或 Advanced roadmap 的同名 P0–P5：
+
+| 優先級 | 完成條件 | 狀態 |
+|---|---|---|
+| P0 | 固定五個任務名稱、顯示契約、權威條件與映射矩陣；區分任務類型和題內流程。 | COMPLETE |
+| P1 | Core 側欄與 badge 由既有 runtime state 衍生：短講／課程導入顯示課程，按「開始本課練習」後立即切到練習；只有一個目前任務，不新增持久化狀態。 | COMPLETE |
+| P2 | 反證分岔完整：課程→練習、新題／錯題、到期原題、七天後 follow-up、application、local SGF 不得互相冒充。 | COMPLETE |
+| P3 | 分批同步首頁說明、Advanced、經典棋形館與自由棋盤；清除 Advanced learner-facing「流程檢查」舊稱，立即項目稱練習／換形再判，實際延後項目才稱延後再判。 | COMPLETE |
+| P4 | 靜態契約、狀態反證、完整 Edge UI、Edge smoke、桌機／手機／作答後截圖及無 overflow 檢查。 | COMPLETE |
+| P5 | 更新 current-truth 文件、發布快取契約、formal candidate／gate／evidence 綁定並精確回報 PASS／FAIL／ERROR／未驗證項目。 | COMPLETE |
+
+| 權威條件 | 任務類型 | 題內狀態／邊界 |
+|---|---|---|
+| 正常 Core，`lessonIntroPending=true` | 課程 | 正在看本課短講／示範；尚未進入題目作答。 |
+| 正常 Core，短講結束且 `lessonIntroPending=false` | 練習 | 按「開始本課練習」後切換；首答、提示、重試與完成當題均維持練習。 |
+| `reviewMode`、`new_practice_item`、`immediate_unseen_variant_after_error`、baseline pilot | 練習 | 錯題重算、新練習、立即換形與首次流程試行均不得冒充到期或延後。 |
+| `externalMode=scheduled` 且 selection reason=`scheduled_review_due` | 到期複習 | 同一已曝光原題到期後重新判斷；不因有時間間隔就冒充不同局面的延後檢查。 |
+| evaluation batch role=`followup`，或 Advanced delayed policy 已達實際 due | 延後再判 | 保存實際間隔；公開流程仍非 formal unseen／Independent Evaluation。 |
+| `externalMode=application` 的固定低線索 probe | 局面應用 | 固定應用與自然實戰、SGF 分流；局部成功不等於完整棋力。 |
+| `externalMode=local_sgf`、`live-game.html` | 練習／各自明確名稱 | SGF 稱棋譜單點復盤；自由棋盤稱練習。不能按 9×9／19×19 尺寸自動升格局面應用。 |
+
+顯示契約：任務列表只有一個 `aria-current`，不使用序號、連線或前項完成勾勾；題目 badge 採「目前任務：類型 · 題內狀態」。短講／課程導入顯示課程，按「開始本課練習」後側欄與 badge 同步切到練習。獨立頁只顯示精簡 task-context chip，不寫 Core 進度。沒有 due／未達 delay 時不得製造可執行任務。任務類型為既有狀態的 pure presentation mapping，不持久化、不 migration；rollback 還原 v67 顯示層即可。UI version `learner-workspace-v68`；candidate `formal-teaching-candidate-2026-10-03-c`／`fnv1a32-js16-f4a5abb7`。真人是否理解五詞差異仍為 `NOT_TESTED`。
+
+v68 工程驗證：反證涵蓋正常課程、錯題／新練習／立即換形、到期原題、七天後 pilot、固定低線索 application、local SGF、Advanced 立即／延後項目與自由棋盤；Edge 確認按「開始本課練習」後，側欄 active task 由課程切為練習、badge 顯示「目前任務：練習 · 自己判斷」，且同時間只有一個任務類型 `aria-current=true`；Advanced learner-facing 頁面不再出現「流程檢查」。57 份非瀏覽器測試／611 項、Sabaki oracle 7 項、完整 Edge UI、Edge smoke、KaTrain autodiscovery、repository boundary、candidate fingerprint、teaching gate report、181 份 JavaScript／3 份 PowerShell syntax 與 diff check 全數 `PASS`。桌機、手機與作答後截圖已人工檢視，未見裁切、重疊或目前狀態失焦。這些仍只支持工程行為與顯示一致性；正式 target-novice comprehension、screen reader spot check、PR CI、公開部署與 served-content 均未由本輪建立證據。
+
 2026-10-02 Learning Workspace v67 Johari color review：公開區保留新版淺側欄降低導航競爭；盲點區修正舊／新版共同沿用的低對比金色 focus（白底約 2.43:1）及 active／passed 同用綠色；隱藏區把「統一色調」重新定義為「統一色彩職責」，避免整頁同色反而抹平 Question→Response→Feedback→Next；未知區保留真人是否更快辨識任務與下一步。實作後主畫布 `#f4f5ef`、Question 白、Response 淡綠；暖金 current/focus、綠 complete/success/next、橙 error/recalculate。焦點與 option control boundary static contrast ≥3:1，正誤另有圖示及文字。UI version `learner-workspace-v67`；candidate `formal-teaching-candidate-2026-10-02-e`／`fnv1a32-js16-a369954a`。Rollback 為移除 v67 semantic-tone override 並另立 candidate；真人 usability／accessibility `NOT_TESTED`，learning effect `NOT_MEASURED`。
 
 v67 工程驗證：57 份非瀏覽器測試檔／607 項、完整 Edge UI、Edge smoke、320px／375px／200% reflow、candidate、gate report、repository boundary、syntax 與 diff check `PASS`；更新後桌面棋盤題、純文字題、作答後與手機截圖已人工檢視。main Verify #939 與 Pages #516 已 `PASS`，served-content gate 已讀回公開 v67；初次 Verify #938 暴露的 9 個審查資產 manifest 漏列已以 282／282 exact-match 修正。這只確認角色色、層級、發布內容與操作未回歸；真人能否更快找到問題、結果與下一步仍 `NOT_TESTED`。

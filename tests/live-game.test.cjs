@@ -319,7 +319,9 @@ test("空交叉點的 focus circle 必須保持透明，避免整盤被畫成黑
 
 test("棋盤頁用版本參數載入 live CSS，避免瀏覽器沿用舊渲染樣式", () => {
   const html = fs.readFileSync(path.join(__dirname, "..", "live-game.html"), "utf8");
-  assert.match(html, /live-game\.css\?v=live-game-ui-v13/);
+  assert.match(html, /live-game\.css\?v=live-game-ui-v14/);
+  assert.match(html, /目前任務<\/span><strong>練習<\/strong>/);
+  assert.match(html, /棋盤尺寸不代表已進入局面應用/);
 });
 
 test("19 路 renderer 載入共用 geometry contract 且不再使用固定 18-unit 棋子下限", () => {
