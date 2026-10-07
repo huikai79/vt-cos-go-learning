@@ -341,7 +341,7 @@ async function main() {
     assert.deepEqual(landingMobile, { overflow: false, siteIntroVisible: true, sidebarDisplay: "none", topbarDisplay: "none", pathColumns: 1 });
     // Check both sides of the responsive breakpoint, including the restored
     // capability list and disclaimer that must remain clear of decorative art.
-    for (const width of [320, 390, 760, 768, 1024, 1440, 1920]) {
+    for (const width of [320, 390, 760, 768, 1024, 1142, 1229, 1280, 1440, 1600, 1920, 2560]) {
       await command(socket, "Emulation.setDeviceMetricsOverride", { width, height: 960, deviceScaleFactor: 1, mobile: width <= 760 });
       const layout = await evaluate(socket, `(() => {
         const artwork = document.querySelector('.intro-philosophy-capability').getBoundingClientRect();
@@ -349,14 +349,32 @@ async function main() {
           const text = element.getBoundingClientRect();
           return text.left < artwork.right - 1 && text.right > artwork.left + 1 && text.top < artwork.bottom - 1 && text.bottom > artwork.top + 1;
         });
+        const trustSecond = document.querySelector('.intro-trust-row > span + span');
+        const trustConnector = getComputedStyle(trustSecond, '::before');
+        const methodCards = [...document.querySelectorAll('.intro-method-grid article')];
+        const methodCopyContained = methodCards.every(card => {
+          const cardRect = card.getBoundingClientRect();
+          return [...card.querySelectorAll('strong, p')].every(node => {
+            const rect = node.getBoundingClientRect();
+            return rect.left >= cardRect.left - 1 && rect.right <= cardRect.right + 1
+              && rect.top >= cardRect.top - 1 && rect.bottom <= cardRect.bottom + 1;
+          });
+        });
+        const methodCopyHasForcedBreaks = [...document.querySelectorAll('.intro-method-grid p')].some(node => node.querySelector('br'));
         return { width: innerWidth, scrollWidth: document.documentElement.scrollWidth,
           textOverlapsArtwork,
+          trustConnectorContent: trustConnector.content,
+          methodCopyContained,
+          methodCopyHasForcedBreaks,
           entryButtonsFit: [...document.querySelectorAll('.intro-path-action')].every(button => {
             const rect = button.getBoundingClientRect(); return rect.width > 0 && rect.left >= 0 && rect.right <= innerWidth + 1;
           }) };
       })()`);
       assert.ok(layout.scrollWidth <= layout.width + 1, `${width}px landing horizontal overflow: ${JSON.stringify(layout)}`);
       assert.equal(layout.entryButtonsFit, true, `${width}px course entry button outside viewport`);
+      assert.ok(layout.trustConnectorContent === 'none' || layout.trustConnectorContent === 'normal', `${width}px trust connector still overlays copy: ${JSON.stringify(layout)}`);
+      assert.equal(layout.methodCopyContained, true, `${width}px method copy escapes card: ${JSON.stringify(layout)}`);
+      assert.equal(layout.methodCopyHasForcedBreaks, false, `${width}px method copy still contains forced line breaks: ${JSON.stringify(layout)}`);
       if (width <= 760) assert.equal(layout.textOverlapsArtwork, false, `${width}px philosophy text overlaps stones: ${JSON.stringify(layout)}`);
     }
     const retainedDisclosures = await evaluate(socket, `(() => {
