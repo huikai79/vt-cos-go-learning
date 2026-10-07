@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const PROTOCOL_ID = "go-formal-teaching-candidate-v1";
-const ASSET_SET_VERSION = 12;
+const ASSET_SET_VERSION = 13;
 const ASSET_PATHS = Object.freeze([
   "index.html",
   "styles.css",
