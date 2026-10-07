@@ -1,3 +1,7 @@
+## 2026-10-07｜Homepage manual follow-up FINAL
+
+兩個人工回報問題已納入 regression 並完成工程閉環：trust row 的舊負 offset 箭頭已移除；四步方法卡取消固定高度與作者硬 `<br>`，文案依可用欄寬自然換行，卡間箭頭縮小並留在 gap。PR #147 run #966 的 Windows browser suite 已在 1142／1229 等問題寬度確認 trust connector 不再生成、四卡文字都留在各自 card bounding box 內，且全頁無水平 overflow；同一套七頁 production geometry matrix、Edge smoke、repository boundary、Node 與 Sabaki 亦全部 PASS。未觀察到其他六個正式頁面出現同型自動化 failure；這不取代使用者逐頁人工視覺檢視，也不構成真人 usability／accessibility 證據。
+
 ## 2026-10-07｜Homepage manual follow-up：trust arrow / method-card overflow
 
 〔人工確認〕兩張實際首頁截圖揭露先前自動 gate 未覆蓋的次層問題：① trust row 的舊 mockup `::before` 箭頭使用負向 left offset，直接壓在左側文字附近；② 四步方法卡以固定高度配合手動 `<br>`，第二卡文案超出卡片下緣。這兩者都不是 document horizontal overflow，因此舊 scrollWidth／Hero sibling PASS 無法否定。
