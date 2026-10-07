@@ -27,7 +27,11 @@ async function connectToPage(profile, expectedPage) {
   let port;
   for (let retry = 0; retry < 100; retry += 1) {
     if (fs.existsSync(marker)) {
-      port = Number(fs.readFileSync(marker, "utf8").split(/\r?\n/, 1)[0]);
+      try {
+        port = Number(fs.readFileSync(marker, "utf8").split(/\r?\n/, 1)[0]);
+      } catch (error) {
+        if (!error || !["EBUSY", "ENOENT"].includes(error.code)) throw error;
+      }
       if (Number.isInteger(port) && port > 0) break;
     }
     await delay(100);
