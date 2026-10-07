@@ -1,3 +1,5 @@
+2026-10-07 Navigation & Readability follow-up：人工 screenshot 顯示上一輪 geometry gate 尚未覆蓋「深底文字對比」與「長頁導航持續可用性」。本輪新增三個 adjacent-boundary probes：Core sidebar 受影響文字 computed contrast >=4.5；Global Observatory 滾動後 site header 仍 sticky 且 context nav 位於其下；七個正式長頁都只有一個 44px+ 回頂控制，固定在 viewport 並能回到頁頂。先以 run #975 browser gate 驗修正，再重凍 candidate v15；新 binding CI 全綠前不 merge／deploy，不以自動對比／導航 PASS 取代真人 accessibility 或 usability。
+
 2026-10-07 Homepage Content-flow follow-up FINAL：人工 screenshot 觸發的 trust-arrow／method-card overflow 修復已在 PR #147 run #966 全套 CI PASS。新增 adjacent-boundary probes 成為持續 regression：1142／1229 實際問題寬度、既有 responsive widths、200% text 與七頁 production hero geometry 均保留。工程 gate 已通過；下一步只能是人工檢視／是否接受此版，未經使用者確認不 merge／deploy。
 
 2026-10-07 Homepage Content-flow follow-up：人工 screenshot 成為新的 adjacent-boundary probe，證明「Hero 不碰撞」不足以代表首頁所有文字安全。新增兩個 targeted negative tests：trust connector 不得產生 overlay pseudo-content；method-card 文字在 1142／1229 等實際問題寬度與既有 responsive widths 必須完全落在 card bounding box 內，且不得靠作者手動 <br> 維持版面。run #958 browser path PASS 後才重凍 candidate v14；若新 binding CI FAIL，繼續 fail closed，不降低幾何條件。
