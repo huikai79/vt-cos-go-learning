@@ -1,3 +1,13 @@
+## 2026-10-07｜Full-site production geometry audit v1（進行中）
+
+〔已確認〕使用者 1924×967 實際畫面顯示首頁 Hero 標題侵入右側互動預覽。現有 responsive test 雖覆蓋 1920px，但主要以 document scrollWidth 判斷；兩個元素都留在 viewport 內時仍可能彼此碰撞，因此舊 PASS 不能證明無重疊。
+
+〔根因候選已實作修正〕正式 `experience-system.css` 同時存在 1240px 內容封頂、首頁雙欄 Hero、viewport-based 大標字級，以及共用 `.title-line { white-space: nowrap; }`。本分支將共用 title-line 改回自然換行，首頁 Hero 字級最大值由 5.35rem 收斂至 4.6rem 並讓 heading 使用自身欄寬；不使用 margin／z-index 掩蓋碰撞。
+
+〔反回歸〕`tests/ui.test.cjs` 新增 production geometry matrix：首頁、Advanced、Classic、History、Math、Global Observatory、Live 分別在 375／760／1280／1440／1600／1920／2560 及 200% text 檢查 heading clipping、水平 overflow，以及指定 Hero 左右 sibling 的實際 bounding-box collision。這項 gate 專門補足 scrollWidth 無法證明 sibling separation 的盲點。
+
+〔狀態〕JavaScript syntax 靜態解析 PASS；完整 Edge／Windows browser suite 尚待實際執行，因此本輪仍是 `IMPLEMENTED / PENDING_BROWSER_REVALIDATION`，不能宣稱全站重疊問題已修復。正式 candidate 暫不重凍；若任一頁新 gate FAIL，回到該 page-scoped selector 做最小修正，不用全域隱藏或固定高度換取 PASS。
+
 ## 2026-10-05｜Award Presentation v1（local formal promotion）
 
 修正前提：使用者的「盡量不捲動」不等於可裁掉資訊，也不能用 global nowrap 製造新的溢位。新增 `experience-system.css` 作 page-scoped presentation layer：短首頁 Hero 只在寬螢幕保留作者指定行；動態題目、多語名型與 Explore 長標題採 `text-wrap: balance`、`line-break: strict`、合理欄寬與自然換行。Explore／Advanced／Live／Classic 用同一套紙色、深綠、金色、焦點與 reduced-motion 規則，仍保留各頁現有 DOM、控制與 runtime authority。短桌機只收斂無資訊空白，保持 natural document flow；不新增固定高度、第二個 detail scroll 或內容隱藏。首頁的「三入口」與「四步方法」改為對流程與可比較紀錄的描述，移除未被證實的個人學習成效承諾。Core candidate 重凍為 `formal-teaching-candidate-2026-10-05-a`／`fnv1a32-js16-82443b6a`，asset set v11；舊真人回條不得沿用，歷史事件／`uiVersion` 不變。rollback 是本機 pre-promotion snapshot 的指定正式檔還原；本輪工程／視覺檢查不能取代 target novice、screen-reader、formal teaching/evaluation 或 learning-effect evidence。
