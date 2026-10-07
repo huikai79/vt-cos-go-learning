@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-07-c",
-  "frozenAt": "2026-10-07T13:30:00.000Z",
+  "candidateId": "formal-teaching-candidate-2026-10-08-b",
+  "frozenAt": "2026-10-07T22:55:56.819Z",
   "assetSetVersion": 15,
-  "assetFingerprint": "fnv1a32-js16-5d0ca9e4",
+  "assetFingerprint": "fnv1a32-js16-b1f712a9",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -44,5 +44,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-workspace-v70／award-experience-v2／navigation-accessibility follow-up（承接 2026-10-07-b）。依使用者人工截圖修正三項 learner-facing presentation 問題：Core 深色 sidebar 中 legacy 淺底樣式造成任務類型與進階資料文字低對比；Global Observatory 的上方站點 header 原本非 sticky，捲動後只剩主題列；七個正式 public product surfaces 缺一致的一鍵回頂控制。修正只調整 presentation：以 experience-system 最終層明確覆寫 sidebar 任務／診斷文字為深底可讀色；Global Observatory desktop site-header 改為 sticky 並與 context nav 保持堆疊；首頁、Advanced、Classic Shapes、History、Math、Global Observatory、Live Game 都加入 44px 以上固定回頂連結。browser regression 新增 Core sidebar computed contrast >=4.5、Observatory 捲動後 header 仍固定且 context nav 不覆蓋、七頁回頂控制唯一／可見／可達頁頂。PR #147 run #975 的 Windows UI、Edge smoke、KaTrain autodiscovery、repository boundary、Sabaki oracle 全部 PASS；Node 該輪僅因 critical asset 變更後舊 candidate fingerprint 預期失配。這是 presentation-only 修復，不改 rules、正式題目、first response、retry、hint、exposure、scoring、scheduler、KC、event schema、formal eligibility、storage 或歷史 learner evidence。舊 candidate 真人回條不得沿用；工程 PASS 不等於真人 usability／accessibility、formal evaluation validity 或 learning effect。"
+  "scopeNote": "learner-workspace-v70／award-experience-v4／UI contract repair（2026-10-08）。依使用者截圖與 source／computed-style 反證，修正三個 learner-facing presentation 失配：Core sidebar 的「核心課程」label 原以 pale pill background 配上後續規則的 pale foreground，文字實際存在但接近不可見；首頁 hero 仍承接 legacy fixed height，使右側互動預覽底部可能在容器外；History、Math、Global Observatory 的上方導覽採不同 DOM／路由層級，造成全站與 Explore context 角色混雜。修正只調整 presentation：Core label 在自身 pale surface 上取得明確深綠前景；首頁 preview 改自然高度，棋盤最大寬度為 420px；三個 Explore 頁共用完整 VT-COS｜悟之一手 lockup、全站導覽與核心課程 action，深綠 context nav 只保留歷史鏡片、數學關係、全球觀察。首頁、Core、Live Game 亦改採相同深／淺棋子重疊結構的背景 variants。browser regression 覆蓋 label 自身 painted surface contrast、首頁 preview 兩種狀態在 320–2560px 與 200% text 的 containment，以及 Explore 兩層 nav 的唯一 current／無重複 destination／共享 Core action 契約。asset set v15 的 frozen critical learner surface 仍只含首頁／Core assets；其他 public presentation files 由 release manifest boundary 管理。這是 presentation-only 修復，不改 rules、正式題目、first response、retry、hint、exposure、scoring、scheduler、KC、event schema、formal eligibility、storage 或歷史 learner evidence。舊 candidate 的任何真人回條不得沿用；工程檢查不等於真人 usability／accessibility、formal evaluation validity 或 learning effect。"
 }

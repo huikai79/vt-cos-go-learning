@@ -1,3 +1,17 @@
+## 2026-10-08｜UI contract repair（本機工程驗證 PASS）
+
+修正前提：把 Core 左側 pale pill 的空白先理解成「內容未載入」或單純留白是不成立的；來源 DOM 一直有「核心課程」文字。其後規則卻把它的前景設為近似 pale 色，舊測試又以外層深色 sidebar 當對比背景，因而沒有檢出文字在自身 surface 上近乎不可見。
+
+修正原因：這不是靠截圖推定，而是由 selector 疊加與元素自身 painted background 可反證。首頁則是 legacy fixed height 仍套用到新版 preview；因此「只把棋盤縮小」不是充分修復，容器必須能隨完整 preview 自然延展。Explore 三頁的上方導覽差異亦不是已證實的刻意設計：HTML 顯示它們先前使用不同 header 結構，且 Global 的全站／context destination 有重複。
+
+修正後判斷：Core label 現在直接以自身 pale surface 配深綠前景；首頁 preview 改 natural flow，棋盤上限收至 420px；History、Math、Global Observatory 使用同一個上層全站導覽與完整 VT-COS｜悟之一手 lockup，下層深綠列只呈現 Explore context。這是 presentation contract，沒有改動課程內容、題目、首答／重試、曝光、評分、scheduler、KC、事件、storage、formal eligibility 或歷史 learner evidence。
+
+〔反回歸範圍〕browser contract 會量測 Core label 自己的 painted surface、首頁 preview 在兩種狀態下於 320／375／760／761／900／1050／1051／1280／1440／1600／1920／1924／2560px 及 200% text 的 containment，並檢查三個 Explore 頁的全站／context link 集合、唯一 current state 與不重複 destination。人工截圖檢視只作工程視覺 sanity check，不替代 target-user usability、真人 accessibility 或學習成效證據。
+
+〔尚未由本節證明〕不同瀏覽器字型度量、真人對兩層導航的理解、螢幕閱讀器實際體驗及任何教學成效；取得這些資料後，才需要重新評估其對 usability 或正式教學 gate 的影響。
+
+〔本機驗證〕candidate b、CI-equivalent 非瀏覽器 Node contracts、pinned Sabaki oracle、browser UI regression、Edge smoke 與 repository boundary 均 PASS；boundary 為 manifest／tracked files 354／354 exact-match。這是本機工程證據，不代表 PR CI、公開部署、真人 usability／accessibility、formal teaching／evaluation 或 learning effect；本輪未 merge、push 或 deploy。
+
 ## 2026-10-07｜Navigation & readability follow-up
 
 〔人工確認〕Core sidebar 的問題不是字體本身，而是 `styles.css` 後期「淺 sidebar」規則與目前 `experience-system.css` 深色正式 presentation 並存；任務類型與進階資料區的 `#294536`、`#315b3f`、`#556f5a` 等色落在深綠背景時只有約 1.4–2.6:1，與截圖中「很難看清／近乎消失」一致。正式層現直接覆寫受影響 strong/small/intro/label 色，不改 DOM 或 learner state；新增 browser computed contrast gate，受影響文字最低要求 4.5:1。

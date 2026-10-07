@@ -404,8 +404,8 @@ async function main() {
     assert.deepEqual(landingStart, { siteIntroHidden: true, introOpen: true, introTitle: "現在先學：認識氣", hash: "#core" });
     const sidebarContrast = await evaluate(socket, `(() => {
       const parse = (value) => {
-        const match = value.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/);
-        return match ? {r:Number(match[1]), g:Number(match[2]), b:Number(match[3])} : null;
+        const match = value.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*([\\d.]+))?\\)/);
+        return match ? {r:Number(match[1]), g:Number(match[2]), b:Number(match[3]), a:match[4] === undefined ? 1 : Number(match[4])} : null;
       };
       const channel = (value) => {
         const normalized = value / 255;
@@ -417,22 +417,29 @@ async function main() {
         return (values[0] + 0.05) / (values[1] + 0.05);
       };
       const sidebar = document.querySelector('.sidebar');
-      const background = parse(getComputedStyle(sidebar).backgroundColor) || {r:11,g:47,b:39};
-      const selectors = [
-        '.sidebar-task-guide > summary',
-        '.sidebar-task-types strong',
-        '.sidebar-task-types small',
-        '.advanced-sidebar-tools > summary',
-        '.advanced-sidebar-tools > summary small',
-        '.advanced-sidebar-intro',
-        '.advanced-priority-label'
+      const sidebarBackground = parse(getComputedStyle(sidebar).backgroundColor) || {r:11,g:47,b:39,a:1};
+      const targets = [
+        { selector: '.sidebar > .side-label', surface: '.sidebar > .side-label', name: 'core-course-label' },
+        { selector: '.sidebar-task-guide > summary', surface: '.sidebar', name: 'task-guide' },
+        { selector: '.sidebar-task-types strong', surface: '.sidebar', name: 'task-strong' },
+        { selector: '.sidebar-task-types small', surface: '.sidebar', name: 'task-small' },
+        { selector: '.advanced-sidebar-tools > summary', surface: '.sidebar', name: 'advanced-tools' },
+        { selector: '.advanced-sidebar-tools > summary small', surface: '.sidebar', name: 'advanced-tools-small' },
+        { selector: '.advanced-sidebar-intro', surface: '.sidebar', name: 'advanced-intro' },
+        { selector: '.advanced-priority-label', surface: '.sidebar', name: 'advanced-priority' }
       ];
-      const audited = selectors.flatMap(selector => [...document.querySelectorAll(selector)]).map(node => ({
-        selector: node.matches('.sidebar-task-types strong') ? 'task-strong' : node.matches('.sidebar-task-types small') ? 'task-small' : node.className || node.tagName,
-        color: getComputedStyle(node).color,
-        contrast: ratio(parse(getComputedStyle(node).color), background)
+      const audited = targets.flatMap(({selector, surface, name}) => [...document.querySelectorAll(selector)].map(node => {
+        const surfaceNode = node.closest(surface) || document.querySelector(surface) || sidebar;
+        const surfaceColor = parse(getComputedStyle(surfaceNode).backgroundColor);
+        const background = surfaceColor && surfaceColor.a > 0 ? surfaceColor : sidebarBackground;
+        return {
+          selector: name,
+          color: getComputedStyle(node).color,
+          background: getComputedStyle(surfaceNode).backgroundColor,
+          contrast: ratio(parse(getComputedStyle(node).color), background)
+        };
       }));
-      return { background: getComputedStyle(sidebar).backgroundColor, audited, minimum: Math.min(...audited.map(item => item.contrast)) };
+      return { sidebarBackground: getComputedStyle(sidebar).backgroundColor, audited, minimum: Math.min(...audited.map(item => item.contrast)) };
     })()`);
     assert.ok(sidebarContrast.minimum >= 4.5, `core sidebar low contrast: ${JSON.stringify(sidebarContrast)}`);
     const steppedDemo = await evaluate(socket, `(() => {
@@ -2332,7 +2339,7 @@ async function main() {
         return (values[0] + 0.05) / (values[1] + 0.05);
       };
       const auditSelectors = [
-        '.history-brand small','.history-kicker','.section-head>span','.badge-grid p','.evidence-badge',
+        '.experience-wordmark small','.history-kicker','.section-head>span','.badge-grid p','.evidence-badge',
         '.question-number','.detail-body','.evidence-timeline p','.compare-head','.story-grid p',
         '.frontier-grid p','.source-audit-date','.source-list span','.history-cta>div>span','.history-cta p','footer'
       ];
@@ -2479,7 +2486,7 @@ async function main() {
       { name: "observatory", url: observatoryPage, heading: ".hero h1", left: ".hero-copy", right: ".hero-note" },
       { name: "live", url: livePage, heading: "#live-title", left: ".live-intro > div", right: ".live-boundary" }
     ];
-    const geometryWidths = [375, 760, 1280, 1440, 1600, 1920, 2560];
+    const geometryWidths = [320, 375, 760, 761, 900, 1050, 1051, 1280, 1440, 1600, 1920, 1924, 2560];
     for (const item of geometryPages) {
       await command(socket, "Page.navigate", { url: item.url });
       for (let retry = 0; retry < 30; retry += 1) {
@@ -2492,6 +2499,48 @@ async function main() {
       for (const width of geometryWidths) {
         await command(socket, "Emulation.setDeviceMetricsOverride", { width, height: width <= 760 ? 812 : 1000, deviceScaleFactor: 1, mobile: width <= 760 });
         const state = await evaluate(socket, `(() => {
+          const rect = (node) => {
+            const value = node.getBoundingClientRect();
+            return {left:value.left, right:value.right, top:value.top, bottom:value.bottom, width:value.width, height:value.height};
+          };
+          const homePreviewStates = ${JSON.stringify(item.name === "home")} ? (() => {
+            const preview = document.querySelector('.home-experience-preview');
+            const hero = document.querySelector('.intro-hero');
+            const copy = document.querySelector('.intro-hero-copy');
+            const nextSection = document.querySelector('.intro-learning-path');
+            const toggle = preview.querySelector('[data-home-preview-toggle]');
+            const measure = () => {
+              const previewRect = rect(preview);
+              const pieces = [
+                preview.querySelector('.home-preview-meta'),
+                preview.querySelector('.home-preview-board-shell'),
+                ...preview.querySelectorAll('.home-preview-caption > div'),
+                preview.querySelector('.home-preview-toggle'),
+                preview.querySelector('.home-preview-boundary')
+              ].filter(node => node && getComputedStyle(node).display !== 'none' && getComputedStyle(node).visibility !== 'hidden');
+              const heroRect = rect(hero);
+              const copyRect = rect(copy);
+              const nextRect = nextSection ? rect(nextSection) : null;
+              return {
+                contentContained: pieces.every(node => {
+                  const piece = rect(node);
+                  return piece.left >= previewRect.left - 1 && piece.right <= previewRect.right + 1
+                    && piece.top >= previewRect.top - 1 && piece.bottom <= previewRect.bottom + 1;
+                }),
+                noInternalScroll: preview.scrollHeight <= preview.clientHeight + 1,
+                heroContainsContent: heroRect.bottom >= copyRect.bottom - 1 && heroRect.bottom >= previewRect.bottom - 1,
+                nextAfterHero: !nextRect || nextRect.top >= heroRect.bottom - 1,
+                preview: previewRect,
+                hero: heroRect,
+                next: nextRect
+              };
+            };
+            const before = measure();
+            toggle.click();
+            const after = measure();
+            toggle.click();
+            return {before, after};
+          })() : null;
           const heading = document.querySelector(${JSON.stringify(item.heading)});
           const backToTop = document.querySelector('.back-to-top');
           const left = document.querySelector(${JSON.stringify(item.left)}).getBoundingClientRect();
@@ -2507,6 +2556,7 @@ async function main() {
             backToTopCount: document.querySelectorAll('.back-to-top').length,
             backToTopHref: backToTop?.getAttribute('href') || null,
             backToTopFits: Boolean(topRect && topRect.width >= 44 && topRect.height >= 44 && topRect.left >= -1 && topRect.right <= innerWidth + 1 && topRect.top >= -1 && topRect.bottom <= innerHeight + 1),
+            homePreviewStates,
             left: {left:left.left,right:left.right,top:left.top,bottom:left.bottom},
             right: {left:right.left,right:right.right,top:right.top,bottom:right.bottom}
           };
@@ -2517,6 +2567,14 @@ async function main() {
         assert.equal(state.backToTopCount, 1, `${item.name} ${width}px missing or duplicate back-to-top control`);
         assert.equal(state.backToTopHref, "#page-top", `${item.name} ${width}px back-to-top target mismatch`);
         assert.equal(state.backToTopFits, true, `${item.name} ${width}px back-to-top control outside viewport: ${JSON.stringify(state)}`);
+        if (state.homePreviewStates) {
+          for (const [previewState, preview] of Object.entries(state.homePreviewStates)) {
+            assert.equal(preview.contentContained, true, `home ${width}px ${previewState} preview content escapes its card: ${JSON.stringify(preview)}`);
+            assert.equal(preview.noInternalScroll, true, `home ${width}px ${previewState} preview has an internal vertical overflow: ${JSON.stringify(preview)}`);
+            assert.equal(preview.heroContainsContent, true, `home ${width}px ${previewState} preview or copy escapes hero flow: ${JSON.stringify(preview)}`);
+            assert.equal(preview.nextAfterHero, true, `home ${width}px ${previewState} next section intrudes into hero: ${JSON.stringify(preview)}`);
+          }
+        }
       }
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
       const backToTopBehavior = await evaluate(socket, `(async () => {
@@ -2538,11 +2596,37 @@ async function main() {
         const heading = document.querySelector(${JSON.stringify(item.heading)});
         const left = document.querySelector(${JSON.stringify(item.left)}).getBoundingClientRect();
         const right = document.querySelector(${JSON.stringify(item.right)}).getBoundingClientRect();
+        const homePreview = ${JSON.stringify(item.name === "home")} ? (() => {
+          const preview = document.querySelector('.home-experience-preview');
+          const hero = document.querySelector('.intro-hero');
+          const copy = document.querySelector('.intro-hero-copy');
+          const nextSection = document.querySelector('.intro-learning-path');
+          const previewRect = preview.getBoundingClientRect();
+          const heroRect = hero.getBoundingClientRect();
+          const nextRect = nextSection?.getBoundingClientRect();
+          const pieces = [
+            preview.querySelector('.home-preview-meta'),
+            preview.querySelector('.home-preview-board-shell'),
+            ...preview.querySelectorAll('.home-preview-caption > div'),
+            preview.querySelector('.home-preview-toggle'),
+            preview.querySelector('.home-preview-boundary')
+          ].filter(node => node && getComputedStyle(node).display !== 'none' && getComputedStyle(node).visibility !== 'hidden');
+          return {
+            contentContained: pieces.every(node => {
+              const piece = node.getBoundingClientRect();
+              return piece.left >= previewRect.left - 1 && piece.right <= previewRect.right + 1 && piece.top >= previewRect.top - 1 && piece.bottom <= previewRect.bottom + 1;
+            }),
+            noInternalScroll: preview.scrollHeight <= preview.clientHeight + 1,
+            heroContainsContent: heroRect.bottom >= copy.getBoundingClientRect().bottom - 1 && heroRect.bottom >= previewRect.bottom - 1,
+            nextAfterHero: !nextRect || nextRect.top >= heroRect.bottom - 1
+          };
+        })() : null;
         const result = {
           width: innerWidth,
           scrollWidth: document.documentElement.scrollWidth,
           headingClipped: heading.scrollWidth > heading.clientWidth + 1,
-          collision: left.left < right.right - 1 && left.right > right.left + 1 && left.top < right.bottom - 1 && left.bottom > right.top + 1
+          collision: left.left < right.right - 1 && left.right > right.left + 1 && left.top < right.bottom - 1 && left.bottom > right.top + 1,
+          homePreview
         };
         document.documentElement.style.fontSize = "";
         return result;
@@ -2550,26 +2634,77 @@ async function main() {
       assert.ok(enlarged.scrollWidth <= enlarged.width + 1, `${item.name} 200% text horizontal overflow: ${JSON.stringify(enlarged)}`);
       assert.equal(enlarged.headingClipped, false, `${item.name} 200% text heading clipped: ${JSON.stringify(enlarged)}`);
       assert.equal(enlarged.collision, false, `${item.name} 200% text hero sibling collision: ${JSON.stringify(enlarged)}`);
+      if (enlarged.homePreview) {
+        assert.equal(enlarged.homePreview.contentContained, true, `home 200% text preview content escapes its card: ${JSON.stringify(enlarged)}`);
+        assert.equal(enlarged.homePreview.noInternalScroll, true, `home 200% text preview has an internal vertical overflow: ${JSON.stringify(enlarged)}`);
+        assert.equal(enlarged.homePreview.heroContainsContent, true, `home 200% text preview or copy escapes hero flow: ${JSON.stringify(enlarged)}`);
+        assert.equal(enlarged.homePreview.nextAfterHero, true, `home 200% text next section intrudes into hero: ${JSON.stringify(enlarged)}`);
+      }
     }
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
 
+    const exploreHeaderPages = [
+      { name: "history", url: historyPage, current: "history.html" },
+      { name: "math", url: mathPage, current: "math.html" },
+      { name: "observatory", url: observatoryPage, current: "global-go-observatory.html" }
+    ];
+    for (const item of exploreHeaderPages) {
+      await command(socket, "Page.navigate", { url: item.url });
+      for (let retry = 0; retry < 30; retry += 1) {
+        const ready = await evaluate(socket, "Boolean(document.querySelector('.explore-page .experience-topbar .experience-wordmark') && document.querySelector('.experience-context-nav'))");
+        if (ready) break;
+        await delay(100);
+        if (retry === 29) assert.fail(`${item.name} shared Explore header did not become ready`);
+      }
+      const headerContract = await evaluate(socket, `(() => {
+        const header = document.querySelector('.explore-page .experience-topbar');
+        const globalLinks = [...header.querySelectorAll('nav a')].map(link => link.getAttribute('href'));
+        const contextLinks = [...document.querySelectorAll('.experience-context-nav a')];
+        const contextHrefs = contextLinks.map(link => link.getAttribute('href'));
+        return {
+          headerCount: document.querySelectorAll('.explore-page .experience-topbar').length,
+          wordmark: header.querySelector('.experience-wordmark strong')?.textContent.trim(),
+          globalLabel: header.querySelector('nav')?.getAttribute('aria-label'),
+          globalLinks,
+          primaryGlobalLink: header.querySelector('nav a.primary-link')?.getAttribute('href') || null,
+          contextHrefs,
+          contextCurrent: contextLinks.filter(link => link.getAttribute('aria-current') === 'page').map(link => link.getAttribute('href')),
+          duplicateAcrossNavigationLayers: globalLinks.filter(href => contextHrefs.includes(href))
+        };
+      })()`);
+      assert.equal(headerContract.headerCount, 1, `${item.name} must expose one shared Explore global header`);
+      assert.equal(headerContract.wordmark, "VT-COS｜悟之一手", `${item.name} first visible product lockup is incomplete`);
+      assert.equal(headerContract.globalLabel, "全站導覽");
+      assert.deepEqual(headerContract.globalLinks, ["index.html", "index.html#core", "advanced.html"], `${item.name} global navigation must use the shared routes`);
+      assert.equal(headerContract.primaryGlobalLink, "index.html#core", `${item.name} shared global header must retain the Core course action`);
+      assert.deepEqual(headerContract.contextHrefs, ["history.html", "math.html", "global-go-observatory.html"]);
+      assert.deepEqual(headerContract.contextCurrent, [item.current], `${item.name} context navigation must expose exactly one current topic`);
+      assert.deepEqual(headerContract.duplicateAcrossNavigationLayers, [], `${item.name} must not duplicate an Explore topic in global navigation`);
+    }
+
     await command(socket, "Page.navigate", { url: observatoryPage });
     for (let retry = 0; retry < 30; retry += 1) {
-      const ready = await evaluate(socket, "Boolean(document.querySelector('.observatory-page .site-header') && document.querySelector('.experience-context-nav'))");
+      const ready = await evaluate(socket, "Boolean(document.querySelector('.observatory-page .experience-topbar') && document.querySelector('.experience-context-nav') && document.querySelectorAll('.country-card').length >= 8)");
       if (ready) break;
       await delay(100);
       if (retry === 29) assert.fail("observatory sticky header did not become ready");
     }
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
     const observatorySticky = await evaluate(socket, `(async () => {
-      scrollTo(0, Math.min(900, document.documentElement.scrollHeight - innerHeight));
+      const targetScrollTop = Math.min(900, document.documentElement.scrollHeight - innerHeight);
+      document.documentElement.style.scrollBehavior = "auto";
+      scrollTo(0, targetScrollTop);
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      const header = document.querySelector('.site-header');
+      const header = document.querySelector('.experience-topbar');
       const context = document.querySelector('.experience-context-nav');
       const h = header.getBoundingClientRect();
       const n = context.getBoundingClientRect();
       return {
         scrollY,
+        documentHeight: document.documentElement.scrollHeight,
+        bodyHeight: document.body.scrollHeight,
+        scrollingElement: document.scrollingElement?.tagName || null,
+        countryCards: document.querySelectorAll('.country-card').length,
         position: getComputedStyle(header).position,
         headerTop: h.top,
         headerBottom: h.bottom,

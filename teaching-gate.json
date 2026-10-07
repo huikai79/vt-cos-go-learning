@@ -38,8 +38,8 @@
     "lessonContentReview": "awaiting_external_receipt"
   },
   "formalTeachingCandidateProtocolId": "go-formal-teaching-candidate-v1",
-  "formalTeachingCandidateId": "formal-teaching-candidate-2026-10-07-c",
-  "formalTeachingCandidateFingerprint": "fnv1a32-js16-5d0ca9e4",
+  "formalTeachingCandidateId": "formal-teaching-candidate-2026-10-08-b",
+  "formalTeachingCandidateFingerprint": "fnv1a32-js16-b1f712a9",
   "lessonContentReviewProtocolId": "go-independent-lesson-content-review-v1",
   "lessonContentFingerprint": "fnv1a32-d1f8b40f"
 }

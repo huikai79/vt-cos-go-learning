@@ -779,7 +779,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
   assert.match(html, /styles\.css\?v=learner-workspace-v70/);
-  assert.match(html, /experience-system\.css\?v=award-experience-v2/);
+  assert.match(html, /experience-system\.css\?v=award-experience-v4/);
   assert.match(html, /homepage-experience\.js\?v=award-experience-v2/);
   assert.match(html, /class="intro-hero-art home-experience-preview" data-home-preview/);
   assert.match(html, /class="home-preview-board"/);
@@ -804,7 +804,8 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   assert.match(html, /核心課程 <span class="eyebrow-dot">·<\/span> <span id="top-course-context">/);
   assert.doesNotMatch(html, /PERSONAL GO STUDIO · OFFLINE/);
   assert.match(html, /VT-COS · 個人圍棋練習/);
-  assert.match(html, /VT-COS｜學習引擎底盤/);
+  assert.match(html, /class="brand-mark experience-mark"/);
+  assert.match(html, /VT-COS｜悟之一手/);
   assert.doesNotMatch(html, /\\n\s*<div class="tool-item"/);
   assert.match(html, /id="application-button" type="button">局面應用練習<\/button>/);
   assert.match(css, /--font-zh:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif/);

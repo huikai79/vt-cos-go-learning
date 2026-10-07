@@ -76,6 +76,7 @@
 .learning-page .landing-header,
 .explore-page .history-header,
 .explore-page .site-header,
+.explore-page .experience-topbar,
 .live-page .live-topbar {
   border-bottom-color: var(--experience-line);
 }
@@ -147,7 +148,8 @@
 }
 
 .explore-page .history-header,
-.explore-page .site-header {
+.explore-page .site-header,
+.explore-page .experience-topbar {
   background: rgba(255, 253, 247, .94);
   box-shadow: 0 7px 20px rgba(14, 35, 29, .05);
 }
@@ -235,7 +237,8 @@
   }
 
   .explore-page .history-header nav,
-  .explore-page .site-header nav {
+  .explore-page .site-header nav,
+  .explore-page .experience-topbar nav {
     gap: 6px;
   }
 }
@@ -372,6 +375,51 @@
   background: var(--experience-paper-bright);
 }
 
+/* The core workspace uses an inverse surface and the landing page a compact
+ * lockup, but both retain the same overlapping black/white-stone topology as
+ * the shared product wordmark. */
+.learning-page .brand-mark.experience-mark,
+.learning-page .landing-brand-mark.experience-mark {
+  display: block;
+  flex: none;
+  width: 34px;
+  height: 24px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: transparent;
+  letter-spacing: 0;
+}
+
+.learning-page .brand-mark.experience-mark::before,
+.learning-page .landing-brand-mark.experience-mark::before {
+  left: 0;
+  top: 1px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255, 253, 247, .72);
+  border-radius: 50%;
+  background: #101a16;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .24);
+}
+
+.learning-page .brand-mark.experience-mark i,
+.learning-page .landing-brand-mark.experience-mark i {
+  display: block;
+  left: 12px;
+  top: 1px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #c9c4b9;
+  border-radius: 50%;
+  background: var(--experience-paper-bright);
+}
+
+.learning-page .landing-brand-mark.experience-mark::before {
+  border-color: rgba(16, 41, 35, .32);
+}
+
 .experience-topbar nav {
   display: flex;
   align-items: center;
@@ -388,9 +436,27 @@
   text-decoration: none;
 }
 
+.experience-topbar nav a.primary-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 14px;
+  border: 1px solid var(--experience-forest);
+  border-bottom-color: var(--experience-forest);
+  border-radius: 999px;
+  background: var(--experience-forest);
+  color: var(--experience-paper-bright);
+}
+
 .experience-topbar nav a:hover,
 .experience-topbar nav a:focus-visible {
   border-bottom-color: var(--experience-gold);
+}
+
+.experience-topbar nav a.primary-link:hover,
+.experience-topbar nav a.primary-link:focus-visible {
+  border-color: var(--experience-forest-deep);
+  background: var(--experience-forest-deep);
+  color: var(--experience-paper-bright);
 }
 
 .experience-context-nav {
@@ -694,6 +760,19 @@
   box-shadow: 12px 12px 0 rgba(16, 41, 35, .035), var(--experience-shadow);
 }
 
+/* The legacy reference composition fixed both the hero and its artwork to
+ * one height. The interactive preview is real content now, so it must remain
+ * in normal document flow when its board, caption, or text grows. */
+.learning-page .intro-hero,
+.learning-page .intro-hero-art.home-experience-preview {
+  height: auto;
+  min-height: 0;
+}
+
+.learning-page .intro-hero-art.home-experience-preview {
+  margin: 0;
+}
+
 .home-experience-preview::before {
   position: absolute;
   z-index: -1;
@@ -719,7 +798,7 @@
 }
 
 .home-preview-board-shell {
-  width: min(100%, 455px);
+  width: min(100%, 420px);
   margin: 18px auto 14px;
 }
 
@@ -969,7 +1048,6 @@
 .learning-page .sidebar > .brand,
 .learning-page .sidebar > .brand small,
 .learning-page .sidebar .sidebar-home-button,
-.learning-page .sidebar > .side-label,
 .learning-page .sidebar .current-course-context,
 .learning-page .sidebar .current-course-context :where(span, strong),
 .learning-page .sidebar .sidebar-task-guide > summary,
@@ -977,6 +1055,13 @@
 .learning-page .sidebar .advanced-sidebar-tools > summary :where(span, small),
 .learning-page .sidebar .sidebar-bottom {
   color: #e8f0ec;
+}
+
+/* The Core-course label deliberately uses a pale local surface. It must not
+ * inherit the dark-sidebar foreground used by neighbouring navigation text. */
+.learning-page .sidebar > .side-label {
+  background: #e4f1e8;
+  color: #205d3e;
 }
 
 .learning-page .sidebar .sidebar-home-button:hover,
@@ -1011,8 +1096,7 @@
 }
 
 /* Explore trilogy — one evidence lens, three domains. */
-.explore-page .history-header,
-.explore-page .site-header {
+.explore-page .experience-topbar {
   min-height: 68px;
   background: rgba(255, 253, 247, .96);
 }

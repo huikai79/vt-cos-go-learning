@@ -21,6 +21,8 @@
 - [x] Learning Workspace v67 已由 `1c71060` 合併至 `main`；發布邊界補丁 `d96403b` 將 9 個設計審查／截圖資產補入 manifest。Verify #939、Pages #516 與 served-content gate 全數 PASS，manifest 與 tracked files 為 282／282 exact-match。
 - [x] 2026-10-07 snapshot branch 已將整站設計候選的 70 個新增公開檔納入 manifest；本機 57 個 Node contract 檔、7 項 Sabaki oracle、UI、Edge smoke 與 repository boundary 全數 PASS，manifest 與 tracked files 為 354／354 exact-match。
 
+- [x] 2026-10-08 UI contract repair 已在本機完成 candidate b、CI-equivalent 非瀏覽器 Node、pinned Sabaki、browser UI、Edge smoke 與 repository boundary；manifest 與 tracked files 為 354／354 exact-match。此為本機工程狀態，不代表 PR CI、公開部署、真人 usability／accessibility、formal teaching／evaluation 或 learning effect；未 merge、push 或 deploy。
+
 ## 候選公開檔案
 
 `release-manifest.json` 是唯一機器可讀公開清單；實際檔案數以 manifest 為準。下列清單供人工核對：
