@@ -72,6 +72,37 @@ test("Learning Workspace 審查候選與狀態截圖列入公開 manifest，但�
   assert.doesNotMatch(learningHtml, /design-candidates\/(?:01 )?learning-workspace-v63/);
 });
 
+test("整站設計候選完整列入公開 manifest，但 production entrypoints 不載入候選", () => {
+  const candidateDirectories = [
+    "00 index-homepage-a1",
+    "01 award-experience-a1",
+    "01 award-experience-a2-integrated",
+    "02 explore-trilogy-a1",
+    "03 advanced-live-a1",
+    "04 classic-shapes-a1"
+  ];
+  const candidateFiles = candidateDirectories.flatMap((directory) =>
+    fs.readdirSync(path.join(root, "design-candidates", directory), { withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => `design-candidates/${directory}/${entry.name}`)
+  );
+  const sharedReviewFiles = [
+    "design-candidates/APPROVED_PROTOTYPE_CRAFT_REVIEW_2026-10-04.md",
+    "design-candidates/browser-verifier-cleanup.cjs",
+    "design-candidates/prototype-system.css",
+    "design-candidates/verify-unified-prototypes.cjs"
+  ];
+
+  assert.equal(candidateFiles.length, 66);
+  for (const file of [...candidateFiles, ...sharedReviewFiles]) {
+    assert.ok(manifest.publicFiles.includes(file), file);
+  }
+  for (const entrypoint of manifest.hosting.entrypoints) {
+    const html = fs.readFileSync(path.join(root, entrypoint), "utf8");
+    assert.doesNotMatch(html, /(?:src|href)=["'][^"']*design-candidates\//, entrypoint);
+  }
+});
+
 test("兩個公開入口與 README 使用同一品牌名稱", () => {
   for (const file of ["index.html", "r1-review.html", "README.md"]) {
     assert.match(fs.readFileSync(path.join(root, file), "utf8"), /VT-COS｜悟之一手/, file);

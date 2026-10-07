@@ -19,6 +19,7 @@
 - [x] 人工 geometry transcription 的公開升格要求至少兩份不同 reviewKey、相同 sourceDigest 的獨立轉錄完全一致；任何 `CONFLICT` 都 BLOCKED release。目前 repo 沒有把 rights=unknown 的外部來源衍生座標提交公開 registry。
 - [x] reference-only／rights-unknown geometry 研究只允許 non-shipping oracle：可保存報告必須剝除 points、stones、shape/context signature 與 fingerprint，且固定 `canonicalPromotionAllowed=false`；同 evidenceChain 不因網址或 digest 數量重複計證據。
 - [x] Learning Workspace v67 已由 `1c71060` 合併至 `main`；發布邊界補丁 `d96403b` 將 9 個設計審查／截圖資產補入 manifest。Verify #939、Pages #516 與 served-content gate 全數 PASS，manifest 與 tracked files 為 282／282 exact-match。
+- [x] 2026-10-07 snapshot branch 已將整站設計候選的 70 個新增公開檔納入 manifest；本機 57 個 Node contract 檔、7 項 Sabaki oracle、UI、Edge smoke 與 repository boundary 全數 PASS，manifest 與 tracked files 為 354／354 exact-match。
 
 ## 候選公開檔案
 

@@ -83,3 +83,11 @@ GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=t
 - **權威邊界：** 只更新公開資產路徑，不改候選內容，也不讓候選成為 learner runtime；正式頁面仍只從 repository root 載入。
 - **歷史與 migration：** learner storage、事件、題庫、scoring、scheduler、formal eligibility 與歷史證據均不變，無資料 migration。
 - **Rollback：** 若資料夾名稱恢復，必須同時還原 manifest、契約測試與本紀錄中的目前路徑；不得只改其中一處。
+
+## 2026-10-07 Change note｜整站設計候選公開範圍
+
+- **變更：** 將 `design-candidates/00 index-homepage-a1/`、`01 award-experience-a1/`、`01 award-experience-a2-integrated/`、`02 explore-trilogy-a1/`、`03 advanced-live-a1/`、`04 classic-shapes-a1/` 的 66 個候選檔，以及 4 個共用審查／樣式／驗證資產列入 `release-manifest.json`；連同既有 Learning Workspace 7 檔，設計候選公開範圍共 77 檔。
+- **原因：** snapshot branch 已追蹤這些候選資產；公開清單必須與 Git tracked files exact-match，不能以 boundary exception 上傳。
+- **權威與歷史語義：** 候選只供設計稽核、視覺回歸與工程互動檢查，不是 production entrypoint，不取得 rules、content、KC、scoring、scheduler、event、storage 或 formal evaluation authority；既有 learner state 與歷史 evidence semantics 不變，無 migration。
+- **驗證：** release contract 必須確認候選資料夾內每個檔案均列入 manifest、production entrypoints 不載入 `design-candidates/`，並通過 repository boundary、Node、UI 與 Edge smoke。
+- **Rollback：** 同一 commit 移除候選檔、對應 manifest 項目、release contract 與本 change note；不得只刪 manifest 或只刪檔案。
