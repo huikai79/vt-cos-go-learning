@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-07-a",
-  "frozenAt": "2026-10-07T10:40:00.000Z",
-  "assetSetVersion": 13,
-  "assetFingerprint": "fnv1a32-js16-e721ca03",
+  "candidateId": "formal-teaching-candidate-2026-10-07-b",
+  "frozenAt": "2026-10-07T11:20:00.000Z",
+  "assetSetVersion": 14,
+  "assetFingerprint": "fnv1a32-js16-ac8f7118",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -44,5 +44,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-workspace-v70／award-experience-v2／full-site geometry regression（承接 2026-10-05-b）。修正正式首頁超寬桌面 Hero 標題侵入互動預覽，並修正 Advanced route map 裝飾線在 1280px 造成 document overflow；正式共用 title-line 恢復自然換行，首頁 Hero 字級改以欄寬可承受的上限收斂，Advanced 裝飾幾何限制在自身容器。新增七個正式 presentation surface 的 375／760／1280／1440／1600／1920／2560 與 200% text 幾何反證，直接檢查 heading clipping、水平 overflow 與 hero sibling collision。Windows UI、Edge smoke、KaTrain autodiscovery、repository boundary 與 Sabaki oracle 已在 PR #147 run #944 通過；Node 該輪僅因預期的 stale frozen candidate fingerprint fail closed。這是 presentation-only 修復，不改 rules、正式題目、first response、retry、hint、exposure、scoring、scheduler、KC、event schema、formal eligibility、storage 或歷史 learner evidence。舊 candidate 人工回條不得沿用；工程 PASS 不等於真人 usability／accessibility、formal evaluation validity、學習成效或外部獎項證據。"
+  "scopeNote": "learner-workspace-v70／award-experience-v2／full-site geometry regression + homepage content-flow hardening（承接 2026-10-07-a）。依人工檢視修正首頁兩個實際問題：信任列裝飾箭頭不得覆蓋「不需帳號／首答與修正分開」文字；四步方法卡移除強制換行並改為自然高度，避免第二卡文字超出卡片。方法卡之間的箭頭縮小並置於卡片間隙。browser regression 新增 1142／1229／1280／1600／2560 等寬度，直接檢查 trust connector 已停用、method copy 均位於 card bounding box 內且不再含強制 br。PR #147 run #958 的 Windows UI、Edge smoke、KaTrain autodiscovery、repository boundary、Sabaki oracle 全部 PASS；Node 該輪僅因 critical asset 變更後舊 candidate fingerprint 預期失配。這是 presentation-only 修復，不改 rules、正式題目、first response、retry、hint、exposure、scoring、scheduler、KC、event schema、formal eligibility、storage 或歷史 learner evidence。舊 candidate 真人回條不得沿用；工程 PASS 不等於真人 usability／accessibility、formal evaluation validity、學習成效或外部獎項證據。"
 }
