@@ -607,6 +607,38 @@
   box-shadow: 0 0 0 4px rgba(197, 154, 74, .12);
 }
 
+
+/* Homepage geometry hardening: legacy mockup arrows and fixed-height method
+ * cards must not overlap learner-facing copy at intermediate desktop widths. */
+.learning-page .intro-trust-row > span + span::before {
+  content: none;
+  display: none;
+}
+
+.learning-page .intro-method-grid article {
+  height: auto;
+  min-height: calc(183 * var(--u));
+}
+
+.learning-page .intro-method-grid strong {
+  margin-right: 0;
+  white-space: normal;
+}
+
+.learning-page .intro-method-grid p {
+  overflow-wrap: anywhere;
+}
+
+.learning-page .intro-method-grid article:not(:last-child)::after {
+  right: calc(-19 * var(--u));
+  top: 50%;
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  font-size: calc(18 * var(--u));
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
 .home-experience-preview {
   position: relative;
   z-index: 3;
