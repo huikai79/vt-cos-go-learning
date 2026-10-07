@@ -2415,6 +2415,71 @@ async function main() {
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
     }
 
+    /* Shared production geometry regression.
+       Horizontal overflow alone cannot catch two in-viewport siblings that
+       collide. Audit the seven public presentation surfaces at desktop,
+       ultra-wide, mobile, and 200%-text widths using explicit hero pairs. */
+    const geometryPages = [
+      { name: "home", url: page, heading: "#site-introduction-title", left: ".intro-hero-copy", right: ".home-experience-preview", prepare: "document.querySelector('#site-introduction').hidden=false; document.querySelector('.app-shell').hidden=true;" },
+      { name: "advanced", url: advancedPage, heading: ".advanced-header h1", left: ".advanced-hero-copy", right: ".advanced-route-map" },
+      { name: "classic", url: classicPage, heading: ".classic-header h1", left: ".classic-hero-copy", right: ".classic-shape-hero" },
+      { name: "history", url: historyPage, heading: "#history-title", left: ".history-hero", right: ".evidence-guide" },
+      { name: "math", url: mathPage, heading: "#math-title", left: ".history-hero", right: ".evidence-guide" },
+      { name: "observatory", url: observatoryPage, heading: ".hero h1", left: ".hero-copy", right: ".hero-note" },
+      { name: "live", url: livePage, heading: "#live-title", left: ".live-intro > div", right: ".live-boundary" }
+    ];
+    const geometryWidths = [375, 760, 1280, 1440, 1600, 1920, 2560];
+    for (const item of geometryPages) {
+      await command(socket, "Page.navigate", { url: item.url });
+      for (let retry = 0; retry < 30; retry += 1) {
+        const ready = await evaluate(socket, `Boolean(document.querySelector(${JSON.stringify(item.heading)}) && document.querySelector(${JSON.stringify(item.left)}) && document.querySelector(${JSON.stringify(item.right)}))`);
+        if (ready) break;
+        await delay(100);
+        if (retry === 29) assert.fail(`${item.name} geometry surface did not become ready`);
+      }
+      if (item.prepare) await evaluate(socket, `(() => { ${item.prepare} })()`);
+      for (const width of geometryWidths) {
+        await command(socket, "Emulation.setDeviceMetricsOverride", { width, height: width <= 760 ? 812 : 1000, deviceScaleFactor: 1, mobile: width <= 760 });
+        const state = await evaluate(socket, `(() => {
+          const heading = document.querySelector(${JSON.stringify(item.heading)});
+          const left = document.querySelector(${JSON.stringify(item.left)}).getBoundingClientRect();
+          const right = document.querySelector(${JSON.stringify(item.right)}).getBoundingClientRect();
+          const overlapX = left.left < right.right - 1 && left.right > right.left + 1;
+          const overlapY = left.top < right.bottom - 1 && left.bottom > right.top + 1;
+          return {
+            width: innerWidth,
+            scrollWidth: document.documentElement.scrollWidth,
+            headingClipped: heading.scrollWidth > heading.clientWidth + 1,
+            collision: overlapX && overlapY,
+            left: {left:left.left,right:left.right,top:left.top,bottom:left.bottom},
+            right: {left:right.left,right:right.right,top:right.top,bottom:right.bottom}
+          };
+        })()`);
+        assert.ok(state.scrollWidth <= state.width + 1, `${item.name} ${width}px horizontal overflow: ${JSON.stringify(state)}`);
+        assert.equal(state.headingClipped, false, `${item.name} ${width}px heading clipped: ${JSON.stringify(state)}`);
+        assert.equal(state.collision, false, `${item.name} ${width}px hero sibling collision: ${JSON.stringify(state)}`);
+      }
+      await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+      const enlarged = await evaluate(socket, `(() => {
+        document.documentElement.style.fontSize = "32px";
+        const heading = document.querySelector(${JSON.stringify(item.heading)});
+        const left = document.querySelector(${JSON.stringify(item.left)}).getBoundingClientRect();
+        const right = document.querySelector(${JSON.stringify(item.right)}).getBoundingClientRect();
+        const result = {
+          width: innerWidth,
+          scrollWidth: document.documentElement.scrollWidth,
+          headingClipped: heading.scrollWidth > heading.clientWidth + 1,
+          collision: left.left < right.right - 1 && left.right > right.left + 1 && left.top < right.bottom - 1 && left.bottom > right.top + 1
+        };
+        document.documentElement.style.fontSize = "";
+        return result;
+      })()`);
+      assert.ok(enlarged.scrollWidth <= enlarged.width + 1, `${item.name} 200% text horizontal overflow: ${JSON.stringify(enlarged)}`);
+      assert.equal(enlarged.headingClipped, false, `${item.name} 200% text heading clipped: ${JSON.stringify(enlarged)}`);
+      assert.equal(enlarged.collision, false, `${item.name} 200% text hero sibling collision: ${JSON.stringify(enlarged)}`);
+    }
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
