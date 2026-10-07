@@ -93,6 +93,10 @@
 
 # 產品開發與驗證流水線
 
+## 2026-10-05 Change note｜Award Presentation v1
+
+P0 把「少滑鼠動作」重新界定為資訊完整前提下的操作密度，而非單屏硬性限制；P1 建立 scoped 共用 visual system；P2 將其掛載到首頁、三個 Explore、Advanced、自由棋盤、經典棋形；P3 只改首頁可見文案／短 Hero 斷行，不碰 runtime；P4 重新凍結 Core critical asset set；P5 以各頁功能、candidate、gate、manifest、boundary 與 browser reflow 驗證。若驗證發現裁切、長標題溢位、控制不可達或語義漂移，先回到對應 scoped selector，禁止以隱藏內容修復。變更不需要 storage migration，歷史 events 不回寫；rollback 使用本機 `local-backup/pre-award-promotion-2026-10-05` 的指定正式檔 restore。candidate 為 `formal-teaching-candidate-2026-10-05-a`／`fnv1a32-js16-82443b6a`；工程檢查不升格為 human/usability/evaluation/learning-effect evidence。
+
 更新日期：2026-09-24  
 用途：把介面改善與學習量測分成兩條工程工作線，再以明確閘門決定先後。此檔管理產品開發與驗證順序，**不是學習者從不會到會的學習路徑**；學習者流水線見 [設計計畫第 3.1 節](DESIGN_PLAN.md#31-學習者從不會到會的介面流水線)。
 
@@ -537,3 +541,4 @@
 3. PR CI 必須同時通過 Node contracts、Windows browser、repository boundary 與 Sabaki oracle。
 4. merge 後以最新 main 的 push workflow 驗證 `served-pages-content`；只有公開 Pages markers 與 pushed candidate／gate 一致時，工程 Release 才完成。
 5. R1a、19 課短講外部棋理回條、三位 target novice usability、真人 accessibility 與 learning effect 仍按各自 gate 判定，不由 Release PASS 代替。
+2026-10-05 Award Presentation v2：P0 比對正式頁與五組批准 prototype；P1 抽出同一 visual system；P2 在正式根目錄整合首頁、三個 Explore、Advanced、Live 與 Classic；P3 以「資訊完整優先、操作密度其次」處理桌機同屏與窄／短視窗自然捲動；P4 驗證首頁預覽不寫 learner data，並反證七頁既有 authority 未被 presentation 取代；P5 重凍 candidate、同步 gate／manifest／CI contract，最後以功能、reflow、keyboard、reduced-motion、截圖與 repository boundary 封口。若發現內容裁切、不可達控制、語意漂移或 learner-state 寫入，回到最早對應步驟，不以 CSS 隱藏補洞。無 storage migration、歷史事件不回寫；candidate 為 `formal-teaching-candidate-2026-10-05-b`／`fnv1a32-js16-a4f99e81`。

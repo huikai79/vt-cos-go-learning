@@ -151,7 +151,13 @@
 
 # 完成矩陣：悟之一手
 
-更新日期：2026-10-01  
+## 2026-10-05 Change note｜Award Presentation v1（本機正式候選）
+
+修正前提：減少滑鼠捲動不是犧牲資訊、硬塞單一視窗或全域禁止換行的理由。首頁、Explore、Advanced、自由棋盤與經典棋形載入同一支 `experience-system.css`，統一暖紙／墨綠／金色的色彩職責、標題換行、焦點、44px 控制與 reduced-motion；只有已驗證的短首頁 Hero 使用受限人工行，動態題幹與長標題自然換行。短桌機維持自然文件流，證據、警示與操作不被裁切；原有資料／規則／事件／評分／排程／正式資格與歷史事件完全不變，無資料 migration。首頁文案也改為「可比較作答」的觀察，不把練習流程寫成已證實學習成效。formal candidate 重凍為 `formal-teaching-candidate-2026-10-05-a`／`fnv1a32-js16-82443b6a`（asset set v11）；舊 candidate 的真人回條不得沿用。rollback 使用本機 tag／branch `local-backup/pre-award-promotion-2026-10-05` 與 `.local-backups/pre-award-promotion-2026-10-05/restore-formal-production.ps1`，不影響 `design-candidates/`；瀏覽器 localStorage 另屬使用者資料，未被此程式版快照涵蓋。本輪仍須以 local candidate、gate、各頁回歸與視覺檢查驗證；任何工程 PASS 不建立真人 usability、accessibility、formal teaching／evaluation 或 learning-effect 證據。
+
+驗證結果：`formal-teaching-candidate.cjs`、`teaching-gate-verify.cjs --report-only`、56 份非瀏覽器 test files、擴充後的 Edge UI regression、syntax 與 `git diff --check` 均通過；temporary-index 版本的 repository boundary 為 283／283 `PASS`，不更動使用者正常 Git index。直接執行 `tests/release-manifest.test.cjs` 仍因使用者既有的 `design-candidates/learning-workspace-v63/` 改名成 `design-candidates/01 learning-workspace-v63/` 而找不到 7 個舊路徑，與本輪正式頁面無關，未擅自移回或改寫該候選資料。pinned Sabaki oracle dependency 未安裝於本機，故未在本輪重跑；公開部署／served-content 亦未驗證，因本輪沒有 commit、push 或 GitHub 發布。
+
+更新日期：2026-10-05  
 用途：將產品承諾、現有實作、自動驗證與證據邊界分開記錄。此表的「工程通過」只表示指定程式行為可運作，不表示內容正確、初學者可理解或學習有效。
 
 ## Current Status
@@ -1166,3 +1172,5 @@ PR #49 verify run #510 全數 PASS：Node contracts、JavaScript syntax、determ
 - **內容治理：** R1a 77 題只審題庫，不再被解讀成 19 課短講已審。新增 `go-independent-lesson-content-review-v1`，fingerprint `fnv1a32-8e153412`，覆蓋 19 課 text／takeaway／terms／demoSteps；example receipt 保持 draft/pending。formal teaching gate v3 必須同時取得 R1a 與短講外部回條，再加三位 target novice usability 與真人 accessibility。
 - **candidate：** critical learner surface 重新凍結為 `formal-teaching-candidate-2026-09-30-c`／`fnv1a32-js16-15b4184a`。這只綁定 current bytes，不產生外部審查、usability、accessibility、formal evaluation 或 learning-effect 證據。
 - **不變 invariant：** storage schema、題目答案／scoring、KC、scheduler、first response／retry、event schema、evidence taxonomy、formal evaluation authority 與公開 holdout 邊界不變。
+2026-10-05 Award Presentation v2：將五組已批准 prototype 的共同語言整合進正式根目錄七個入口，而不是只保留在 `design-candidates/`。首頁新增無持久化、無評分權威的合成棋盤預覽；History／Math／Global 保持唯讀證據頁；Advanced／Live／Classic 只重排既有入口與邊界，不變更 rules、provider、first response、retry、scoring、scheduler、KC、event schema、formal eligibility 或歷史事件。完整資訊優先於單屏：寬螢幕提高同屏操作密度，窄螢幕與短視窗允許自然捲動，禁止裁切、巢狀細節捲軸或全域 nowrap。formal candidate 重凍為 `formal-teaching-candidate-2026-10-05-b`／`fnv1a32-js16-a4f99e81`（asset set v12）；v1／更早 candidate 的真人回條不得沿用。rollback 仍使用本機 `local-backup/pre-award-promotion-2026-10-05` 與 `.local-backups/pre-award-promotion-2026-10-05/restore-formal-production.ps1`；不觸碰使用者的 `design-candidates/` 重新命名或瀏覽器資料。工程與視覺檢查只能證明實作／reflow／操作契約，不證明得獎、真人 usability、accessibility conformance、formal teaching／evaluation 或 learning effect。
+2026-10-05 Award Presentation v2 驗證：本機 57 份 Node contract files 全數 `PASS`；完整 Edge UI suite（七個正式 learner-facing 入口、桌機／手機、200% text、鍵盤／reduced-motion、首頁合成預覽與既有 learner-state 邊界）`PASS`；最新 12 張驗收截圖已人工複查；formal candidate v12 指紋重算一致；repository boundary 以隔離 index／object store 驗證 284／284 `PASS`，真實 staging 保持空白。`@sabaki/sgf@3.5.0` 只在 CI 臨時安裝，本機未安裝，因此本機 Sabaki oracle 為 `NOT_RUN`，不是 `PASS`；兩個需 child process／Git 的 KataGo contract files 在解除沙箱限制後 `PASS`。formal teaching 與 formal evaluation 仍為 `BLOCKED`，learning effect 仍為 `NOT_MEASURED`；未 commit、未 push、未驗證公開 served content。

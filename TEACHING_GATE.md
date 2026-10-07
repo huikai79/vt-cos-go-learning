@@ -42,6 +42,10 @@
 
 # 正式教學閘門
 
+## 2026-10-05 Change note｜Award Presentation v1 candidate refreeze
+
+Learner-facing critical surface 因新增 `experience-system.css` 與首頁 presentation/copy 修正而變更，formal candidate 重凍為 `formal-teaching-candidate-2026-10-05-a`／`fnv1a32-js16-82443b6a`（asset set v11）。變更只處理標題自然換行、受限短 Hero 人工行、跨頁色彩／焦點／動態一致性與短視窗自然捲動；不得用固定高度、裁切或全域 nowrap 壓掉內容。所有 rules、first response、retry、exposure、scoring、scheduler、KC、event、formal eligibility、Independent Evaluation 與歷史事件不變，無 migration；舊 candidate 真人回條不得沿用。rollback 為本機 `local-backup/pre-award-promotion-2026-10-05` 的指定正式檔 restore，不影響 candidate 資料夾。自動化只支持工程契約；novice comprehension、實際 screen-reader 公告、正式 usability／accessibility、formal teaching／evaluation 與 learning effect 仍不因本輪而解除。
+
 ## 一句話判定
 
 目前公開 main 的既有工程發布已通過；本次 refresh 仍需完成 PR→main→served Pages 驗證。正式教學使用維持 `BLOCKED`：仍缺 R1a 題庫外部回條、19 課短講外部棋理回條、至少三位目標初學者的關鍵任務觀察，以及真人鍵盤／螢幕閱讀器 spot check。正式評量另缺未公開的新 holdout 與 R1b 實際難度可比性；學習成效維持 `NOT_MEASURED`。
@@ -369,3 +373,4 @@ R1a verifier 升至 `go-r1-independent-content-review-v5`，目前內容 fingerp
 - 兩個收集頁都綁目前 candidate / fingerprints；若 candidate critical surface 改變，既有真人 evidence 仍依 verifier fail closed，不跨版本拼接。
 - R1a 題庫回條、19 課短講回條、三位 target novice、accessibility 都仍尚未取得；因此 Formal Teaching 保持 BLOCKED。
 - R1b 與 private unseen 仍是 Formal Evaluation 的後續獨立 gate；本輪沒有建立 private item pool。Learning Effect 仍 NOT_MEASURED。
+2026-10-05 Award Presentation v2：learner-facing critical surface 已由候選稿整合至正式根目錄七個入口；首頁的合成棋盤預覽僅作呈現與局部 first-response 示範，不寫入 learner state、不評分、不排程，不能成為 formal evidence。Explore 維持唯讀，Advanced／Live／Classic 的規則、provider、事件與儲存 authority 不變。formal candidate 已重凍為 `formal-teaching-candidate-2026-10-05-b`／`fnv1a32-js16-a4f99e81`（asset set v12）；所有舊 candidate 真人回條失效且不得移轉。自動化通過也不解除 R1a、lesson review、target-novice comprehension、實際 screen-reader、formal teaching／evaluation 與 learning-effect gate。

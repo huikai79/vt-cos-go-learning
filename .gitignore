@@ -12,5 +12,8 @@ formal-teaching-evidence.json
 # 本機真引擎 smoke 回條含 executable/config/model 雜湊與執行環境，只留本機。
 .local-evidence/
 
+# 本機正式版升格前的可回復快照，不進 Git、不上傳。
+.local-backups/
+
 # 正式未見評量題、答案與 private manifest 永不進公開 repository。
 .private-evaluation/

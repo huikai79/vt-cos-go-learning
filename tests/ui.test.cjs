@@ -16,6 +16,9 @@ const reviewPage = baseUrl ? new URL("r1-review.html", baseUrl).href : pathToFil
 const advancedPage = baseUrl ? new URL("advanced.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../advanced.html")).href;
 const classicPage = baseUrl ? new URL("classic-shapes.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../classic-shapes.html")).href;
 const historyPage = baseUrl ? new URL("history.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../history.html")).href;
+const mathPage = baseUrl ? new URL("math.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../math.html")).href;
+const observatoryPage = baseUrl ? new URL("global-go-observatory.html", baseUrl).href : pathToFileURL(path.resolve(__dirname, "../global-go-observatory.html")).href;
+const livePage = baseUrl ? new URL("live-game.html?size=9", baseUrl).href : `${pathToFileURL(path.resolve(__dirname, "../live-game.html")).href}?size=9`;
 
 function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
@@ -237,7 +240,9 @@ async function main() {
         legendItems: document.querySelectorAll('.demo-legend span').length,
         compactGuidance: document.querySelector('#learning-now-summary').textContent,
         currentLevel: document.querySelector('.level-path > .active')?.id,
-        heroImage: document.querySelector('.intro-hero-image')?.getAttribute('src'),
+        previewBoard: Boolean(document.querySelector('.home-preview-board')),
+        previewState: document.querySelector('[data-home-preview]')?.dataset.previewState,
+        previewPressed: document.querySelector('[data-home-preview-toggle]')?.getAttribute('aria-pressed'),
         heroAtmosphere: document.querySelector('.intro-hero-atmosphere')?.getAttribute('src'),
         philosophyImages: document.querySelectorAll('.intro-philosophy-art').length,
         finalLandscape: document.querySelector('.intro-final-landscape')?.getAttribute('src'),
@@ -250,7 +255,22 @@ async function main() {
         sidebarTaskRole: document.querySelector('.sidebar-current-task').getAttribute('role')
       };
     })()`);
-    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "從 0 開始，先學氣與提子，再走進 9 路棋局。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 4, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 0, localCoreEntry: "開始這個單元 →", globalCoreEntry: "開始這個單元 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: null, passedFlowCount: 0, flowCurrentCount: 0, taskLabel: "課程", taskPhase: "先看懂", taskGuideOpen: false, flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "先抓住本課要觀察的核心線索，再進入不看答案的練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", check: "先找沿線相鄰的空點，再數氣；同一個空點只算一次。", visualDemo: 0, termCount: "（1 個）", firstTerm: "氣", legendItems: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", heroImage: "assets/homepage/hero.png", heroAtmosphere: "assets/homepage/hero-atmosphere.svg", philosophyImages: 2, finalLandscape: "assets/homepage/footer-landscape.svg", duplicateScienceSection: false, pathImages: 3, evidenceImages: 4, stageBadge: "目前任務：課程 · 本題：先看懂", stageBadgeRole: "status", stageBadgeLive: "polite", sidebarTaskRole: null });
+    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "先做一手，再看懂為什麼。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 4, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 0, localCoreEntry: "開始這個單元 →", globalCoreEntry: "開始這個單元 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: null, passedFlowCount: 0, flowCurrentCount: 0, taskLabel: "課程", taskPhase: "先看懂", taskGuideOpen: false, flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "先抓住本課要觀察的核心線索，再進入不看答案的練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", check: "先找沿線相鄰的空點，再數氣；同一個空點只算一次。", visualDemo: 0, termCount: "（1 個）", firstTerm: "氣", legendItems: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", previewBoard: true, previewState: "before", previewPressed: "false", heroAtmosphere: "assets/homepage/hero-atmosphere.svg", philosophyImages: 2, finalLandscape: "assets/homepage/footer-landscape.svg", duplicateScienceSection: false, pathImages: 3, evidenceImages: 4, stageBadge: "目前任務：課程 · 本題：先看懂", stageBadgeRole: "status", stageBadgeLive: "polite", sidebarTaskRole: null });
+    const previewInteraction = await evaluate(socket, `(() => {
+      const beforeStorage = JSON.stringify(Object.keys(localStorage).sort().map(key => [key, localStorage.getItem(key)]));
+      const button = document.querySelector('[data-home-preview-toggle]');
+      button.click();
+      const result = {
+        state: document.querySelector('[data-home-preview]').dataset.previewState,
+        pressed: button.getAttribute('aria-pressed'),
+        label: document.querySelector('[data-home-preview-label]').textContent,
+        status: document.querySelector('[data-home-preview-status]').textContent,
+        storageUnchanged: beforeStorage === JSON.stringify(Object.keys(localStorage).sort().map(key => [key, localStorage.getItem(key)]))
+      };
+      button.click();
+      return { ...result, resetState: document.querySelector('[data-home-preview]').dataset.previewState };
+    })()`);
+    assert.deepEqual(previewInteraction, { state: "after", pressed: "true", label: "原選點已保留", status: "合成預覽已顯示可觀察後果；第一次選點仍留在棋盤上。", storageUnchanged: true, resetState: "before" });
     const screenshotDirectory = process.env.GO_UI_SCREENSHOT_DIR;
     if (screenshotDirectory) {
       assert.ok(fs.existsSync(screenshotDirectory), "screenshot directory must already exist");
@@ -1250,6 +1270,12 @@ async function main() {
       await delay(100);
     }
     assert.equal(advancedReady, true);
+    if (screenshotDirectory) {
+      await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+      await evaluate(socket, "scrollTo(0, 0)");
+      const advancedHero = await command(socket, "Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+      fs.writeFileSync(path.join(screenshotDirectory, "advanced-desktop.png"), Buffer.from(advancedHero.data, "base64"));
+    }
     const advancedTaskLanguage = await evaluate(socket, `({
       currentTask: document.querySelector('.task-type-context')?.getAttribute('aria-label'),
       delayedChips: [...document.querySelectorAll('.task-type-chip')].map(node => node.textContent.trim()),
@@ -1787,6 +1813,12 @@ async function main() {
       await delay(100);
     }
     assert.equal(classicReady, true);
+    if (screenshotDirectory) {
+      await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+      await evaluate(socket, "scrollTo(0, 0)");
+      const classicHero = await command(socket, "Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+      fs.writeFileSync(path.join(screenshotDirectory, "classic-desktop.png"), Buffer.from(classicHero.data, "base64"));
+    }
     const classicLayout = await evaluate(socket, `(() => {
       const question = document.querySelector('.classic-question');
       const board = document.querySelector('.classic-grid .board-card');
@@ -2283,7 +2315,7 @@ async function main() {
         scrollWidth: document.documentElement.scrollWidth
       };
     })()`);
-    assert.match(historyDesktop.title, /圍棋為什麼會長成今天這個樣子/);
+    assert.match(historyDesktop.title, /故事可以很遠，證據只走到這裡/);
     assert.equal(historyDesktop.questions, 5);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
     assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-29");
@@ -2292,6 +2324,12 @@ async function main() {
     assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);
     assert.ok(historyDesktop.minContrast >= 4.5, `history minimum contrast: ${historyDesktop.minContrast}`);
     assert.ok(historyDesktop.scrollWidth <= historyDesktop.width + 1, `history desktop horizontal overflow: ${JSON.stringify(historyDesktop)}`);
+    if (screenshotDirectory) {
+      await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+      await evaluate(socket, "scrollTo(0, 0)");
+      const historyHero = await command(socket, "Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+      fs.writeFileSync(path.join(screenshotDirectory, "history-desktop.png"), Buffer.from(historyHero.data, "base64"));
+    }
 
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
     const historyMobile = await evaluate(socket, `(() => ({
@@ -2312,6 +2350,70 @@ async function main() {
     assert.equal(reducedMotionHistory, "auto");
     await command(socket, "Emulation.setEmulatedMedia", { features: [] });
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+
+    /* Every surface loaded by the shared presentation layer must preserve a
+       reachable heading, its existing controls, and natural reflow.  This is
+       intentionally not a one-screen assertion: long source/evidence content
+       is allowed to extend the document vertically. */
+    const presentationPages = [
+      { name: "math", url: mathPage, ready: "#math-title", heading: "#math-title", controls: [] },
+      { name: "observatory", url: observatoryPage, ready: ".hero h1", heading: ".hero h1", controls: [".primary-link"] },
+      { name: "live", url: livePage, ready: "#live-board svg", heading: "#board-heading", controls: ["#pass-button", "#undo-button", "#export-sgf-button"] }
+    ];
+    for (const item of presentationPages) {
+      await command(socket, "Page.navigate", { url: item.url });
+      let ready = false;
+      for (let retry = 0; retry < 30; retry += 1) {
+        ready = await evaluate(socket, `Boolean(document.querySelector(${JSON.stringify(item.ready)}))`);
+        if (ready) break;
+        await delay(100);
+      }
+      assert.equal(ready, true, `${item.name} page did not become ready`);
+
+      const desktop = await evaluate(socket, `(() => {
+        const heading = document.querySelector(${JSON.stringify(item.heading)});
+        const headingRect = heading.getBoundingClientRect();
+        const controls = ${JSON.stringify(item.controls)}.map((selector) => {
+          const node = document.querySelector(selector);
+          const rect = node && node.getBoundingClientRect();
+          return Boolean(rect && rect.width > 0 && rect.height > 0);
+        });
+        return {
+          width: innerWidth,
+          scrollWidth: document.documentElement.scrollWidth,
+          headingVisible: headingRect.width > 0 && headingRect.height > 0,
+          headingClipped: heading.scrollWidth > heading.clientWidth + 1,
+          headingScrollWidth: heading.scrollWidth,
+          headingClientWidth: heading.clientWidth,
+          controls
+        };
+      })()`);
+      assert.ok(desktop.scrollWidth <= desktop.width + 1, `${item.name} desktop horizontal overflow: ${JSON.stringify(desktop)}`);
+      assert.equal(desktop.headingVisible, true, `${item.name} heading is not visible`);
+      assert.equal(desktop.headingClipped, false, `${item.name} heading is clipped: ${JSON.stringify(desktop)}`);
+      assert.ok(desktop.controls.every(Boolean), `${item.name} required control is not visible: ${JSON.stringify(desktop)}`);
+      if (screenshotDirectory) {
+        await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+        await evaluate(socket, "scrollTo(0, 0)");
+        const pageShot = await command(socket, "Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+        fs.writeFileSync(path.join(screenshotDirectory, `${item.name}-desktop.png`), Buffer.from(pageShot.data, "base64"));
+      }
+
+      await command(socket, "Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
+      const mobile = await evaluate(socket, `(() => {
+        const heading = document.querySelector(${JSON.stringify(item.heading)});
+        const before = { width: innerWidth, scrollWidth: document.documentElement.scrollWidth, clipped: heading.scrollWidth > heading.clientWidth + 1 };
+        document.documentElement.style.fontSize = "32px";
+        const enlarged = { width: innerWidth, scrollWidth: document.documentElement.scrollWidth, clipped: heading.scrollWidth > heading.clientWidth + 1 };
+        document.documentElement.style.fontSize = "";
+        return { before, enlarged };
+      })()`);
+      assert.ok(mobile.before.scrollWidth <= mobile.before.width + 1, `${item.name} mobile horizontal overflow: ${JSON.stringify(mobile)}`);
+      assert.equal(mobile.before.clipped, false, `${item.name} mobile heading is clipped`);
+      assert.ok(mobile.enlarged.scrollWidth <= mobile.enlarged.width + 1, `${item.name} 200% text horizontal overflow: ${JSON.stringify(mobile)}`);
+      assert.equal(mobile.enlarged.clipped, false, `${item.name} 200% text heading is clipped`);
+      await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    }
 
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;

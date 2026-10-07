@@ -1,3 +1,7 @@
+## 2026-10-05｜Award Presentation v1（local formal promotion）
+
+修正前提：使用者的「盡量不捲動」不等於可裁掉資訊，也不能用 global nowrap 製造新的溢位。新增 `experience-system.css` 作 page-scoped presentation layer：短首頁 Hero 只在寬螢幕保留作者指定行；動態題目、多語名型與 Explore 長標題採 `text-wrap: balance`、`line-break: strict`、合理欄寬與自然換行。Explore／Advanced／Live／Classic 用同一套紙色、深綠、金色、焦點與 reduced-motion 規則，仍保留各頁現有 DOM、控制與 runtime authority。短桌機只收斂無資訊空白，保持 natural document flow；不新增固定高度、第二個 detail scroll 或內容隱藏。首頁的「三入口」與「四步方法」改為對流程與可比較紀錄的描述，移除未被證實的個人學習成效承諾。Core candidate 重凍為 `formal-teaching-candidate-2026-10-05-a`／`fnv1a32-js16-82443b6a`，asset set v11；舊真人回條不得沿用，歷史事件／`uiVersion` 不變。rollback 是本機 pre-promotion snapshot 的指定正式檔還原；本輪工程／視覺檢查不能取代 target novice、screen-reader、formal teaching/evaluation 或 learning-effect evidence。
+
 ## 2026-10-03｜Learning Task Context v70 三層語意修復
 
 v69 正確拆開「目前任務」與「本題狀態」，但漏接仍會標示 active／passed 的五步學習流程：首答正確時即時狀態為「比較理由」，對話框卻仍把「修正重算」標成目前步驟；手機又隱藏唯一帶 `aria-live` 的側欄卡。v70 因此把介面定義成三層：任務類型、本題狀態、靜態學習循環說明。只有題目上方 badge 是跨桌機與手機的即時 status 權威；側欄是視覺摘要；五步只說明可反覆使用的方法，不再表示目前或完成進度。
@@ -525,3 +529,6 @@ M1 不重畫整個 workspace；保留桌面棋盤左／問題與作答右，以�
 - 修正只把該內容 wrapper 改成可收縮 flex item：`min-width:0; flex:1 1 auto; width:auto`。既有 320px one-column 與 200% text browser assertion 保留，不降低驗收條件。
 - 因 `styles.css` 屬 formal candidate critical asset，candidate 重新凍結為 `formal-teaching-candidate-2026-09-30-c`／`fnv1a32-js16-15b4184a`；19 課 lesson-content fingerprint 不變。
 
+## 2026-10-05｜Award Presentation v2（full formal-root integration）
+
+修正前提：prototype 品質不能由候選資料夾的存在推定；必須在使用者實際打開的正式根目錄頁面呈現並接受瀏覽器檢查。本輪把首頁、History、Math、Global、Advanced、Live 與 Classic 視為一個網站：統一導覽、色彩、字體角色、focus、44px 控制、reduced-motion 與 CJK 換行，同時保留各任務的資訊架構。首頁用合成棋盤預覽示範「先作答、再比較」，不寫入 learner state；Explore 同屏呈現主張與證據邊界；Advanced／Live／Classic 保留原功能 authority。桌機優先減少不必要移動，但內容放不下時使用自然頁面捲動，不隱藏資訊、不建立狹窄巢狀捲軸。正式 candidate 為 `formal-teaching-candidate-2026-10-05-b`／`fnv1a32-js16-a4f99e81`（asset set v12）。「Award Intent」只代表 craft benchmark；未經外部評審不得聲稱獲獎，工程截圖亦不等於真人 usability、accessibility conformance 或 learning effect。

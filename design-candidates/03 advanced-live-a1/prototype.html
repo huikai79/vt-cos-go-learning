@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="VT-COS｜悟之一手 Advanced × Live Practice Lab 非正式設計候選。">
+  <title>VT-COS｜Practice Lab A1</title>
+  <link rel="stylesheet" href="prototype.css">
+  <link rel="stylesheet" href="../prototype-system.css">
+  <script defer src="prototype.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#review-stage">跳到候選畫面</a>
+
+  <header class="suite-header">
+    <a class="suite-brand" href="../00%20index-homepage-a1/prototype.html"><span class="suite-mark" aria-hidden="true"><i></i><i></i></span><span><strong>VT-COS｜悟之一手</strong><small>UNIFIED PROTOTYPE SYSTEM · NON-NORMATIVE</small></span></a>
+    <div class="suite-context"><span>SECTION 04</span><strong>進階訓練與完整對局</strong></div>
+    <nav class="suite-nav" aria-label="整體網站候選導覽"><a href="../00%20index-homepage-a1/prototype.html">首頁</a><a href="../01%20award-experience-a2-integrated/prototype.html">學習</a><a href="../02%20explore-trilogy-a1/prototype.html">探索</a><a aria-current="page" href="../03%20advanced-live-a1/prototype.html">進階與實戰</a><a href="../04%20classic-shapes-a1/prototype.html">名型館</a></nav>
+    <a class="suite-report" href="../APPROVED_PROTOTYPE_CRAFT_REVIEW_2026-10-04.md">品質報告</a>
+  </header>
+  <div class="review-bar">
+    <nav class="review-tabs" role="tablist" aria-label="選擇 Wireframe">
+      <button id="tab-w1" type="button" role="tab" aria-selected="true" aria-controls="w1" data-view="w1"><span>01</span><b>進階選線</b></button>
+      <button id="tab-w2" type="button" role="tab" aria-selected="false" aria-controls="w2" data-view="w2"><span>02</span><b>讀棋作答</b></button>
+      <button id="tab-w3" type="button" role="tab" aria-selected="false" aria-controls="w3" data-view="w3"><span>03</span><b>棋譜複盤</b></button>
+      <button id="tab-w4" type="button" role="tab" aria-selected="false" aria-controls="w4" data-view="w4"><span>04</span><b>開局設定</b></button>
+      <button id="tab-w5" type="button" role="tab" aria-selected="false" aria-controls="w5" data-view="w5"><span>05</span><b>對局進行</b></button>
+      <button id="tab-w6" type="button" role="tab" aria-selected="false" aria-controls="w6" data-view="w6"><span>06</span><b>終局確認</b></button>
+    </nav>
+  </div>
+
+  <main id="review-stage" class="review-stage">
+    <section class="review-view" id="w1" role="tabpanel" aria-labelledby="tab-w1">
+      <article class="experience-frame advanced-surface" aria-labelledby="w1-title">
+        <header class="product-header">
+          <a class="product-brand" href="../../index.html"><span class="mini-mark" aria-hidden="true"></span><span><strong>VT-COS｜悟之一手</strong><small>PRACTICE LAB · ADVANCED</small></span></a>
+          <nav aria-label="進階訓練導覽"><a href="../../index.html">首頁</a><a href="../../index.html#core">核心課程</a><a href="../../live-game.html?size=19">19×19 棋盤</a></nav>
+        </header>
+        <div class="advanced-landing">
+          <section class="advanced-hero-copy">
+            <p class="eyebrow">ADVANCED PRACTICE · NOT UNIT 16</p>
+            <h1 id="w1-title" data-view-title tabindex="-1"><span class="title-line">不要往下升級，</span><em class="title-line">先找到現在的瓶頸。</em></h1>
+            <p class="hero-lede">三條能力線、棋盤實走與棋譜複盤可以來回切換；完成量不會被換算成棋力或核心課程進度。</p>
+            <div class="hero-actions"><a class="primary-action cobalt" href="#capability-map">選一條開始</a><a class="text-action" href="../../index.html#core">我還要補核心課程 →</a></div>
+            <p class="authority-note"><span aria-hidden="true">○</span><strong>目前任務：練習</strong> · 保存首答／提示／重試，但不改 Core 排程或正式評量。</p>
+          </section>
+          <section class="capability-map" id="capability-map" aria-label="進階能力地圖">
+            <div class="capability-center"><span>START HERE</span><strong id="track-map-title">讀棋與手筋</strong><p id="track-map-copy">在棋盤上走完多手變化，練習先看逃路、氣與次序。</p><small id="track-map-meta">選擇題 + 8 個 rules-backed sequence</small></div>
+            <button class="orbit-track track-reading selected" type="button" data-track="reading" aria-pressed="true"><span>01</span><strong>讀棋與手筋</strong><small>從次序找到局部結果</small></button>
+            <button class="orbit-track track-middle" type="button" data-track="middle" aria-pressed="false"><span>02</span><strong>中盤攻防</strong><small>比較打入、侵消與輕重</small></button>
+            <button class="orbit-track track-endgame" type="button" data-track="endgame" aria-pressed="false"><span>03</span><strong>官子與全局</strong><small>比較先後手與局面選擇</small></button>
+            <a class="orbit-track track-full" href="../../live-game.html?size=19"><span>04</span><strong>19×19 完整棋局</strong><small>全盤練習 · 非 T3</small></a>
+            <i class="orbit-line line-a" aria-hidden="true"></i><i class="orbit-line line-b" aria-hidden="true"></i><i class="orbit-line line-c" aria-hidden="true"></i>
+          </section>
+        </div>
+        <section class="route-strip" aria-label="進階練習接續方式">
+          <span>先自己判斷</span><i aria-hidden="true"></i><span>保留第一反應</span><i aria-hidden="true"></i><span>看理由與反例</span><i aria-hidden="true"></i><span>換形／延後再判</span>
+        </section>
+        <footer class="frame-footer"><span>ADVANCED IS A NETWORK, NOT A LADDER.</span><span>公開練習 ≠ 正式評量</span></footer>
+      </article>
+      <aside class="award-intent" aria-labelledby="w1-award"><p>AWARD INTENT · W1</p><h2 id="w1-award">把「不線性」做成第一個記憶點</h2><dl><dt>Memorable Moment</dt><dd>四條能力軌道繞著「目前瓶頸」排列，而不是延長成第 16、17、18 單元。</dd><dt>Emotional Intent</dt><dd>從「我要升級」轉為「我知道現在該練哪個決策」。</dd><dt>Interaction Signature</dt><dd>選軌只改訓練用途、題型與證據邊界；不顯示等級、完成百分比或推薦分數。</dd><dt>Visual Opportunity</dt><dd>靛藍能力星圖與中央指南針，把可回跳的 IA 變成頁面構圖。</dd><dt>Restraint</dt><dd>不做技能樹、XP、鎖頭、段位徽章或 AI 診斷。</dd><dt>Non-negotiables</dt><dd>不是第 16 單元；Advanced 與 Core stores 分離；19×19 不自動取得 T3。</dd><dt>Award Risk</dt><dd>軌道若太像遊戲科技樹，會重新製造「高級＝已掌握」的錯誤暗示。</dd></dl></aside>
+    </section>
+
+    <section class="review-view" id="w2" role="tabpanel" aria-labelledby="tab-w2" hidden>
+      <article class="experience-frame advanced-workbench-frame" aria-labelledby="w2-title">
+        <header class="product-header compact">
+          <a class="product-brand" href="../../advanced.html"><span class="mini-mark" aria-hidden="true"></span><span><strong>悟之一手</strong><small>ADVANCED · READING 02/08</small></span></a>
+          <nav aria-label="讀棋訓練導覽"><a href="../../advanced.html">返回選線</a><button class="icon-button" type="button" aria-label="開啟題目列表">題目 2 / 8</button></nav>
+        </header>
+        <div class="task-ribbon"><span>目前任務</span><strong>練習</strong><small id="w2-state">自己判斷 · 首答尚未記錄</small></div>
+        <div class="advanced-workbench-grid">
+          <section class="question-column">
+            <p class="eyebrow">棋盤練習 02 · 題型完成前隱藏</p>
+            <h1 id="w2-title" data-view-title tabindex="-1"><span class="title-line">白棋延長之後，</span><span class="title-line">黑棋下一手下哪裡？</span></h1>
+            <p class="target-line"><span>本題目標</span><strong>先看被包圍棋串的兩個出口，再走能同時限制逃路的一手。</strong></p>
+            <div class="observation-steps"><span class="active">01 找目標棋串</span><span>02 數外氣</span><span>03 比較兩個出口</span></div>
+            <div class="response-card" id="sequence-response">
+              <span>YOUR RESPONSE</span><strong id="response-title">在棋盤選一個候選點</strong><p id="response-copy">第一次合法選擇會獨立保存；重試不會覆寫它。</p>
+              <div class="candidate-buttons" aria-label="示範候選點"><button type="button" data-sequence-move="C4" data-correct="false">C4</button><button type="button" data-sequence-move="D5" data-correct="true">D5</button><button type="button" data-sequence-move="E3" data-correct="false">E3</button></div>
+            </div>
+            <p class="first-response-ledger" id="first-response-ledger"><span>FIRST RESPONSE</span><strong>尚未記錄</strong><small>retry 會另列</small></p>
+            <div class="feedback-banner" id="sequence-feedback" role="status" aria-live="polite" hidden></div>
+            <div class="task-actions"><button class="subtle-action" id="sequence-hint" type="button">給我觀察提示</button><button class="primary-action cobalt" id="sequence-next" type="button" disabled>下一個棋盤題 →</button></div>
+            <p class="hint-line" id="sequence-hint-copy" role="status" hidden><strong>提示：</strong>先找白棋延長後仍能連回援兵的空點。</p>
+            <aside class="takeaway-card" id="sequence-takeaway" hidden><span>完成後揭示 · 這題帶走</span><strong>不要背座標；出口幾何改變，收緊的方向也會改變。</strong><small>題型：枷的變化題 · 公開練習</small></aside>
+          </section>
+          <section class="board-column">
+            <div class="board-head"><span>7 × 7 · 黑棋下</span><strong id="board-family">FAMILY HIDDEN</strong></div>
+            <div class="go-board board-7" aria-label="七路讀棋示意棋盤">
+              <div class="grid-lines" aria-hidden="true"></div>
+              <i class="stone black s-7-2-2"></i><i class="stone black s-7-2-4"></i><i class="stone black s-7-3-1"></i><i class="stone black s-7-4-1"></i><i class="stone black s-7-5-2"></i>
+              <i class="stone white s-7-3-2"></i><i class="stone white s-7-3-3"></i><i class="stone white s-7-4-2"></i>
+              <button class="board-candidate p-c4" type="button" data-board-move="C4" aria-label="候選 C4"></button>
+              <button class="board-candidate p-d5" type="button" data-board-move="D5" aria-label="候選 D5"></button>
+              <button class="board-candidate p-e3" type="button" data-board-move="E3" aria-label="候選 E3"></button>
+            </div>
+            <div class="board-caption"><span id="board-step">第 1 / 2 步</span><p>鍵盤方向鍵移動 · Enter／空白鍵落子</p></div>
+            <div class="reasoning-trace" aria-label="作答記錄圖例"><span><i class="trace-first"></i>第一反應</span><span><i class="trace-retry"></i>重試</span><span><i class="trace-rule"></i>規則核對</span></div>
+          </section>
+        </div>
+      </article>
+      <aside class="award-intent" aria-labelledby="w2-award"><p>AWARD INTENT · W2</p><h2 id="w2-award">讓第一反應留下不可覆寫的墨跡</h2><dl><dt>Memorable Moment</dt><dd>第一次落點形成實心墨環；重試只形成外圈，不會把第一環擦掉。</dd><dt>Emotional Intent</dt><dd>錯誤不是被消除，而是成為可回看的思考軌跡。</dd><dt>Interaction Signature</dt><dd>先選錯再選對，FIRST RESPONSE 仍保留原座標；規則回饋與教學揭示分層。</dd><dt>Visual Opportunity</dt><dd>棋盤、題幹與 response ledger 在同一視窗，讓 decision lifecycle 本身成為主視覺。</dd><dt>Restraint</dt><dd>首答前不顯示 family、正確點、takeaway 或下一題；不做煙火式答對動畫。</dd><dt>Non-negotiables</dt><dd>first response／retry 分離；合法但不符 contract 的手不推進盤面；engine／storage failure 不能假裝完成。</dd><dt>Award Risk</dt><dd>墨環若被理解成好壞分數，會把描述性紀錄誤讀為能力判定。</dd></dl></aside>
+    </section>
+
+    <section class="review-view" id="w3" role="tabpanel" aria-labelledby="tab-w3" hidden>
+      <article class="experience-frame review-studio-frame" id="review-studio" data-review-state="masked" aria-labelledby="w3-title">
+        <header class="product-header dark compact">
+          <a class="product-brand" href="../../advanced.html"><span class="mini-mark light" aria-hidden="true"></span><span><strong>悟之一手</strong><small>ADVANCED · DECISION STUDIO</small></span></a>
+          <nav aria-label="棋譜複盤導覽"><a href="../../advanced.html">進階首頁</a><a href="../../live-game.html?size=19">完整棋局</a></nav>
+        </header>
+        <div class="review-studio-grid">
+          <section class="review-copy">
+            <p class="eyebrow light-text">19×19 SGF · PRACTICE ONLY</p>
+            <h1 id="w3-title" data-view-title tabindex="-1"><span class="title-line">先留下候選。</span><em class="title-line">再掀開原棋譜。</em></h1>
+            <p>原著是歷史比較，不是唯一最佳手；KataGo 也只能提供固定搜尋量下的估計。</p>
+            <div class="review-steps" aria-label="棋譜複盤步驟"><span class="current">1 選決策點</span><span>2 放第一候選</span><span>3 揭露比較</span><span>4 可選分析</span></div>
+            <div class="sgf-source-card"><span>SOURCE LOADED</span><strong>training-game-01.sgf</strong><small>19×19 · 第 87 手前 · 我執黑</small></div>
+            <button class="primary-action inverse" id="place-review-candidate" type="button">在 Q10 放第一候選</button>
+            <button class="outline-action" id="reveal-original" type="button" disabled>揭露原棋譜著手並比較</button>
+            <div class="review-verdict" id="review-verdict" role="status" aria-live="polite"><span>ORIGINAL MOVE</span><strong>仍然遮蔽</strong><p>先提出第一候選後才能比較。</p></div>
+            <details class="engine-panel"><summary>用 KataGo 比較兩手（選用）</summary><p>僅在揭露後送出第一候選與原著；需明確規則、貼目與可用 endpoint。失敗保持 ERROR，不回退內建估計。</p><button type="button" id="engine-demo" disabled>顯示 bounded estimate 範例</button><p id="engine-result" hidden>範例：固定搜尋量較偏向原著手；不是標準答案，也不改能力紀錄。</p></details>
+          </section>
+          <section class="review-board-area">
+            <div class="review-board-meta"><span>MOVE 087 · BLACK TO PLAY</span><strong>原著位置已加密遮蔽</strong></div>
+            <div class="go-board board-19" aria-label="十九路棋譜決策點示意棋盤">
+              <div class="grid-lines" aria-hidden="true"></div>
+              <i class="stone black p19-a"></i><i class="stone black p19-b"></i><i class="stone black p19-c"></i><i class="stone black p19-d"></i><i class="stone black p19-e"></i><i class="stone black p19-f"></i>
+              <i class="stone white p19-g"></i><i class="stone white p19-h"></i><i class="stone white p19-i"></i><i class="stone white p19-j"></i><i class="stone white p19-k"></i><i class="stone white p19-l"></i>
+              <i class="review-marker candidate-marker" aria-label="你的候選 Q10"></i><i class="review-marker original-marker" aria-label="原著著手 R12"></i>
+              <div class="original-veil"><span>ORIGINAL MOVE</span><strong>HIDDEN</strong><small>先提出候選</small></div>
+            </div>
+            <div class="marker-legend"><span><i class="candidate-key"></i>你的第一候選</span><span><i class="original-key"></i>原棋譜著手（揭露後）</span></div>
+          </section>
+          <aside class="return-queue">
+            <header><span>PRACTICE RETURN QUEUE</span><strong>不要把所有「稍後」混成同一件事</strong></header>
+            <article><span class="queue-icon exposed">↻</span><div><strong>同一局面重做</strong><p>已看過原著 · 不是未見題</p></div><small>可加入</small></article>
+            <article><span class="queue-icon immediate">◇</span><div><strong>換形再判</strong><p>公開不同局面 · 固定順序</p></div><small>2 / 4</small></article>
+            <article class="locked"><span class="queue-icon delayed">24</span><div><strong>延後新局面</strong><p>保存實際間隔與首答</p></div><small>18h 後</small></article>
+            <article class="locked"><span class="queue-icon delayed">7d</span><div><strong>七天後新局面</strong><p>固定基準，不是最佳間隔</p></div><small>尚未到期</small></article>
+            <p class="queue-boundary">公開／已曝光題皆不成為 formal unseen；完成量不合成 mastery。</p>
+          </aside>
+        </div>
+      </article>
+      <aside class="award-intent" aria-labelledby="w3-award"><p>AWARD INTENT · W3</p><h2 id="w3-award">把「遮蔽—比較—回來再判」做成一個儀式</h2><dl><dt>Memorable Moment</dt><dd>候選落下後，棋盤中央的原著遮罩才退開，兩手以等權標記並置。</dd><dt>Emotional Intent</dt><dd>不是猜中答案的緊張，而是看見自己當時如何判斷的誠實感。</dd><dt>Interaction Signature</dt><dd>Veil 只有在第一候選存在時解除；同局重做、立即換形、24h、7d 四種 return 清楚分流。</dd><dt>Visual Opportunity</dt><dd>深墨複盤室、遮罩與時間佇列，讓 evidence lifecycle 形成舞台感。</dd><dt>Restraint</dt><dd>不預告原著、不替兩手打紅綠分、不畫勝率震盪圖作戲劇效果。</dd><dt>Non-negotiables</dt><dd>原著不同不等於錯；replay 不等於 unseen；KataGo 是 bounded estimate；到期前不可開題。</dd><dt>Award Risk</dt><dd>揭幕感若過強，讀者可能仍把原著手視為權威答案。</dd></dl></aside>
+    </section>
+
+    <section class="review-view" id="w4" role="tabpanel" aria-labelledby="tab-w4" hidden>
+      <article class="experience-frame live-setup-frame" id="live-setup-demo" data-size="9" aria-labelledby="w4-title">
+        <header class="product-header live-header">
+          <a class="product-brand" href="../../index.html"><span class="mini-mark vermilion" aria-hidden="true"></span><span><strong>VT-COS｜悟之一手</strong><small>PRACTICE LAB · LIVE BOARD</small></span></a>
+          <nav aria-label="棋盤練習導覽"><a href="../../index.html#core">核心課程</a><a href="../../advanced.html">進階訓練</a></nav>
+        </header>
+        <div class="live-setup-shell">
+          <section class="setup-copy">
+            <p class="eyebrow red">NEW GAME · LOCAL PRACTICE</p>
+            <h1 id="w4-title" data-view-title tabindex="-1"><span class="title-line">選一個容得下</span><span class="title-line"><em>這次練習</em>的棋盤。</span></h1>
+            <p>棋盤變大只會改變練習範圍，不會自動升格為局面應用、完整棋力或正式評量。</p>
+            <div class="size-selector" aria-label="棋盤尺寸">
+              <button type="button" data-board-size="5" aria-pressed="false"><strong>5 × 5</strong><span>連斷與眼形</span></button>
+              <button type="button" data-board-size="7" aria-pressed="false"><strong>7 × 7</strong><span>局部攻防</span></button>
+              <button type="button" data-board-size="9" aria-pressed="true"><strong>9 × 9</strong><span>完整小棋盤</span></button>
+              <button type="button" data-board-size="19" aria-pressed="false"><strong>19 × 19</strong><span>全盤整合</span></button>
+            </div>
+            <div class="purpose-card"><span id="setup-size-label">9×9 · COMPLETE SMALL BOARD</span><strong id="setup-purpose">練完整開局、中盤到終局</strong><p id="setup-boundary">可形成少數 bounded 9×9 live opportunity；一盤勝負仍不代表棋力。</p></div>
+          </section>
+          <section class="setup-panel" aria-label="對弈設定">
+            <header><span>02 · CHOOSE OPPONENT</span><strong>跟誰下？</strong></header>
+            <div class="opponent-toggle"><button type="button" data-opponent="computer" aria-pressed="true"><span class="opponent-glyph">◒</span><strong>練習電腦</strong><small>免安裝即可開始</small></button><button type="button" data-opponent="local" aria-pressed="false"><span class="opponent-glyph">●○</span><strong>雙人同機</strong><small>輪流在同一裝置落子</small></button></div>
+            <div class="color-toggle"><span>你執</span><button type="button" data-color="black" aria-pressed="true">● 黑棋</button><button type="button" data-color="white" aria-pressed="false">○ 白棋</button></div>
+            <p class="computer-boundary" id="computer-boundary">內建電腦只從規則合法手中作 bounded heuristic 選擇，不是 KataGo，也不宣稱最佳手。</p>
+            <details class="provider-disclosure"><summary>進階：更換電腦引擎</summary><div><label>電腦引擎<select aria-label="電腦引擎"><option>內建練習電腦</option><option>本機 KataGo</option><option>遠端對弈 API</option></select></label><p>Provider 只提出候選；規則引擎仍決定是否合法。連線失敗會停止回合，不偷偷 fallback。</p><button type="button">測試連線（候選示意）</button><span>尚未測試</span></div></details>
+            <button class="primary-action live" type="button">開始 9×9 新局 <span aria-hidden="true">→</span></button>
+            <p class="local-save-note"><span aria-hidden="true">⌁</span> 各尺寸分開保存於這台裝置；不需要帳號。</p>
+          </section>
+          <div class="setup-board-visual" aria-hidden="true"><div class="size-board size-board-5"></div><div class="size-board size-board-7"></div><div class="size-board size-board-9 active"></div><div class="size-board size-board-19"></div><span>9 × 9</span></div>
+        </div>
+      </article>
+      <aside class="award-intent" aria-labelledby="w4-award"><p>AWARD INTENT · W4</p><h2 id="w4-award">讓棋盤尺寸像鏡頭光圈，而不是等級階梯</h2><dl><dt>Memorable Moment</dt><dd>切換尺寸時，背景棋盤框架真正展開／收斂，練習用途與限制同時改變。</dd><dt>Emotional Intent</dt><dd>開局前只做兩個有意義的決定，不被引擎術語嚇退。</dd><dt>Interaction Signature</dt><dd>Size 改 practice aperture；opponent 改 actor flow；進階 provider 維持按需展開。</dd><dt>Visual Opportunity</dt><dd>朱砂與木色的棋盤尺度疊影，讓設定頁本身有空間張力。</dd><dt>Restraint</dt><dd>不把 19×19 標成高級、不先展示 API endpoint、不用棋力估計推薦尺寸。</dd><dt>Non-negotiables</dt><dd>5／7／9／19 都可達；3×3 不回到 active UI；provider 失敗不 fallback；不收 API key。</dd><dt>Award Risk</dt><dd>尺寸動畫太華麗，會再次讓 19×19 看起來像應追求的終點。</dd></dl></aside>
+    </section>
+
+    <section class="review-view" id="w5" role="tabpanel" aria-labelledby="tab-w5" hidden>
+      <article class="experience-frame live-game-frame" id="live-game-demo" data-move-played="false" aria-labelledby="w5-title">
+        <header class="game-command-bar">
+          <a href="../../index.html"><span class="mini-mark vermilion" aria-hidden="true"></span><strong>悟之一手</strong></a>
+          <div class="game-title"><span>9 × 9 · 練習電腦</span><h1 id="w5-title" data-view-title tabindex="-1"><span class="title-line">完整小棋盤</span></h1></div>
+          <div class="game-actions"><span class="save-pulse">● 只存這台電腦</span><button type="button">開始新局</button></div>
+        </header>
+        <div class="game-status-ribbon" aria-label="棋局狀態"><article><span>目前</span><strong id="demo-turn">黑棋落子</strong></article><article><span>手數</span><strong id="demo-moves">18</strong></article><article><span>提子</span><strong>黑 2 · 白 1</strong></article><article><span>規則</span><strong>中國式面積 · 簡單劫</strong></article></div>
+        <div class="live-game-grid">
+          <section class="live-board-stage">
+            <div class="board-head"><span>這個尺寸主要練：完整小棋盤對局</span><strong>PRACTICE · NOT A RATING</strong></div>
+            <div class="go-board board-9" aria-label="九路實戰示意棋盤">
+              <div class="grid-lines" aria-hidden="true"></div>
+              <i class="star star-a"></i><i class="star star-b"></i><i class="star star-c"></i><i class="star star-d"></i><i class="star star-e"></i>
+              <i class="stone black b9-a"></i><i class="stone black b9-b"></i><i class="stone black b9-c"></i><i class="stone black b9-d"></i><i class="stone black b9-e"></i><i class="stone black b9-f"></i><i class="stone black b9-g"></i><i class="stone black b9-h"></i><i class="stone black b9-i"></i>
+              <i class="stone white w9-a"></i><i class="stone white w9-b"></i><i class="stone white w9-c"></i><i class="stone white w9-d"></i><i class="stone white w9-e"></i><i class="stone white w9-f"></i><i class="stone white w9-g"></i><i class="stone white w9-h"></i><i class="stone white w9-i"></i>
+              <button id="play-demo-move" class="playable-point" type="button" aria-label="在 F6 落子"></button><i class="last-move-ring" aria-hidden="true"></i>
+            </div>
+            <p class="board-instruction">滑鼠、觸控或方向鍵移動 · Enter／空白鍵落子</p>
+            <div class="live-action-row"><button class="primary-action live" id="demo-pass" type="button">停一手（Pass）</button><button class="subtle-action" type="button">悔一手</button><button class="danger-action" type="button">認輸</button></div>
+            <div class="live-feedback" id="live-demo-feedback" role="status" aria-live="polite">輪到黑棋。選一個空點落子；局部結果不等於全局最佳手。</div>
+          </section>
+          <aside class="game-side-panel">
+            <section class="next-decision-card"><span>NEXT DECISION</span><strong id="decision-title">掃描全盤，再選一手</strong><p id="decision-copy">目前沒有系統提示的唯一局部任務；這一回合仍是自由練習。</p></section>
+            <section class="move-log-card"><header><span>最近手順</span><strong>18 手</strong></header><ol id="demo-move-log"><li><span>15</span><i class="black-dot"></i><strong>D7</strong></li><li><span>16</span><i class="white-dot"></i><strong>C6</strong></li><li><span>17</span><i class="black-dot"></i><strong>F4</strong></li><li><span>18</span><i class="white-dot"></i><strong>E5</strong></li></ol></section>
+            <section class="game-tools-card"><header><span>棋譜與續局</span></header><button type="button">匯出 SGF</button><button type="button">匯入同尺寸 SGF</button><p>未結束也可匯出；匯入尺寸必須相同。</p></section>
+          </aside>
+        </div>
+        <footer class="frame-footer"><span>Rules decide legality · provider only proposes</span><span>勝負 ≠ 學習成效</span></footer>
+      </article>
+      <aside class="award-intent" aria-labelledby="w5-award"><p>AWARD INTENT · W5</p><h2 id="w5-award">讓每一手安靜地成為下一個決定</h2><dl><dt>Memorable Moment</dt><dd>落子後只有一圈低調餘波、回合狀態與手順同步更新；沒有把棋盤蓋上分析儀表。</dd><dt>Emotional Intent</dt><dd>專注、可信、可回復；使用者感覺自己在下棋，不是在操作 dashboard。</dd><dt>Interaction Signature</dt><dd>Board→status→move log 形成單一回饋波；Pass／悔棋／認輸保持清楚但不搶落子。</dd><dt>Visual Opportunity</dt><dd>大面積木色棋盤對比極簡深墨 command bar，讓一手棋有真正的空間重量。</dd><dt>Restraint</dt><dd>不常駐勝率、推薦點、熱區、棋力分數或 AI 對話泡泡。</dd><dt>Non-negotiables</dt><dd>規則引擎是 legality authority；local state 可見；undo／pass／resign 語義與 actor 保存不變。</dd><dt>Award Risk</dt><dd>過度極簡可能隱藏 provider／storage ERROR；失敗狀態必須比平時更明確。</dd></dl></aside>
+    </section>
+
+    <section class="review-view mobile-review" id="w6" role="tabpanel" aria-labelledby="tab-w6" hidden>
+      <article class="experience-frame endgame-review-frame" id="endgame-demo" data-dead-marked="false" aria-labelledby="w6-title">
+        <section class="endgame-explainer">
+          <p class="eyebrow red">MOBILE · TWO PASSES</p>
+          <h1 id="w6-title" data-view-title tabindex="-1"><span class="title-line">終局不是自動答案，</span><em class="title-line">而是雙方確認。</em></h1>
+          <p>系統只依已標記死子計算中國式面積；若有爭議，最穩定的路徑是回棋盤繼續下。</p>
+          <div class="endgame-principles"><span><strong>01</strong> 點整串標記死子</span><span><strong>02</strong> 檢查面積與貼目</span><span><strong>03</strong> 同意結果或恢復下棋</span></div>
+          <p class="endgame-boundary">確認結果只結束本局；不產生棋力、mastery、學習成效或 formal evaluation。</p>
+        </section>
+        <div class="phone-shell">
+          <div class="phone-island"></div>
+          <div class="phone-screen">
+            <header><a href="../../index.html"><span class="mini-mark vermilion" aria-hidden="true"></span><strong>悟之一手<small>9×9 · 終局確認</small></strong></a><button type="button">⋯</button></header>
+            <main>
+              <div class="mobile-status"><span>兩次 Pass</span><strong>確認終局與死子</strong><small id="mobile-score-state">尚未標記死子</small></div>
+              <p class="mobile-instruction">點選盤上棋串可標記／取消死子。系統不自動判死活。</p>
+              <div class="go-board board-9 endgame-board" aria-label="九路終局死子確認示意棋盤">
+                <div class="grid-lines" aria-hidden="true"></div>
+                <i class="stone black eg-b1"></i><i class="stone black eg-b2"></i><i class="stone black eg-b3"></i><i class="stone black eg-b4"></i><i class="stone black eg-b5"></i><i class="stone black eg-b6"></i><i class="stone black eg-b7"></i>
+                <i class="stone white eg-w1"></i><i class="stone white eg-w2"></i><i class="stone white eg-w3"></i><i class="stone white eg-w4"></i><i class="stone white eg-w5"></i><i class="stone white eg-w6"></i>
+                <button id="dead-group-toggle" class="dead-group-target" type="button" aria-pressed="false" aria-label="標記白棋兩子為死子"></button>
+                <i class="dead-x dead-x-a">×</i><i class="dead-x dead-x-b">×</i>
+              </div>
+              <section class="score-sheet" aria-label="終局計分"><div><span>黑棋面積</span><strong id="black-score">35</strong></div><div><span>白棋面積</span><strong id="white-score">28.5</strong><small>含貼目 7.5</small></div><p id="score-lead">暫計黑勝 6.5 目 · 尚待雙方確認</p></section>
+              <div class="mobile-score-actions"><button class="primary-action live" id="confirm-demo-score" type="button">確認這個結果</button><button class="subtle-action" id="resume-demo-play" type="button">有爭議，繼續下</button></div>
+              <div class="mobile-record-actions"><button type="button">匯出 SGF</button><button type="button">回課程</button></div>
+              <div class="mobile-result" id="mobile-result" role="status" aria-live="polite" hidden><span>棋局結束</span><strong>黑棋勝 10.5 目</strong><p>依本局規則與人工死子確認；不是學習分數。</p></div>
+            </main>
+          </div>
+        </div>
+      </article>
+      <aside class="award-intent" aria-labelledby="w6-award"><p>AWARD INTENT · W6</p><h2 id="w6-award">把終局做成可撤回的共同確認</h2><dl><dt>Memorable Moment</dt><dd>死子標記出現手寫式叉記，分數才重算；「有爭議」永遠能回到棋盤。</dd><dt>Emotional Intent</dt><dd>結束感清楚但不武斷，使用者保有對爭議局面的控制權。</dd><dt>Interaction Signature</dt><dd>Mark→recount→confirm／resume 三段式；結果卡在明確確認後才進場。</dd><dt>Visual Opportunity</dt><dd>手機像一本終局記分簿，人工叉記與精準數字形成有意義的材質對比。</dd><dt>Restraint</dt><dd>不自動辨識死活、不用勝利彩帶、不把勝負轉成 XP 或能力徽章。</dd><dt>Non-negotiables</dt><dd>整串切換；爭議可續局；確認後結果不可直接悔棋；SGF 保留 RE；結果不升格學習證據。</dd><dt>Award Risk</dt><dd>手寫叉記若太裝飾，可能看不出可操作與已選狀態；需文字、aria-pressed 與分數同步。</dd></dl></aside>
+    </section>
+  </main>
+
+  <footer class="review-footer"><div><span>Grounded in current advanced.html / live-game.html contracts.</span><span>Prototype state is memory-only; production remains unchanged.</span></div><button id="motion-demo" type="button">播放目前畫面招牌互動 <span aria-hidden="true">↗</span></button></footer>
+</body>
+</html>

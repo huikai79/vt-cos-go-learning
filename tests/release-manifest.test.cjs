@@ -57,19 +57,19 @@ test("首頁 v57 的有機視覺資產全部列入 public manifest", () => {
 
 test("Learning Workspace 審查候選與狀態截圖列入公開 manifest，但不是 learner runtime", () => {
   for (const file of [
-    "design-candidates/learning-workspace-v63/README.md",
-    "design-candidates/learning-workspace-v63/desktop-w1.png",
-    "design-candidates/learning-workspace-v63/mobile-w5.png",
-    "design-candidates/learning-workspace-v63/verify-wireframes.cjs",
-    "design-candidates/learning-workspace-v63/wireframes.css",
-    "design-candidates/learning-workspace-v63/wireframes.html",
-    "design-candidates/learning-workspace-v63/wireframes.js",
+    "design-candidates/01 learning-workspace-v63/README.md",
+    "design-candidates/01 learning-workspace-v63/desktop-w1.png",
+    "design-candidates/01 learning-workspace-v63/mobile-w5.png",
+    "design-candidates/01 learning-workspace-v63/verify-wireframes.cjs",
+    "design-candidates/01 learning-workspace-v63/wireframes.css",
+    "design-candidates/01 learning-workspace-v63/wireframes.html",
+    "design-candidates/01 learning-workspace-v63/wireframes.js",
     "ui-audit-screenshots/go-learning-answered-desktop.png",
     "ui-audit-screenshots/go-learning-text-choice-desktop.png"
   ]) assert.ok(manifest.publicFiles.includes(file), file);
 
   const learningHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
-  assert.doesNotMatch(learningHtml, /design-candidates\/learning-workspace-v63/);
+  assert.doesNotMatch(learningHtml, /design-candidates\/(?:01 )?learning-workspace-v63/);
 });
 
 test("兩個公開入口與 README 使用同一品牌名稱", () => {

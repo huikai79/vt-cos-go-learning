@@ -116,6 +116,10 @@ UI 將曲四追加到同一四目眼 status contrast 的第 5、6 題，前四�
 
 # 悟之一手：產品與教學設計計畫
 
+## 2026-10-05 Change note｜Award Presentation v1
+
+本輪把得獎意圖轉成可驗證的 presentation constraints，而非得獎宣稱：同一色彩與字體角色、可辨識焦點、自然的 CJK 標題換行、少量可回復的 hover/motion、窄寬與 reduced-motion reflow，以及「完整資訊優先於無捲動」的邊界。共用 stylesheet 不擁有任何學習／棋局資料；Core 只以現有 DOM 覆蓋，Explore 保持 read-only，Advanced／Live／Classic 不改 rules、provider、事件或 storage authority。歷史語義與所有 event UI version 不變，無 migration；candidate `formal-teaching-candidate-2026-10-05-a`／`fnv1a32-js16-82443b6a` 取代 v70 的 candidate binding，舊真人回條不移轉。rollback 回復本機 pre-promotion snapshot 的正式路徑，不觸碰 `design-candidates/`。
+
 2026-09-26 經典名型教學修正：第 4 單元先以既有直三題試行「自主觀察 → 作答後揭名 → 換方向 → 攻守交換 → 相似反例」；名型名稱只作 retrieval cue，不作 KC 或 Evidence。獨立探索頁重用既有 item/scoring source of truth、固定 practice-only，不寫 scheduler、T2/T3 或 formal evaluation。直三 learner-facing 文案實質變更的四題升 contentVersion 2；歷史事件保留舊版本。其餘刀把五、梅花五、大豬嘴等名型須先完成內容核對／外部審題，再考慮加入，不因「經典」直接跨過 R1a。
 
 2026-09-20 修訂：納入技能模型假說、題目特徵、輪替驗收池與簡單對照方案。這次是規格更新；程式完成範圍見第 10 節，來源與附件取捨見 [研究查核](RESEARCH_LEARNING_METRICS.md)。
@@ -655,3 +659,4 @@ History Explore 的證據呈現遵守「claim → evidence unit → source recor
 ### 2026-09-30 Short Talk UX v2 設計契約
 
 短講的最小單位是「一個有意義的 observable state」，不是固定步驟數。多步只有在下一步改變棋子或教學 marker 時成立，相鄰完全相同畫面屬 regression。資料來源收斂為 `lesson.text → demoSteps[] → takeaway → terms[]`，不維護 `lesson.demo`／`demoBoard` 平行真值。學習者主流程為「核心概念 → 棋盤變化 → 單一 caption → 進題前一句 → 練習」，圖例與關鍵詞屬輔助層。自動短講與手動重看只在顯示／焦點語義上區分，不新增 learner mastery 或觀看進度；`seenLessonIntros` 只是 auto-display suppression。短講棋理的外部 review 與 R1a 題庫 review 分開，兩者都不等於 learner comprehension 或 learning effect。
+2026-10-05 Award Presentation v2：正式網站的共同設計規則為「證據先於聲量、完整資訊先於單屏、可辨識操作先於裝飾」。暖紙、墨綠、金色、editorial display type、細線框與低幅度 motion 建立同一品牌；各頁則保留不同任務辨識：首頁是安全預覽，Explore 是證據鏡片，Advanced 是瓶頸路徑，Live 是棋盤 aperture，Classic 是可擴充棋形索引。首頁預覽只在 DOM 內保存本次示範狀態，不讀寫正式 learner state；共用 CSS／JS 不取得 rules、provider、scoring、scheduler、KC、event 或 formal eligibility authority。窄／短視窗採自然 reflow 與捲動，避免以固定高度或裁切交換表面上的「一屏」。candidate `formal-teaching-candidate-2026-10-05-b`／`fnv1a32-js16-a4f99e81` 取代 v1 binding；無 migration，rollback 回復 pre-promotion snapshot。

@@ -779,7 +779,11 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const css = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
   assert.match(html, /<html lang="zh-Hant-TW">/);
   assert.match(html, /styles\.css\?v=learner-workspace-v70/);
-  assert.match(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
+  assert.match(html, /experience-system\.css\?v=award-experience-v2/);
+  assert.match(html, /homepage-experience\.js\?v=award-experience-v2/);
+  assert.match(html, /class="intro-hero-art home-experience-preview" data-home-preview/);
+  assert.match(html, /class="home-preview-board"/);
+  assert.doesNotMatch(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
   assert.match(html, /class="intro-hero-atmosphere"[^>]+assets\/homepage\/hero-atmosphere\.svg/);
   assert.match(html, /class="intro-philosophy-art intro-philosophy-growth"[^>]+assets\/homepage\/philosophy-growth-v59\.webp/);
   assert.match(html, /class="intro-philosophy-art intro-philosophy-capability"[^>]+assets\/homepage\/philosophy-capability-v59\.webp/);
@@ -791,7 +795,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   const evidenceSection = html.match(/<div class="[^"]*intro-evidence-grid[^"]*">([\s\S]*?)<\/div>/)?.[1] || "";
   assert.equal((evidenceSection.match(/<article/g) || []).length, 4);
   assert.doesNotMatch(evidenceSection, /data-evidence-role="summary"/);
-  assert.match(html, /class="intro-evidence-outcome"[^>]*><strong>真正重要的結果：<\/strong>不是做了多少題，而是過一段時間後，遇到不同的棋形/);
+  assert.match(html, /class="intro-evidence-outcome"[^>]*><strong>本站優先觀察：<\/strong>不是只看完成題數，而是保留隔時與不同棋形中的可比較作答/);
   assert.match(html, /data-site-intro-unit="5"/);
   assert.match(html, /data-site-intro-unit="10"/);
   assert.equal((html.match(/>開始這個單元 <span aria-hidden="true">→<\/span><\/button>/g) || []).length, 3);

@@ -27,6 +27,7 @@
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
   <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
   <link rel="stylesheet" href="styles.css?v=learner-workspace-v70">
+  <link rel="stylesheet" href="experience-system.css?v=award-experience-v2">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -41,9 +42,10 @@
   <script defer src="practice-events.js"></script>
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
+  <script defer src="homepage-experience.js?v=award-experience-v2"></script>
   <script defer src="app.js?v=learner-workspace-v70"></script>
 </head>
-<body>
+<body class="learning-page">
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
   <div class="app-shell">
     <aside class="sidebar">
@@ -203,10 +205,11 @@
             </a>
             <div class="landing-header-tools">
               <nav class="landing-nav" aria-label="首頁段落">
-                <a href="#site-introduction-assessment">課程特色</a>
                 <a href="#learning-entry">學習路線</a>
                 <a href="#all-courses" data-site-intro-courses>全站課程</a>
-                <a href="#faq">常見問題</a>
+                <a href="#explore-go">探索</a>
+                <a href="advanced.html">進階</a>
+                <a href="classic-shapes.html">名型館</a>
               </nav>
               <button class="landing-header-action" type="button" data-site-intro-start data-fresh-label="開始核心課程" data-return-label="繼續核心課程">開始核心課程 <span aria-hidden="true">→</span></button>
             </div>
@@ -217,43 +220,66 @@
           <section class="intro-hero" aria-labelledby="site-introduction-title">
               <img class="intro-hero-atmosphere" src="assets/homepage/hero-atmosphere.svg" alt="" aria-hidden="true" width="941" height="383" fetchpriority="high">
             <div class="intro-hero-copy">
-              <span class="intro-kicker">從看得見的棋形，走向看得全的棋局</span>
-              <h2 id="site-introduction-title" tabindex="-1">從 0 開始，<br>先學氣與提子，<br>再走進 <mark>9 路棋局</mark>。</h2>
-              <p>每一次只學一個概念，先看懂、再在棋盤上動手；<br>從可觀察的棋形開始，慢慢建立全局的判斷力。</p>
+              <span class="intro-kicker">A MOVE THAT REMAINS · 從看得見的棋形開始</span>
+              <h2 id="site-introduction-title" tabindex="-1"><span class="intro-title-line">先做一手，</span><span class="intro-title-line"><em>再看懂為什麼。</em></span></h2>
+              <p>第一次接觸圍棋也可以開始。先在右側合成局面做一個可逆選擇；它不會寫入課程紀錄，也不會被當成正式作答。</p>
               <div class="intro-actions">
                 <button class="primary-button intro-primary" type="button" data-site-intro-start data-fresh-label="從第一課開始" data-return-label="繼續核心課程">從第一課開始 <span aria-hidden="true">→</span></button>
                 <a class="intro-secondary" href="#learning-entry">找適合我的入口</a>
               </div>
               <div class="intro-trust-row" aria-label="學習路徑">
                 <span>
-                  <i class="intro-mini-board" aria-hidden="true"></i>
-                  <span><strong>5 × 5 ／ 7 × 7</strong><small>練習局部規則與棋形</small></span>
+                  <i class="intro-trust-dot" aria-hidden="true"></i>
+                  <span><strong>不需帳號</strong><small>本機即可開始</small></span>
                 </span>
                 <span class="intro-trust-next">
-                  <i class="intro-mini-board intro-mini-board-nine" aria-hidden="true"></i>
-                  <span><strong>9 × 9</strong><small>走進完整小局</small></span>
+                  <i class="intro-trust-dot" aria-hidden="true"></i>
+                  <span><strong>首答與修正分開</strong><small>原選點不會消失</small></span>
                 </span>
               </div>
             </div>
 
-            <figure class="intro-hero-art">
-              <div class="intro-hero-visual-card">
-                <div class="intro-hero-image-shell">
-                  <img class="intro-hero-image" src="assets/homepage/hero.png" alt="" aria-hidden="true" width="195" height="202" fetchpriority="high">
-                </div>
-                <svg class="intro-capture-arrow" viewBox="0 0 40 25" aria-hidden="true"><path d="M1 1C12 9 24 15 38 20M30 12L38 20L28 22"/></svg>
-                <figcaption class="intro-hero-explainer">
-                  <span class="intro-explainer-kicker">第一個棋盤概念</span>
-                  <h3>提子是什麼？</h3>
-                  <p>當一群棋子沒有氣時，<br>就會被提掉。</p>
-                  <div class="intro-hero-legend" aria-label="棋子示意">
-                    <span><i class="intro-stone intro-stone-black" aria-hidden="true"></i>黑子（己方）</span>
-                    <span><i class="intro-stone intro-stone-white" aria-hidden="true"></i>白子（對方）</span>
-                  </div>
-                  <p class="intro-hero-tip">沒有氣的棋子，<br>就會被提掉。</p>
-                </figcaption>
+            <figure class="intro-hero-art home-experience-preview" data-home-preview data-preview-state="before">
+              <div class="home-preview-meta">
+                <span>互動預覽 · <strong data-home-preview-label>尚未落子</strong></span>
+                <span>合成局面 · 黑先</span>
               </div>
-              <p class="intro-hero-note" aria-hidden="true">從一手開始，<br>看見更大的棋局。</p>
+              <div class="home-preview-board-shell">
+                <svg class="home-preview-board" viewBox="0 0 480 480" role="img" aria-labelledby="home-preview-board-title home-preview-board-desc">
+                  <title id="home-preview-board-title">九路棋盤合成預覽</title>
+                  <desc id="home-preview-board-desc">切換後會保留黑棋第一次選點，並顯示可觀察後果與規則理由。這不是正式題目。</desc>
+                  <defs>
+                    <radialGradient id="home-preview-black"><stop offset="0" stop-color="#40514a"/><stop offset=".52" stop-color="#14251f"/><stop offset="1" stop-color="#07100d"/></radialGradient>
+                    <radialGradient id="home-preview-white"><stop offset="0" stop-color="#fffef9"/><stop offset=".72" stop-color="#f2eee5"/><stop offset="1" stop-color="#c5c2b8"/></radialGradient>
+                    <marker id="home-preview-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#a84f32"/></marker>
+                  </defs>
+                  <rect x="10" y="10" width="460" height="460" rx="22" class="home-preview-wood"/>
+                  <path class="home-preview-grid" d="M60 60H420M60 105H420M60 150H420M60 195H420M60 240H420M60 285H420M60 330H420M60 375H420M60 420H420M60 60V420M105 60V420M150 60V420M195 60V420M240 60V420M285 60V420M330 60V420M375 60V420M420 60V420"/>
+                  <g class="home-preview-stars"><circle cx="150" cy="150" r="4"/><circle cx="330" cy="150" r="4"/><circle cx="240" cy="240" r="4"/><circle cx="150" cy="330" r="4"/><circle cx="330" cy="330" r="4"/></g>
+                  <g fill="url(#home-preview-black)"><circle cx="105" cy="150" r="20"/><circle cx="105" cy="195" r="20"/><circle cx="105" cy="240" r="20"/><circle cx="105" cy="285" r="20"/><circle cx="150" cy="330" r="20"/><circle cx="195" cy="285" r="20"/><circle cx="285" cy="195" r="20"/></g>
+                  <g fill="url(#home-preview-white)" stroke="#aaa69b"><circle cx="150" cy="150" r="20"/><circle cx="195" cy="150" r="20"/><circle cx="240" cy="195" r="20"/><circle cx="330" cy="240" r="20"/><circle cx="285" cy="330" r="20"/><circle cx="240" cy="330" r="20"/></g>
+                  <g class="home-preview-before"><circle class="home-preview-choice" cx="195" cy="240" r="27"/><circle class="home-preview-choice-dot" cx="195" cy="240" r="8"/></g>
+                  <g class="home-preview-after"><circle cx="195" cy="240" r="20" fill="url(#home-preview-black)"/><circle cx="240" cy="240" r="20" fill="url(#home-preview-white)" stroke="#aaa69b"/><circle class="home-preview-first-ring" cx="195" cy="240" r="29"/><path class="home-preview-causal-path" d="M209 226C222 211 237 210 247 222" marker-end="url(#home-preview-arrow)"/></g>
+                </svg>
+              </div>
+              <figcaption class="home-preview-caption">
+                <div class="home-preview-before">
+                  <span>試著找一手</span>
+                  <strong>哪裡能把兩塊空間真正分開？</strong>
+                  <small>金色是目前選點，不代表正確。</small>
+                </div>
+                <div class="home-preview-after">
+                  <span>01 · 原選點已保留</span>
+                  <strong>兩塊空間仍共用同一個破壞點</strong>
+                  <small>白棋可由右側進入；回到內部空點重新計算。</small>
+                </div>
+              </figcaption>
+              <button class="home-preview-toggle" type="button" data-home-preview-toggle aria-pressed="false" aria-describedby="home-preview-boundary">
+                <span class="home-preview-before">在預覽落下一手</span>
+                <span class="home-preview-after">回到作答前</span>
+              </button>
+              <p class="home-preview-boundary" id="home-preview-boundary">合成示範，不寫入 learner evidence、分數或課程進度。</p>
+              <p class="home-preview-status" data-home-preview-status role="status" aria-live="polite"></p>
               <ol class="intro-loop intro-loop-sr" aria-label="每次學習的四個步驟">
                 <li><span>1</span><div><strong>先自己做</strong><small>答案揭露前先作答</small></div></li>
                 <li><span>2</span><div><strong>看清楚問題</strong><small>回到棋盤找關鍵線索</small></div></li>
@@ -267,7 +293,7 @@
             <div class="intro-section-head">
               <span>多元學習入口</span>
               <h3 id="learning-entry-title">第一次學圍棋，和已有基礎的人，不需要走同一條路。</h3>
-              <p>你可以依照現在的理解與目標，選擇最適合的起點。我們設計了三個學習入口，幫助你穩紮穩打，逐步建立自己的圍棋能力。</p>
+              <p>你可以依照現在的理解與目標，選擇一個起點。三個入口各自連到既有課程內容；它們不是棋力分級，也不保證學習結果。</p>
             </div>
             <div class="intro-path-grid intro-entry-grid">
               <article class="intro-path-card intro-path-card-primary">
@@ -340,7 +366,7 @@
             <div class="intro-section-head">
               <span>我們的學習方法</span>
               <h3 id="intro-assessment-title">不是看做了幾題，而是看隔一段時間後還能不能自己做。</h3>
-              <p>好的練習，是讓你在不同情境下，持續看懂、做對並靈活應用。我們用簡單的四步驟，練習建立自己的圍棋判斷。</p>
+              <p>這四步是本站採用的練習流程，不是對個人學習效果的保證；可用它安排觀察、作答、回看與換形再判。</p>
             </div>
             <div class="intro-evidence-grid intro-method-grid">
               <article>
@@ -359,16 +385,16 @@
                 <span class="evidence-step">3</span>
                 <img class="intro-evidence-image" src="assets/homepage/evidence-delayed.webp" alt="" aria-hidden="true" width="360" height="284" loading="lazy">
                 <strong>隔一段時間再做</strong>
-                <p>過一段時間再試一次，<br>檢驗自己是否真正學會。</p>
+                <p>隔一段時間再試一次，留下可比較的作答紀錄。</p>
               </article>
               <article>
                 <span class="evidence-step">4</span>
                 <img class="intro-evidence-image" src="assets/homepage/evidence-new-shape.webp" alt="" aria-hidden="true" width="360" height="315" loading="lazy">
                 <strong>換一個不同的棋形</strong>
-                <p>在新的棋形中應用所學，<br>學會舉一反三，而不是只<br>記住答案。</p>
+                <p>換一個不同棋形，再檢查原本的判斷能否適用。</p>
               </article>
             </div>
-            <p class="intro-evidence-outcome"><strong>真正重要的結果：</strong>不是做了多少題，而是過一段時間後，遇到不同的棋形，仍然能自己想出正確的下法，並應用到新的情境中。</p>
+            <p class="intro-evidence-outcome"><strong>本站優先觀察：</strong>不是只看完成題數，而是保留隔時與不同棋形中的可比較作答；這些紀錄本身不等於已證實的學習成效。</p>
             <p class="intro-task-type-note"><strong>進入學習後，畫面會標示目前任務：</strong>課程／練習／到期複習／延後再判／局面應用。這是任務類型，不是能力等級；上方四個動作則是在說明練習方法。</p>
           </section>
 

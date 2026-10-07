@@ -76,3 +76,10 @@ GitHub 帳號的 user site 已設定 `CNAME=huikai.com.kg` 與 `https_enforced=t
 - **權威邊界：** 這些檔案只供設計稽核與視覺回歸查閱；`index.html` 不載入候選原型，候選不讀寫 learner state，也不改 scoring、scheduler、event、exposure 或 formal evaluation semantics。
 - **證據限制：** 截圖與自動 wireframe 檢查只支持工程呈現可檢視，不建立真人 usability、accessibility 或 learning effect 證據。
 - **Rollback：** 移除候選與新增截圖、manifest 項目及對應 release test 即可；不需要 storage 或歷史 evidence migration。
+
+## 2026-10-05 Change note｜本機候選資料夾重新命名
+
+- **變更：** 使用者把 `design-candidates/learning-workspace-v63/` 重新命名為 `design-candidates/01 learning-workspace-v63/`；`release-manifest.json` 與對應契約測試同步新相對路徑，避免清單繼續指向不存在的檔案。
+- **權威邊界：** 只更新公開資產路徑，不改候選內容，也不讓候選成為 learner runtime；正式頁面仍只從 repository root 載入。
+- **歷史與 migration：** learner storage、事件、題庫、scoring、scheduler、formal eligibility 與歷史證據均不變，無資料 migration。
+- **Rollback：** 若資料夾名稱恢復，必須同時還原 manifest、契約測試與本紀錄中的目前路徑；不得只改其中一處。

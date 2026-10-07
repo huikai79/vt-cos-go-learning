@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="VT-COS 世界死活名型館 A1：可擴充的收藏、練習播放器與多語圖鑑設計候選。">
+  <title>VT-COS｜形之間 Classic Shapes A1</title>
+  <link rel="stylesheet" href="prototype.css">
+  <link rel="stylesheet" href="../prototype-system.css">
+</head>
+<body>
+  <a class="skip-link" href="#review-stage">跳到目前 Wireframe</a>
+  <header class="suite-header">
+    <a class="suite-brand" href="../00%20index-homepage-a1/prototype.html"><span class="suite-mark" aria-hidden="true"><i></i><i></i></span><span><strong>VT-COS｜悟之一手</strong><small>UNIFIED PROTOTYPE SYSTEM · NON-NORMATIVE</small></span></a>
+    <div class="suite-context"><span>SECTION 05</span><strong>世界死活名型館</strong></div>
+    <nav class="suite-nav" aria-label="整體網站候選導覽"><a href="../00%20index-homepage-a1/prototype.html">首頁</a><a href="../01%20award-experience-a2-integrated/prototype.html">學習</a><a href="../02%20explore-trilogy-a1/prototype.html">探索</a><a href="../03%20advanced-live-a1/prototype.html">進階與實戰</a><a aria-current="page" href="../04%20classic-shapes-a1/prototype.html">名型館</a></nav>
+    <a class="suite-report" href="../APPROVED_PROTOTYPE_CRAFT_REVIEW_2026-10-04.md">品質報告</a>
+  </header>
+
+  <nav class="review-tabs" aria-label="第一批六張 Wireframe" role="tablist">
+    <button type="button" role="tab" aria-selected="true" aria-controls="w1" id="tab-w1" data-view="w1"><span>01</span><b>入口</b></button>
+    <button type="button" role="tab" aria-selected="false" aria-controls="w2" id="tab-w2" data-view="w2"><span>02</span><b>找題</b></button>
+    <button type="button" role="tab" aria-selected="false" aria-controls="w3" id="tab-w3" data-view="w3"><span>03</span><b>作答</b></button>
+    <button type="button" role="tab" aria-selected="false" aria-controls="w4" id="tab-w4" data-view="w4"><span>04</span><b>揭形</b></button>
+    <button type="button" role="tab" aria-selected="false" aria-controls="w5" id="tab-w5" data-view="w5"><span>05</span><b>對照</b></button>
+    <button type="button" role="tab" aria-selected="false" aria-controls="w6" id="tab-w6" data-view="w6"><span>06</span><b>圖鑑</b></button>
+  </nav>
+
+  <main id="review-stage" class="review-stage">
+    <section class="review-view" id="w1" role="tabpanel" aria-labelledby="tab-w1" data-view-panel="w1">
+      <div class="artifact-shell museum-home">
+        <header class="site-header">
+          <a class="site-lockup" href="#w1" aria-label="VT-COS 悟之一手，世界死活名型館首頁"><span class="mini-stones" aria-hidden="true"></span><span><b>VT-COS｜悟之一手</b><small>世界死活名型館</small></span></a>
+          <nav aria-label="館內模式"><button class="quiet-link active" type="button">棋形練習</button><button class="quiet-link" type="button" data-open-view="w6">多語圖鑑</button></nav>
+        </header>
+        <div class="museum-hero">
+          <div class="hero-copy">
+            <span class="eyebrow">CLASSIC SHAPES · PRACTICE ONLY</span>
+            <h1 id="w1-title" data-view-title tabindex="-1"><span class="title-line">先看見形，</span><em class="title-line">再知道它的名字。</em></h1>
+            <p>從眼空結構做第一個判斷。名稱會在適當時機出現，但不會替你回答。</p>
+            <div class="hero-actions"><button class="primary-action" type="button" data-open-view="w2">找一組來練 <span>→</span></button><button class="text-action" type="button" data-open-view="w6">只查名稱與來源</button></div>
+            <div class="boundary-strip"><b>練習，不是棋力判定</b><span>部分題目只核對第一手；未完成規則核對的棋形不會成為可作答題。</span></div>
+          </div>
+          <div class="shape-stage" aria-label="抽象棋形雕塑：名稱尚未揭示">
+            <span class="shape-orbit orbit-a"></span><span class="shape-orbit orbit-b"></span>
+            <div class="shape-cluster" aria-hidden="true"><i style="--x:2;--y:1"></i><i style="--x:1;--y:2"></i><i style="--x:2;--y:2"></i><i style="--x:3;--y:2"></i><i style="--x:2;--y:3"></i></div>
+            <div class="shape-caption"><span>形 05</span><b>名稱尚未揭示</b><small>先辨認共同連接最多的點</small></div>
+          </div>
+        </div>
+        <section class="path-section" aria-labelledby="path-title">
+          <div class="section-heading"><span>CHOOSE BY TASK, NOT BY ANSWER</span><h2 id="path-title">你現在想練哪一種判斷？</h2></div>
+          <div class="path-grid">
+            <button class="path-card active" type="button" data-path="vital" aria-pressed="true"><span class="path-number">01</span><b>找第一個急所</b><small>在 3–6 個眼空裡，先找結構中心。</small></button>
+            <button class="path-card" type="button" data-path="status" aria-pressed="false"><span class="path-number">02</span><b>判斷活與死</b><small>不落子，先判斷有沒有兩個互不干擾的做眼點。</small></button>
+            <button class="path-card" type="button" data-path="read" aria-pressed="false"><span class="path-number">03</span><b>讀一小段變化</b><small>只讀已核對的主要分支，不補完未知變化。</small></button>
+            <button class="path-card" type="button" data-path="contrast" aria-pressed="false"><span class="path-number">04</span><b>混合辨形</b><small>名稱隱藏、題族交錯；完成不等於遷移已成立。</small></button>
+          </div>
+          <div class="path-outcome" aria-live="polite"><span>目前選擇</span><b id="path-outcome-title">找第一個急所</b><p id="path-outcome-copy">從可落子的 bounded first-move 題開始；共有 7 組現行入口。</p><button class="compact-action" type="button" data-open-view="w2">查看題組 →</button></div>
+        </section>
+      </div>
+      <aside class="award-intent" aria-label="W1 Award Intent">
+        <span class="intent-kicker">AWARD INTENT · W1</span><h2>入口不是百科，而是一道遮住名稱的邀請</h2>
+        <dl><dt>Memorable Moment</dt><dd>漂浮棋形先以負空間被看見，名稱刻意缺席。</dd><dt>Emotional Intent</dt><dd>由「我不認得術語」轉成「我可以先看出結構」。</dd><dt>Interaction Signature</dt><dd>以任務選路；每次選擇同步改變用途與停止線。</dd><dt>Visual Opportunity</dt><dd>將眼空 adjacency 化為安靜的軌道與節點雕塑。</dd><dt>Restraint</dt><dd>不用技能樹、級位、完成率或炫技 3D。</dd><dt>Non-negotiables</dt><dd>Practice-only、先作答後揭名、未核對不出題。</dd><dt>Award Risk</dt><dd>若首屏只剩氣氛，練習與圖鑑的差異會失焦。</dd></dl>
+      </aside>
+    </section>
+
+    <section class="review-view" id="w2" role="tabpanel" aria-labelledby="tab-w2" data-view-panel="w2" hidden>
+      <div class="artifact-shell library-shell">
+        <header class="inner-header"><button class="back-chip" type="button" data-open-view="w1">← 名型館</button><div><span>棋形練習</span><b>依你要做的判斷找題</b></div><button class="atlas-chip" type="button" data-open-view="w6">多語圖鑑</button></header>
+        <section class="library-intro">
+          <div><span class="eyebrow">THE SHAPE LIBRARY</span><h1 id="w2-title" data-view-title tabindex="-1"><span class="title-line">不用再把整頁</span><span class="title-line">一路滑到底。</span></h1><p>題目增加時，只增加資料與可驗證契約；入口維持可篩、可分頁、可直接返回。</p></div>
+          <div class="library-measure"><span><b>49</b><small>現行可操作局面／rounds</small></span><span><b>23</b><small>ontology concepts</small></span><span><b>12</b><small>每頁上限</small></span></div>
+        </section>
+        <section class="catalog-workbench" aria-labelledby="catalog-title">
+          <div class="catalog-tools">
+            <div><span class="tool-label">要做什麼</span><div class="filter-row" role="group" aria-label="按任務篩選"><button type="button" class="filter-chip active" data-filter="all" aria-pressed="true">全部</button><button type="button" class="filter-chip" data-filter="vital" aria-pressed="false">找急所</button><button type="button" class="filter-chip" data-filter="status" aria-pressed="false">判狀態</button><button type="button" class="filter-chip" data-filter="read" aria-pressed="false">短讀</button><button type="button" class="filter-chip" data-filter="contrast" aria-pressed="false">混合辨形</button></div></div>
+            <div class="catalog-meta"><span id="catalog-title">顯示 <b id="catalog-result-count">12</b> 組入口</span><small id="catalog-scale-note">第 1 / 1 頁 · DOM 只保留當頁項目</small></div>
+          </div>
+          <div id="practice-catalog" class="practice-catalog" aria-live="polite"></div>
+          <div class="pagination"><button type="button" id="catalog-prev" disabled>← 上一頁</button><span id="catalog-page">01 / 01</span><button type="button" id="catalog-next" disabled>下一頁 →</button></div>
+          <p class="fixture-note">壓力測試會複製「呈現描述」，不宣稱產生新的有效棋題；可玩資格仍由各題 contract 決定。</p>
+        </section>
+      </div>
+      <aside class="award-intent" aria-label="W2 Award Intent">
+        <span class="intent-kicker">AWARD INTENT · W2</span><h2>把日後增加的題量，收進一座不變長的抽屜牆</h2>
+        <dl><dt>Memorable Moment</dt><dd>篩選後卡片像館藏抽屜重排，頁面高度不再膨脹。</dd><dt>Emotional Intent</dt><dd>大量內容仍然可理解，不製造「還有好多沒完成」的壓力。</dd><dt>Interaction Signature</dt><dd>task-first filter＋固定 12 筆分頁；返回時可保留同一視圖。</dd><dt>Visual Opportunity</dt><dd>每張卡只顯示棋形輪廓、反應型態與可驗證範圍。</dd><dt>Restraint</dt><dd>練習入口不先顯示會洩題的正式名稱。</dd><dt>Non-negotiables</dt><dd>Catalog metadata 不可成為第二套答案或評分來源。</dd><dt>Award Risk</dt><dd>篩選過多會把練習變成資料庫管理；預設必須一眼可選。</dd></dl>
+      </aside>
+    </section>
+
+    <section class="review-view" id="w3" role="tabpanel" aria-labelledby="tab-w3" data-view-panel="w3" hidden>
+      <div class="artifact-shell player-shell" id="practice-player" data-state="ready">
+        <header class="inner-header player-header"><button class="back-chip" type="button" data-open-view="w2">← 題組</button><div><span>找第一個急所</span><b>中性題號 03 / 04</b></div><div class="scope-chip">只核對第一手</div></header>
+        <div class="player-grid">
+          <section class="prompt-panel">
+            <div class="task-ribbon"><span>目前任務</span><b>練習</b><small>不影響 Core 進度</small></div>
+            <span class="eyebrow">NAME HIDDEN · FIRST RESPONSE</span><h1 id="w3-title" data-view-title tabindex="-1"><span class="title-line">哪個空點，</span><span class="title-line">接觸最多眼位？</span></h1>
+            <p>請先看眼空彼此怎麼連。這是單題落子，不是自由對局。</p>
+            <div class="response-ledger"><span>第一反應</span><b id="first-response">尚未記錄</b><small>答錯後可以重試，但第一反應不會被改寫。</small></div>
+            <div id="practice-feedback" class="practice-feedback" role="status" aria-live="polite">選一個有金色小點的空位。</div>
+            <div class="player-actions"><button type="button" class="text-action" id="practice-hint">給我觀察提示</button></div>
+          </section>
+          <section class="board-stage" aria-label="7 路棋形練習示意棋盤">
+            <div class="board-top"><span>7 × 7 · 中性題號</span><span><i></i> 黑棋下 1 手</span></div>
+            <div class="go-board" id="practice-board" role="application" aria-label="7 路棋盤，三個示意可選空點">
+              <span class="stone black" style="--x:1;--y:1"></span><span class="stone black" style="--x:2;--y:1"></span><span class="stone black" style="--x:3;--y:1"></span><span class="stone black" style="--x:4;--y:1"></span><span class="stone black" style="--x:5;--y:1"></span>
+              <span class="stone black" style="--x:1;--y:2"></span><span class="stone black" style="--x:5;--y:2"></span><span class="stone black" style="--x:1;--y:3"></span><span class="stone black" style="--x:5;--y:3"></span><span class="stone black" style="--x:1;--y:4"></span><span class="stone black" style="--x:5;--y:4"></span><span class="stone black" style="--x:2;--y:5"></span><span class="stone black" style="--x:3;--y:5"></span><span class="stone black" style="--x:4;--y:5"></span>
+              <button type="button" class="intersection-choice" style="--x:2;--y:2" data-move="C3" data-correct="false" aria-label="在 C3 落子"></button>
+              <button type="button" class="intersection-choice" style="--x:3;--y:3" data-move="D4" data-correct="true" aria-label="在 D4 落子"></button>
+              <button type="button" class="intersection-choice" style="--x:4;--y:4" data-move="E5" data-correct="false" aria-label="在 E5 落子"></button>
+            </div>
+            <div class="board-foot"><span>點空點落子 · 鍵盤版須保留方向鍵＋Enter</span><span id="player-family-label">名稱尚未揭示</span><button type="button" class="primary-action board-next" id="practice-next" disabled data-open-view="w4">看名稱與判定範圍 →</button></div>
+          </section>
+        </div>
+      </div>
+      <aside class="award-intent" aria-label="W3 Award Intent">
+        <span class="intent-kicker">AWARD INTENT · W3</span><h2>第一反應像墨點留在紙上，修正不把它擦掉</h2>
+        <dl><dt>Memorable Moment</dt><dd>第一手落下時，左側 ledger 同步鎖住最初座標。</dd><dt>Emotional Intent</dt><dd>錯誤是可修正的觀察，不是被紅色警報羞辱的結果。</dd><dt>Interaction Signature</dt><dd>wrong→retry correct；兩個痕跡共存，Next 只在完成後出現。</dd><dt>Visual Opportunity</dt><dd>棋盤負空間是主角，候選點只用低調金點提示可操作性。</dd><dt>Restraint</dt><dd>首答前沒有名稱、答案熱區、勝率或提示動畫。</dd><dt>Non-negotiables</dt><dd>first response 不覆寫；合法性與正答由原 contract 決定。</dd><dt>Award Risk</dt><dd>若候選點太顯眼，互動本身會變成答案線索。</dd></dl>
+      </aside>
+    </section>
+
+    <section class="review-view" id="w4" role="tabpanel" aria-labelledby="tab-w4" data-view-panel="w4" hidden>
+      <div class="artifact-shell reveal-shell" id="reveal-demo" data-revealed="false">
+        <header class="inner-header"><button class="back-chip" type="button" data-open-view="w3">← 回到作答</button><div><span>作答後</span><b>機制與範圍</b></div><div class="verified-chip">RULES-BACKED BOUNDARY</div></header>
+        <div class="reveal-grid">
+          <section class="reveal-visual">
+            <span class="eyebrow">GEOMETRY BEFORE TERMINOLOGY</span><div class="reveal-title"><small>你剛才看見的是</small><h1 id="revealed-name" data-view-title tabindex="-1"><span class="title-line">名稱仍被遮住</span></h1><p id="revealed-alias">先確認這一題的判定範圍，再把名稱接回結構。</p></div>
+            <div class="morph-diagram" aria-label="五點十字形 adjacency 示意">
+              <svg viewBox="0 0 440 320" role="img" aria-labelledby="morph-title"><title id="morph-title">五個節點中，中央節點與四個方向相連</title><g class="connections"><path d="M220 62V258M120 160H320"/></g><g class="nodes"><circle cx="220" cy="62" r="27"/><circle cx="120" cy="160" r="27"/><circle cx="220" cy="160" r="34" class="core"/><circle cx="320" cy="160" r="27"/><circle cx="220" cy="258" r="27"/></g><text x="220" y="167" text-anchor="middle">4</text></svg>
+              <div class="diagram-note"><span>唯一 degree-4 節點</span><b>同時接觸四個眼位</b></div>
+            </div>
+            <button type="button" class="primary-action reveal-action" id="reveal-shape">揭開名稱與判定範圍</button>
+          </section>
+          <section class="scope-panel">
+            <span class="eyebrow">WHAT THIS ANSWER MEANS</span><h2><span class="title-line">一次答對，</span><span class="title-line">只回答這一題。</span></h2>
+            <div class="scope-list"><article class="scope-yes"><span>本題可確認</span><b>第一手共同急所</b><p>由五點十字幾何的唯一中心推導，並由既有 contract 驗證。</p></article><article><span>本題沒有確認</span><b>完整吃淨變化</b><p>未列抵抗、外氣與角部條件不能由第一手補完。</p></article><article><span>更不能推論</span><b>已學會／能遷移</b><p>這是公開練習，不是未見題、正式評量或學習成效。</p></article></div>
+            <div class="next-pair"><button type="button" class="compact-action" data-open-view="w5">做一組混合辨形 →</button><button type="button" class="text-action" data-open-view="w6">去圖鑑查來源</button></div>
+          </section>
+        </div>
+      </div>
+      <aside class="award-intent" aria-label="W4 Award Intent">
+        <span class="intent-kicker">AWARD INTENT · W4</span><h2>名稱不是獎盃；它是結構被理解後才浮現的註腳</h2>
+        <dl><dt>Memorable Moment</dt><dd>遮罩退去時，名稱與 degree-4 結構同時出現。</dd><dt>Emotional Intent</dt><dd>得到「原來如此」而非「又多背一個名詞」。</dd><dt>Interaction Signature</dt><dd>Reveal 同步展開名稱、幾何理由與不能外推的範圍。</dd><dt>Visual Opportunity</dt><dd>棋盤輪廓抽象成 adjacency constellation，但不改判定資料。</dd><dt>Restraint</dt><dd>沒有 confetti、分數、mastery bar 或全答案樹幻覺。</dd><dt>Non-negotiables</dt><dd>第一手、完整變化、遷移三層必須視覺分開。</dd><dt>Award Risk</dt><dd>動畫若比範圍文字更強，使用者可能只記得名稱。</dd></dl>
+      </aside>
+    </section>
+
+    <section class="review-view" id="w5" role="tabpanel" aria-labelledby="tab-w5" data-view-panel="w5" hidden>
+      <div class="artifact-shell contrast-shell" id="contrast-demo" data-answered="false">
+        <header class="inner-header contrast-header"><button class="back-chip" type="button" data-open-view="w2">← 題組</button><div><span>混合辨形</span><b>兩種五點結構 · 名稱隱藏</b></div><div class="scope-chip">6 題 practice</div></header>
+        <section class="contrast-intro"><span class="eyebrow">CONTRAST WITHOUT LABEL CUES</span><h1 id="w5-title" data-view-title tabindex="-1"><span class="title-line">看起來都像五點大眼，</span><em class="title-line">真正的分岔在連接數。</em></h1><p>題族會交錯出現。完成六題只代表做過這組比較，不代表跨局面遷移。</p></section>
+        <div class="contrast-workbench">
+          <article class="contrast-card card-a">
+            <div class="card-index"><span>ROUND 03</span><b id="contrast-family">名稱尚未揭示</b></div>
+            <div class="mini-graph graph-p" aria-hidden="true"><i style="--x:1;--y:1"></i><i style="--x:1;--y:2"></i><i style="--x:2;--y:2"></i><i style="--x:2;--y:3"></i><i style="--x:3;--y:3"></i><span class="graph-core"></span></div>
+            <p>請選出同時連到最多眼位的點。</p>
+            <div class="contrast-choices"><button type="button" data-contrast-answer="wrong">左上</button><button type="button" data-contrast-answer="correct">轉折中心</button><button type="button" data-contrast-answer="wrong">右下</button></div>
+          </article>
+          <div class="contrast-axis" aria-hidden="true"><span>COMPARE</span><i></i><b>≠</b><i></i></div>
+          <article class="contrast-card card-b">
+            <div class="card-index"><span>NEXT FAMILY</span><b>仍保持隱藏</b></div>
+            <div class="mini-graph graph-x" aria-hidden="true"><i style="--x:2;--y:1"></i><i style="--x:1;--y:2"></i><i style="--x:2;--y:2"></i><i style="--x:3;--y:2"></i><i style="--x:2;--y:3"></i><span class="graph-core"></span></div>
+            <p>下一題換形、換色、換位置；不能沿用同一座標。</p>
+            <button type="button" class="locked-action" disabled>完成本題後開放</button>
+          </article>
+        </div>
+        <div class="contrast-feedback" id="contrast-feedback" role="status" aria-live="polite"><span>判定依原題族 contract</span><b>先完成目前這題。</b><p>這個混合區不另存答案，也不會生成「辨形能力」分數。</p></div>
+      </div>
+      <aside class="award-intent" aria-label="W5 Award Intent">
+        <span class="intent-kicker">AWARD INTENT · W5</span><h2>用一條結構分岔線，取代分區位置給出的暗示</h2>
+        <dl><dt>Memorable Moment</dt><dd>答完後兩種形沿中線分開，degree-3／degree-4 才現身。</dd><dt>Emotional Intent</dt><dd>從「它們很像」變成「我知道差異落在哪裡」。</dd><dt>Interaction Signature</dt><dd>interleaved round 委託原 scorer；揭露只發生在 response 後。</dd><dt>Visual Opportunity</dt><dd>兩個 constellation 用節點拓樸對照，不用名稱先分類。</dd><dt>Restraint</dt><dd>不隨機化成娛樂卡牌，不顯示 streak 或 transfer badge。</dd><dt>Non-negotiables</dt><dd>題序不能成為 family cue；完成不能升格為遷移。</dd><dt>Award Risk</dt><dd>對照視覺若過度簡化，會讓盤邊條件與棋色差異消失。</dd></dl>
+      </aside>
+    </section>
+
+    <section class="review-view" id="w6" role="tabpanel" aria-labelledby="tab-w6" data-view-panel="w6" hidden>
+      <div class="artifact-shell atlas-shell" id="atlas-shell" data-detail-open="false">
+        <header class="inner-header"><button class="back-chip" type="button" data-open-view="w1">← 名型館</button><div><span>多語圖鑑</span><b>名稱、棋形與可玩資格分開</b></div><div class="scope-chip">不評分</div></header>
+        <section class="atlas-intro"><span class="eyebrow">THE LIVING ATLAS</span><h1 id="w6-title" data-view-title tabindex="-1"><span class="title-line">不知道，</span><span class="title-line">不必裝成知道。</span></h1><p>名稱可以已核對，棋形仍可能待比對；有來源也不代表已能成為練習答案。</p></section>
+        <div class="atlas-controls"><label for="atlas-search"><span>搜尋名稱或語言</span><input id="atlas-search" type="search" placeholder="例如：L Group、斗方、花六" autocomplete="off"></label><div class="filter-row" role="group" aria-label="圖鑑狀態"><button type="button" class="atlas-filter active" data-atlas-filter="all" aria-pressed="true">全部 23</button><button type="button" class="atlas-filter" data-atlas-filter="playable" aria-pressed="false">已有練習</button><button type="button" class="atlas-filter" data-atlas-filter="reference" aria-pressed="false">只供查閱</button><button type="button" class="atlas-filter" data-atlas-filter="unknown" aria-pressed="false">仍待核對</button></div></div>
+        <div class="atlas-layout">
+          <div class="atlas-results" id="atlas-results" aria-live="polite"></div>
+          <article class="atlas-detail" id="atlas-detail">
+            <button class="atlas-back" id="atlas-back" type="button">← 返回搜尋與篩選</button>
+            <div class="atlas-art" aria-hidden="true"><span></span><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="detail-status" id="atlas-detail-status">已有 bounded 練習</span><h2 id="atlas-detail-title">梅花五</h2><p class="detail-alias" id="atlas-detail-alias">Cross Five · Crossed Five</p>
+            <dl><div><dt>名稱層</dt><dd id="atlas-name-state">跨語名稱有來源；Evidence Chain 去重。</dd></div><div><dt>棋形層</dt><dd id="atlas-geometry-state">五點十字同構；中心 degree-4。</dd></div><div><dt>練習資格</dt><dd id="atlas-practice-state">只核對第一手共同急所。</dd></div></dl>
+            <div class="atlas-warning" id="atlas-warning"><b>不能直接外推</b><span>名稱核對不等於完整答案樹或正式評量。</span></div>
+            <button class="primary-action" type="button" id="atlas-practice-link">前往已有練習 →</button>
+          </article>
+        </div>
+      </div>
+      <aside class="award-intent" aria-label="W6 Award Intent">
+        <span class="intent-kicker">AWARD INTENT · W6</span><h2>把歧義、未知與來源做成圖鑑的質感，而不是缺陷</h2>
+        <dl><dt>Memorable Moment</dt><dd>選中一個名稱後，三層狀態像標本抽屜依序展開。</dd><dt>Emotional Intent</dt><dd>感到資料可靠、可追問，而不是被百科式斷言壓住。</dd><dt>Interaction Signature</dt><dd>搜尋跨語名稱；detail 永遠分開 name／geometry／practice eligibility。</dd><dt>Visual Opportunity</dt><dd>未解概念保留留白與虛線，不拿假棋盤填滿。</dd><dt>Restraint</dt><dd>不以卡片數量、來源網址數或「verified」色彩製造權威。</dd><dt>Non-negotiables</dt><dd>Ontology 是概念來源；Atlas 不取得 scoring authority。</dd><dt>Award Risk</dt><dd>研究狀態若直接暴露內部術語，16–20 歲讀者會失去主線。</dd></dl>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="review-footer"><div><span>Candidate control</span><b id="review-current">W1 · 入口</b></div><p>所有互動只改記憶體中的展示狀態；不讀寫學習紀錄、不呼叫網路、不執行正式 scorer。</p><button type="button" id="motion-demo">播放招牌動態</button></footer>
+  <script src="prototype.js"></script>
+</body>
+</html>

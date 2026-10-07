@@ -1,0 +1,314 @@
+:root {
+  --suite-ink: #102923;
+  --suite-forest: #143f35;
+  --suite-forest-deep: #0b2f27;
+  --suite-paper: #f6f1e6;
+  --suite-paper-bright: #fffdf7;
+  --suite-canvas: #d7d3c9;
+  --suite-gold: #c59a4a;
+  --suite-clay: #a84f32;
+  --suite-blue: #405b83;
+  --suite-line: rgba(16, 41, 35, .16);
+  --suite-shadow: 0 24px 70px rgba(14, 35, 29, .14);
+  --suite-serif: "Iowan Old Style", "Noto Serif TC", "PMingLiU", Georgia, serif;
+  --suite-sans: Inter, "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --ink: var(--suite-ink);
+  --forest: var(--suite-forest);
+  --forest-deep: var(--suite-forest-deep);
+  --paper: var(--suite-paper);
+  --paper-2: var(--suite-paper-bright);
+  --canvas: var(--suite-canvas);
+  --gold: var(--suite-gold);
+  --clay: var(--suite-clay);
+  --red: var(--suite-clay);
+  --blue: var(--suite-blue);
+  --cobalt: var(--suite-blue);
+  --shadow: var(--suite-shadow);
+  --serif: var(--suite-serif);
+  --sans: var(--suite-sans);
+}
+
+html { background: var(--suite-canvas); }
+body { background: var(--suite-canvas); color: var(--suite-ink); font-family: var(--suite-sans); }
+
+.suite-header {
+  position: relative;
+  z-index: 70;
+  min-width: 0;
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: auto minmax(130px, .55fr) minmax(480px, 1.45fr) auto;
+  align-items: center;
+  gap: clamp(16px, 2vw, 32px);
+  padding: 8px clamp(18px, 3vw, 48px);
+  color: #f8f4e9;
+  background: var(--suite-forest-deep);
+  border-bottom: 1px solid rgba(255,255,255,.13);
+}
+.suite-brand,
+.suite-report,
+.suite-nav a { color: inherit; text-decoration: none; }
+.suite-brand { min-width: max-content; display: inline-flex; align-items: center; gap: 11px; }
+.suite-brand strong,
+.suite-brand small,
+.suite-context span,
+.suite-context strong { display: block; }
+.suite-brand strong { font: 650 15px/1.1 var(--suite-serif); letter-spacing: .025em; }
+.suite-brand small { margin-top: 4px; color: #9eb2a9; font-size: 8px; font-weight: 750; letter-spacing: .15em; }
+.suite-mark { position: relative; width: 32px; height: 25px; flex: 0 0 auto; }
+.suite-mark i { position: absolute; width: 20px; height: 20px; border-radius: 50%; }
+.suite-mark i:first-child { left: 0; top: 0; background: #07130f; box-shadow: inset -4px -5px 7px rgba(255,255,255,.12); }
+.suite-mark i:last-child { right: 0; bottom: 0; background: #fffdf7; border: 1px solid #c9c3b7; box-shadow: inset -3px -4px 6px rgba(16,41,35,.1); }
+.suite-context { min-width: 0; padding-left: 18px; border-left: 1px solid rgba(255,255,255,.16); }
+.suite-context span { color: var(--suite-gold); font-size: 8px; font-weight: 850; letter-spacing: .16em; }
+.suite-context strong { margin-top: 3px; overflow: hidden; font: 500 15px/1.15 var(--suite-serif); text-overflow: ellipsis; white-space: nowrap; }
+.suite-nav { min-width: 0; height: 40px; display: flex; align-items: stretch; justify-content: flex-end; overflow-x: auto; scrollbar-width: none; }
+.suite-nav::-webkit-scrollbar { display: none; }
+.suite-nav a { position: relative; min-width: max-content; display: inline-flex; align-items: center; padding: 0 13px; color: #b9cbc4; font-size: 11px; font-weight: 750; letter-spacing: .035em; }
+.suite-nav a::after { content: ""; position: absolute; left: 13px; right: 13px; bottom: 0; height: 2px; background: transparent; }
+.suite-nav a:hover { color: #fff; }
+.suite-nav a[aria-current="page"] { color: #fff; }
+.suite-nav a[aria-current="page"]::after { background: var(--suite-gold); }
+.suite-report { min-width: max-content; min-height: 34px; display: inline-flex; align-items: center; border: 1px solid rgba(197,154,74,.72); padding: 0 12px; color: #f3dcae; font-size: 10px; font-weight: 800; letter-spacing: .05em; }
+.suite-report:hover { color: var(--suite-forest-deep); background: #f3dcae; }
+
+body > .review-tabs,
+.review-bar .review-tabs {
+  position: relative !important;
+  z-index: 60 !important;
+  top: auto !important;
+  width: 100%;
+  height: 48px;
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  padding: 0 clamp(18px, 3vw, 48px) !important;
+  overflow: hidden !important;
+  color: #fff;
+  background: var(--suite-forest) !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,.13) !important;
+  box-shadow: none !important;
+}
+body > .review-tabs button,
+.review-bar .review-tabs button {
+  min-width: 0 !important;
+  min-height: 48px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(255,255,255,.1) !important;
+  border-radius: 0 !important;
+  padding: 0 8px !important;
+  color: #b9cbc4 !important;
+  background: transparent !important;
+  box-shadow: inset 0 -3px transparent !important;
+  cursor: pointer;
+  font: 750 11px/1 var(--suite-sans) !important;
+  white-space: nowrap;
+}
+body > .review-tabs button:first-child,
+.review-bar .review-tabs button:first-child { border-left: 1px solid rgba(255,255,255,.1) !important; }
+body > .review-tabs button span,
+.review-bar .review-tabs button span { display: inline !important; margin: 0 !important; color: var(--suite-gold) !important; font: 800 8px/1 var(--suite-sans) !important; letter-spacing: .12em; opacity: .9; }
+body > .review-tabs button b,
+.review-bar .review-tabs button b { font: inherit; }
+body > .review-tabs button[aria-selected="true"],
+.review-bar .review-tabs button[aria-selected="true"] {
+  color: var(--suite-ink) !important;
+  background: var(--suite-paper) !important;
+  box-shadow: inset 0 3px var(--suite-gold) !important;
+}
+body > .review-tabs button[aria-selected="true"] span,
+.review-bar .review-tabs button[aria-selected="true"] span { color: var(--suite-clay) !important; }
+.review-bar {
+  position: relative !important;
+  z-index: 60 !important;
+  min-height: 48px !important;
+  display: block !important;
+  padding: 0 !important;
+  background: var(--suite-forest) !important;
+  box-shadow: none !important;
+}
+
+.award-intent {
+  min-width: 0;
+  color: #f7f2e8 !important;
+  background: #132f28 !important;
+  border-top: 3px solid var(--suite-gold);
+  box-shadow: var(--suite-shadow) !important;
+}
+.award-intent > p,
+.award-intent > .intent-kicker { color: #dbb865 !important; font-weight: 850 !important; letter-spacing: .15em !important; }
+.award-intent h2 { color: #fffaf0; font-family: var(--suite-serif) !important; font-weight: 500 !important; }
+.award-intent dt { color: #dbb865 !important; font-family: var(--suite-sans); font-weight: 850 !important; letter-spacing: .1em !important; }
+.award-intent dd { color: #d6e0dc !important; }
+
+.experience-frame,
+.artifact-shell { border: 1px solid var(--suite-line) !important; box-shadow: var(--suite-shadow) !important; }
+.home-header,
+.site-bar,
+.workspace-top,
+.explore-header,
+.product-header,
+.site-header,
+.inner-header { border-bottom-color: var(--suite-line) !important; }
+.primary-action,
+.home-header-cta,
+.nav-cta,
+.compact-action,
+.wide-action { min-height: 44px; border-radius: 0 !important; }
+button,
+a { -webkit-tap-highlight-color: transparent; }
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible { outline: 3px solid #e59a2d !important; outline-offset: 3px !important; }
+
+/* A fixed stage is a convenience only when the viewport can show a complete task.
+   Short laptop windows keep the same system chrome but return to natural document flow. */
+@media (min-width: 1181px) and (min-height: 920px) {
+  html,
+  body { width: 100%; height: 100%; overflow: hidden; }
+  body { display: grid; grid-template-rows: 64px 48px minmax(0, 1fr); }
+  body > .suite-header { grid-row: 1; }
+  body > .review-tabs,
+  body > .review-bar { grid-row: 2; }
+  body > #review-stage { grid-row: 3; }
+  #review-stage,
+  .review-stage {
+    width: 100% !important;
+    max-width: 1800px !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    padding: 14px clamp(14px, 1.5vw, 24px) !important;
+    overflow: hidden !important;
+  }
+  .review-view:not([hidden]) {
+    width: 100% !important;
+    height: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 264px !important;
+    align-content: center !important;
+    align-items: stretch !important;
+    gap: 14px !important;
+    margin: 0 !important;
+  }
+  .experience-frame,
+  .artifact-shell { height: auto !important; overflow: hidden !important; }
+  #w6 .mobile-home-frame { grid-template-columns: minmax(410px, .85fr) minmax(330px, 1.15fr); gap: clamp(24px, 3vw, 44px); }
+  #w6 .mobile-home-copy { max-width: 520px; }
+  #w6 .mobile-home-copy h2 { font-size: clamp(2.2rem, 2.8vw, 2.75rem); }
+  #w6 .mobile-frame { grid-template-columns: minmax(410px, .85fr) minmax(330px, 1.15fr); gap: clamp(24px, 3vw, 44px); }
+  #w6 .mobile-copy h2 { font-size: clamp(2.2rem, 2.8vw, 2.75rem); }
+  #w6.mobile-review .mobile-profile-frame { min-height: 740px !important; grid-template-columns: minmax(410px, .85fr) minmax(350px, 1.15fr); gap: clamp(24px, 3vw, 44px); }
+  #w6 .mobile-review-copy h2 { font-size: clamp(2.2rem, 2.8vw, 2.75rem); }
+  #w6 .profile-phone .phone-screen main { padding-top: 17px; padding-bottom: 14px; }
+  #w5 .live-board-stage .board-head,
+  #w5 .live-board-stage .go-board,
+  #w5 .live-feedback { width: min(100%, 500px); }
+  #w5 .live-board-stage { padding: 12px 30px 10px; }
+  #w5 .game-side-panel { padding: 12px; }
+  #w5 .game-side-panel section { margin-bottom: 8px; padding: 10px; }
+  #w5 .move-log-card li { padding-block: 5px; }
+  #w6 .endgame-review-frame { gap: 34px; padding: 12px 40px; }
+  #w6 .endgame-review-frame .phone-shell { width: min(100%, 360px); }
+  #w6 .endgame-explainer h1 { font-size: clamp(2.2rem, 3.05vw, 3rem); letter-spacing: -.055em; }
+  /* Keep the entire Atlas detail, including its evidence warning and action, intact.
+     The result catalogue remains intentionally scrollable; on short windows the page itself scrolls. */
+  #w6 .atlas-intro { padding-top: 20px; padding-bottom: 12px; }
+  #w6 .atlas-intro h1 { margin-block: 8px; font-size: clamp(42px, 3.15vw, 48px); }
+  #w6 .atlas-controls { padding-bottom: 6px; }
+  #w6 .atlas-layout { padding-bottom: 8px; }
+  .award-intent {
+    position: relative !important;
+    top: auto !important;
+    align-self: stretch !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    padding: 16px 15px !important;
+  }
+  .award-intent h2 { margin: 8px 0 12px !important; font-size: 17px !important; line-height: 1.25 !important; }
+  .award-intent dl { display: grid !important; gap: 7px !important; margin: 0 !important; }
+  .award-intent dt { margin: 0 !important; font-size: 8px !important; line-height: 1.15 !important; }
+  .award-intent dd { margin: 2px 0 0 !important; font-size: 9px !important; line-height: 1.4 !important; }
+  body > .review-footer { display: none !important; }
+}
+
+@media (max-width: 1180px), (max-height: 919px) {
+  .suite-header { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .suite-context { display: none; }
+  .suite-nav { justify-content: flex-start; }
+  #review-stage,
+  .review-stage { padding-top: 14px !important; }
+}
+
+/* On a short desktop window, remove only non-informational Atlas space.
+   The document remains naturally scrollable so the evidence layers, warning,
+   and next action are never traded away for a forced single-screen fit. */
+@media (min-width: 761px) and (max-height: 919px) {
+  #w6 .atlas-intro { padding: 28px clamp(22px, 4vw, 58px) 16px; }
+  #w6 .atlas-intro h1 { margin-block: 8px; font-size: clamp(42px, 3.15vw, 48px); }
+  #w6 .atlas-controls { padding-bottom: 10px; }
+  #w6 .atlas-layout { padding-bottom: 32px; }
+  #w6 .atlas-detail { min-height: 0; padding: 24px 28px 28px; }
+  #w6 .atlas-detail dl { margin-top: 18px; }
+  #w6 .atlas-detail dl div { padding-block: 8px; }
+  #w6 .atlas-warning { margin-block: 12px; }
+}
+
+@media (min-width: 1181px) and (max-height: 919px) {
+  #w6 .mobile-home-frame {
+    grid-template-columns: minmax(410px, .85fr) minmax(330px, 1.15fr);
+    gap: clamp(24px, 3vw, 44px);
+  }
+  #w6 .mobile-home-copy { max-width: 520px; }
+  #w6 .mobile-home-copy h2 { font-size: clamp(2.2rem, 2.8vw, 2.75rem); }
+  #w6 .mobile-frame {
+    grid-template-columns: minmax(410px, .85fr) minmax(330px, 1.15fr);
+    gap: clamp(24px, 3vw, 44px);
+  }
+  #w6 .mobile-copy h2 { font-size: clamp(2.2rem, 2.8vw, 2.75rem); }
+  #w6.mobile-review .mobile-profile-frame {
+    grid-template-columns: minmax(410px, .85fr) minmax(350px, 1.15fr);
+    gap: clamp(24px, 3vw, 44px);
+  }
+  #w6 .mobile-review-copy h2 { font-size: clamp(2.2rem, 2.8vw, 2.75rem); }
+  #w6 .endgame-review-frame { gap: 34px; padding-inline: 40px; }
+  #w6 .endgame-review-frame .phone-shell { width: min(100%, 360px); }
+  #w6 .endgame-explainer h1 { font-size: clamp(2.2rem, 3vw, 2.95rem); letter-spacing: -.055em; }
+}
+
+@media (max-width: 760px) {
+  .suite-header {
+    min-height: 58px;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+    padding: 7px 10px;
+  }
+  .suite-brand strong { font-size: 13px; }
+  .suite-brand small { font-size: 7px; }
+  .suite-nav { justify-content: flex-start; }
+  .suite-nav a { padding-inline: 10px; font-size: 10px; }
+  .suite-report { display: none; }
+  body > .review-tabs,
+  .review-bar .review-tabs {
+    grid-template-columns: repeat(6, minmax(72px, 1fr)) !important;
+    padding: 0 !important;
+    overflow-x: auto !important;
+    scrollbar-width: thin;
+  }
+  body > .review-tabs button,
+  .review-bar .review-tabs button { min-height: 48px !important; padding: 0 6px !important; gap: 4px !important; }
+  body > .review-tabs button b,
+  .review-bar .review-tabs button b { display: inline !important; font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suite-header *,
+  .review-tabs * { scroll-behavior: auto !important; transition-duration: .001ms !important; }
+}
