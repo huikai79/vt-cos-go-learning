@@ -1,3 +1,9 @@
+## 2026-10-07｜Full-site production geometry audit v1 revalidation
+
+PR #147 的第一輪 browser gate 沒有只驗證首頁：run #943 在 Advanced 1280px 發現 `scrollWidth=1548`，heading 本身未裁切、左右主要欄也未碰撞，真正來源是 route map 的純裝飾絕對定位線條超出自身容器。這是新 geometry matrix 找到的相鄰盲點。修正只對 `.advanced-route-map` 加 `overflow: clip`，不隱藏互動控制、不改 route cards 位置或內容。
+
+run #944 實際 Windows 結果：7 個正式 presentation surface 的新增 UI geometry gate PASS；Edge smoke PASS；KaTrain autodiscovery PASS；repository boundary PASS；Sabaki SGF oracle PASS。Node 唯一 FAIL 是修改 `experience-system.css` 後舊 frozen candidate fingerprint 不一致，屬預期 fail-closed。現已重凍 `formal-teaching-candidate-2026-10-07-a`／`fnv1a32-js16-e721ca03`（asset set v13），需再跑完整 CI 才可把工程狀態升為 PASS。真人 usability／實際 screen reader／learning effect 不由此建立。
+
 ## 2026-10-07｜Full-site production geometry audit v1（進行中）
 
 〔已確認〕使用者 1924×967 實際畫面顯示首頁 Hero 標題侵入右側互動預覽。現有 responsive test 雖覆蓋 1920px，但主要以 document scrollWidth 判斷；兩個元素都留在 viewport 內時仍可能彼此碰撞，因此舊 PASS 不能證明無重疊。
