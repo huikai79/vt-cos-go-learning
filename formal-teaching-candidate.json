@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-05-b",
-  "frozenAt": "2026-10-05T02:46:18.4288557Z",
-  "assetSetVersion": 12,
-  "assetFingerprint": "fnv1a32-js16-a4f99e81",
+  "candidateId": "formal-teaching-candidate-2026-10-07-a",
+  "frozenAt": "2026-10-07T10:20:00.000Z",
+  "assetSetVersion": 13,
+  "assetFingerprint": "fnv1a32-js16-f78e1d37",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -44,5 +44,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-workspace-v70／award-experience-v2／content catalog 5（承接 v69）。正式首頁加入可逆、合成且無 learner write 的棋盤預覽；原選點與後果同屏，但不構成正式題目、評分或 learner evidence。首頁、Core、Explore、Advanced、自由棋盤與經典棋形已整合批准候選稿的資訊階層、跨頁導覽、語意分行、統一 visual system 與短視窗自然捲動。動態題目與長標題不使用全域 nowrap；資訊完整優先於單屏。所有 rules、正式題目、首答、重試、提示、曝光、遮蔽、scoring、scheduler、KC、event schema、formal eligibility、storage schema 與歷史事件均不變。舊 candidate 人工回條不可沿用；工程、瀏覽器與視覺檢查不產生真人 comprehension／screen-reader usability、formal evaluation validity、學習成效或外部獎項證據。"
+  "scopeNote": "learner-workspace-v70／award-experience-v2／wide-screen geometry regression（承接 2026-10-05-b）。修正正式首頁超寬桌面 Hero 標題侵入互動預覽：正式共用 presentation layer 不再對所有 title-line 強制 nowrap，首頁 Hero 字級改以欄寬可承受的上限收斂；新增七個正式 presentation surface 的 375／760／1280／1440／1600／1920／2560 與 200% text 幾何反證，直接檢查 heading clipping、水平 overflow 與 hero sibling collision。這是 presentation-only 修復，不改 rules、正式題目、first response、retry、hint、exposure、scoring、scheduler、KC、event schema、formal eligibility、storage 或歷史 learner evidence。舊 candidate 人工回條不得沿用；自動幾何 PASS 不等於真人 usability／accessibility、formal evaluation validity、學習成效或外部獎項證據。"
 }
