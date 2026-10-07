@@ -1,3 +1,5 @@
+2026-10-07 Homepage Content-flow follow-up FINAL：人工 screenshot 觸發的 trust-arrow／method-card overflow 修復已在 PR #147 run #966 全套 CI PASS。新增 adjacent-boundary probes 成為持續 regression：1142／1229 實際問題寬度、既有 responsive widths、200% text 與七頁 production hero geometry 均保留。工程 gate 已通過；下一步只能是人工檢視／是否接受此版，未經使用者確認不 merge／deploy。
+
 2026-10-07 Homepage Content-flow follow-up：人工 screenshot 成為新的 adjacent-boundary probe，證明「Hero 不碰撞」不足以代表首頁所有文字安全。新增兩個 targeted negative tests：trust connector 不得產生 overlay pseudo-content；method-card 文字在 1142／1229 等實際問題寬度與既有 responsive widths 必須完全落在 card bounding box 內，且不得靠作者手動 <br> 維持版面。run #958 browser path PASS 後才重凍 candidate v14；若新 binding CI FAIL，繼續 fail closed，不降低幾何條件。
 
 2026-10-07 Full-site Geometry Audit v1 revalidation：新增幾何 gate 在 PR #147 run #943 首次抓到 Advanced 1280px document overflow（裝飾路徑超出 route map）；以 `overflow: clip` 將純裝飾幾何限制在自身容器後，run #944 的 Windows UI、Edge smoke、KaTrain autodiscovery、repository boundary 與 Sabaki oracle PASS。Node 唯一阻擋為預期 stale candidate fingerprint；依流程現重凍 candidate v13，再跑完整 CI。若新 run 任一 affected gate FAIL，停止 merge 並回到最小 selector／binding 修正；不降低測試條件。
