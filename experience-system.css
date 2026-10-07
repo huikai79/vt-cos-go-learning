@@ -50,7 +50,7 @@
  * wide screen. Dynamic titles stay naturally wrappable everywhere. */
 .learning-page .intro-title-line {
   display: block;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .learning-page .intro-hero h2 {
