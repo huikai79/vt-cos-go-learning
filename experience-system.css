@@ -1140,6 +1140,7 @@
 .advanced-route-map {
   position: relative;
   min-height: 470px;
+  overflow: clip;
   background:
     radial-gradient(circle at center, rgba(64, 95, 122, .08) 0 18%, transparent 18.4%),
     radial-gradient(circle at center, transparent 0 36%, rgba(64, 95, 122, .28) 36.3% 36.6%, transparent 37%),
