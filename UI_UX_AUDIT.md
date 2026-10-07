@@ -1,3 +1,11 @@
+## 2026-10-07｜Navigation & readability follow-up
+
+〔人工確認〕Core sidebar 的問題不是字體本身，而是 `styles.css` 後期「淺 sidebar」規則與目前 `experience-system.css` 深色正式 presentation 並存；任務類型與進階資料區的 `#294536`、`#315b3f`、`#556f5a` 等色落在深綠背景時只有約 1.4–2.6:1，與截圖中「很難看清／近乎消失」一致。正式層現直接覆寫受影響 strong/small/intro/label 色，不改 DOM 或 learner state；新增 browser computed contrast gate，受影響文字最低要求 4.5:1。
+
+〔人工確認〕Global Observatory 原 `.site-header` 只是普通 flow，`.experience-context-nav` 卻假設上方存在 68px sticky header，因此向下捲動後主 header 消失。desktop 現改為 sticky top 0；context nav 保持在其下。mobile 仍維持較簡單的 static header + top-sticky context nav，避免堆兩層佔掉小螢幕高度。browser 會實際 scroll 後量測 header top 與兩層 nav 邊界。
+
+〔功能新增〕七個正式 public product surfaces（首頁、Advanced、Classic Shapes、History、Math、Global Observatory、Live Game）都加入原生 anchor 型回頂按鈕；不依賴 JavaScript，44px 以上、右下固定、具 `aria-label`，並尊重 reduced-motion。browser 逐頁驗證唯一、位置、target 與實際回到頁頂。這只支持工程可讀性與導航行為，不等於真人 accessibility／usability 已通過。
+
 ## 2026-10-07｜Homepage manual follow-up FINAL
 
 兩個人工回報問題已納入 regression 並完成工程閉環：trust row 的舊負 offset 箭頭已移除；四步方法卡取消固定高度與作者硬 `<br>`，文案依可用欄寬自然換行，卡間箭頭縮小並留在 gap。PR #147 run #966 的 Windows browser suite 已在 1142／1229 等問題寬度確認 trust connector 不再生成、四卡文字都留在各自 card bounding box 內，且全頁無水平 overflow；同一套七頁 production geometry matrix、Edge smoke、repository boundary、Node 與 Sabaki 亦全部 PASS。未觀察到其他六個正式頁面出現同型自動化 failure；這不取代使用者逐頁人工視覺檢視，也不構成真人 usability／accessibility 證據。
