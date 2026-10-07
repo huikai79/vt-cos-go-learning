@@ -1,3 +1,11 @@
+## 2026-10-07｜Homepage manual follow-up：trust arrow / method-card overflow
+
+〔人工確認〕兩張實際首頁截圖揭露先前自動 gate 未覆蓋的次層問題：① trust row 的舊 mockup `::before` 箭頭使用負向 left offset，直接壓在左側文字附近；② 四步方法卡以固定高度配合手動 `<br>`，第二卡文案超出卡片下緣。這兩者都不是 document horizontal overflow，因此舊 scrollWidth／Hero sibling PASS 無法否定。
+
+〔修正〕trust connector 箭頭移除；方法文案移除硬斷行，卡片改 `height:auto`＋保留最低視覺高度，標題允許自然換行；卡片間流程箭頭縮小並置於 gap 中，不再侵入文字區。沒有用 hidden text、裁切文字或縮小到不可讀來取得 PASS。
+
+〔反回歸〕首頁 responsive matrix 擴至 320／390／760／768／1024／1142／1229／1280／1440／1600／1920／2560；browser 直接確認 trust pseudo connector 不存在、method strong/p 都落在各自 card rectangle 內、method paragraph 不再含 forced `br`。同一 PR 的七頁 production geometry suite 亦覆蓋 Advanced、Classic、History、Math、Global Observatory、Live；run #958 未再發現相同 overflow／collision。這仍是工程／幾何證據，不等於真人閱讀品質已驗證。
+
 ## 2026-10-07｜Full-site production geometry audit v1 revalidation
 
 PR #147 的第一輪 browser gate 沒有只驗證首頁：run #943 在 Advanced 1280px 發現 `scrollWidth=1548`，heading 本身未裁切、左右主要欄也未碰撞，真正來源是 route map 的純裝飾絕對定位線條超出自身容器。這是新 geometry matrix 找到的相鄰盲點。修正只對 `.advanced-route-map` 加 `overflow: clip`，不隱藏互動控制、不改 route cards 位置或內容。
