@@ -2471,7 +2471,7 @@ async function main() {
        collide. Audit the seven public presentation surfaces at desktop,
        ultra-wide, mobile, and 200%-text widths using explicit hero pairs. */
     const geometryPages = [
-      { name: "home", url: page, heading: "#site-introduction-title", left: ".intro-hero-copy", right: ".home-experience-preview", prepare: "document.querySelector('#site-introduction').hidden=false; document.querySelector('.app-shell').hidden=true;" },
+      { name: "home", url: page, heading: "#site-introduction-title", left: ".intro-hero-copy", right: ".home-experience-preview", prepare: "document.querySelector('#site-introduction').hidden=false; document.querySelector('.app-shell').hidden=false; document.body.classList.add('site-introduction-open'); scrollTo(0,0);" },
       { name: "advanced", url: advancedPage, heading: ".advanced-header h1", left: ".advanced-hero-copy", right: ".advanced-route-map" },
       { name: "classic", url: classicPage, heading: ".classic-header h1", left: ".classic-hero-copy", right: ".classic-shape-hero" },
       { name: "history", url: historyPage, heading: "#history-title", left: ".history-hero", right: ".evidence-guide" },
