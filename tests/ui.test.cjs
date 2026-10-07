@@ -402,6 +402,39 @@ async function main() {
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 960, deviceScaleFactor: 1, mobile: false });
     const landingStart = await evaluate(socket, `(() => { document.querySelector('[data-site-intro-start]').click(); return {siteIntroHidden: document.querySelector('#site-introduction').hidden, introOpen: document.querySelector('#lesson-intro-dialog').open, introTitle: document.querySelector('#lesson-intro-title').textContent, hash: location.hash}; })()`);
     assert.deepEqual(landingStart, { siteIntroHidden: true, introOpen: true, introTitle: "現在先學：認識氣", hash: "#core" });
+    const sidebarContrast = await evaluate(socket, `(() => {
+      const parse = (value) => {
+        const match = value.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/);
+        return match ? {r:Number(match[1]), g:Number(match[2]), b:Number(match[3])} : null;
+      };
+      const channel = (value) => {
+        const normalized = value / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      };
+      const luminance = (color) => 0.2126 * channel(color.r) + 0.7152 * channel(color.g) + 0.0722 * channel(color.b);
+      const ratio = (a, b) => {
+        const values = [luminance(a), luminance(b)].sort((x,y) => y-x);
+        return (values[0] + 0.05) / (values[1] + 0.05);
+      };
+      const sidebar = document.querySelector('.sidebar');
+      const background = parse(getComputedStyle(sidebar).backgroundColor) || {r:11,g:47,b:39};
+      const selectors = [
+        '.sidebar-task-guide > summary',
+        '.sidebar-task-types strong',
+        '.sidebar-task-types small',
+        '.advanced-sidebar-tools > summary',
+        '.advanced-sidebar-tools > summary small',
+        '.advanced-sidebar-intro',
+        '.advanced-priority-label'
+      ];
+      const audited = selectors.flatMap(selector => [...document.querySelectorAll(selector)]).map(node => ({
+        selector: node.matches('.sidebar-task-types strong') ? 'task-strong' : node.matches('.sidebar-task-types small') ? 'task-small' : node.className || node.tagName,
+        color: getComputedStyle(node).color,
+        contrast: ratio(parse(getComputedStyle(node).color), background)
+      }));
+      return { background: getComputedStyle(sidebar).backgroundColor, audited, minimum: Math.min(...audited.map(item => item.contrast)) };
+    })()`);
+    assert.ok(sidebarContrast.minimum >= 4.5, `core sidebar low contrast: ${JSON.stringify(sidebarContrast)}`);
     const steppedDemo = await evaluate(socket, `(() => {
       const before = {
         step: document.querySelector('#teaching-demo-count').textContent,
@@ -2460,15 +2493,20 @@ async function main() {
         await command(socket, "Emulation.setDeviceMetricsOverride", { width, height: width <= 760 ? 812 : 1000, deviceScaleFactor: 1, mobile: width <= 760 });
         const state = await evaluate(socket, `(() => {
           const heading = document.querySelector(${JSON.stringify(item.heading)});
+          const backToTop = document.querySelector('.back-to-top');
           const left = document.querySelector(${JSON.stringify(item.left)}).getBoundingClientRect();
           const right = document.querySelector(${JSON.stringify(item.right)}).getBoundingClientRect();
           const overlapX = left.left < right.right - 1 && left.right > right.left + 1;
           const overlapY = left.top < right.bottom - 1 && left.bottom > right.top + 1;
+          const topRect = backToTop?.getBoundingClientRect();
           return {
             width: innerWidth,
             scrollWidth: document.documentElement.scrollWidth,
             headingClipped: heading.scrollWidth > heading.clientWidth + 1,
             collision: overlapX && overlapY,
+            backToTopCount: document.querySelectorAll('.back-to-top').length,
+            backToTopHref: backToTop?.getAttribute('href') || null,
+            backToTopFits: Boolean(topRect && topRect.width >= 44 && topRect.height >= 44 && topRect.left >= -1 && topRect.right <= innerWidth + 1 && topRect.top >= -1 && topRect.bottom <= innerHeight + 1),
             left: {left:left.left,right:left.right,top:left.top,bottom:left.bottom},
             right: {left:right.left,right:right.right,top:right.top,bottom:right.bottom}
           };
@@ -2476,8 +2514,25 @@ async function main() {
         assert.ok(state.scrollWidth <= state.width + 1, `${item.name} ${width}px horizontal overflow: ${JSON.stringify(state)}`);
         assert.equal(state.headingClipped, false, `${item.name} ${width}px heading clipped: ${JSON.stringify(state)}`);
         assert.equal(state.collision, false, `${item.name} ${width}px hero sibling collision: ${JSON.stringify(state)}`);
+        assert.equal(state.backToTopCount, 1, `${item.name} ${width}px missing or duplicate back-to-top control`);
+        assert.equal(state.backToTopHref, "#page-top", `${item.name} ${width}px back-to-top target mismatch`);
+        assert.equal(state.backToTopFits, true, `${item.name} ${width}px back-to-top control outside viewport: ${JSON.stringify(state)}`);
       }
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+      const backToTopBehavior = await evaluate(socket, `(async () => {
+        document.documentElement.style.scrollBehavior = 'auto';
+        scrollTo(0, document.documentElement.scrollHeight);
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        const before = scrollY;
+        document.querySelector('.back-to-top').click();
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const after = scrollY;
+        document.documentElement.style.scrollBehavior = '';
+        return { before, after, hash: location.hash };
+      })()`);
+      assert.ok(backToTopBehavior.before > 0, `${item.name} did not scroll before back-to-top check`);
+      assert.ok(backToTopBehavior.after <= 1, `${item.name} back-to-top did not reach top: ${JSON.stringify(backToTopBehavior)}`);
+      assert.equal(backToTopBehavior.hash, "#page-top", `${item.name} back-to-top hash mismatch`);
       const enlarged = await evaluate(socket, `(() => {
         document.documentElement.style.fontSize = "32px";
         const heading = document.querySelector(${JSON.stringify(item.heading)});
@@ -2497,6 +2552,37 @@ async function main() {
       assert.equal(enlarged.collision, false, `${item.name} 200% text hero sibling collision: ${JSON.stringify(enlarged)}`);
     }
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+
+    await command(socket, "Page.navigate", { url: observatoryPage });
+    for (let retry = 0; retry < 30; retry += 1) {
+      const ready = await evaluate(socket, "Boolean(document.querySelector('.observatory-page .site-header') && document.querySelector('.experience-context-nav'))");
+      if (ready) break;
+      await delay(100);
+      if (retry === 29) assert.fail("observatory sticky header did not become ready");
+    }
+    await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+    const observatorySticky = await evaluate(socket, `(async () => {
+      scrollTo(0, Math.min(900, document.documentElement.scrollHeight - innerHeight));
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const header = document.querySelector('.site-header');
+      const context = document.querySelector('.experience-context-nav');
+      const h = header.getBoundingClientRect();
+      const n = context.getBoundingClientRect();
+      return {
+        scrollY,
+        position: getComputedStyle(header).position,
+        headerTop: h.top,
+        headerBottom: h.bottom,
+        contextTop: n.top,
+        headerVisible: h.bottom > 0,
+        contextBelowHeader: n.top >= h.bottom - 2
+      };
+    })()`);
+    assert.ok(observatorySticky.scrollY > 0, `observatory did not scroll: ${JSON.stringify(observatorySticky)}`);
+    assert.equal(observatorySticky.position, "sticky");
+    assert.equal(observatorySticky.headerVisible, true, `observatory top header disappeared: ${JSON.stringify(observatorySticky)}`);
+    assert.ok(Math.abs(observatorySticky.headerTop) <= 1, `observatory sticky header not pinned: ${JSON.stringify(observatorySticky)}`);
+    assert.equal(observatorySticky.contextBelowHeader, true, `observatory context nav overlaps sticky header: ${JSON.stringify(observatorySticky)}`);
 
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
