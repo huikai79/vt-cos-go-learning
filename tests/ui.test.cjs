@@ -2426,7 +2426,7 @@ async function main() {
       await command(socket, "Page.navigate", { url: item.url });
       let ready = false;
       for (let retry = 0; retry < 30; retry += 1) {
-        ready = await evaluate(socket, `Boolean(document.querySelector(${JSON.stringify(item.ready)}))`);
+        ready = await evaluate(socket, `document.readyState === "complete" && Boolean(document.querySelector(${JSON.stringify(item.ready)}))`);
         if (ready) break;
         await delay(100);
       }
@@ -2447,6 +2447,9 @@ async function main() {
           headingClipped: heading.scrollWidth > heading.clientWidth + 1,
           headingScrollWidth: heading.scrollWidth,
           headingClientWidth: heading.clientWidth,
+          headingWhiteSpace: getComputedStyle(heading).whiteSpace,
+          headingFontSize: getComputedStyle(heading).fontSize,
+          styleSheets: [...document.styleSheets].map(sheet => sheet.href),
           controls
         };
       })()`);
@@ -2494,7 +2497,7 @@ async function main() {
     for (const item of geometryPages) {
       await command(socket, "Page.navigate", { url: item.url });
       for (let retry = 0; retry < 30; retry += 1) {
-        const ready = await evaluate(socket, `Boolean(document.querySelector(${JSON.stringify(item.heading)}) && document.querySelector(${JSON.stringify(item.left)}) && document.querySelector(${JSON.stringify(item.right)}))`);
+        const ready = await evaluate(socket, `document.readyState === "complete" && Boolean(document.querySelector(${JSON.stringify(item.heading)}) && document.querySelector(${JSON.stringify(item.left)}) && document.querySelector(${JSON.stringify(item.right)}))`);
         if (ready) break;
         await delay(100);
         if (retry === 29) assert.fail(`${item.name} geometry surface did not become ready`);
