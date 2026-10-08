@@ -2594,6 +2594,24 @@ async function main() {
         }
       }
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+      const motionContract = await evaluate(socket, `(() => {
+        const art = document.querySelector('.intro-hero-atmosphere');
+        const bounds = art?.getBoundingClientRect();
+        return {
+          scrolling: getComputedStyle(document.documentElement).scrollBehavior,
+          heroWidth: bounds ? bounds.width : null,
+          heroAspectRatio: bounds && bounds.height ? bounds.width / bounds.height : null
+        };
+      })()`);
+      assert.equal(motionContract.scrolling, "smooth", `${item.name} lacks native smooth scrolling`);
+      if (item.name === "home") {
+        assert.ok(motionContract.heroWidth >= 700, `hero decoration too small: ${JSON.stringify(motionContract)}`);
+        assert.ok(Math.abs(motionContract.heroAspectRatio - 941 / 383) < 0.08, `hero decoration distorted: ${JSON.stringify(motionContract)}`);
+      }
+      await command(socket, "Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+      const reducedTopScroll = await evaluate(socket, "getComputedStyle(document.documentElement).scrollBehavior");
+      assert.equal(reducedTopScroll, "auto", `${item.name} must disable smooth scroll under reduced motion`);
+      await command(socket, "Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
       const backToTopBehavior = await evaluate(socket, `(async () => {
         document.documentElement.style.scrollBehavior = 'auto';
         scrollTo(0, 0);
