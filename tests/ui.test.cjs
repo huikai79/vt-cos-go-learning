@@ -2827,8 +2827,8 @@ async function main() {
     // first viewport as well as the existing scrolled identity contract.
     for (const width of [1440, 375]) {
       for (const entry of [
-        {name:"advanced",href:"advanced.html",path:"/advanced.html",heading:".advanced-header h1",action:".advanced-hero-actions .primary-button"},
-        {name:"classic",href:"classic-shapes.html",path:"/classic-shapes.html",heading:".classic-header h1",action:".classic-hero-actions .primary-button"}
+        {name:"advanced",href:"advanced.html#page-top",path:"/advanced.html",heading:".advanced-header h1",action:".advanced-hero-actions .primary-button"},
+        {name:"classic",href:"classic-shapes.html#page-top",path:"/classic-shapes.html",heading:".classic-header h1",action:".classic-hero-actions .primary-button"}
       ]) {
         await command(socket,"Emulation.setDeviceMetricsOverride",{width,height:width===375?812:900,deviceScaleFactor:1,mobile:width===375});
         await command(socket,"Page.navigate",{url:page});
@@ -2857,7 +2857,7 @@ async function main() {
             actionReachable:action.width>0 && action.height>0,
             scrollWidth:document.documentElement.scrollWidth};
         })()`);
-        assert.equal(entered.hash,"",entry.name+" plain entry unexpectedly has a hash");
+        assert.equal(entered.hash,"#page-top",entry.name+" entry must explicitly target page top");
         assert.ok(entered.scrollY<=1,entry.name+" homepage entry restored unexpected scroll: "+JSON.stringify(entered));
         assert.equal(entered.headingInViewport,true,entry.name+" h1 not visible on entry: "+JSON.stringify(entered));
         assert.equal(entered.actionReachable,true,entry.name+" primary action missing: "+JSON.stringify(entered));
