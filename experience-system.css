@@ -244,6 +244,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
   :where(.learning-page, .advanced-page, .live-page, .classic-shapes-page, .explore-page),
   :where(.learning-page, .advanced-page, .live-page, .classic-shapes-page, .explore-page) * {
     animation-duration: .01ms !important;
@@ -507,6 +511,12 @@
 }
 
 
+/* The seven public pages share native hash navigation. Keep the existing
+ * back-to-top.js visibility, focus and footer-avoidance behavior unchanged. */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Shared long-page utility for the seven public product surfaces. */
 .back-to-top {
   position: fixed;
@@ -648,11 +658,18 @@
 }
 
 .learning-page .intro-hero-atmosphere {
-  right: -12%;
-  bottom: 2%;
-  width: min(56vw, 760px);
-  opacity: .28;
-  filter: saturate(.72);
+  /* Keep the existing 941:383 artwork but give it room around both columns. */
+  left: 50%;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  width: min(96vw, 1360px);
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  opacity: .34;
+  filter: saturate(.78);
 }
 
 .learning-page .intro-hero-copy {
