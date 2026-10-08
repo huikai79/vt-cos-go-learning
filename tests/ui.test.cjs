@@ -206,7 +206,7 @@ async function main() {
       if (heroAtmosphereLoaded) break;
       await delay(100);
     }
-    assert.equal(heroAtmosphereLoaded, true, "homepage hero atmosphere asset did not load");
+    assert.equal(heroAtmosphereLoaded, false, "legacy photographic hero must not load in redesigned homepage");
     const firstUse = await evaluate(socket, `(() => {
       const title = document.querySelector('#question-title');
       const board = document.querySelector('#board');
@@ -254,7 +254,7 @@ async function main() {
         previewBoard: Boolean(document.querySelector('.home-preview-board')),
         previewState: document.querySelector('[data-home-preview]')?.dataset.previewState,
         previewPressed: document.querySelector('[data-home-preview-toggle]')?.getAttribute('aria-pressed'),
-        heroAtmosphere: document.querySelector('.intro-hero-atmosphere')?.getAttribute('src'),
+        heroAtmosphere: document.querySelector('.intro-hero-atmosphere')?.getAttribute('src') || null,
         heroAtmosphereLoaded: Boolean(document.querySelector('.intro-hero-atmosphere')?.complete && document.querySelector('.intro-hero-atmosphere')?.naturalWidth > 0),
         philosophyImages: document.querySelectorAll('.intro-philosophy-art').length,
         finalLandscape: document.querySelector('.intro-final-landscape')?.getAttribute('src'),
@@ -267,7 +267,7 @@ async function main() {
         sidebarTaskRole: document.querySelector('.sidebar-current-task').getAttribute('role')
       };
     })()`);
-    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "先做一手，再看懂為什麼。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 4, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 0, localCoreEntry: "開始這個單元 →", globalCoreEntry: "開始這個單元 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: null, passedFlowCount: 0, flowCurrentCount: 0, taskLabel: "課程", taskPhase: "先看懂", taskGuideOpen: false, flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "先抓住本課要觀察的核心線索，再進入不看答案的練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", check: "先找沿線相鄰的空點，再數氣；同一個空點只算一次。", visualDemo: 0, termCount: "（1 個）", firstTerm: "氣", legendItems: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", previewBoard: true, previewState: "before", previewPressed: "false", heroAtmosphere: "assets/homepage/hero-atmosphere.svg", heroAtmosphereLoaded: true, philosophyImages: 2, finalLandscape: "assets/homepage/footer-landscape.svg", duplicateScienceSection: false, pathImages: 3, evidenceImages: 4, stageBadge: "目前任務：課程 · 本題：先看懂", stageBadgeRole: "status", stageBadgeLive: "polite", sidebarTaskRole: null });
+    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "先做一手，再看懂為什麼。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 4, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 0, localCoreEntry: "開始這個單元 →", globalCoreEntry: "開始這個單元 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: null, passedFlowCount: 0, flowCurrentCount: 0, taskLabel: "課程", taskPhase: "先看懂", taskGuideOpen: false, flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "先抓住本課要觀察的核心線索，再進入不看答案的練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", check: "先找沿線相鄰的空點，再數氣；同一個空點只算一次。", visualDemo: 0, termCount: "（1 個）", firstTerm: "氣", legendItems: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", previewBoard: true, previewState: "before", previewPressed: "false", heroAtmosphere: null, heroAtmosphereLoaded: false, philosophyImages: 2, finalLandscape: "assets/homepage/footer-landscape.svg", duplicateScienceSection: false, pathImages: 3, evidenceImages: 4, stageBadge: "目前任務：課程 · 本題：先看懂", stageBadgeRole: "status", stageBadgeLive: "polite", sidebarTaskRole: null });
     const previewInteraction = await evaluate(socket, `(() => {
       const beforeStorage = JSON.stringify(Object.keys(localStorage).sort().map(key => [key, localStorage.getItem(key)]));
       const button = document.querySelector('[data-home-preview-toggle]');
@@ -387,6 +387,15 @@ async function main() {
       assert.ok(layout.trustConnectorContent === 'none' || layout.trustConnectorContent === 'normal', `${width}px trust connector still overlays copy: ${JSON.stringify(layout)}`);
       assert.equal(layout.methodCopyContained, true, `${width}px method copy escapes card: ${JSON.stringify(layout)}`);
       assert.equal(layout.methodCopyHasForcedBreaks, false, `${width}px method copy still contains forced line breaks: ${JSON.stringify(layout)}`);
+      if (width >= 1051) {
+        const chipRows = await evaluate(socket, `[...document.querySelectorAll('.intro-entry-grid .intro-chip-row')].map(row => {
+          const chips = [...row.querySelectorAll('span')].map(item => item.getBoundingClientRect());
+          const card = row.closest('.intro-path-card').getBoundingClientRect();
+          return {sameLine: chips.length === 3 && Math.max(...chips.map(r => r.top)) - Math.min(...chips.map(r => r.top)) <= 1,
+            contained: chips.every(rect => rect.left >= card.left - 1 && rect.right <= card.right + 1)};
+        })`);
+        assert.ok(chipRows.every(row => row.sameLine && row.contained), `${width}px entrance chips must be on one line and inside cards: ${JSON.stringify(chipRows)}`);
+      }
       if (width <= 760) assert.equal(layout.textOverlapsArtwork, false, `${width}px philosophy text overlaps stones: ${JSON.stringify(layout)}`);
     }
     const retainedDisclosures = await evaluate(socket, `(() => {
@@ -2597,17 +2606,17 @@ async function main() {
       await command(socket, "Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
       const motionContract = await evaluate(socket, `(() => {
         const art = document.querySelector('.intro-hero-atmosphere');
-        const bounds = art?.getBoundingClientRect();
+        const hero = document.querySelector('.intro-hero');
         return {
           scrolling: getComputedStyle(document.documentElement).scrollBehavior,
-          heroWidth: bounds ? bounds.width : null,
-          heroAspectRatio: bounds && bounds.height ? bounds.width / bounds.height : null
+          oldPhotoAbsent: !art,
+          heroGradient: "home" === ${JSON.stringify(item.name)} ? getComputedStyle(hero).backgroundImage : null
         };
       })()`);
       assert.equal(motionContract.scrolling, "smooth", `${item.name} lacks native smooth scrolling`);
       if (item.name === "home") {
-        assert.ok(motionContract.heroWidth >= 700, `hero decoration too small: ${JSON.stringify(motionContract)}`);
-        assert.ok(Math.abs(motionContract.heroAspectRatio - 941 / 383) < 0.08, `hero decoration distorted: ${JSON.stringify(motionContract)}`);
+        assert.equal(motionContract.oldPhotoAbsent, true, "new homepage still contains old photographic hero");
+        assert.ok(motionContract.heroGradient.includes("radial-gradient"), "homepage missing quiet CSS gradient");
       }
       await command(socket, "Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
       const reducedTopScroll = await evaluate(socket, "getComputedStyle(document.documentElement).scrollBehavior");
