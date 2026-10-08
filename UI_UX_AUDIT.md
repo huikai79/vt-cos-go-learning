@@ -1,3 +1,15 @@
+## 2026-10-08｜Manual UI review follow-up
+
+〔驗證後判斷〕`assets/homepage/hero-atmosphere.svg` 仍由首頁 `<img>` 載入，截圖中淡化的棋石／景深即來自該資產；目前問題不是缺圖，重新生成也不會直接改善棋盤標記辨識，因此保留原資產並新增實際載入檢查。棋盤褐色圖形原是從保留黑棋指向白棋回應的短曲線箭頭，但它與棋子重疊、沒有圖例，合理使用者無法僅憑形狀判讀；現移除箭頭，以紅色虛線外圈標示白棋可進入的位置，並讓 caption 與 SVG description 明說同一語意。
+
+〔人工偏好整合〕Core 側欄恢復 `styles.css` 既有淺綠／紙白配色，由 browser 對實際 painted surface 重新量測文字對比；工作區大標題簡化為「悟之一手」，VT-COS 只留在同一 lockup 的小字產品描述與 metadata。此例外已同步進 `BRAND.md`，不是移除母品牌歸屬。
+
+〔參考規格取捨〕回頂元件採用提供文件中適合七個公開頁的共通機制：44×44 實心 SVG、超過兩個 viewport 才顯示、hidden 時 `aria-hidden=true`／`tabindex=-1`、safe-area、頁尾避讓、reduced-motion 與 print。沒有採用文章閱讀欄／目錄欄對齊，因七頁沒有共同的 article/TOC frame；固定 viewport inset 較簡單、可驗證且不會跨頁漂移。無 JavaScript 時原生 anchor 仍可直接回頂。
+
+〔證據邊界〕這些修改重新綁定 candidate c（asset set v16，新增共享 `back-to-top.js`）；舊 candidate 真人回條不得沿用。自動瀏覽器與對比檢查只支持工程行為，不證明真人 usability、accessibility conformance、formal evaluation validity 或 learning effect。
+
+〔本機驗證〕candidate c、完整非瀏覽器 Node、pinned Sabaki、browser UI、PowerShell smoke syntax、KaTrain autodiscovery、Edge smoke 與 repository boundary 全數 PASS；boundary 為 manifest／tracked files 355／355 exact-match。淺色側欄最低 audited contrast 已達 4.5:1，短頁未跨過兩個 viewport 時回頂控制保持 hidden。這仍不是遠端 CI、真人 usability／accessibility、merge 或 deploy 證據。
+
 ## 2026-10-08｜UI contract repair（本機工程驗證 PASS）
 
 修正前提：把 Core 左側 pale pill 的空白先理解成「內容未載入」或單純留白是不成立的；來源 DOM 一直有「核心課程」文字。其後規則卻把它的前景設為近似 pale 色，舊測試又以外層深色 sidebar 當對比背景，因而沒有檢出文字在自身 surface 上近乎不可見。

@@ -248,6 +248,7 @@ async function main() {
         previewState: document.querySelector('[data-home-preview]')?.dataset.previewState,
         previewPressed: document.querySelector('[data-home-preview-toggle]')?.getAttribute('aria-pressed'),
         heroAtmosphere: document.querySelector('.intro-hero-atmosphere')?.getAttribute('src'),
+        heroAtmosphereLoaded: Boolean(document.querySelector('.intro-hero-atmosphere')?.complete && document.querySelector('.intro-hero-atmosphere')?.naturalWidth > 0),
         philosophyImages: document.querySelectorAll('.intro-philosophy-art').length,
         finalLandscape: document.querySelector('.intro-final-landscape')?.getAttribute('src'),
         duplicateScienceSection: Boolean(document.querySelector('.intro-science')),
@@ -259,7 +260,7 @@ async function main() {
         sidebarTaskRole: document.querySelector('.sidebar-current-task').getAttribute('role')
       };
     })()`);
-    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "先做一手，再看懂為什麼。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 4, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 0, localCoreEntry: "開始這個單元 →", globalCoreEntry: "開始這個單元 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: null, passedFlowCount: 0, flowCurrentCount: 0, taskLabel: "課程", taskPhase: "先看懂", taskGuideOpen: false, flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "先抓住本課要觀察的核心線索，再進入不看答案的練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", check: "先找沿線相鄰的空點，再數氣；同一個空點只算一次。", visualDemo: 0, termCount: "（1 個）", firstTerm: "氣", legendItems: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", previewBoard: true, previewState: "before", previewPressed: "false", heroAtmosphere: "assets/homepage/hero-atmosphere.svg", philosophyImages: 2, finalLandscape: "assets/homepage/footer-landscape.svg", duplicateScienceSection: false, pathImages: 3, evidenceImages: 4, stageBadge: "目前任務：課程 · 本題：先看懂", stageBadgeRole: "status", stageBadgeLive: "polite", sidebarTaskRole: null });
+    assert.deepEqual(firstUse, { siteIntroVisible: true, siteIntroTitle: "先做一手，再看懂為什麼。", landingHeaderVisible: true, sidebarDisplay: "none", topbarDisplay: "none", trustItems: 2, loopSteps: 4, assessmentCards: 4, siteIntroSources: 9, researchOpen: false, curriculumBoundary: "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。", courseEntryCards: 3, evidenceSummaryCards: 0, localCoreEntry: "開始這個單元 →", globalCoreEntry: "開始這個單元 →", landingAction: "從第一課開始 →", coreEntryStatus: "適合完全零基礎，從第一口氣開始。", introOpen: false, introTitle: "現在先學：認識氣", startLabel: "開始第 1 題", reviewHidden: true, promptBeforeBoard: true, policy: "選擇答案後會立即作答；答錯可以再試。", flowSteps: 5, activeFlow: null, passedFlowCount: 0, flowCurrentCount: 0, taskLabel: "課程", taskPhase: "先看懂", taskGuideOpen: false, flowNow: "先看本課短講，再用棋盤示範確認要觀察的變化。", flowWhy: "先抓住本課要觀察的核心線索，再進入不看答案的練習。", concept: "棋子放在交叉點上。沿線上下左右相鄰的空點叫做「氣」；斜對角不算。連成一串的棋子共用氣。", check: "先找沿線相鄰的空點，再數氣；同一個空點只算一次。", visualDemo: 0, termCount: "（1 個）", firstTerm: "氣", legendItems: 2, compactGuidance: "先看本課短講，再用棋盤示範確認要觀察的變化。", currentLevel: "level-beginner", previewBoard: true, previewState: "before", previewPressed: "false", heroAtmosphere: "assets/homepage/hero-atmosphere.svg", heroAtmosphereLoaded: true, philosophyImages: 2, finalLandscape: "assets/homepage/footer-landscape.svg", duplicateScienceSection: false, pathImages: 3, evidenceImages: 4, stageBadge: "目前任務：課程 · 本題：先看懂", stageBadgeRole: "status", stageBadgeLive: "polite", sidebarTaskRole: null });
     const previewInteraction = await evaluate(socket, `(() => {
       const beforeStorage = JSON.stringify(Object.keys(localStorage).sort().map(key => [key, localStorage.getItem(key)]));
       const button = document.querySelector('[data-home-preview-toggle]');
@@ -2369,7 +2370,7 @@ async function main() {
         questions: document.querySelectorAll('.question-block').length,
         evidenceLabels: [...new Set([...document.querySelectorAll('.evidence-guide .evidence-badge')].map((node) => node.textContent.trim()))],
         sourceAuditDate: document.querySelector('.source-audit-date')?.textContent.trim(),
-        scripts: document.querySelectorAll('script').length,
+        scriptSources: [...document.querySelectorAll('script')].map((script) => script.getAttribute('src')),
         historyVersion: document.querySelector('footer')?.textContent.includes('歷史探索 v6'),
         minContrast: Math.min(...audited.map((item) => item.ratio)),
         lowContrast: audited.filter((item) => item.ratio < 4.5),
@@ -2381,7 +2382,7 @@ async function main() {
     assert.equal(historyDesktop.questions, 5);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
     assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-29");
-    assert.equal(historyDesktop.scripts, 0);
+    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1"]);
     assert.equal(historyDesktop.historyVersion, true);
     assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);
     assert.ok(historyDesktop.minContrast >= 4.5, `history minimum contrast: ${historyDesktop.minContrast}`);
@@ -2563,6 +2564,7 @@ async function main() {
             backToTopCount: document.querySelectorAll('.back-to-top').length,
             backToTopHref: backToTop?.getAttribute('href') || null,
             backToTopFits: Boolean(topRect && topRect.width >= 44 && topRect.height >= 44 && topRect.left >= -1 && topRect.right <= innerWidth + 1 && topRect.top >= -1 && topRect.bottom <= innerHeight + 1),
+            backToTopInitiallyHidden: backToTop?.getAttribute('aria-hidden') === 'true' && backToTop?.tabIndex === -1 && !backToTop?.classList.contains('is-visible'),
             homePreviewStates,
             left: {left:left.left,right:left.right,top:left.top,bottom:left.bottom},
             right: {left:right.left,right:right.right,top:right.top,bottom:right.bottom}
@@ -2574,6 +2576,7 @@ async function main() {
         assert.equal(state.backToTopCount, 1, `${item.name} ${width}px missing or duplicate back-to-top control`);
         assert.equal(state.backToTopHref, "#page-top", `${item.name} ${width}px back-to-top target mismatch`);
         assert.equal(state.backToTopFits, true, `${item.name} ${width}px back-to-top control outside viewport: ${JSON.stringify(state)}`);
+        assert.equal(state.backToTopInitiallyHidden, true, `${item.name} ${width}px back-to-top control must be out of the accessibility tree at page start`);
         if (state.homePreviewStates) {
           for (const [previewState, preview] of Object.entries(state.homePreviewStates)) {
             assert.equal(preview.contentContained, true, `home ${width}px ${previewState} preview content escapes its card: ${JSON.stringify(preview)}`);
@@ -2586,16 +2589,41 @@ async function main() {
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
       const backToTopBehavior = await evaluate(socket, `(async () => {
         document.documentElement.style.scrollBehavior = 'auto';
+        scrollTo(0, 0);
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const control = document.querySelector('.back-to-top');
+        const atTop = {visible: control.classList.contains('is-visible'), ariaHidden: control.getAttribute('aria-hidden'), tabIndex: control.tabIndex};
+        scrollTo(0, innerHeight * 1.5);
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const beforeThreshold = {visible: control.classList.contains('is-visible'), ariaHidden: control.getAttribute('aria-hidden'), tabIndex: control.tabIndex};
+        scrollTo(0, innerHeight * 2 + 24);
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const afterThreshold = {visible: control.classList.contains('is-visible'), ariaHidden: control.getAttribute('aria-hidden'), tabIndex: control.tabIndex, crossed: scrollY > innerHeight * 2};
         scrollTo(0, document.documentElement.scrollHeight);
-        await new Promise(resolve => requestAnimationFrame(resolve));
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        await new Promise(resolve => setTimeout(resolve, 220));
         const before = scrollY;
-        document.querySelector('.back-to-top').click();
+        const controlRect = control.getBoundingClientRect();
+        const footer = [...document.querySelectorAll('footer, .footer-note')].find(candidate => {
+          const rect = candidate.getBoundingClientRect();
+          return getComputedStyle(candidate).display !== 'none' && rect.height > 0;
+        });
+        const footerRect = footer?.getBoundingClientRect() || null;
+        const clearsFooter = !control.classList.contains('is-visible') || !footerRect || footerRect.top >= innerHeight || controlRect.bottom <= footerRect.top - 15;
+        control.click();
         await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         const after = scrollY;
         document.documentElement.style.scrollBehavior = '';
-        return { before, after, hash: location.hash };
+        return { atTop, beforeThreshold, afterThreshold, before, after, hash: location.hash, clearsFooter };
       })()`);
+      assert.deepEqual(backToTopBehavior.atTop, {visible: false, ariaHidden: "true", tabIndex: -1}, `${item.name} back-to-top should be hidden at page start`);
+      assert.deepEqual(backToTopBehavior.beforeThreshold, {visible: false, ariaHidden: "true", tabIndex: -1}, `${item.name} back-to-top should remain hidden before two viewports`);
+      const expectedAfterThreshold = backToTopBehavior.afterThreshold.crossed
+        ? {visible: true, ariaHidden: "false", tabIndex: 0, crossed: true}
+        : {visible: false, ariaHidden: "true", tabIndex: -1, crossed: false};
+      assert.deepEqual(backToTopBehavior.afterThreshold, expectedAfterThreshold, `${item.name} back-to-top visibility must follow the actual two-viewport threshold`);
       assert.ok(backToTopBehavior.before > 0, `${item.name} did not scroll before back-to-top check`);
+      assert.equal(backToTopBehavior.clearsFooter, true, `${item.name} back-to-top overlaps the footer: ${JSON.stringify(backToTopBehavior)}`);
       assert.ok(backToTopBehavior.after <= 1, `${item.name} back-to-top did not reach top: ${JSON.stringify(backToTopBehavior)}`);
       assert.equal(backToTopBehavior.hash, "#page-top", `${item.name} back-to-top hash mismatch`);
       const enlarged = await evaluate(socket, `(() => {

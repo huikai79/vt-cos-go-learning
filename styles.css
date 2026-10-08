@@ -572,14 +572,14 @@ button.course-entry-link{font:inherit;background:#fff;cursor:pointer}
 .sidebar-current-task>p{margin:5px 0 0 20px;font-size:.78rem;line-height:1.45;color:#5d6f62}
 .sidebar-question-phase{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:11px;padding-top:9px;border-top:1px solid #ead6ad}.sidebar-question-phase span{font-size:.72rem;color:#765f3d}.sidebar-question-phase strong{font-size:.85rem;color:#6e4710;text-align:right}
 .sidebar-task-guide{margin:0 0 7px;color:#526a5a}.sidebar-task-guide>summary{min-height:38px;padding:8px 12px;font-size:.78rem;font-weight:650;cursor:pointer}.sidebar-task-guide[open]>summary{color:#294b36}
-.sidebar-task-types{margin:0;padding:4px 12px 10px 29px}.sidebar-task-types li{padding:3px 0;color:#52675a}.sidebar-task-types strong{display:block;font-size:.78rem;line-height:1.35;color:#294536}.sidebar-task-types small{display:block;margin-top:1px;font-size:.7rem;line-height:1.4;color:#718076}
+.sidebar-task-types{margin:0;padding:4px 12px 10px 29px}.sidebar-task-types li{padding:3px 0;color:#52675a}.sidebar-task-types strong{display:block;font-size:.78rem;line-height:1.35;color:#294536}.sidebar-task-types small{display:block;margin-top:1px;font-size:.7rem;line-height:1.4;color:#647568}
 .course-nav-toggle{display:block;margin:7px 0 0;border:1px solid #cbdccb;background:#fff;color:#224e35}
 .course-navigation{display:none;padding:10px 0 0}.course-navigation.is-open{display:block}
 .course-navigation .course-label{margin:2px 0 8px;color:#476d52}.course-picker label{color:#526a57}.course-hint{display:block;color:#637967}
 .unit-actions button{border-color:#bacfbc;background:#edf5ed;color:#264b34}.unit-actions button:hover:not(:disabled){background:#dcebdd}
 .nav-unit-title{color:#5a715d}.lesson-link{color:#375b42}.lesson-link:hover,.lesson-link.active{background:#deeee0;color:#174628}.lesson-copy small{color:#617b68}.lesson-index{border-color:#adc6b0}
 .today-navigation{margin:13px 0 0;border-top:1px solid #dce6dc}.today-navigation .side-label{color:#486650}.sidebar-task-link{color:#20523a}.sidebar-task-link:hover{background:#e4f1e7}.sidebar-task-link span{color:#1c6640}
-.advanced-sidebar-tools{margin-top:13px;border-color:#dce6dc;color:#315b3f}.advanced-sidebar-tools>summary small{color:#647d69}.advanced-sidebar-intro,.advanced-priority-label{color:#556f5a}
+.advanced-sidebar-tools{margin-top:13px;border-color:#dce6dc;color:#315b3f}.advanced-sidebar-tools>summary small{color:#5f7265}.advanced-sidebar-intro,.advanced-priority-label{color:#556f5a}
 .advanced-evidence-overview{border-color:#d7e4d8;background:#eaf3ea}.advanced-evidence-overview strong{color:#285b3e}.advanced-evidence-overview p{color:#4f6a56}
 .advanced-evidence-details{border-color:#d7e4d8;background:#fff}.advanced-evidence-details>summary{color:#28543a}.advanced-evidence-details[open]>summary,.evidence-detail-row+.evidence-detail-row{border-color:#e0ebe1}.evidence-detail-row>strong{color:#28543a}.evidence-detail-row p{color:#4f6a56}.evidence-detail-row small{color:#6b7e6e}
 .advanced-course-map{border-color:#dce6dc}.level-path>span{border-color:#d7e3d7;color:#42624b}.level-path>span.active{background:#e2f0e5;color:#164c2d}.level-path>span.active strong{color:#164c2d}#sidebar-tools-button{border-color:#bfd2c2;background:#fff;color:#26543a}

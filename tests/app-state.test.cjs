@@ -806,6 +806,12 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   assert.match(html, /VT-COS · 個人圍棋練習/);
   assert.match(html, /class="brand-mark experience-mark"/);
   assert.match(html, /VT-COS｜悟之一手/);
+  assert.match(html, /<div class="brand"><span class="brand-mark experience-mark"[^>]*><i><\/i><\/span><span>悟之一手<small>/);
+  assert.doesNotMatch(html, /<div class="brand">[^\n]*<span>VT-COS｜悟之一手<small>/);
+  assert.match(html, /class="home-preview-response-ring"/);
+  assert.match(html, /紅色外圈標示白棋可由右側進入的位置/);
+  assert.doesNotMatch(html, /home-preview-(?:arrow|causal-path)/);
+  assert.match(html, /back-to-top\.js\?v=back-to-top-v1/);
   assert.doesNotMatch(html, /\\n\s*<div class="tool-item"/);
   assert.match(html, /id="application-button" type="button">局面應用練習<\/button>/);
   assert.match(css, /--font-zh:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif/);

@@ -510,41 +510,67 @@
 /* Shared long-page utility for the seven public product surfaces. */
 .back-to-top {
   position: fixed;
-  z-index: 35;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 50;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: calc(max(24px, env(safe-area-inset-bottom)) + var(--back-to-top-lift, 0px));
   display: inline-grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border: 1px solid rgba(255, 255, 255, .42);
   border-radius: 50%;
   background: var(--experience-forest-deep);
   box-shadow: 0 10px 28px rgba(11, 47, 39, .24);
   color: #fffdf7;
-  font-size: 1.35rem;
-  font-weight: 800;
-  line-height: 1;
   text-decoration: none;
+  transition: opacity 200ms ease, visibility 200ms ease, transform 200ms ease, bottom 160ms ease;
 }
 
-.back-to-top:hover {
+.back-to-top svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.back-to-top-ready .back-to-top {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.back-to-top-ready .back-to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
   background: var(--experience-forest);
   transform: translateY(-1px);
 }
 
 @media (max-width: 560px) {
   .back-to-top {
-    right: max(12px, env(safe-area-inset-right));
-    bottom: max(12px, env(safe-area-inset-bottom));
-    width: 44px;
-    height: 44px;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--back-to-top-lift, 0px));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    scroll-behavior: auto;
+    transition: none;
+  }
+
   .back-to-top:hover {
     transform: none;
+  }
+}
+
+@media print {
+  .back-to-top {
+    display: none !important;
   }
 }
 
@@ -842,11 +868,11 @@
   stroke-width: 5;
 }
 
-.home-preview-causal-path {
+.home-preview-response-ring {
   fill: none;
   stroke: var(--experience-clay);
-  stroke-width: 5;
-  stroke-linecap: round;
+  stroke-width: 4;
+  stroke-dasharray: 7 5;
 }
 
 .home-preview-caption > div {
@@ -935,7 +961,7 @@
 }
 
 .home-experience-preview[data-preview-state="after"] .home-preview-first-ring,
-.home-experience-preview[data-preview-state="after"] .home-preview-causal-path {
+.home-experience-preview[data-preview-state="after"] .home-preview-response-ring {
   animation: experience-trace-in 420ms cubic-bezier(.2, .8, .2, 1) both;
 }
 
@@ -1010,65 +1036,7 @@
 }
 
 .learning-page .sidebar {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, .035), transparent 36%),
-    var(--experience-forest-deep);
-  color: #edf3ef;
   box-shadow: 8px 0 28px rgba(11, 47, 39, .08);
-}
-
-.learning-page .sidebar :where(.side-label, small, .lesson-progress, .advanced-tools-summary) {
-  color: #aebfb8;
-}
-
-
-/* Core sidebar contrast hardening. Dark sidebar content must remain readable
- * even when legacy light-sidebar rules are still present later in styles.css. */
-.learning-page .sidebar .sidebar-task-types {
-  color: #c5d4ce;
-}
-
-.learning-page .sidebar .sidebar-task-types li {
-  color: #aebfb8;
-}
-
-.learning-page .sidebar .sidebar-task-types strong {
-  color: #f4f8f6;
-}
-
-.learning-page .sidebar .sidebar-task-types small,
-.learning-page .sidebar .advanced-sidebar-intro {
-  color: #c5d4ce;
-}
-
-.learning-page .sidebar .advanced-priority-label {
-  color: #eef4f1;
-}
-
-.learning-page .sidebar > .brand,
-.learning-page .sidebar > .brand small,
-.learning-page .sidebar .sidebar-home-button,
-.learning-page .sidebar .current-course-context,
-.learning-page .sidebar .current-course-context :where(span, strong),
-.learning-page .sidebar .sidebar-task-guide > summary,
-.learning-page .sidebar .advanced-sidebar-tools > summary,
-.learning-page .sidebar .advanced-sidebar-tools > summary :where(span, small),
-.learning-page .sidebar .sidebar-bottom {
-  color: #e8f0ec;
-}
-
-/* The Core-course label deliberately uses a pale local surface. It must not
- * inherit the dark-sidebar foreground used by neighbouring navigation text. */
-.learning-page .sidebar > .side-label {
-  background: #e4f1e8;
-  color: #205d3e;
-}
-
-.learning-page .sidebar .sidebar-home-button:hover,
-.learning-page .sidebar .sidebar-home-button:focus-visible,
-.learning-page .sidebar .sidebar-task-guide > summary:hover,
-.learning-page .sidebar .advanced-sidebar-tools > summary:hover {
-  background: rgba(255, 255, 255, .08);
 }
 
 .learning-page .sidebar :where(button, a) {

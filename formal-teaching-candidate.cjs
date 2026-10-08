@@ -3,12 +3,13 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const PROTOCOL_ID = "go-formal-teaching-candidate-v1";
-const ASSET_SET_VERSION = 15;
+const ASSET_SET_VERSION = 16;
 const ASSET_PATHS = Object.freeze([
   "index.html",
   "styles.css",
   "experience-system.css",
   "homepage-experience.js",
+  "back-to-top.js",
   "assets/homepage/hero-atmosphere.svg",
   "assets/homepage/philosophy-growth-v59.webp",
   "assets/homepage/philosophy-capability-v59.webp",
