@@ -200,6 +200,13 @@ async function main() {
       await delay(100);
     }
     assert.equal(title, "中央的一顆棋");
+    let heroAtmosphereLoaded = false;
+    for (let retry = 0; retry < 50; retry += 1) {
+      heroAtmosphereLoaded = await evaluate(socket, "Boolean(document.querySelector('.intro-hero-atmosphere')?.complete && document.querySelector('.intro-hero-atmosphere')?.naturalWidth > 0)");
+      if (heroAtmosphereLoaded) break;
+      await delay(100);
+    }
+    assert.equal(heroAtmosphereLoaded, true, "homepage hero atmosphere asset did not load");
     const firstUse = await evaluate(socket, `(() => {
       const title = document.querySelector('#question-title');
       const board = document.querySelector('#board');
