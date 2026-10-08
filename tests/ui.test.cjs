@@ -2417,7 +2417,7 @@ async function main() {
       sourceColumns: getComputedStyle(document.querySelector('.source-list')).gridTemplateColumns,
       frontierColumns: getComputedStyle(document.querySelector('.frontier-grid')).gridTemplateColumns,
       ctaDirection: getComputedStyle(document.querySelector('.history-cta')).flexDirection,
-      advancedCtaVisible: (() => { const node = document.querySelector('.history-cta a[href="advanced.html"]'); return Boolean(node && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0); })()
+      advancedCtaVisible: (() => { const node = document.querySelector('.history-cta a[href="advanced.html#page-top"]'); return Boolean(node && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0); })()
     }))()`);
     assert.ok(historyMobile.scrollWidth <= historyMobile.width + 1, `history mobile horizontal overflow: ${JSON.stringify(historyMobile)}`);
     assert.equal(historyMobile.ctaDirection, "column");
