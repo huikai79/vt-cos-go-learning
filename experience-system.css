@@ -590,6 +590,41 @@
   color: var(--experience-paper-bright);
 }
 
+/* Editorial table of contents: complement visible intro evidence cards, do not
+ * repeat their action as a button. Use native links and existing scroll behavior. */
+.explore-page .explore-reading-index {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--experience-line);
+}
+.explore-page .explore-reading-index > span {
+  color: var(--experience-forest-deep);
+  font-weight: 800;
+  font-size: .8rem;
+}
+.explore-page .explore-reading-index a {
+  color: var(--experience-forest-deep);
+  font-weight: 700;
+  font-size: .87rem;
+  text-decoration: underline;
+  text-decoration-color: var(--experience-gold);
+  text-underline-offset: 4px;
+}
+.explore-page .explore-reading-index a:focus-visible {
+  outline: 3px solid var(--experience-gold);
+  outline-offset: 3px;
+}
+.explore-page .history-section[id] {
+  scroll-margin-top: 156px;
+}
+@media (max-width: 760px) {
+  .explore-page .history-section[id] { scroll-margin-top: 62px; }
+}
+
 .experience-context-nav {
   position: sticky;
   top: 68px;
