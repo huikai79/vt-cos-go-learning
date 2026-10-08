@@ -1,3 +1,7 @@
+## 2026-10-08｜Hero atmosphere size / return-to-top interaction
+
+使用者指出首頁 hero-atmosphere.svg 背景視覺比例偏小，以及全站固定回頂箭頭目前瞬間跳躍。核對 b629f123：SVG viewBox 941×383，production CSS 將 img 限制 width:min(56vw,760px)、opacity:.28，legacy height 沒有確實隨 intrinsic ratio 更新。已只改 experience-system.css，使用寬度 min(96vw,1360px)、置中、height:auto/object-fit:contain、opacity:.34；SVG source 不變。回頂採 html scroll-behavior:smooth，系統 prefers-reduced-motion:reduce 以 auto !important 取消動畫。新增 browser test 校驗 CSS 與 reduce 分支，人工視覺與完整 CI 尚待證實；不以靜態 CSS 宣稱在所有螢幕均通過。
+
 ## 2026-10-08｜UI contract repair（本機工程驗證 PASS）
 
 修正前提：把 Core 左側 pale pill 的空白先理解成「內容未載入」或單純留白是不成立的；來源 DOM 一直有「核心課程」文字。其後規則卻把它的前景設為近似 pale 色，舊測試又以外層深色 sidebar 當對比背景，因而沒有檢出文字在自身 surface 上近乎不可見。
