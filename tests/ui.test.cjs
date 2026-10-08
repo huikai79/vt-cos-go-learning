@@ -317,7 +317,7 @@ async function main() {
       return { routeDestination: routeLink.getAttribute('href'), catalogDestination: catalogLink.getAttribute('href'),
         initiallyClosed, opened, focusInCatalog, closedBySummary: !catalog.open,
         unitIndices: buttons.map(button => Number(button.dataset.siteIntroUnit)), titlesAndCountsMatch, visible,
-        advancedDestination: catalog.querySelector('a[href="advanced.html"]')?.getAttribute('href'),
+        advancedDestination: catalog.querySelector('a[href="advanced.html#page-top"]')?.getAttribute('href'),
         boardDestination: catalog.querySelector('a[href^="live-game.html"]')?.getAttribute('href'),
         coreEntryPresent: Boolean(catalog.querySelector('[data-site-intro-start]')),
         storageUnchanged: beforeStorage === JSON.stringify(Object.keys(localStorage).sort().map(key => [key, localStorage.getItem(key)])),
@@ -330,7 +330,7 @@ async function main() {
     for (const flag of ["initiallyClosed", "opened", "focusInCatalog", "closedBySummary", "titlesAndCountsMatch", "visible", "coreEntryPresent", "storageUnchanged", "lessonUnchanged"]) {
       assert.equal(catalogNavigation[flag], true, `全站課程目錄 ${flag} 未符合契約`);
     }
-    assert.equal(catalogNavigation.advancedDestination, "advanced.html");
+    assert.equal(catalogNavigation.advancedDestination, "advanced.html#page-top");
     assert.match(catalogNavigation.boardDestination, /^live-game\.html(?:\?|$)/);
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     const mobileCatalog = await evaluate(socket, `(() => {
