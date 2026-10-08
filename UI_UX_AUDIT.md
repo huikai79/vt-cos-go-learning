@@ -1,3 +1,5 @@
+2026-10-08 Review-worktree 5628 hero/background and smooth-top follow-up：固定基線 5628c60327a3c411d9f991c53467f6be0994412f，保留已完成的 Core 淺色側欄、首頁棋盤自然流、Explore 全站與主題導覽、棋盤新標記、七頁 back-to-top.js（兩個 viewport 才顯示／頁尾避讓／ARIA 狀態）。僅放大 Hero atmosphere CSS：min(56vw,760px)→min(96vw,1360px)、維持原 941:383 SVG 比例，增強 opacity；共用 html 原生 smooth scroll，prefers-reduced-motion:reduce 即時回頂，原 JS 未改。新增 browser CSS／比例／reduced-motion 反證，candidate 重凍 formal-teaching-candidate-2026-10-08-d／fnv1a32-js16-9136a667（asset set v17），舊真人回條不可沿用。遠端 CI、人工視覺驗收尚待確認，不 merge／deploy；真人 usability/accessibility NOT_TESTED、formal teaching/evaluation BLOCKED、learning effect NOT_MEASURED。
+
 ## 2026-10-08｜Manual UI review follow-up
 
 〔驗證後判斷〕`assets/homepage/hero-atmosphere.svg` 仍由首頁 `<img>` 載入，截圖中淡化的棋石／景深即來自該資產；目前問題不是缺圖，重新生成也不會直接改善棋盤標記辨識，因此保留原資產並新增實際載入檢查。棋盤褐色圖形原是從保留黑棋指向白棋回應的短曲線箭頭，但它與棋子重疊、沒有圖例，合理使用者無法僅憑形狀判讀；現移除箭頭，以紅色虛線外圈標示白棋可進入的位置，並讓 caption 與 SVG description 明說同一語意。
