@@ -10,13 +10,16 @@
     ATLAS: "atlas"
   });
 
-  function modeFromHash(hash) {
-    return String(hash || "").toLowerCase() === "#atlas" ? MODES.ATLAS : MODES.PRACTICE;
+  function modeFromHash(hash, currentMode = MODES.PRACTICE) {
+    const target = String(hash || "").toLowerCase();
+    if (target === "#atlas" || target === "#classic-atlas-title") return MODES.ATLAS;
+    if (target === "#page-top") return currentMode === MODES.ATLAS ? MODES.ATLAS : MODES.PRACTICE;
+    return MODES.PRACTICE;
   }
 
   function applyMode(doc, hash, { focus = false } = {}) {
     if (!doc || !doc.body) return null;
-    const mode = modeFromHash(hash);
+    const mode = modeFromHash(hash, doc.body.dataset.classicMode);
     doc.body.dataset.classicMode = mode;
 
     for (const panel of doc.querySelectorAll("[data-classic-mode-panel]")) {
