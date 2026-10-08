@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-08-f",
-  "frozenAt": "2026-10-08T13:28:00.000Z",
-  "assetSetVersion": 19,
-  "assetFingerprint": "fnv1a32-js16-7023f947",
+  "candidateId": "formal-teaching-candidate-2026-10-08-g",
+  "frozenAt": "2026-10-08T14:20:00.000Z",
+  "assetSetVersion": 20,
+  "assetFingerprint": "fnv1a32-js16-932cde63",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -45,5 +45,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "Based on previous PR #149 latest production surface; advanced.html and classic-shapes.html persistent current-product labels in existing sticky topbar, linked to #page-top. Inspired by attached source prototypes 03 advanced-live-a1 W1 and 04 classic-shapes-a1 W1 product identities, not review-only six-view chrome. Presentation-only: no scoring, rules, events, KC, evaluation or formal-eligibility change. Windows UI, Node, boundary and Sabaki oracle must be revalidated; previous usability receipts cannot be transferred."
+  "scopeNote": "User rejected tiny topbar name as imperceptible improvement. Replaces it with persistent and contrasting page-specific section nav directly below global topbar on Advanced and Classic Shapes, showing current product and concrete in-page entry paths (training tracks, practice, atlas). Grounded in prototype W1 navigation and actual production route structure. Keeps practice runtime, first response, exposure, scoring, scheduler, KC, events and formal eligibility intact. Browser geometry and keyboard navigation checks required; no human usability or learning effects claimed."
 }
