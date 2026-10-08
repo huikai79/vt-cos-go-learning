@@ -327,3 +327,13 @@ test("History Explore v6 證據轉折卡桌面為 2x2，研究前沿維持 3 欄
   assert.match(css, /\.evidence-transitions \.frontier-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/);
   assert.match(css, /@media\(max-width:760px\)[\s\S]*\.evidence-transitions \.frontier-grid\{grid-template-columns:1fr\}/);
 });
+
+
+test("History 首屏不重複介紹右側證據卡，重要閱讀章節皆可直接抵達",()=>{
+  assert.doesNotMatch(html,/class="secondary-link" href="#evidence"/);
+  for(const [id,label] of [["transitions","證據與觀念的轉折"],["frontier","研究前沿"],["sources","本頁來源入口"]]){
+    assert.ok(html.includes('href="#'+id+'"'),"missing History chapter link: "+label);
+    assert.match(html,new RegExp('<section[^>]*id="'+id+'"'));
+  }
+  assert.match(html,/nav class="explore-reading-index" aria-label="歷史頁面章節目錄"/);
+});
