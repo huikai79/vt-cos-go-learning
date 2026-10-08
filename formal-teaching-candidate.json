@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-08-c",
-  "frozenAt": "2026-10-08T02:24:37.270Z",
-  "assetSetVersion": 16,
-  "assetFingerprint": "fnv1a32-js16-3297279b",
+  "candidateId": "formal-teaching-candidate-2026-10-08-e",
+  "frozenAt": "2026-10-08T07:52:00.000Z",
+  "assetSetVersion": 18,
+  "assetFingerprint": "fnv1a32-js16-8786b115",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -45,5 +45,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "learner-workspace-v70／award-experience-v4／manual UI review follow-up（2026-10-08）。保留並驗證現有 hero-atmosphere.svg 的實際載入，不為視覺新鮮感重生資產；首頁棋盤移除與棋子重疊且缺乏圖例的褐色方向箭頭，改以紅色虛線外圈和明確文字標示白棋可進入的位置；Core 側欄恢復既有淺色閱讀配色，顯著標題簡化為「悟之一手」，VT-COS 留在次要產品描述與公開 metadata。七個 public surfaces 共用 progressive back-to-top：超過兩個 viewport 才可見、44px 實心 SVG、hidden 時移出 accessibility tree、支援 safe area／reduced motion／print 並避開可見頁尾。新增 back-to-top.js 納入 frozen critical asset，asset set 升為 v16；其餘 public presentation files 仍由 release manifest boundary 管理。這是 presentation-only 修復，不改 rules、正式題目、first response、retry、hint、exposure、scoring、scheduler、KC、event schema、formal eligibility、storage 或歷史 learner evidence。舊 candidate 的任何真人回條不得沿用；browser／自動 accessibility 工程檢查不等於真人 usability／accessibility、formal evaluation validity 或 learning effect。"
+  "scopeNote": "2026-10-08 Homepage layout follow-up, based on review HEAD 5628c603: remove outdated atmospheric photo element from redesigned hero (retain asset for rollback), use subtle CSS radial wash; arrange three learning-entry category chips in one row at desktop widths without changing text; maintain native smooth back-to-top and reduced-motion fallback, previous Core/Explore/preview contracts, versioned candidate v18. Does not change scoring, events, scheduler, rules, formal evaluation or exposure. CI and visual review required; past receipts not transferable."
 }

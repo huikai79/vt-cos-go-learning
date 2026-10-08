@@ -244,6 +244,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
   :where(.learning-page, .advanced-page, .live-page, .classic-shapes-page, .explore-page),
   :where(.learning-page, .advanced-page, .live-page, .classic-shapes-page, .explore-page) * {
     animation-duration: .01ms !important;
@@ -507,6 +511,12 @@
 }
 
 
+/* The seven public pages share native hash navigation. Keep the existing
+ * back-to-top.js visibility, focus and footer-avoidance behavior unchanged. */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Shared long-page utility for the seven public product surfaces. */
 .back-to-top {
   position: fixed;
@@ -647,12 +657,15 @@
   overflow: visible;
 }
 
+/* The former photographic atmosphere belongs to the earlier hero geometry.
+ * Use a CSS-only wash behind the copy and interactive board. */
+.learning-page .intro-hero {
+  background:
+    radial-gradient(ellipse 58% 75% at 80% 46%, rgba(215, 184, 130, .16), transparent 78%),
+    radial-gradient(ellipse 54% 72% at 16% 78%, rgba(194, 210, 180, .17), transparent 82%);
+}
 .learning-page .intro-hero-atmosphere {
-  right: -12%;
-  bottom: 2%;
-  width: min(56vw, 760px);
-  opacity: .28;
-  filter: saturate(.72);
+  display: none;
 }
 
 .learning-page .intro-hero-copy {
@@ -990,6 +1003,23 @@
 .learning-page .intro-path-grid {
   gap: 0;
   border: 1px solid var(--experience-line);
+}
+
+/* Compact three-chip desktop rows without changing the course labels.
+ * Only let chips wrap where the card cannot fit all three accessibly. */
+@media (min-width: 1051px) {
+  .learning-page .intro-entry-grid .intro-chip-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, max-content));
+    column-gap: clamp(4px, .5vw, 8px);
+    row-gap: 0;
+    align-items: start;
+  }
+
+  .learning-page .intro-entry-grid .intro-chip-row span {
+    padding-inline: clamp(5px, .55vw, 9px);
+    font-size: clamp(.66rem, .78vw, .79rem);
+  }
 }
 
 .learning-page .intro-path-card {

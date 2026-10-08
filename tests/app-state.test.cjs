@@ -784,7 +784,7 @@ test("CJK learner UI 使用繁中語系、適當字型 fallback 與安全換行�
   assert.match(html, /class="intro-hero-art home-experience-preview" data-home-preview/);
   assert.match(html, /class="home-preview-board"/);
   assert.doesNotMatch(html, /class="intro-hero-image"[^>]+assets\/homepage\/hero\.png/);
-  assert.match(html, /class="intro-hero-atmosphere"[^>]+assets\/homepage\/hero-atmosphere\.svg/);
+  assert.doesNotMatch(html, /class="intro-hero-atmosphere"[^>]+assets\/homepage\/hero-atmosphere\.svg/);
   assert.match(html, /class="intro-philosophy-art intro-philosophy-growth"[^>]+assets\/homepage\/philosophy-growth-v59\.webp/);
   assert.match(html, /class="intro-philosophy-art intro-philosophy-capability"[^>]+assets\/homepage\/philosophy-capability-v59\.webp/);
   assert.match(html, /class="intro-final-landscape"[^>]+assets\/homepage\/footer-landscape\.svg/);
