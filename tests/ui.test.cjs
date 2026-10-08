@@ -2797,7 +2797,7 @@ async function main() {
     ]) {
       await command(socket, "Page.navigate", {url:item.url});
       for(let retry=0;retry<30;retry++){
-        const ready=await evaluate(socket, "document.readyState === 'complete' && Boolean(document.querySelector('.experience-page-context'))");
+        const ready=await evaluate(socket, "document.readyState === 'complete' && Boolean(document.querySelector('.practice-page-nav .practice-page-home'))");
         if(ready)break;
         await delay(100);
         if(retry===29)assert.fail(item.name+" identity link missing");
@@ -2806,18 +2806,18 @@ async function main() {
       const state=await evaluate(socket,`(async () => {
         scrollTo({top:900,behavior:"instant"});
         await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-        const identity=document.querySelector(".experience-page-context");
+        const identity=document.querySelector(".practice-page-home");
         const rect=identity.getBoundingClientRect();
         return {scrollY, label:identity.querySelector("strong")?.textContent.trim(),
           link:identity.getAttribute("href"),
           visible:rect.height>0 && rect.top>=-1 && rect.bottom<=innerHeight+1,
-          topbarPosition:getComputedStyle(identity.closest(".experience-topbar")).position,
-          names:[...document.querySelectorAll(".experience-page-context")].length};
+          topbarPosition:getComputedStyle(identity.closest(".practice-page-nav")).position,
+          names:[...document.querySelectorAll(".practice-page-home")].length};
       })()`);
       assert.equal(state.names,1,item.name+" has duplicate product identities");
       assert.equal(state.label,item.label,item.name+" identity mismatch");
       assert.equal(state.link,"#page-top",item.name+" cannot return to introduction");
-      assert.equal(state.topbarPosition,"sticky",item.name+" header not persistent");
+      assert.equal(state.topbarPosition,"sticky",item.name+" section navigation not persistent");
       assert.equal(state.visible,true,item.name+" identity lost after scroll: "+JSON.stringify(state));
     }
 
