@@ -941,7 +941,7 @@ test("Workspace：既有核心入口與連結仍存在，未加入設計註解",
   for (const id of ["sidebar-home-button", "about-course-button", "resume-button", "tools-menu", "course-nav-toggle", "today-navigation", "sidebar-due-review-button", "sidebar-review-button", "lesson-nav", "lesson-intro-button", "stage-board-practice-link", "classic-shapes-link", "learning-flow-button", "workspace-tools-button", "workspace-records-button", "scheduled-practice-button", "application-button", "sample-sgf-button", "sgf-file-input", "evaluation-button", "policy-fixed", "policy-adaptive", "export-button", "export-events-button", "feedback", "interaction-feedback", "hint-feedback", "system-status", "hint-button", "next-button"]) {
     assert.match(html, new RegExp(`id="${id}"`), `缺少既有入口：${id}`);
   }
-  for (const href of ["advanced.html", "live-game.html?size=9", "classic-shapes.html"]) {
+  for (const href of ["advanced.html#page-top", "live-game.html?size=9", "classic-shapes.html#page-top"]) {
     assert.ok(html.includes(`href="${href}"`), `缺少既有連結：${href}`);
   }
   assert.doesNotMatch(html, /棋盤是主體|首答前不洩漏答案|全站共同互動語法/);

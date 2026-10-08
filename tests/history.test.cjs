@@ -30,7 +30,7 @@ test("歷史探索頁不把堯傳說或孫策棋譜升格為硬史實", () => {
 });
 
 test("歷史探索頁至少連回主要學習入口與主要來源", () => {
-  for (const href of ["index.html", "index.html#core", "advanced.html", "classic-shapes.html"]) {
+  for (const href of ["index.html", "index.html#core", "advanced.html#page-top", "classic-shapes.html#page-top"]) {
     assert.ok(html.includes('href="' + href + '"'), href);
   }
   for (const host of ["wenwu.hebei.gov.cn", "ctext.org", "chnmus.net", "idp.bl.uk", "kci.go.kr", "nihonkiin.or.jp", "mpiwg-berlin.mpg.de"]) {
@@ -169,7 +169,7 @@ test("History Explore v5 不保留泛用來源入口，改用實際 claim-near s
 });
 
 test("手機 header 即使隱藏進階導覽，頁面仍保留直接回進階訓練的 CTA", () => {
-  assert.match(html, /href="advanced\.html">回進階訓練<\/a>/);
+  assert.match(html, /href="advanced\.html#page-top">回進階訓練<\/a>/);
 });
 
 test("History Explore v5 以望都 132 年作 17 路主要物質錨點，且不誇大為原位或最早", () => {

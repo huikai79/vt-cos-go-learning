@@ -317,7 +317,7 @@ async function main() {
       return { routeDestination: routeLink.getAttribute('href'), catalogDestination: catalogLink.getAttribute('href'),
         initiallyClosed, opened, focusInCatalog, closedBySummary: !catalog.open,
         unitIndices: buttons.map(button => Number(button.dataset.siteIntroUnit)), titlesAndCountsMatch, visible,
-        advancedDestination: catalog.querySelector('a[href="advanced.html"]')?.getAttribute('href'),
+        advancedDestination: catalog.querySelector('a[href="advanced.html#page-top"]')?.getAttribute('href'),
         boardDestination: catalog.querySelector('a[href^="live-game.html"]')?.getAttribute('href'),
         coreEntryPresent: Boolean(catalog.querySelector('[data-site-intro-start]')),
         storageUnchanged: beforeStorage === JSON.stringify(Object.keys(localStorage).sort().map(key => [key, localStorage.getItem(key)])),
@@ -330,7 +330,7 @@ async function main() {
     for (const flag of ["initiallyClosed", "opened", "focusInCatalog", "closedBySummary", "titlesAndCountsMatch", "visible", "coreEntryPresent", "storageUnchanged", "lessonUnchanged"]) {
       assert.equal(catalogNavigation[flag], true, `全站課程目錄 ${flag} 未符合契約`);
     }
-    assert.equal(catalogNavigation.advancedDestination, "advanced.html");
+    assert.equal(catalogNavigation.advancedDestination, "advanced.html#page-top");
     assert.match(catalogNavigation.boardDestination, /^live-game\.html(?:\?|$)/);
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     const mobileCatalog = await evaluate(socket, `(() => {
@@ -541,7 +541,7 @@ async function main() {
     assert.equal(desktopStatusAx.nodes[0].role.value, "status");
     const flowDialog = await evaluate(socket, `(() => { const inlineFlow = document.querySelector('.content-wrap .learning-flow'); document.querySelector('#learning-flow-button').click(); const dialog = document.querySelector('#learning-flow-dialog'); const result = {inlineFlow: Boolean(inlineFlow), open: dialog.open, title: document.querySelector('#learning-flow-title').textContent, note: document.querySelector('.learning-flow-head > p').textContent, stepLabels: [...document.querySelectorAll('.learning-steps strong')].map((node) => node.textContent), progressMarkers: document.querySelectorAll('.learning-steps li.active, .learning-steps li.passed, .learning-steps [aria-current]').length}; document.querySelector('#learning-flow-close-button').click(); return {...result, closed: !dialog.open}; })()`);
     assert.deepEqual(flowDialog, { inlineFlow: false, open: true, title: "從理解概念，到在棋局裡用得出來", note: "這是可能反覆使用的方法，不是每題都要依序走完的目前進度；當下任務與本題狀態請看題目上方。", stepLabels: ["理解概念", "獨立作答", "比較與修正", "隔時再判", "局面應用"], progressMarkers: 0, closed: true });
-    let courseShape = await evaluate(socket, "({units: document.querySelector('#unit-select').options.length, shownUnits: document.querySelectorAll('.nav-unit').length, lessons: document.querySelectorAll('[data-lesson]').length, toolDescriptions: document.querySelectorAll('.tool-item p').length, advancedTrainingLink: document.querySelector('a[href=\"advanced.html\"]')?.textContent, r1LinkAbsent: document.querySelector('a[href=\"r1-review.html\"]') === null, contextBars: document.querySelectorAll('.lesson-context-bar').length, advancedClosed: !document.querySelector('#advanced-tools').open, advancedLabel: document.querySelector('#advanced-tools summary').textContent.trim(), rawBackupHint: document.querySelector('#export-events-button').nextElementSibling.textContent})");
+    let courseShape = await evaluate(socket, "({units: document.querySelector('#unit-select').options.length, shownUnits: document.querySelectorAll('.nav-unit').length, lessons: document.querySelectorAll('[data-lesson]').length, toolDescriptions: document.querySelectorAll('.tool-item p').length, advancedTrainingLink: document.querySelector('a[href=\"advanced.html#page-top\"]')?.textContent, r1LinkAbsent: document.querySelector('a[href=\"r1-review.html\"]') === null, contextBars: document.querySelectorAll('.lesson-context-bar').length, advancedClosed: !document.querySelector('#advanced-tools').open, advancedLabel: document.querySelector('#advanced-tools summary').textContent.trim(), rawBackupHint: document.querySelector('#export-events-button').nextElementSibling.textContent})");
     assert.deepEqual(courseShape, { units: 15, shownUnits: 1, lessons: 3, toolDescriptions: 9, advancedTrainingLink: "進階訓練", r1LinkAbsent: true, contextBars: 1, advancedClosed: true, advancedLabel: "進階設定與資料 通常不需要現在處理", rawBackupHint: "下載 Core、固定應用探測、局部復盤與實戰的可重算 JSON；獨立進階訓練請到「進階訓練」頁另行匯出。請自行妥善保存，不需要每天匯出。" });
     const advancedTools = await evaluate(socket, `(() => { const section = document.querySelector('#advanced-tools'); section.open = true; const visible = section.offsetHeight > 0 && getComputedStyle(section).display !== 'none'; const labels = [...section.querySelectorAll('.tool-item button')].map((button) => button.textContent.trim()); section.open = false; return {visible, labels, closed: !section.open}; })()`);
     assert.deepEqual(advancedTools, { visible: true, labels: ["七天流程試行", "匯出學習摘要", "備份核心與實戰資料"], closed: true });
@@ -2417,7 +2417,7 @@ async function main() {
       sourceColumns: getComputedStyle(document.querySelector('.source-list')).gridTemplateColumns,
       frontierColumns: getComputedStyle(document.querySelector('.frontier-grid')).gridTemplateColumns,
       ctaDirection: getComputedStyle(document.querySelector('.history-cta')).flexDirection,
-      advancedCtaVisible: (() => { const node = document.querySelector('.history-cta a[href="advanced.html"]'); return Boolean(node && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0); })()
+      advancedCtaVisible: (() => { const node = document.querySelector('.history-cta a[href="advanced.html#page-top"]'); return Boolean(node && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0); })()
     }))()`);
     assert.ok(historyMobile.scrollWidth <= historyMobile.width + 1, `history mobile horizontal overflow: ${JSON.stringify(historyMobile)}`);
     assert.equal(historyMobile.ctaDirection, "column");
@@ -2745,7 +2745,7 @@ async function main() {
       assert.equal(headerContract.headerCount, 1, `${item.name} must expose one shared Explore global header`);
       assert.equal(headerContract.wordmark, "VT-COS｜悟之一手", `${item.name} first visible product lockup is incomplete`);
       assert.equal(headerContract.globalLabel, "全站導覽");
-      assert.deepEqual(headerContract.globalLinks, ["index.html", "index.html#core", "advanced.html"], `${item.name} global navigation must use the shared routes`);
+      assert.deepEqual(headerContract.globalLinks, ["index.html", "index.html#core", "advanced.html#page-top"], `${item.name} global navigation must use the shared routes`);
       assert.equal(headerContract.primaryGlobalLink, "index.html#core", `${item.name} shared global header must retain the Core course action`);
       assert.deepEqual(headerContract.contextHrefs, ["history.html", "math.html", "global-go-observatory.html"]);
       assert.deepEqual(headerContract.contextCurrent, [item.current], `${item.name} context navigation must expose exactly one current topic`);
@@ -2822,6 +2822,50 @@ async function main() {
     }
 
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    // Entry-contract probe: follow the actual homepage links instead of
+    // navigating directly to the destination in CDP. Check the resulting
+    // first viewport as well as the existing scrolled identity contract.
+    for (const width of [1440, 375]) {
+      for (const entry of [
+        {name:"advanced",href:"advanced.html#page-top",path:"/advanced.html",heading:".advanced-header h1",action:".advanced-hero-actions .primary-button"},
+        {name:"classic",href:"classic-shapes.html#page-top",path:"/classic-shapes.html",heading:".classic-header h1",action:".classic-hero-actions .primary-button"}
+      ]) {
+        await command(socket,"Emulation.setDeviceMetricsOverride",{width,height:width===375?812:900,deviceScaleFactor:1,mobile:width===375});
+        await command(socket,"Page.navigate",{url:page});
+        let landingLinkFound=false;
+        for(let attempt=0;attempt<30;attempt++){
+          landingLinkFound=await evaluate(socket,`Boolean(document.querySelector('.landing-nav a[href=${JSON.stringify(entry.href)}]'))`);
+          if(landingLinkFound)break;
+          await delay(100);
+        }
+        assert.equal(landingLinkFound,true,entry.name+" homepage entry link missing");
+        await evaluate(socket,`document.querySelector('.landing-nav a[href=${JSON.stringify(entry.href)}]').click()`);
+        let entryLoaded=false;
+        for(let attempt=0;attempt<30;attempt++){
+          entryLoaded=await evaluate(socket,`location.pathname.endsWith(${JSON.stringify(entry.path)}) && document.readyState==="complete" && Boolean(document.querySelector(${JSON.stringify(entry.heading)}))`);
+          if(entryLoaded)break;
+          await delay(100);
+        }
+        assert.equal(entryLoaded,true,entry.name+" did not open from the homepage link");
+        const entered=await evaluate(socket,`(async()=>{
+          await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+          const title=document.querySelector(${JSON.stringify(entry.heading)}).getBoundingClientRect();
+          const action=document.querySelector(${JSON.stringify(entry.action)}).getBoundingClientRect();
+          return {url:location.href,hash:location.hash,scrollY,viewport:innerHeight,viewportWidth:innerWidth,
+            title:{top:title.top,bottom:title.bottom},action:{top:action.top,bottom:action.bottom},
+            headingInViewport:title.top>=-1 && title.top<innerHeight-1,
+            actionReachable:action.width>0 && action.height>0,
+            scrollWidth:document.documentElement.scrollWidth};
+        })()`);
+        assert.equal(entered.hash,"#page-top",entry.name+" entry must explicitly target page top");
+        assert.ok(entered.scrollY<=1,entry.name+" homepage entry restored unexpected scroll: "+JSON.stringify(entered));
+        assert.equal(entered.headingInViewport,true,entry.name+" h1 not visible on entry: "+JSON.stringify(entered));
+        assert.equal(entered.actionReachable,true,entry.name+" primary action missing: "+JSON.stringify(entered));
+        assert.ok(entered.scrollWidth<=width+1,entry.name+" entry overflow: "+JSON.stringify(entered));
+      }
+    }
+    await command(socket,"Emulation.setDeviceMetricsOverride",{width:1280,height:900,deviceScaleFactor:1,mobile:false});
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
