@@ -1,3 +1,65 @@
+## 2026-10-08｜Manual UI review follow-up
+
+〔驗證後判斷〕`assets/homepage/hero-atmosphere.svg` 仍由首頁 `<img>` 載入，截圖中淡化的棋石／景深即來自該資產；目前問題不是缺圖，重新生成也不會直接改善棋盤標記辨識，因此保留原資產並新增實際載入檢查。棋盤褐色圖形原是從保留黑棋指向白棋回應的短曲線箭頭，但它與棋子重疊、沒有圖例，合理使用者無法僅憑形狀判讀；現移除箭頭，以紅色虛線外圈標示白棋可進入的位置，並讓 caption 與 SVG description 明說同一語意。
+
+〔人工偏好整合〕Core 側欄恢復 `styles.css` 既有淺綠／紙白配色，由 browser 對實際 painted surface 重新量測文字對比；工作區大標題簡化為「悟之一手」，VT-COS 只留在同一 lockup 的小字產品描述與 metadata。此例外已同步進 `BRAND.md`，不是移除母品牌歸屬。
+
+〔參考規格取捨〕回頂元件採用提供文件中適合七個公開頁的共通機制：44×44 實心 SVG、超過兩個 viewport 才顯示、hidden 時 `aria-hidden=true`／`tabindex=-1`、safe-area、頁尾避讓、reduced-motion 與 print。沒有採用文章閱讀欄／目錄欄對齊，因七頁沒有共同的 article/TOC frame；固定 viewport inset 較簡單、可驗證且不會跨頁漂移。無 JavaScript 時原生 anchor 仍可直接回頂。
+
+〔證據邊界〕這些修改重新綁定 candidate c（asset set v16，新增共享 `back-to-top.js`）；舊 candidate 真人回條不得沿用。自動瀏覽器與對比檢查只支持工程行為，不證明真人 usability、accessibility conformance、formal evaluation validity 或 learning effect。
+
+〔本機驗證〕candidate c、完整非瀏覽器 Node、pinned Sabaki、browser UI、PowerShell smoke syntax、KaTrain autodiscovery、Edge smoke 與 repository boundary 全數 PASS；boundary 為 manifest／tracked files 355／355 exact-match。淺色側欄最低 audited contrast 已達 4.5:1，短頁未跨過兩個 viewport 時回頂控制保持 hidden。這仍不是遠端 CI、真人 usability／accessibility、merge 或 deploy 證據。
+
+## 2026-10-08｜UI contract repair（本機工程驗證 PASS）
+
+修正前提：把 Core 左側 pale pill 的空白先理解成「內容未載入」或單純留白是不成立的；來源 DOM 一直有「核心課程」文字。其後規則卻把它的前景設為近似 pale 色，舊測試又以外層深色 sidebar 當對比背景，因而沒有檢出文字在自身 surface 上近乎不可見。
+
+修正原因：這不是靠截圖推定，而是由 selector 疊加與元素自身 painted background 可反證。首頁則是 legacy fixed height 仍套用到新版 preview；因此「只把棋盤縮小」不是充分修復，容器必須能隨完整 preview 自然延展。Explore 三頁的上方導覽差異亦不是已證實的刻意設計：HTML 顯示它們先前使用不同 header 結構，且 Global 的全站／context destination 有重複。
+
+修正後判斷：Core label 現在直接以自身 pale surface 配深綠前景；首頁 preview 改 natural flow，棋盤上限收至 420px；History、Math、Global Observatory 使用同一個上層全站導覽與完整 VT-COS｜悟之一手 lockup，下層深綠列只呈現 Explore context。這是 presentation contract，沒有改動課程內容、題目、首答／重試、曝光、評分、scheduler、KC、事件、storage、formal eligibility 或歷史 learner evidence。
+
+〔反回歸範圍〕browser contract 會量測 Core label 自己的 painted surface、首頁 preview 在兩種狀態下於 320／375／760／761／900／1050／1051／1280／1440／1600／1920／1924／2560px 及 200% text 的 containment，並檢查三個 Explore 頁的全站／context link 集合、唯一 current state 與不重複 destination。人工截圖檢視只作工程視覺 sanity check，不替代 target-user usability、真人 accessibility 或學習成效證據。
+
+〔尚未由本節證明〕不同瀏覽器字型度量、真人對兩層導航的理解、螢幕閱讀器實際體驗及任何教學成效；取得這些資料後，才需要重新評估其對 usability 或正式教學 gate 的影響。
+
+〔本機驗證〕candidate b、CI-equivalent 非瀏覽器 Node contracts、pinned Sabaki oracle、browser UI regression、Edge smoke 與 repository boundary 均 PASS；boundary 為 manifest／tracked files 354／354 exact-match。這是本機工程證據，不代表 PR CI、公開部署、真人 usability／accessibility、formal teaching／evaluation 或 learning effect；本輪未 merge、push 或 deploy。
+
+## 2026-10-07｜Navigation & readability follow-up
+
+〔人工確認〕Core sidebar 的問題不是字體本身，而是 `styles.css` 後期「淺 sidebar」規則與目前 `experience-system.css` 深色正式 presentation 並存；任務類型與進階資料區的 `#294536`、`#315b3f`、`#556f5a` 等色落在深綠背景時只有約 1.4–2.6:1，與截圖中「很難看清／近乎消失」一致。正式層現直接覆寫受影響 strong/small/intro/label 色，不改 DOM 或 learner state；新增 browser computed contrast gate，受影響文字最低要求 4.5:1。
+
+〔人工確認〕Global Observatory 原 `.site-header` 只是普通 flow，`.experience-context-nav` 卻假設上方存在 68px sticky header，因此向下捲動後主 header 消失。desktop 現改為 sticky top 0；context nav 保持在其下。mobile 仍維持較簡單的 static header + top-sticky context nav，避免堆兩層佔掉小螢幕高度。browser 會實際 scroll 後量測 header top 與兩層 nav 邊界。
+
+〔功能新增〕七個正式 public product surfaces（首頁、Advanced、Classic Shapes、History、Math、Global Observatory、Live Game）都加入原生 anchor 型回頂按鈕；不依賴 JavaScript，44px 以上、右下固定、具 `aria-label`，並尊重 reduced-motion。browser 逐頁驗證唯一、位置、target 與實際回到頁頂。這只支持工程可讀性與導航行為，不等於真人 accessibility／usability 已通過。
+
+## 2026-10-07｜Homepage manual follow-up FINAL
+
+兩個人工回報問題已納入 regression 並完成工程閉環：trust row 的舊負 offset 箭頭已移除；四步方法卡取消固定高度與作者硬 `<br>`，文案依可用欄寬自然換行，卡間箭頭縮小並留在 gap。PR #147 run #966 的 Windows browser suite 已在 1142／1229 等問題寬度確認 trust connector 不再生成、四卡文字都留在各自 card bounding box 內，且全頁無水平 overflow；同一套七頁 production geometry matrix、Edge smoke、repository boundary、Node 與 Sabaki 亦全部 PASS。未觀察到其他六個正式頁面出現同型自動化 failure；這不取代使用者逐頁人工視覺檢視，也不構成真人 usability／accessibility 證據。
+
+## 2026-10-07｜Homepage manual follow-up：trust arrow / method-card overflow
+
+〔人工確認〕兩張實際首頁截圖揭露先前自動 gate 未覆蓋的次層問題：① trust row 的舊 mockup `::before` 箭頭使用負向 left offset，直接壓在左側文字附近；② 四步方法卡以固定高度配合手動 `<br>`，第二卡文案超出卡片下緣。這兩者都不是 document horizontal overflow，因此舊 scrollWidth／Hero sibling PASS 無法否定。
+
+〔修正〕trust connector 箭頭移除；方法文案移除硬斷行，卡片改 `height:auto`＋保留最低視覺高度，標題允許自然換行；卡片間流程箭頭縮小並置於 gap 中，不再侵入文字區。沒有用 hidden text、裁切文字或縮小到不可讀來取得 PASS。
+
+〔反回歸〕首頁 responsive matrix 擴至 320／390／760／768／1024／1142／1229／1280／1440／1600／1920／2560；browser 直接確認 trust pseudo connector 不存在、method strong/p 都落在各自 card rectangle 內、method paragraph 不再含 forced `br`。同一 PR 的七頁 production geometry suite 亦覆蓋 Advanced、Classic、History、Math、Global Observatory、Live；run #958 未再發現相同 overflow／collision。這仍是工程／幾何證據，不等於真人閱讀品質已驗證。
+
+## 2026-10-07｜Full-site production geometry audit v1 revalidation
+
+PR #147 的第一輪 browser gate 沒有只驗證首頁：run #943 在 Advanced 1280px 發現 `scrollWidth=1548`，heading 本身未裁切、左右主要欄也未碰撞，真正來源是 route map 的純裝飾絕對定位線條超出自身容器。這是新 geometry matrix 找到的相鄰盲點。修正只對 `.advanced-route-map` 加 `overflow: clip`，不隱藏互動控制、不改 route cards 位置或內容。
+
+run #944 實際 Windows 結果：7 個正式 presentation surface 的新增 UI geometry gate PASS；Edge smoke PASS；KaTrain autodiscovery PASS；repository boundary PASS；Sabaki SGF oracle PASS。Node 唯一 FAIL 是修改 `experience-system.css` 後舊 frozen candidate fingerprint 不一致，屬預期 fail-closed。現已重凍 `formal-teaching-candidate-2026-10-07-a`／`fnv1a32-js16-e721ca03`（asset set v13），需再跑完整 CI 才可把工程狀態升為 PASS。真人 usability／實際 screen reader／learning effect 不由此建立。
+
+## 2026-10-07｜Full-site production geometry audit v1（進行中）
+
+〔已確認〕使用者 1924×967 實際畫面顯示首頁 Hero 標題侵入右側互動預覽。現有 responsive test 雖覆蓋 1920px，但主要以 document scrollWidth 判斷；兩個元素都留在 viewport 內時仍可能彼此碰撞，因此舊 PASS 不能證明無重疊。
+
+〔根因候選已實作修正〕正式 `experience-system.css` 同時存在 1240px 內容封頂、首頁雙欄 Hero、viewport-based 大標字級，以及共用 `.title-line { white-space: nowrap; }`。本分支將共用 title-line 改回自然換行，首頁 Hero 字級最大值由 5.35rem 收斂至 4.6rem 並讓 heading 使用自身欄寬；不使用 margin／z-index 掩蓋碰撞。
+
+〔反回歸〕`tests/ui.test.cjs` 新增 production geometry matrix：首頁、Advanced、Classic、History、Math、Global Observatory、Live 分別在 375／760／1280／1440／1600／1920／2560 及 200% text 檢查 heading clipping、水平 overflow，以及指定 Hero 左右 sibling 的實際 bounding-box collision。這項 gate 專門補足 scrollWidth 無法證明 sibling separation 的盲點。
+
+〔狀態〕JavaScript syntax 靜態解析 PASS；完整 Edge／Windows browser suite 尚待實際執行，因此本輪仍是 `IMPLEMENTED / PENDING_BROWSER_REVALIDATION`，不能宣稱全站重疊問題已修復。正式 candidate 暫不重凍；若任一頁新 gate FAIL，回到該 page-scoped selector 做最小修正，不用全域隱藏或固定高度換取 PASS。
+
 ## 2026-10-05｜Award Presentation v1（local formal promotion）
 
 修正前提：使用者的「盡量不捲動」不等於可裁掉資訊，也不能用 global nowrap 製造新的溢位。新增 `experience-system.css` 作 page-scoped presentation layer：短首頁 Hero 只在寬螢幕保留作者指定行；動態題目、多語名型與 Explore 長標題採 `text-wrap: balance`、`line-break: strict`、合理欄寬與自然換行。Explore／Advanced／Live／Classic 用同一套紙色、深綠、金色、焦點與 reduced-motion 規則，仍保留各頁現有 DOM、控制與 runtime authority。短桌機只收斂無資訊空白，保持 natural document flow；不新增固定高度、第二個 detail scroll 或內容隱藏。首頁的「三入口」與「四步方法」改為對流程與可比較紀錄的描述，移除未被證實的個人學習成效承諾。Core candidate 重凍為 `formal-teaching-candidate-2026-10-05-a`／`fnv1a32-js16-82443b6a`，asset set v11；舊真人回條不得沿用，歷史事件／`uiVersion` 不變。rollback 是本機 pre-promotion snapshot 的指定正式檔還原；本輪工程／視覺檢查不能取代 target novice、screen-reader、formal teaching/evaluation 或 learning-effect evidence。

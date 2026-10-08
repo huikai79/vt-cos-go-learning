@@ -18,7 +18,7 @@ a { color: #175542; text-underline-offset: 3px; }
 a:focus-visible, button:focus-visible { outline: 3px solid #c99c43; outline-offset: 3px; }
 .skip-link { position: fixed; left: 16px; top: -80px; z-index: 99; background: #fff; padding: 10px 14px; border-radius: 8px; }
 .skip-link:focus { top: 16px; }
-.site-header { max-width: 1180px; margin: 0 auto; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.site-header { position: sticky; top: 0; z-index: 30; max-width: none; min-height: 68px; margin: 0; padding: 10px max(24px, calc((100vw - 1180px) / 2)); display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--line); background: rgba(255,253,247,.96); box-shadow: 0 8px 28px rgba(13,42,34,.06); backdrop-filter: blur(14px); }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 1.05rem; }
 .brand span { letter-spacing: -3px; color: var(--green); }
 .site-header nav { display: flex; align-items: center; gap: 18px; }
@@ -80,7 +80,8 @@ footer p { margin: 5px 0; }
   .sources ol { columns: 1; }
 }
 @media (max-width: 560px) {
-  .site-header { padding: 16px 18px; flex-direction: column; }
+  .site-header { position: static; padding: 16px 18px; flex-direction: column; }
+  .experience-context-nav { top: 0; }
   .site-header nav { width: 100%; justify-content: flex-start; }
   main { padding: 0 18px 56px; }
   .hero { min-height: 0; padding: 42px 0; }

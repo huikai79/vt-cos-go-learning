@@ -27,7 +27,7 @@
   <meta name="twitter:image" content="https://huikai.com.kg/vt-cos-go-learning/og-wu-zhi-yi-shou-v2.jpg">
   <title>VT-COS｜悟之一手｜從零開始到進階的互動圍棋學習</title>
   <link rel="stylesheet" href="styles.css?v=learner-workspace-v70">
-  <link rel="stylesheet" href="experience-system.css?v=award-experience-v2">
+  <link rel="stylesheet" href="experience-system.css?v=award-experience-v4">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="phase2-foundation-bank.js"></script>
@@ -43,13 +43,14 @@
   <script defer src="live-evidence.js?v=live-evidence-v1"></script>
   <script defer src="learner-progress.js?v=learner-evidence-progress-v2"></script>
   <script defer src="homepage-experience.js?v=award-experience-v2"></script>
+  <script defer src="back-to-top.js?v=back-to-top-v1"></script>
   <script defer src="app.js?v=learner-workspace-v70"></script>
 </head>
-<body class="learning-page">
+<body class="learning-page" id="page-top">
   <a class="skip-link" href="#learning-main">跳到目前題目</a>
   <div class="app-shell">
     <aside class="sidebar">
-      <div class="brand"><span class="brand-mark" aria-hidden="true">●○</span><span>悟之一手<small>VT-COS · 個人圍棋練習</small></span></div>
+      <div class="brand"><span class="brand-mark experience-mark" aria-hidden="true"><i></i></span><span>悟之一手<small>VT-COS · 個人圍棋練習</small></span></div>
       <button class="sidebar-home-button" id="sidebar-home-button" type="button">⌂ <span>首頁</span></button>
       <div class="side-label">核心課程</div>
       <div class="current-course-context" aria-label="目前課程位置">
@@ -196,11 +197,11 @@
       <section class="site-introduction" id="site-introduction" aria-labelledby="site-introduction-title" hidden>
         <header class="landing-header" aria-label="悟之一手首頁導覽">
           <div class="landing-header-inner">
-            <a class="landing-brand" href="#site-introduction" aria-label="悟之一手首頁">
-              <span class="landing-brand-mark" aria-hidden="true"><i></i></span>
+            <a class="landing-brand" href="#site-introduction" aria-label="VT-COS｜悟之一手首頁">
+              <span class="landing-brand-mark experience-mark" aria-hidden="true"><i></i></span>
               <span class="landing-brand-copy">
-                <strong>悟之一手</strong>
-                <small>VT-COS｜學習引擎底盤</small>
+                <strong>VT-COS｜悟之一手</strong>
+                <small>個人圍棋學習</small>
               </span>
             </a>
             <div class="landing-header-tools">
@@ -247,11 +248,10 @@
               <div class="home-preview-board-shell">
                 <svg class="home-preview-board" viewBox="0 0 480 480" role="img" aria-labelledby="home-preview-board-title home-preview-board-desc">
                   <title id="home-preview-board-title">九路棋盤合成預覽</title>
-                  <desc id="home-preview-board-desc">切換後會保留黑棋第一次選點，並顯示可觀察後果與規則理由。這不是正式題目。</desc>
+                  <desc id="home-preview-board-desc">切換後會保留黑棋第一次選點，紅色外圈標示白棋可由右側進入的位置，並顯示可觀察後果與規則理由。這不是正式題目。</desc>
                   <defs>
                     <radialGradient id="home-preview-black"><stop offset="0" stop-color="#40514a"/><stop offset=".52" stop-color="#14251f"/><stop offset="1" stop-color="#07100d"/></radialGradient>
                     <radialGradient id="home-preview-white"><stop offset="0" stop-color="#fffef9"/><stop offset=".72" stop-color="#f2eee5"/><stop offset="1" stop-color="#c5c2b8"/></radialGradient>
-                    <marker id="home-preview-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#a84f32"/></marker>
                   </defs>
                   <rect x="10" y="10" width="460" height="460" rx="22" class="home-preview-wood"/>
                   <path class="home-preview-grid" d="M60 60H420M60 105H420M60 150H420M60 195H420M60 240H420M60 285H420M60 330H420M60 375H420M60 420H420M60 60V420M105 60V420M150 60V420M195 60V420M240 60V420M285 60V420M330 60V420M375 60V420M420 60V420"/>
@@ -259,7 +259,7 @@
                   <g fill="url(#home-preview-black)"><circle cx="105" cy="150" r="20"/><circle cx="105" cy="195" r="20"/><circle cx="105" cy="240" r="20"/><circle cx="105" cy="285" r="20"/><circle cx="150" cy="330" r="20"/><circle cx="195" cy="285" r="20"/><circle cx="285" cy="195" r="20"/></g>
                   <g fill="url(#home-preview-white)" stroke="#aaa69b"><circle cx="150" cy="150" r="20"/><circle cx="195" cy="150" r="20"/><circle cx="240" cy="195" r="20"/><circle cx="330" cy="240" r="20"/><circle cx="285" cy="330" r="20"/><circle cx="240" cy="330" r="20"/></g>
                   <g class="home-preview-before"><circle class="home-preview-choice" cx="195" cy="240" r="27"/><circle class="home-preview-choice-dot" cx="195" cy="240" r="8"/></g>
-                  <g class="home-preview-after"><circle cx="195" cy="240" r="20" fill="url(#home-preview-black)"/><circle cx="240" cy="240" r="20" fill="url(#home-preview-white)" stroke="#aaa69b"/><circle class="home-preview-first-ring" cx="195" cy="240" r="29"/><path class="home-preview-causal-path" d="M209 226C222 211 237 210 247 222" marker-end="url(#home-preview-arrow)"/></g>
+                  <g class="home-preview-after"><circle cx="195" cy="240" r="20" fill="url(#home-preview-black)"/><circle cx="240" cy="240" r="20" fill="url(#home-preview-white)" stroke="#aaa69b"/><circle class="home-preview-first-ring" cx="195" cy="240" r="29"/><circle class="home-preview-response-ring" cx="240" cy="240" r="29"/></g>
                 </svg>
               </div>
               <figcaption class="home-preview-caption">
@@ -271,7 +271,7 @@
                 <div class="home-preview-after">
                   <span>01 · 原選點已保留</span>
                   <strong>兩塊空間仍共用同一個破壞點</strong>
-                  <small>白棋可由右側進入；回到內部空點重新計算。</small>
+                  <small>紅色外圈標示白棋可由右側進入的位置；回到內部空點重新計算。</small>
                 </div>
               </figcaption>
               <button class="home-preview-toggle" type="button" data-home-preview-toggle aria-pressed="false" aria-describedby="home-preview-boundary">
@@ -373,13 +373,13 @@
                 <span class="evidence-step">1</span>
                 <img class="intro-evidence-image" src="assets/homepage/evidence-first.webp" alt="" aria-hidden="true" width="360" height="315" loading="lazy">
                 <strong>先自己做</strong>
-                <p>先思考再落子，<br>培養獨立思考的習慣。</p>
+                <p>先思考再落子，培養獨立思考的習慣。</p>
               </article>
               <article>
                 <span class="evidence-step">2</span>
                 <img class="intro-evidence-image" src="assets/homepage/evidence-feedback.webp" alt="" aria-hidden="true" width="95" height="73" loading="lazy">
                 <strong>看清楚問題</strong>
-                <p>對照解析，再看關鍵點，<br>知道自己為什麼錯、<br>下次怎麼做。</p>
+                <p>對照解析，再看關鍵點，知道自己為什麼錯、下次怎麼做。</p>
               </article>
               <article>
                 <span class="evidence-step">3</span>
@@ -645,5 +645,6 @@
     </div>
   </dialog>
   <noscript><p class="noscript-note">這個練習需要啟用 JavaScript 才能顯示題目與保存進度。</p></noscript>
+  <a class="back-to-top" href="#page-top" aria-label="回到頁面頂端" title="回到頁面頂端"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 5 12l2 2 3.5-3.5V20h3v-9.5L17 14l2-2-7-7Z"/></svg></a>
 </body>
 </html>

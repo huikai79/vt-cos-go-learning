@@ -13,7 +13,8 @@ test("圍棋 × 數學頁維持 Explore-only，不接 learner runtime", () => {
   assert.match(html, /本頁不寫入學習進度、不更新能力模型或複習排程/);
   assert.doesNotMatch(html, /src="(?:app|scheduler|learner-progress|learning-metrics|practice-events|live-evidence)\.js/);
   assert.doesNotMatch(html, /localStorage/);
-  assert.doesNotMatch(html, /<script\b/i);
+  const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"[^>]*><\/script>/gi)].map((match) => match[1]);
+  assert.deepEqual(scripts, ["back-to-top.js?v=back-to-top-v1"]);
   assert.match(record, /learner_runtime_authority: none/);
   assert.match(record, /promotion_decision: do_not_promote_to_core/);
 });

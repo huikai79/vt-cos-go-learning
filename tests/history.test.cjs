@@ -71,11 +71,12 @@ test("歷史來源頁明示傳世文本限制、查核日期，且不保留未�
   assert.doesNotMatch(html, /唐代圍棋子材料分析/);
 });
 
-test("所有新分頁外部連結都使用 noreferrer，歷史頁沒有 runtime script", () => {
+test("所有新分頁外部連結都使用 noreferrer，歷史頁只載入共用回頂 script", () => {
   const externalTargets = [...html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)].map((match) => match[0]);
   assert.ok(externalTargets.length >= 10);
   assert.ok(externalTargets.every((tag) => /rel="[^"]*noreferrer[^"]*"/.test(tag)));
-  assert.doesNotMatch(html, /<script\b/i);
+  const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"[^>]*><\/script>/gi)].map((match) => match[1]);
+  assert.deepEqual(scripts, ["back-to-top.js?v=back-to-top-v1"]);
   assert.match(html, /history\.css\?v=history-explore-v6/);
 });
 
