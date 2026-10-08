@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-08-d",
-  "frozenAt": "2026-10-08T06:50:00.000Z",
-  "assetSetVersion": 17,
-  "assetFingerprint": "fnv1a32-js16-9136a667",
+  "candidateId": "formal-teaching-candidate-2026-10-08-e",
+  "frozenAt": "2026-10-08T07:52:00.000Z",
+  "assetSetVersion": 18,
+  "assetFingerprint": "fnv1a32-js16-8786b115",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -45,5 +45,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "Based strictly on review worktree HEAD 5628c60327a3c411d9f991c53467f6be0994412f; preserve prior Core light sidebar, Explore shared navigation, homepage preview flow, revised stone annotation and seven-page back-to-top.js progressive visibility and footer avoidance. Presentation-only follow-up enlarges decorative hero-atmosphere.svg rendering, preserving original SVG intrinsic 941:383 aspect ratio; all existing back-to-top anchors now use native smooth scroll, with prefers-reduced-motion:reduce fallback to instant scroll. No learner event, rules, scoring, scheduler, evaluation, or content semantics changed. Prior formal candidate receipts cannot transfer; remote CI and human visual inspection remain required."
+  "scopeNote": "2026-10-08 Homepage layout follow-up, based on review HEAD 5628c603: remove outdated atmospheric photo element from redesigned hero (retain asset for rollback), use subtle CSS radial wash; arrange three learning-entry category chips in one row at desktop widths without changing text; maintain native smooth back-to-top and reduced-motion fallback, previous Core/Explore/preview contracts, versioned candidate v18. Does not change scoring, events, scheduler, rules, formal evaluation or exposure. CI and visual review required; past receipts not transferable."
 }
