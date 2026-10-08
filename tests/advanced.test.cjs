@@ -263,7 +263,7 @@ test("進階 event store 遇到損壞資料 fail closed，不猜測修復", () =
 
 
 test("核心課程提供獨立進階訓練入口，不偽裝成第 16 單元", () => {
-  assert.match(indexHtml, /href="advanced\.html">進階訓練</);
+  assert.match(indexHtml, /href="advanced\.html#page-top">進階訓練</);
   assert.match(indexHtml, /15 單元核心課程/);
   assert.match(html, /這不是第 16 單元/);
 });
