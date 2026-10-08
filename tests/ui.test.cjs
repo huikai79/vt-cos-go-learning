@@ -2822,6 +2822,50 @@ async function main() {
     }
 
     await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    // Entry-contract probe: follow the actual homepage links instead of
+    // navigating directly to the destination in CDP. Check the resulting
+    // first viewport as well as the existing scrolled identity contract.
+    for (const width of [1440, 375]) {
+      for (const entry of [
+        {name:"advanced",href:"advanced.html",path:"/advanced.html",heading:".advanced-header h1",action:".advanced-hero-actions .primary-button"},
+        {name:"classic",href:"classic-shapes.html",path:"/classic-shapes.html",heading:".classic-header h1",action:".classic-hero-actions .primary-button"}
+      ]) {
+        await command(socket,"Emulation.setDeviceMetricsOverride",{width,height:width===375?812:900,deviceScaleFactor:1,mobile:width===375});
+        await command(socket,"Page.navigate",{url:page});
+        let landingLinkFound=false;
+        for(let attempt=0;attempt<30;attempt++){
+          landingLinkFound=await evaluate(socket,`Boolean(document.querySelector('.landing-nav a[href=${JSON.stringify(entry.href)}]'))`);
+          if(landingLinkFound)break;
+          await delay(100);
+        }
+        assert.equal(landingLinkFound,true,entry.name+" homepage entry link missing");
+        await evaluate(socket,`document.querySelector('.landing-nav a[href=${JSON.stringify(entry.href)}]').click()`);
+        let entryLoaded=false;
+        for(let attempt=0;attempt<30;attempt++){
+          entryLoaded=await evaluate(socket,`location.pathname.endsWith(${JSON.stringify(entry.path)}) && document.readyState==="complete" && Boolean(document.querySelector(${JSON.stringify(entry.heading)}))`);
+          if(entryLoaded)break;
+          await delay(100);
+        }
+        assert.equal(entryLoaded,true,entry.name+" did not open from the homepage link");
+        const entered=await evaluate(socket,`(async()=>{
+          await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+          const title=document.querySelector(${JSON.stringify(entry.heading)}).getBoundingClientRect();
+          const action=document.querySelector(${JSON.stringify(entry.action)}).getBoundingClientRect();
+          return {url:location.href,hash:location.hash,scrollY,viewport:innerHeight,viewportWidth:innerWidth,
+            title:{top:title.top,bottom:title.bottom},action:{top:action.top,bottom:action.bottom},
+            headingInViewport:title.top>=-1 && title.top<innerHeight-1,
+            actionReachable:action.width>0 && action.height>0,
+            scrollWidth:document.documentElement.scrollWidth};
+        })()`);
+        assert.equal(entered.hash,"",entry.name+" plain entry unexpectedly has a hash");
+        assert.ok(entered.scrollY<=1,entry.name+" homepage entry restored unexpected scroll: "+JSON.stringify(entered));
+        assert.equal(entered.headingInViewport,true,entry.name+" h1 not visible on entry: "+JSON.stringify(entered));
+        assert.equal(entered.actionReachable,true,entry.name+" primary action missing: "+JSON.stringify(entered));
+        assert.ok(entered.scrollWidth<=width+1,entry.name+" entry overflow: "+JSON.stringify(entered));
+      }
+    }
+    await command(socket,"Emulation.setDeviceMetricsOverride",{width:1280,height:900,deviceScaleFactor:1,mobile:false});
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
