@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-08-h",
-  "frozenAt": "2026-10-08T15:15:00.000Z",
-  "assetSetVersion": 21,
-  "assetFingerprint": "fnv1a32-js16-a5906efb",
+  "candidateId": "formal-teaching-candidate-2026-10-08-i",
+  "frozenAt": "2026-10-08T16:05:00.000Z",
+  "assetSetVersion": 22,
+  "assetFingerprint": "fnv1a32-js16-b78d5876",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -45,5 +45,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "2026-10-08 V3 real-entry browser falsification reproduced Advanced opening from homepage at scrollY=707 with heading above viewport. Cross-page links to Advanced/Classic now explicitly target native #page-top, without overriding browser history restoration globally; Classic atlas hash mode preserves atlas for #page-top and recognizes #classic-atlas-title. Negative tests cover actual link navigation and hash mode. No scoring, first-response, retry, exposure, event, KC, scheduler, formal evaluation or learning-state write changed. Human visual usability still pending; old candidate receipts cannot transfer."
+  "scopeNote": "On user screenshot review, History/Math redundant secondary Hero buttons replaced with plain editorial section TOCs for previously hard-to-find material. CSS adds scroll-margin and focus visibility. No research-claim semantic change; formal candidate rebinding because shared CSS changed. Prototype parity remains PARTIAL; real UX/unseen learning not measured. All prior candidate receipts invalid."
 }

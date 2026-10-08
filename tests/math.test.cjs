@@ -79,3 +79,13 @@ test("一般讀者文案不散落研究英文術語", () => {
   }
   assert.match(html, /PSPACE-hard/);
 });
+
+
+test("Math 首屏不重複介紹右側關係卡，重要閱讀章節皆可直接抵達",()=>{
+  assert.doesNotMatch(html,/class="secondary-link" href="#boundary"/);
+  for(const id of ["mapping","sources"]){
+    assert.ok(html.includes('href="#'+id+'"'));
+    assert.match(html,new RegExp('<section[^>]*id="'+id+'"'));
+  }
+  assert.match(html,/nav class="explore-reading-index" aria-label="數學頁面章節目錄"/);
+});
