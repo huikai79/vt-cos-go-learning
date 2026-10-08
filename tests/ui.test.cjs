@@ -2745,7 +2745,7 @@ async function main() {
       assert.equal(headerContract.headerCount, 1, `${item.name} must expose one shared Explore global header`);
       assert.equal(headerContract.wordmark, "VT-COS｜悟之一手", `${item.name} first visible product lockup is incomplete`);
       assert.equal(headerContract.globalLabel, "全站導覽");
-      assert.deepEqual(headerContract.globalLinks, ["index.html", "index.html#core", "advanced.html"], `${item.name} global navigation must use the shared routes`);
+      assert.deepEqual(headerContract.globalLinks, ["index.html", "index.html#core", "advanced.html#page-top"], `${item.name} global navigation must use the shared routes`);
       assert.equal(headerContract.primaryGlobalLink, "index.html#core", `${item.name} shared global header must retain the Core course action`);
       assert.deepEqual(headerContract.contextHrefs, ["history.html", "math.html", "global-go-observatory.html"]);
       assert.deepEqual(headerContract.contextCurrent, [item.current], `${item.name} context navigation must expose exactly one current topic`);
