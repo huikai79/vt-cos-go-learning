@@ -2577,6 +2577,23 @@ async function main() {
         }
       }
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+      const smoothScrollContract = await evaluate(socket, `(() => ({
+        behavior: getComputedStyle(document.documentElement).scrollBehavior,
+        image: document.querySelector('.intro-hero-atmosphere') ? (() => {
+          const image = document.querySelector('.intro-hero-atmosphere');
+          const style = getComputedStyle(image);
+          return {width: image.getBoundingClientRect().width, naturalHeight: style.height === 'auto' || image.getBoundingClientRect().height > 0, objectFit: style.objectFit};
+        })() : null
+      }))()`);
+      assert.equal(smoothScrollContract.behavior, "smooth", `${item.name} should use native smooth scrolling`);
+      if (smoothScrollContract.image) {
+        assert.ok(smoothScrollContract.image.width >= 700, `home atmospheric artwork remained too small: ${JSON.stringify(smoothScrollContract.image)}`);
+        assert.equal(smoothScrollContract.image.objectFit, "contain");
+      }
+      await command(socket, "Emulation.setEmulatedMedia", { features: [{name:"prefers-reduced-motion", value:"reduce"}] });
+      const reducedTopBehavior = await evaluate(socket, "getComputedStyle(document.documentElement).scrollBehavior");
+      assert.equal(reducedTopBehavior, "auto", `${item.name} reduced-motion top link should jump immediately`);
+      await command(socket, "Emulation.setEmulatedMedia", { features: [{name:"prefers-reduced-motion", value:"no-preference"}] });
       const backToTopBehavior = await evaluate(socket, `(async () => {
         document.documentElement.style.scrollBehavior = 'auto';
         scrollTo(0, document.documentElement.scrollHeight);
