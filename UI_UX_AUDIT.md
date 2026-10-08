@@ -1,3 +1,5 @@
+2026-10-08 user screenshot UX review：History／Math 右側首屏已見 evidence／boundary 說明卡，因此 Hero 第二顆按鈕指向同卡屬低增益；移除次要按鈕，改簡潔非按鈕型本頁章節目錄。History 新增 #transitions／#frontier／#sources 正式錨點，Math 沿用 #mapping／#sources；sticky clearance 與 focus-visible 受共用 CSS 管理，增加 HTML regression。Explore prototype W1–W6 有 evidence lens／math relation layer／G2–G5 路徑／profile filter 互動，正式版目前大多是靜態閱讀卡，故 prototype parity 判定 PARTIAL/NOT_VERIFIED，不准宣稱等價；使用者反映 Advanced／Classic 本機依然看不到頁首，先前 CI #1045 的 file URL 路徑仍不足以證明本機所有進入流程。正式候選重凍 formal-teaching-candidate-2026-10-08-i／fnv1a32-js16-b78d5876 asset set v22，舊回條不可沿用；此輪不改外部研究結論、learner state 或 scoring。待新 CI／本機 HEAD 截圖／prototype W2–W6 行為驗收，不 merge、deploy，formal evaluation BLOCKED，learning effect NOT_MEASURED。
+
 ## 2026-10-08｜Prototype-to-production W1–W6 scope map (v3)
 
 來源：`design-candidates/03 advanced-live-a1/prototype.html` 與 `design-candidates/04 classic-shapes-a1/prototype.html`、正式 `advanced.html`／`classic-shapes.html`／`live-game.html`。以下狀態僅表示可從 source 識別對應畫面或入口；沒有對各 W2–W6 宣稱行為完全等價，也不把 prototype review-tabs 當成 production 功能。
