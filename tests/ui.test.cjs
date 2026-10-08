@@ -2594,6 +2594,7 @@ async function main() {
         }
       }
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+      await command(socket, "Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
       const motionContract = await evaluate(socket, `(() => {
         const art = document.querySelector('.intro-hero-atmosphere');
         const bounds = art?.getBoundingClientRect();
