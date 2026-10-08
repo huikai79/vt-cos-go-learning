@@ -1,3 +1,24 @@
+## 2026-10-08｜Prototype-to-production W1–W6 scope map (v3)
+
+來源：`design-candidates/03 advanced-live-a1/prototype.html` 與 `design-candidates/04 classic-shapes-a1/prototype.html`、正式 `advanced.html`／`classic-shapes.html`／`live-game.html`。以下狀態僅表示可從 source 識別對應畫面或入口；沒有對各 W2–W6 宣稱行為完全等價，也不把 prototype review-tabs 當成 production 功能。
+
+| Prototype | 正式對應／實際落點 | 狀態與尚缺證據 |
+|---|---|---|
+| Advanced W1：選線入口 | `advanced.html` 的 Hero、`#advanced-track-title`、`#advanced-track-list` | PARTIAL：頁面入口存在，source 不能證明真人能立即辨識；本輪真連結首屏與路由工程測試 PASS |
+| Advanced W2：讀棋作答 | `#advanced-title`、`#advanced-choices`、`#advanced-demo-board` | PARTIAL：有正式作答與示意元件，未逐步比對 prototype 所有 reveal／next 同屏行為 |
+| Advanced W3：棋譜複盤 | `#decision-review-title`／decision-review 控制與棋盤 | PARTIAL：對應工作區存在，尚需逐步核對 prototype 複盤流程與資料權限 |
+| Advanced W4：開局設定 | `live-game.html` 的完整對局入口／設定 | NOT_VERIFIED：非 `advanced.html` 單頁模式；尚未完成兩者整合等價測試 |
+| Advanced W5：對局進行 | `live-game.html` 現有棋盤與匯入／匯出功能 | NOT_VERIFIED：不得因有棋盤即宣稱同 prototype 對局行為 |
+| Advanced W6：終局確認 | `live-game.html` 對局結束相關流程 | NOT_VERIFIED：需另查雙方確認、計分和異常狀態 |
+| Classic W1：名型入口 | `classic-shapes.html` Hero、`#practice`／`#atlas` | PARTIAL：入口與兩模式存在，真連結首屏測試 PASS |
+| Classic W2：尋找題組 | `.classic-practice-jumps`／各題族錨點 | PARTIAL：描述性直接入口存在，不能冒稱已實現 prototype 篩選／分頁 |
+| Classic W3：第一手作答 | `#classic-title`、`#classic-board` 與 feedback | PARTIAL：runtime 已有單題落子，未完成與 prototype 全操作同屏對照 |
+| Classic W4：揭形 | `#classic-reveal` 及其他題族 reveal | PARTIAL：有揭名元件，揭露條件仍以原本 scoring/item contract 為準 |
+| Classic W5：混合辨形 | `#contrast-practice-title`／相關題族 | PARTIAL：結構對應，尚未完成 prototype 6 題狀態逐項比對 |
+| Classic W6：多語圖鑑 | `#atlas` 與 `classic-shapes-mode.js` | PARTIAL：模式及來源對照頁存在；本輪修正 #page-top 不得切換 atlas，尚待真人導航檢視 |
+
+已證實瓶頸不是缺少更多 sticky bar，而是從真正首頁入口進入 Advanced 時，CI 曾觀察到 `scrollY=707` 且 h1 在 viewport 上方。修正選擇 `href="advanced.html#page-top"`／`href="classic-shapes.html#page-top"`，保留使用者回上一頁的瀏覽器還原，且圖鑑 #page-top 保留 mode。修復前反證與修後 CI #1042 為工程證據，不外推整套 prototype 移植完成、真人可用性、正式評量或學習效益。必要人工下一步僅檢查實際入口首屏、返回/前進、hash 跳轉、手機狀態及兩頁任務可辨識程度。
+
 2026-10-08 V3 real-route negative probe：新的 CI Windows Edge 從 index.html 實際點擊 Advanced 連結（非 Page.navigate）重現 scrollY=707，標題 rect.top=-437，URL 無 hash，確定上一輪只新增固定分區導覽並未修復首次進入位置。最小修正：所有正式頁跨頁通往 advanced.html／classic-shapes.html 的一般入口加上 #page-top native anchor，保留 user-triggered back/forward scroll restoration；沒有引入全域 scrollTo。另發現 classic-shapes-mode.js 在 atlas 狀態點回頂（#page-top）會不當改成 practice，且 #classic-atlas-title 深連結被錯讀；已以純 URL/UI mode 邏輯修正，新增 unit negative test。新版 browser regression 從首頁真連結檢查 desktop/mobile entry scroll、heading 與 CTA、沒有 overflow；W1–W6 prototype 比較仍只作設計參考，並不宣稱全部移植。更新 critical candidate formal-teaching-candidate-2026-10-08-h／fnv1a32-js16-a5906efb asset-set v21，舊回條不可沿用。完整新 CI 與使用者人工驗收待定，正式教學／評量 BLOCKED，學習效果 NOT_MEASURED；未 merge/deploy。
 
 2026-10-08 Practice navigation correction v2：使用者人工驗收 FAIL：先前 PR #150 只在既有 topbar 內新增小型頁名，無明顯可見的頁面辨識改善。新修正將兩頁的當前頁名與實際操作路徑改為獨立深綠色 sticky section bar，位於全站導覽正下方，Advanced 含訓練選線／讀棋題目／資料，Classic 含棋形練習／選擇棋形／多語圖鑑；可從 section bar 返回 #page-top，並保留 Hero、原練習／首答／評分／事件／曝光契約。新增相應 UI 測試，重凍 formal-teaching-candidate-2026-10-08-g／fnv1a32-js16-932cde63（asset set v20），舊回條不可沿用；等待遠端 Windows UI、Node、Sabaki、boundary 以及人工視覺驗收。此工程變更不解除 formal evaluation BLOCKED 或 learning effect NOT_MEASURED。
