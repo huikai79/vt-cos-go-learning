@@ -17,6 +17,12 @@ test("世界名型館預設進 practice，#atlas 才切圖鑑",()=>{
   assert.equal(Mode.modeFromHash("#bent-three-practice-title"),Mode.MODES.PRACTICE);
 });
 
+test("回到頁首不應切換圖鑑模式，圖鑑深連結應進入正確模式",()=>{
+  assert.equal(Mode.modeFromHash("#page-top",Mode.MODES.ATLAS),Mode.MODES.ATLAS);
+  assert.equal(Mode.modeFromHash("#classic-atlas-title",Mode.MODES.PRACTICE),Mode.MODES.ATLAS);
+  assert.equal(Mode.modeFromHash("#classic-practice-mode-title",Mode.MODES.ATLAS),Mode.MODES.PRACTICE);
+});
+
 test("practice 與 atlas 是同頁 sibling modes，不再靠長頁捲動抵達",()=>{
   assert.match(html,/data-classic-mode-link="practice"/);
   assert.match(html,/data-classic-mode-link="atlas"/);
