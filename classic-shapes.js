@@ -1349,7 +1349,7 @@
     $("classic-cursor-status").textContent = "游標：第 " + (cy0 + 1) + " 行，第 " + (cx0 + 1) + " 列";
   }
 
-  function render() {
+  function render({ focusTitle = false } = {}) {
     const problem = problems[stage];
     const meta = stageMeta[stage];
     solved = false;
@@ -1371,7 +1371,7 @@
       item.classList.toggle("done", index < stage);
     });
     renderBoard();
-    $("classic-title").focus();
+    if (focusTitle) $("classic-title").focus();
   }
 
   function attempt(x, y) {
@@ -1826,7 +1826,7 @@
     if (!solved) return;
     if (stage < problems.length - 1) {
       stage += 1;
-      render();
+      render({ focusTitle: true });
     } else {
       $("classic-feedback").className = "feedback success";
       $("classic-feedback").textContent = "探索完成。回到第 4 單元後，名稱會繼續退到背景；正式課程仍以無提示首答與後續新棋形為準。";

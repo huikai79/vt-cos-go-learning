@@ -109,7 +109,7 @@
     $("advanced-demo-next").disabled = demoIndex === current().demoSteps.length - 1;
   }
 
-  function renderExperience() {
+  function renderExperience({ focusTitle = false } = {}) {
     const item = current();
     if (!item) return;
     answersThisPresentation = 0;
@@ -140,7 +140,7 @@
     renderTracks();
     renderSummary();
     record("presented");
-    $("advanced-title").focus();
+    if (focusTitle) $("advanced-title").focus();
   }
 
   function answer(index) {
@@ -172,7 +172,7 @@
     if (!button || button.disabled || button.dataset.track === trackId) return;
     trackId = button.dataset.track;
     experienceIndex = 0;
-    renderExperience();
+    renderExperience({ focusTitle: true });
   });
 
   $("advanced-choices").addEventListener("click", (event) => {
@@ -195,7 +195,7 @@
     if (!solved) return;
     if (experienceIndex < currentList().length - 1) {
       experienceIndex += 1;
-      renderExperience();
+      renderExperience({ focusTitle: true });
       return;
     }
     $("advanced-feedback").className = "feedback success";
