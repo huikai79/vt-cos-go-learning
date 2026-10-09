@@ -7,7 +7,7 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v20">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v21">
   <link rel="stylesheet" href="experience-system.css?v=award-experience-v4">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
@@ -41,7 +41,7 @@
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
   <script defer src="classic-shapes-mode.js?v=classic-shapes-mode-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v24"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v25"></script>
   <script defer src="back-to-top.js?v=back-to-top-v1"></script>
 </head>
 <body class="classic-shapes-page" id="page-top">
@@ -100,17 +100,29 @@
         <h2 id="classic-practice-mode-title" tabindex="-1">棋形練習</h2>
         <p>練習會持續增加，但不需要一路往下找。可用下方描述性入口直接跳到想練的結構；名型名稱仍依各題原本規則在適當時機揭示。</p>
       </div>
-      <nav class="classic-practice-jumps" aria-label="棋形練習快速導覽">
-        <a href="#straight-three-track-title">三點直形</a>
-        <a href="#bent-three-practice-title">三點 L 形</a>
-        <a href="#four-space-status-title">四目活死</a>
-        <a href="#pyramid-four-practice-title">四點 T 形</a>
-        <a href="#cross-practice-title">五點十字</a>
-        <a href="#bulky-practice-title">五目急所與短讀</a>
-        <a href="#flower-six-practice-title">六點眼形</a>
-        <a href="#golden-chicken-practice-title">雙重氣緊</a>
-        <a href="#big-pigs-mouth-practice-title">角部 J 形</a>
-        <a href="#contrast-practice-title">混合辨形</a>
+      <section class="classic-task-finder" aria-labelledby="classic-task-finder-title">
+        <h3 id="classic-task-finder-title">今天想練哪種判斷？</h3>
+        <p>先選練習方式，再從下方題組開始。切換分類不會作答，也不會改變核心課程進度。</p>
+        <div class="classic-task-choices" id="classic-task-choices" role="group" aria-label="依練習方式找題">
+          <button type="button" data-classic-task="all" aria-pressed="true">全部題組</button>
+          <button type="button" data-classic-task="vital" aria-pressed="false">找急所</button>
+          <button type="button" data-classic-task="status" aria-pressed="false">判斷活死</button>
+          <button type="button" data-classic-task="read" aria-pressed="false">短讀與後續</button>
+          <button type="button" data-classic-task="contrast" aria-pressed="false">混合辨形</button>
+        </div>
+        <p id="classic-task-result" class="classic-task-result" role="status" aria-live="polite"></p>
+      </section>
+      <nav class="classic-practice-jumps" aria-label="可進入的棋形題組">
+        <a data-classic-task-type="vital" href="#straight-three-track-title">三點直形</a>
+        <a data-classic-task-type="vital" href="#bent-three-practice-title">三點 L 形</a>
+        <a data-classic-task-type="status" href="#four-space-status-title">四目活死</a>
+        <a data-classic-task-type="vital" href="#pyramid-four-practice-title">四點 T 形</a>
+        <a data-classic-task-type="vital" href="#cross-practice-title">五點十字</a>
+        <a data-classic-task-type="read" href="#bulky-practice-title">五目急所與短讀</a>
+        <a data-classic-task-type="vital" href="#flower-six-practice-title">六點眼形</a>
+        <a data-classic-task-type="vital" href="#golden-chicken-practice-title">雙重氣緊</a>
+        <a data-classic-task-type="vital" href="#big-pigs-mouth-practice-title">角部 J 形</a>
+        <a data-classic-task-type="contrast" href="#contrast-practice-title">混合辨形</a>
       </nav>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
@@ -510,10 +522,31 @@
       <section class="classic-atlas-filter-tools" aria-labelledby="classic-filter-heading">
         <h3 id="classic-filter-heading">依主題篩選名型</h3>
         <p id="classic-filter-help">點選想了解的棋形類別，下方只會顯示相關資料。選擇「全部名型」可查看完整列表。分類不代表學習難度，也不代表資料都已核實。</p>
+        <label class="classic-atlas-search-label" for="classic-atlas-search">搜尋名型名稱或跨語別名</label>
+        <input id="classic-atlas-search" type="search" autocomplete="off" placeholder="例如：直三、Bent Three、L Group" aria-describedby="classic-filter-help">
+        <div class="classic-atlas-status-row" id="classic-atlas-status-row" role="group" aria-label="依資料核對狀態篩選">
+          <button type="button" data-atlas-status="all" aria-pressed="true">所有核對狀態</button>
+          <button type="button" data-atlas-status="verified" aria-pressed="false">已核實</button>
+          <button type="button" data-atlas-status="partial" aria-pressed="false">部分核實</button>
+          <button type="button" data-atlas-status="needs_review" aria-pressed="false">待核對</button>
+        </div>
         <div class="classic-filter-row" id="classic-filter-row" role="group" aria-labelledby="classic-filter-heading" aria-describedby="classic-filter-help"></div>
         <p class="classic-filter-result" id="classic-filter-result" role="status" aria-live="polite" aria-atomic="true">正在載入名型資料……</p>
       </section>
-      <div class="classic-atlas-grid" id="classic-atlas-grid"></div>
+      <div class="classic-atlas-layout">
+        <div class="classic-atlas-index">
+          <h3>名型資料列表</h3>
+          <div id="classic-atlas-results" class="classic-atlas-results" aria-label="可選擇的名型資料"></div>
+          <div class="classic-atlas-pagination" id="classic-atlas-pagination">
+            <button type="button" id="classic-atlas-prev">上一頁</button>
+            <span id="classic-atlas-page" aria-live="polite"></span>
+            <button type="button" id="classic-atlas-next">下一頁</button>
+          </div>
+        </div>
+        <section class="classic-atlas-detail" aria-label="所選名型的完整資料">
+          <div class="classic-atlas-grid" id="classic-atlas-grid"></div>
+        </section>
+      </div>
     </section>
   </main>
   <a class="back-to-top" href="#page-top" aria-label="回到頁面頂端" title="回到頁面頂端"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 5 12l2 2 3.5-3.5V20h3v-9.5L17 14l2-2-7-7Z"/></svg></a>
