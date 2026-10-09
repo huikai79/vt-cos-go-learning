@@ -101,3 +101,21 @@ test("applyMode 實際只顯示選定 panel，並同步 aria-current 與 skip li
   assert.equal(skip.href,"#classic-atlas-title");
   assert.equal(skip.textContent,"跳到世界名型對照");
 });
+
+test("首屏初始化不聚焦題目；明確切題才移動焦點",()=>{
+  const advanced=fs.readFileSync(path.join(root,"advanced.js"),"utf8");
+  const advancedHtml=fs.readFileSync(path.join(root,"advanced.html"),"utf8");
+  const classicHtml=fs.readFileSync(path.join(root,"classic-shapes.html"),"utf8");
+  assert.match(advanced,/function renderExperience\(\{ focusTitle = false \} = \{\}\)/);
+  assert.match(advanced,/if \(focusTitle\) \$\("advanced-title"\)\.focus\(\)/);
+  assert.match(advanced,/renderExperience\(\{ focusTitle: true \}\)/);
+  assert.match(shapesSource,/function render\(\{ focusTitle = false \} = \{\}\)/);
+  assert.match(shapesSource,/if \(focusTitle\) \$\("classic-title"\)\.focus\(\)/);
+  assert.match(shapesSource,/render\(\{ focusTitle: true \}\)/);
+  assert.match(advancedHtml,/href="#advanced-sequence-title">棋盤作答<\/a>/);
+  assert.match(advancedHtml,/href="#decision-review-title">完整棋局複盤<\/a>/);
+  assert.doesNotMatch(advancedHtml,/href="#advanced-title">讀棋與手筋練習<\/a>/);
+  assert.doesNotMatch(classicHtml,/href="#classic-practice-mode-title">選擇棋形<\/a>/);
+  assert.doesNotMatch(advanced,/scrollRestoration\s*=|scrollTo\(0,\s*0\)/);
+  assert.doesNotMatch(shapesSource,/scrollRestoration\s*=|scrollTo\(0,\s*0\)/);
+});
