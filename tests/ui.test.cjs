@@ -1349,6 +1349,15 @@ async function main() {
       await delay(100);
     }
     assert.equal(advancedReady, true);
+
+    // Negative test BEFORE screenshot scrollTo: real first viewport must retain Hero.
+    const advancedEntry=await evaluate(socket,`(() => {
+      const r=document.querySelector('.advanced-header h1').getBoundingClientRect();
+      return {scrollY,heroTop:r.top,heroBottom:r.bottom,focusId:document.activeElement.id};
+    })()`);
+    assert.ok(advancedEntry.scrollY<=1 && advancedEntry.heroTop>=-1 && advancedEntry.heroBottom>0,
+      "advanced Hero hidden on initial page load: "+JSON.stringify(advancedEntry));
+    assert.notEqual(advancedEntry.focusId,"advanced-title","advanced unexpectedly focused question on entry");
     if (screenshotDirectory) {
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
       await evaluate(socket, "scrollTo(0, 0)");
@@ -1892,6 +1901,15 @@ async function main() {
       await delay(100);
     }
     assert.equal(classicReady, true);
+
+    // Negative test BEFORE screenshot scrollTo: real first viewport must retain Hero.
+    const classicEntry=await evaluate(socket,`(() => {
+      const r=document.querySelector('.classic-header h1').getBoundingClientRect();
+      return {scrollY,heroTop:r.top,heroBottom:r.bottom,focusId:document.activeElement.id};
+    })()`);
+    assert.ok(classicEntry.scrollY<=1 && classicEntry.heroTop>=-1 && classicEntry.heroBottom>0,
+      "classic Hero hidden on initial page load: "+JSON.stringify(classicEntry));
+    assert.notEqual(classicEntry.focusId,"classic-title","classic unexpectedly focused question on entry");
     if (screenshotDirectory) {
       await command(socket, "Emulation.setDeviceMetricsOverride", { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
       await evaluate(socket, "scrollTo(0, 0)");
