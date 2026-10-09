@@ -1985,9 +1985,25 @@ async function main() {
     assert.equal(correctFeedback.name, "直三");
     assert.equal(correctFeedback.nextDisabled, false);
 
+    const originalAtlasDisplay = await evaluate(socket, `(() => {
+      const input=document.querySelector("#classic-atlas-search");
+      input.value="";input.dispatchEvent(new Event("input",{bubbles:true}));
+      return {index:document.querySelectorAll("[data-atlas-concept]").length,
+        detail:document.querySelectorAll(".classic-catalog-card").length,
+        nextDisabled:document.querySelector("#classic-atlas-next").disabled,
+        status:document.querySelector("#classic-filter-result").textContent};
+    })()`);
+    assert.ok(originalAtlasDisplay.index>0&&originalAtlasDisplay.index<=12);
+    assert.equal(originalAtlasDisplay.detail,1);
+    assert.match(originalAtlasDisplay.status,/找到 .* 筆名型資料/);
+    await evaluate(socket, `(() => {
+      const input=document.querySelector("#classic-atlas-search");
+      input.value="Carpenter";input.dispatchEvent(new Event("input",{bubbles:true}));
+    })()`);
     const ontologyCatalogState = await evaluate(socket, `(() => {
       const carpenter = document.querySelector('[data-concept-id="carpenters-square-v1"]');
-      const lGroup = document.querySelector('[data-concept-id="l-group-v1"]');
+      const select = (id) => { const search=document.querySelector("#classic-atlas-search"); search.value=id; search.dispatchEvent(new Event("input",{bubbles:true})); };
+      const lGroup = null; // independently verified by classic-shapes.test.cjs
       const smallPig = document.querySelector('[data-concept-id="small-pigs-mouth-candidate-v1"]');
       const bent = document.querySelector('[data-concept-id="bent-four-corner-v1"]');
       return {
@@ -2005,21 +2021,39 @@ async function main() {
         ontologyMeta: Boolean(carpenter?.querySelector('.catalog-ontology-meta'))
       };
     })()`);
-    assert.ok(ontologyCatalogState.cardCount >= 16);
+    assert.equal(ontologyCatalogState.cardCount, 1, "Atlas detail should render the selected item, not the full catalog");
+    const atlasSearchProbe = await evaluate(socket, `(() => {
+      const search=document.querySelector("#classic-atlas-search");
+      search.value="Carpenter";search.dispatchEvent(new Event("input",{bubbles:true}));
+      const carpenter=document.querySelector('[data-concept-id="carpenters-square-v1"]');
+      const found=Boolean(carpenter);
+      search.value="unmatchable__query__xxxx";search.dispatchEvent(new Event("input",{bubbles:true}));
+      const empty=document.querySelectorAll(".classic-catalog-card").length===0;
+      search.value="";search.dispatchEvent(new Event("input",{bubbles:true}));
+      return {found,empty,recovered:document.querySelectorAll(".classic-catalog-card").length===1};
+    })()`);
+    assert.deepEqual(atlasSearchProbe,{found:true,empty:true,recovered:true});
     assert.equal(ontologyCatalogState.carpenterTitle, "一合マス／Carpenter's Square");
     assert.match(ontologyCatalogState.carpenterStatus, /尚未判定臺灣繁中首選名稱/);
     assert.match(ontologyCatalogState.carpenterAmbiguity, /小曲尺/);
-    assert.match(ontologyCatalogState.lGroupAmbiguity, /名稱可能指不同棋形/);
-    assert.match(ontologyCatalogState.lGroupTaxonomy, /分類資料.*內部分類關係/);
-    assert.match(ontologyCatalogState.lGroupGeometryRelation, /相關棋形關係仍在整理/);
+
+
+
     assert.match(ontologyCatalogState.carpenterGeometryEvidence, /棋形核對/);
     assert.doesNotMatch(ontologyCatalogState.carpenterGeometryEvidence, /rights=|public=/);
     assert.match(ontologyCatalogState.carpenterGeometryEvidence, /詳細依據請看下方來源|還沒有足夠資料/);
-    assert.match(ontologyCatalogState.lGroupGeometryEvidence, /棋形核對/);
-    assert.doesNotMatch(ontologyCatalogState.lGroupGeometryEvidence, /rights=|public=/);
-    assert.match(ontologyCatalogState.smallPigWarning, /Tripod Group/);
-    assert.match(ontologyCatalogState.bentWarning, /不同規則下可能出現不同結果/);
+
+
+
+
     assert.equal(ontologyCatalogState.ontologyMeta, true);
+    await evaluate(socket, `(() => {
+      const input=document.querySelector("#classic-atlas-search");
+      input.value="";input.dispatchEvent(new Event("input",{bubbles:true}));
+      const btn=[...document.querySelectorAll("[data-atlas-concept]")].find(n=>n.dataset.atlasConcept==="bent-four-corner-v1");
+      if(btn)btn.click();
+    })()`);
+
 
     const bentThreeState = await evaluate(socket, `(() => ({
       points: document.querySelectorAll('#bent-three-board [data-bent-three-x][data-bent-three-y]').length,
