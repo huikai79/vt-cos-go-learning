@@ -119,3 +119,19 @@ test("首屏初始化不聚焦題目；明確切題才移動焦點",()=>{
   assert.doesNotMatch(advanced,/scrollRestoration\s*=|scrollTo\(0,\s*0\)/);
   assert.doesNotMatch(shapesSource,/scrollRestoration\s*=|scrollTo\(0,\s*0\)/);
 });
+
+test("多語圖鑑篩選有清楚標題、選取狀態與結果說明",()=>{
+  const catalog=require("../classic-shapes-catalog.js");
+  assert.match(html,/id="classic-filter-heading">依主題篩選名型<\/h3>/);
+  assert.match(html,/id="classic-filter-help"/);
+  assert.match(html,/id="classic-filter-row"[^>]*role="group"/);
+  assert.match(html,/id="classic-filter-result"[^>]*role="status"/);
+  assert.match(shapesSource,/\["all", "全部名型"\]/);
+  assert.match(shapesSource,/aria-pressed/);
+  assert.match(shapesSource,/classic-filter-result/);
+  assert.match(css,/\.classic-filter\[aria-pressed="true"\]/);
+  assert.equal(Object.keys(catalog.categories).length,6);
+  for(const id of Object.keys(catalog.categories)){
+    assert.ok(catalog.entries.some(entry=>entry.category===id),"分類應有實際資料："+id);
+  }
+});
