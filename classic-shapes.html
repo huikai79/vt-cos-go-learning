@@ -7,7 +7,7 @@
   <meta name="description" content="悟之一手世界死活名型館：保留可玩的直三練習，並以繁中整理中、日、韓、英經典名型與術語來源。">
   <title>世界死活名型館｜悟之一手</title>
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
-  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v19">
+  <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v20">
   <link rel="stylesheet" href="experience-system.css?v=award-experience-v4">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
@@ -15,7 +15,7 @@
   <script defer src="classic-geometry-fingerprint.js?v=classic-geometry-fingerprint-v1"></script>
   <script defer src="classic-geometry-extraction.js?v=classic-geometry-extraction-v1"></script>
   <script defer src="classic-geometry-evidence.js?v=classic-geometry-evidence-v4"></script>
-  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v19"></script>
+  <script defer src="classic-shapes-catalog.js?v=world-classic-shapes-v20"></script>
   <script defer src="classic-shape-practice-contract.js?v=classic-vital-point-v1"></script>
   <script defer src="classic-shape-practice.js?v=classic-shape-practice-v1"></script>
   <script defer src="classic-cross-five-contract.js?v=classic-cross-five-vital-point-v1"></script>
@@ -41,7 +41,7 @@
   <script defer src="classic-shape-reduction-contract.js?v=classic-bulky-five-sealed-reduction-v1"></script>
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
   <script defer src="classic-shapes-mode.js?v=classic-shapes-mode-v1"></script>
-  <script defer src="classic-shapes.js?v=classic-shapes-v23"></script>
+  <script defer src="classic-shapes.js?v=classic-shapes-v24"></script>
   <script defer src="back-to-top.js?v=back-to-top-v1"></script>
 </head>
 <body class="classic-shapes-page" id="page-top">
@@ -507,7 +507,12 @@
         <h2 id="classic-atlas-title" tabindex="-1">世界名型對照</h2>
         <p>「中文既有名」「候選別名」「描述性翻譯」「本輪未找到固定中文名」與跨語對應分開記錄。沒有可靠幾何與來源的一對一關係，就不硬翻成既定術語。</p>
       </div>
-      <div class="classic-filter-row" id="classic-filter-row" aria-label="名型分類篩選"></div>
+      <section class="classic-atlas-filter-tools" aria-labelledby="classic-filter-heading">
+        <h3 id="classic-filter-heading">依主題篩選名型</h3>
+        <p id="classic-filter-help">點選想了解的棋形類別，下方只會顯示相關資料。選擇「全部名型」可查看完整列表。分類不代表學習難度，也不代表資料都已核實。</p>
+        <div class="classic-filter-row" id="classic-filter-row" role="group" aria-labelledby="classic-filter-heading" aria-describedby="classic-filter-help"></div>
+        <p class="classic-filter-result" id="classic-filter-result" role="status" aria-live="polite" aria-atomic="true">正在載入名型資料……</p>
+      </section>
       <div class="classic-atlas-grid" id="classic-atlas-grid"></div>
     </section>
   </main>

@@ -223,17 +223,25 @@
         sources +
         '</article>';
     }).join("");
+    const result = $("classic-filter-result");
+    if (result) result.textContent = filter === "all" || !filter
+      ? "目前顯示全部 " + entries.length + " 筆名型資料。"
+      : "目前顯示「" + Catalog.categories[filter] + "」類別，共 " + entries.length + " 筆資料。";
   }
 
   function renderCatalogFilters() {
-    const options = [["all", "全部"], ...Object.entries(Catalog.categories)];
+    const options = [["all", "全部名型"], ...Object.entries(Catalog.categories)];
     $("classic-filter-row").innerHTML = options.map(([id, label], index) =>
-      '<button type="button" class="subtle-button classic-filter' + (index === 0 ? ' active' : '') + '" data-filter="' + escapeHtml(id) + '">' + escapeHtml(label) + '</button>'
+      '<button type="button" class="classic-filter' + (index === 0 ? ' active' : '') + '" data-filter="' + escapeHtml(id) + '" aria-pressed="' + (index === 0 ? 'true' : 'false') + '">' + escapeHtml(label) + '</button>'
     ).join("");
     $("classic-filter-row").addEventListener("click", (event) => {
       const button = event.target.closest("[data-filter]");
       if (!button) return;
-      document.querySelectorAll(".classic-filter").forEach((item) => item.classList.toggle("active", item === button));
+      document.querySelectorAll(".classic-filter").forEach((item) => {
+        const selected = item === button;
+        item.classList.toggle("active", selected);
+        item.setAttribute("aria-pressed", String(selected));
+      });
       renderCatalog(button.dataset.filter);
     });
   }
