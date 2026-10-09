@@ -135,3 +135,20 @@ test("多語圖鑑篩選有清楚標題、選取狀態與結果說明",()=>{
     assert.ok(catalog.entries.some(entry=>entry.category===id),"分類應有實際資料："+id);
   }
 });
+
+test("G1/G2 Atlas 搜尋與任務篩選只處理可見資料，不重定義 scorer",()=>{
+  const catalog=require("../classic-shapes-catalog.js");
+  assert.match(html,/id="classic-atlas-search"/);
+  assert.match(html,/id="classic-atlas-results"/);
+  assert.match(html,/id="classic-task-choices"/);
+  assert.match(shapesSource,/const ATLAS_PAGE_SIZE = 12/);
+  assert.match(shapesSource,/\.aliases\.map\(item=>item\.name\)/);
+  assert.match(shapesSource,/atlasState\.status !== "all"/);
+  assert.match(shapesSource,/entry\.practiceStatus\.startsWith\("playable_"\)/);
+  assert.match(shapesSource,/function initPracticeTaskFinder/);
+  assert.doesNotMatch(shapesSource,/localStorage|sessionStorage|scheduler\.update|formalEligible\s*=\s*true/);
+  const onlyRead=catalog.entries.find(item=>item.id==="l-group-v1");
+  assert.equal(onlyRead.practiceStatus,"catalog_only");
+  assert.ok(catalog.entries.some(item=>item.id==="straight-three-v1" && item.practiceStatus.startsWith("playable_")));
+  assert.ok(catalog.entries.some(item=>item.geometryIdentity.reviewStatus==="needs_review"));
+});
