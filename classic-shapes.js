@@ -181,8 +181,59 @@
     return "棋形待核對";
   }
 
+  // Atlas is a read-only view over the existing catalog. The route allowlist
+  // is presentation metadata only; it cannot supply an answer or grant scoring authority.
+  const atlasRoutes = Object.freeze({
+    "straight-three-v1": ["straight-three-track-title", practiceValidation.ok],
+    "square-four-v1": ["four-space-status-title", fourSpaceStatusValidation.ok],
+    "straight-four-v1": ["four-space-status-title", fourSpaceStatusValidation.ok],
+    "curved-four-v1": ["four-space-status-title", curvedFourStatusValidation.ok],
+    "bent-three-v1": ["bent-three-practice-title", bentThreeValidation.ok],
+    "pyramid-four-v1": ["pyramid-four-practice-title", pyramidFourValidation.ok],
+    "flower-six-v1": ["flower-six-practice-title", flowerSixValidation.ok],
+    "knife-five-candidate-v1": ["bulky-practice-title", practiceValidation.ok],
+    "plum-five-candidate-v1": ["cross-practice-title", crossFiveValidation.ok],
+    "big-pigs-mouth-candidate-v1": ["big-pigs-mouth-practice-title", bigPigsMouthValidation.ok],
+    "golden-chicken-candidate-v1": ["golden-chicken-practice-title", goldenChickenValidation.ok]
+  });
+  const atlasState = { category: "all", status: "all", query: "", page: 0, selectedId: null };
+  const ATLAS_PAGE_SIZE = 12;
+  function atlasPracticeRoute(entry) {
+    const route = atlasRoutes[entry.id];
+    return route && route[1] && entry.practiceStatus.startsWith("playable_")
+      && document.getElementById(route[0]) ? "#" + route[0] : null;
+  }
+  function atlasMatches() {
+    const query = atlasState.query.trim().toLocaleLowerCase();
+    return Catalog.entries.filter((entry) => {
+      if (atlasState.category !== "all" && entry.category !== atlasState.category) return false;
+      if (atlasState.status !== "all" && entry.reviewStatus !== atlasState.status) return false;
+      if (!query) return true;
+      return [displayZh(entry), entry.teachingLabel, ...entry.zhAliases.map(item=>item.name),
+        ...entry.aliases.map(item=>item.name)]
+        .some(value => String(value || "").toLocaleLowerCase().includes(query));
+    });
+  }
   function renderCatalog(filter) {
-    const entries = Catalog.entries.filter((entry) => !filter || filter === "all" || entry.category === filter);
+    if (filter && (filter === "all" || Object.hasOwn(Catalog.categories, filter))) atlasState.category = filter;
+    const matches = atlasMatches();
+    const pages = Math.max(1, Math.ceil(matches.length / ATLAS_PAGE_SIZE));
+    atlasState.page = Math.min(atlasState.page, pages - 1);
+    const visible = matches.slice(atlasState.page * ATLAS_PAGE_SIZE, (atlasState.page + 1) * ATLAS_PAGE_SIZE);
+    if (!visible.some(entry => entry.id === atlasState.selectedId)) atlasState.selectedId = visible[0]?.id || null;
+    const selected = visible.find(entry => entry.id === atlasState.selectedId);
+    $("classic-atlas-results").innerHTML = visible.map((entry) =>
+      '<button type="button" class="classic-atlas-result' + (entry.id === atlasState.selectedId ? ' active' : '') +
+      '" data-atlas-concept="' + escapeHtml(entry.id) + '" aria-pressed="' +
+      (entry.id === atlasState.selectedId ? 'true' : 'false') + '">' +
+      '<strong>' + escapeHtml(displayZh(entry)) + '</strong><small>' +
+      escapeHtml(Catalog.categories[entry.category]) + ' · ' + reviewLabel(entry.reviewStatus) +
+      '</small></button>'
+    ).join("") || '<p class="classic-atlas-empty">沒有符合條件的名型資料。可以清除搜尋或選擇「所有核對狀態」。</p>';
+    $("classic-atlas-page").textContent = "第 " + (atlasState.page + 1) + "／" + pages + " 頁";
+    $("classic-atlas-prev").disabled = atlasState.page === 0;
+    $("classic-atlas-next").disabled = atlasState.page >= pages - 1;
+    const entries = selected ? [selected] : [];
     $("classic-atlas-grid").innerHTML = entries.map((entry) => {
       const aliases = entry.aliases.length
         ? entry.aliases.map((alias) => '<li><strong>' + escapeHtml(alias.locale) + '</strong><span>' + escapeHtml(alias.name) + '</span><small>' + reviewLabel(alias.reviewStatus) + '</small></li>').join("")
@@ -221,12 +272,14 @@
         (entry.negativeMappings.length ? '<p class="catalog-warning">不要直接視為同一棋形：' + escapeHtml(entry.negativeMappings.map((item) => item.name).join('、')) + '。名稱相近不代表棋形與規則條件完全相同。</p>' : '') +
         (entry.rulesetSensitive ? '<p class="catalog-warning">規則敏感：不同規則下可能出現不同結果；沒有指定使用哪套規則前，不會硬給單一答案。</p>' : '') +
         sources +
+        '<p class="catalog-practice-access">' + (atlasPracticeRoute(entry)
+          ? '<a data-classic-practice-route href="' + atlasPracticeRoute(entry) + '">前往相關棋形練習（先選題） →</a>'
+          : '<span>目前僅提供資料查閱，尚無可由此直接進入的已核對練習。</span>') + '</p>' +
         '</article>';
     }).join("");
     const result = $("classic-filter-result");
-    if (result) result.textContent = filter === "all" || !filter
-      ? "目前顯示全部 " + entries.length + " 筆名型資料。"
-      : "目前顯示「" + Catalog.categories[filter] + "」類別，共 " + entries.length + " 筆資料。";
+    if (result) result.textContent = "找到 " + matches.length + " 筆名型資料，本頁顯示 " + visible.length + " 筆。"
+      + (selected ? "目前選取「" + displayZh(selected) + "」。" : "請調整篩選條件。");
   }
 
   function renderCatalogFilters() {
@@ -242,11 +295,77 @@
         item.classList.toggle("active", selected);
         item.setAttribute("aria-pressed", String(selected));
       });
+      atlasState.page = 0;
+      atlasState.selectedId = null;
       renderCatalog(button.dataset.filter);
     });
   }
 
 
+
+  function initAtlasDiscovery() {
+    $("classic-atlas-search").addEventListener("input", event => {
+      atlasState.query = event.target.value;
+      atlasState.page = 0; atlasState.selectedId = null;
+      renderCatalog();
+    });
+    $("classic-atlas-status-row").addEventListener("click", event => {
+      const button = event.target.closest("[data-atlas-status]");
+      if (!button) return;
+      atlasState.status = button.dataset.atlasStatus;
+      atlasState.page = 0; atlasState.selectedId = null;
+      document.querySelectorAll("[data-atlas-status]").forEach(item =>
+        item.setAttribute("aria-pressed", String(item === button)));
+      renderCatalog();
+    });
+    $("classic-atlas-results").addEventListener("click", event => {
+      const button = event.target.closest("[data-atlas-concept]");
+      if (!button) return;
+      atlasState.selectedId = button.dataset.atlasConcept;
+      renderCatalog();
+    });
+    $("classic-atlas-prev").addEventListener("click", () => {
+      if (atlasState.page === 0) return;
+      atlasState.page -= 1; atlasState.selectedId = null; renderCatalog();
+    });
+    $("classic-atlas-next").addEventListener("click", () => {
+      if ((atlasState.page + 1) * ATLAS_PAGE_SIZE >= atlasMatches().length) return;
+      atlasState.page += 1; atlasState.selectedId = null; renderCatalog();
+    });
+    $("classic-atlas-grid").addEventListener("click", event => {
+      if (!event.target.closest("[data-classic-practice-route]")) return;
+      // Make the target visible before native anchor scrolling occurs.
+      window.GoClassicShapesMode.applyMode(document, "#practice");
+    });
+  }
+
+  function initPracticeTaskFinder() {
+    const allowed = new Set(["all","vital","status","read","contrast"]);
+    const links = [...document.querySelectorAll(".classic-practice-jumps [data-classic-task-type]")];
+    const current = new URL(location.href).searchParams.get("task");
+    const state = {task: allowed.has(current) ? current : "all"};
+    function applyTask() {
+      document.querySelectorAll("[data-classic-task]").forEach(button =>
+        button.setAttribute("aria-pressed", String(button.dataset.classicTask === state.task)));
+      let visible = 0;
+      links.forEach(link => {
+        link.hidden = state.task !== "all" && link.dataset.classicTaskType !== state.task;
+        if (!link.hidden) visible += 1;
+      });
+      $("classic-task-result").textContent = "目前有 " + visible + " 組相關練習。點選題組會前往現有棋盤，不會直接判分。";
+    }
+    $("classic-task-choices").addEventListener("click", event => {
+      const button = event.target.closest("[data-classic-task]");
+      if (!button || !allowed.has(button.dataset.classicTask)) return;
+      state.task = button.dataset.classicTask;
+      const url = new URL(location.href);
+      if (state.task === "all") url.searchParams.delete("task");
+      else url.searchParams.set("task", state.task);
+      history.replaceState(history.state, "", url.href);
+      applyTask();
+    });
+    applyTask();
+  }
 
   function contrastDeps() {
     return {
@@ -1843,7 +1962,9 @@
   });
 
   renderCatalogFilters();
+  initAtlasDiscovery();
   renderCatalog("all");
+  initPracticeTaskFinder();
   renderContrast();
   renderCross();
   renderBentThree();
