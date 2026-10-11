@@ -1,7 +1,7 @@
 /* Explore-only reading table of contents. No learner/runtime authority. */
 .explore-page main.reading-layout{display:flex;align-items:stretch;gap:24px}
-.explore-page .reading-article{flex:1;min-width:0}
-.explore-page .reading-toc-rail{flex:0 0 204px;align-self:stretch;min-width:0}
+.explore-page .reading-article{flex:1;min-width:0;order:1}
+.explore-page .reading-toc-rail{flex:0 0 204px;align-self:stretch;min-width:0;order:2}
 .explore-page .reading-toc-panel{position:sticky;top:132px;max-height:calc(100vh - 156px);overflow-y:auto;overscroll-behavior:contain;padding:16px 12px;border:1px solid #dce5d9;border-radius:14px;background:#fbfcf8}
 .explore-page .reading-toc-panel summary{display:none}
 .explore-page .reading-toc-title{display:block;margin:0 0 12px;padding:0 7px;color:#315740;font-size:.85rem;font-weight:800}
