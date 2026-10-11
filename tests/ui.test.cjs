@@ -2021,6 +2021,31 @@ async function main() {
     assert.match(ontologyCatalogState.bentWarning, /不同規則下可能出現不同結果/);
     assert.equal(ontologyCatalogState.ontologyMeta, true);
 
+    const finderFlow = await evaluate(socket, `(() => {
+      const select=document.querySelector('#classic-task-select');
+      const originalFeedback=document.querySelector('#classic-feedback').textContent;
+      const options=[...select.options].filter(option=>option.value).length;
+      select.value='bent-three-practice-title';
+      document.querySelector('#classic-task-go').click();
+      const taskSelected=location.hash==='#bent-three-practice-title';
+      const taskFeedbackUnchanged=document.querySelector('#classic-feedback').textContent===originalFeedback;
+      const search=document.querySelector('#classic-atlas-search');
+      search.value='Carpenter';
+      search.dispatchEvent(new Event('input',{bubbles:true}));
+      const hits=[...document.querySelectorAll('#classic-atlas-result-list button[data-lookup-concept-id]')];
+      const result={options,taskSelected,taskFeedbackUnchanged,hitIds:hits.map(x=>x.dataset.lookupConceptId),
+        shownCards:[...document.querySelectorAll('#classic-atlas-grid .classic-catalog-card:not([hidden])')].map(x=>x.dataset.conceptId)};
+      search.value='';
+      search.dispatchEvent(new Event('input',{bubbles:true}));
+      return result;
+    })()`);
+    assert.equal(finderFlow.options,10);
+    assert.equal(finderFlow.taskSelected,true);
+    assert.equal(finderFlow.taskFeedbackUnchanged,true);
+    assert.ok(finderFlow.hitIds.includes('carpenters-square-v1'));
+    assert.deepEqual(finderFlow.shownCards,finderFlow.hitIds.slice(0,1));
+
+
     const bentThreeState = await evaluate(socket, `(() => ({
       points: document.querySelectorAll('#bent-three-board [data-bent-three-x][data-bent-three-y]').length,
       prompt: document.querySelector('#bent-three-prompt').textContent,
@@ -2332,6 +2357,34 @@ async function main() {
     assert.equal(bigPigsMouthCorrect.revealHidden, false);
     assert.equal(bigPigsMouthCorrect.name, "大豬嘴／J Group");
     assert.equal(bigPigsMouthCorrect.nextDisabled, false);
+
+    // Regression: reproduce the user's route from Home -> 名型館#page-top ->
+    // 多語圖鑑. The destination starts hidden and must become visible AND
+    // enter the viewport after an explicit click. Merely changing hash is insufficient.
+    await command(socket, "Page.navigate", { url: classicPage + "#page-top" });
+    let classicCrossPageReady = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      classicCrossPageReady = await evaluate(socket, "document.readyState === 'complete' && Boolean(document.querySelector('#atlas') && document.querySelector('.classic-mode-link[href=\\\"#atlas\\\"]'))");
+      if (classicCrossPageReady) break;
+      await delay(100);
+    }
+    assert.equal(classicCrossPageReady, true);
+    await evaluate(socket, "(() => { scrollTo(0,0); document.querySelector('.classic-mode-link[href=\\\"#atlas\\\"]').click(); })()");
+    await delay(950);
+    const classicAtlasClick = await evaluate(socket, `(() => {
+      const panel=document.querySelector('#atlas');
+      const box=panel.getBoundingClientRect();
+      return {hash:location.hash,mode:document.body.dataset.classicMode,
+        atlasHidden:panel.hidden,atlasDisplay:getComputedStyle(panel).display,
+        top:box.top,bottom:box.bottom,scrollY,viewportHeight:innerHeight,
+        results:document.querySelectorAll('#classic-atlas-result-list button').length};
+    })()`);
+    assert.equal(classicAtlasClick.hash, "#atlas");
+    assert.equal(classicAtlasClick.mode, "atlas");
+    assert.equal(classicAtlasClick.atlasHidden, false);
+    assert.ok(classicAtlasClick.top < classicAtlasClick.viewportHeight && classicAtlasClick.bottom > 115
+      && classicAtlasClick.scrollY > 50,
+      "Classic Atlas clicked but viewport never reached visible catalog: " + JSON.stringify(classicAtlasClick));
 
     await command(socket, "Page.navigate", { url: historyPage });
     let historyReady = false;

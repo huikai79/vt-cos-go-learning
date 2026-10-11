@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css?v=learner-flow-v35">
   <link rel="stylesheet" href="classic-shapes.css?v=classic-shapes-v20">
   <link rel="stylesheet" href="experience-system.css?v=award-experience-v4">
+  <link rel="stylesheet" href="classic-finder.css?v=classic-finder-v1">
   <script defer src="go.js"></script>
   <script defer src="content.js"></script>
   <script defer src="classic-shapes-ontology.js?v=classic-shape-ontology-v5"></script>
@@ -42,6 +43,7 @@
   <script defer src="classic-shape-reduction.js?v=classic-shape-reduction-v1"></script>
   <script defer src="classic-shapes-mode.js?v=classic-shapes-mode-v1"></script>
   <script defer src="classic-shapes.js?v=classic-shapes-v24"></script>
+  <script defer src="classic-finder.js?v=classic-finder-v1"></script>
   <script defer src="back-to-top.js?v=back-to-top-v1"></script>
 </head>
 <body class="classic-shapes-page" id="page-top">
@@ -100,18 +102,31 @@
         <h2 id="classic-practice-mode-title" tabindex="-1">棋形練習</h2>
         <p>練習會持續增加，但不需要一路往下找。可用下方描述性入口直接跳到想練的結構；名型名稱仍依各題原本規則在適當時機揭示。</p>
       </div>
-      <nav class="classic-practice-jumps" aria-label="棋形練習快速導覽">
-        <a href="#straight-three-track-title">三點直形</a>
-        <a href="#bent-three-practice-title">三點 L 形</a>
-        <a href="#four-space-status-title">四目活死</a>
-        <a href="#pyramid-four-practice-title">四點 T 形</a>
-        <a href="#cross-practice-title">五點十字</a>
-        <a href="#bulky-practice-title">五目急所與短讀</a>
-        <a href="#flower-six-practice-title">六點眼形</a>
-        <a href="#golden-chicken-practice-title">雙重氣緊</a>
-        <a href="#big-pigs-mouth-practice-title">角部 J 形</a>
-        <a href="#contrast-practice-title">混合辨形</a>
+      <div class="classic-task-switcher" aria-label="選擇棋形練習">
+        <div class="classic-task-switcher-line">
+          <label for="classic-task-select">想練哪一種？</label>
+          <select id="classic-task-select" aria-describedby="classic-task-help">
+            <option value="">選擇練習題組</option>
+          </select>
+          <button id="classic-task-go" type="button" class="primary-button">前往練習</button>
+        </div>
+        <p id="classic-task-help">可按想練的判斷選題，不必一路往下找。切換題組不會自動作答或重新開始題目。</p>
+        <details class="classic-task-all">
+          <summary>查看全部題組入口</summary>
+          <nav class="classic-practice-jumps" aria-label="棋形練習快速導覽">
+        <a href="#straight-three-track-title" data-task-type="找急所">三點直形</a>
+        <a href="#bent-three-practice-title" data-task-type="找急所">三點 L 形</a>
+        <a href="#four-space-status-title" data-task-type="判斷活死">四目活死</a>
+        <a href="#pyramid-four-practice-title" data-task-type="找急所">四點 T 形</a>
+        <a href="#cross-practice-title" data-task-type="找急所">五點十字</a>
+        <a href="#bulky-practice-title" data-task-type="找急所">五目急所與短讀</a>
+        <a href="#flower-six-practice-title" data-task-type="找急所">六點眼形</a>
+        <a href="#golden-chicken-practice-title" data-task-type="手筋判斷">雙重氣緊</a>
+        <a href="#big-pigs-mouth-practice-title" data-task-type="來源局面">角部 J 形</a>
+        <a href="#contrast-practice-title" data-task-type="混合辨形">混合辨形</a>
       </nav>
+        </details>
+      </div>
 
     <section class="classic-practice-intro" aria-labelledby="straight-three-track-title">
       <span class="question-tag">直三專用 · 4 段探索</span>
@@ -510,10 +525,35 @@
       <section class="classic-atlas-filter-tools" aria-labelledby="classic-filter-heading">
         <h3 id="classic-filter-heading">依主題篩選名型</h3>
         <p id="classic-filter-help">點選想了解的棋形類別，下方只會顯示相關資料。選擇「全部名型」可查看完整列表。分類不代表學習難度，也不代表資料都已核實。</p>
+        <div class="classic-atlas-query-tools">
+          <label for="classic-atlas-search">搜尋中文、日文、韓文或英文名稱
+            <input id="classic-atlas-search" type="search" placeholder="輸入名稱或別名" autocomplete="off">
+          </label>
+          <label for="classic-atlas-review">項目查核狀態
+            <select id="classic-atlas-review">
+              <option value="all">全部狀態</option>
+              <option value="verified">已核對</option>
+              <option value="partial">部分核對</option>
+              <option value="needs_review">待核對</option>
+            </select>
+          </label>
+        </div>
+        <details class="classic-atlas-category-options">
+          <summary>依類別進一步篩選</summary>
         <div class="classic-filter-row" id="classic-filter-row" role="group" aria-labelledby="classic-filter-heading" aria-describedby="classic-filter-help"></div>
+        </details>
         <p class="classic-filter-result" id="classic-filter-result" role="status" aria-live="polite" aria-atomic="true">正在載入名型資料……</p>
       </section>
-      <div class="classic-atlas-grid" id="classic-atlas-grid"></div>
+      <div class="classic-atlas-lookup" id="classic-atlas-lookup" data-mobile-view="list">
+        <nav class="classic-atlas-results" aria-label="名型搜尋結果">
+          <h3>查找結果</h3>
+          <div id="classic-atlas-result-list" class="classic-atlas-result-list"></div>
+        </nav>
+        <section class="classic-atlas-detail" aria-label="選取的名型資料">
+          <button id="classic-atlas-back" type="button" class="subtle-button">← 返回查找結果</button>
+          <div class="classic-atlas-grid" id="classic-atlas-grid"></div>
+        </section>
+      </div>
     </section>
   </main>
   <a class="back-to-top" href="#page-top" aria-label="回到頁面頂端" title="回到頁面頂端"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 5 12l2 2 3.5-3.5V20h3v-9.5L17 14l2-2-7-7Z"/></svg></a>

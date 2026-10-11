@@ -45,12 +45,29 @@
     return mode;
   }
 
+  function navigateToMode(doc, win, link) {
+    const mode = modeFromHash(link.hash);
+    if (mode !== MODES.ATLAS && mode !== MODES.PRACTICE) return;
+    // The target section is hidden until its mode activates. Native hash
+    // scrolling occurs too early when it points at a display:none element.
+    applyMode(doc, link.hash, { focus: true });
+    const target = doc.getElementById(mode);
+    if (target && typeof target.scrollIntoView === "function") {
+      target.scrollIntoView({ block: "start" });
+    }
+  }
+
   function init(doc, win) {
     if (!doc || !win) return null;
     let mode = applyMode(doc, win.location.hash);
     win.addEventListener("hashchange", () => {
       mode = applyMode(doc, win.location.hash, { focus: true });
     });
+    for (const link of doc.querySelectorAll('a[href="#practice"], a[href="#atlas"]')) {
+      link.addEventListener("click", () => {
+        navigateToMode(doc, win, link);
+      });
+    }
     return mode;
   }
 
