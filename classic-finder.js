@@ -96,7 +96,7 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "classic-atlas-result-choice";
-      button.dataset.conceptId = entry.id;
+      button.dataset.lookupConceptId = entry.id;
       button.setAttribute("aria-pressed", String(selectedId === entry.id));
       const title = document.createElement("strong");
       title.textContent = label(entry);
@@ -129,8 +129,8 @@
     for (const card of grid.querySelectorAll(".classic-catalog-card")) {
       card.hidden = card.dataset.conceptId !== selectedId;
     }
-    for (const button of list.querySelectorAll("button[data-concept-id]")) {
-      button.setAttribute("aria-pressed", String(button.dataset.conceptId === selectedId));
+    for (const button of list.querySelectorAll("button[data-lookup-concept-id]")) {
+      button.setAttribute("aria-pressed", String(button.dataset.lookupConceptId === selectedId));
     }
   }
   // The original category buttons update card markup first; this listener is
@@ -151,8 +151,8 @@
   });
   back.addEventListener("click", () => {
     atlas.dataset.mobileView = "list";
-    const selected = [...list.querySelectorAll("button[data-concept-id]")]
-      .find((button) => button.dataset.conceptId === selectedId);
+    const selected = [...list.querySelectorAll("button[data-lookup-concept-id]")]
+      .find((button) => button.dataset.lookupConceptId === selectedId);
     (selected || queryInput).focus({preventScroll:true});
     atlas.scrollIntoView({block:"start"});
   });
