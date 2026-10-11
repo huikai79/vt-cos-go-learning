@@ -2021,6 +2021,31 @@ async function main() {
     assert.match(ontologyCatalogState.bentWarning, /不同規則下可能出現不同結果/);
     assert.equal(ontologyCatalogState.ontologyMeta, true);
 
+    const finderFlow = await evaluate(socket, `(() => {
+      const select=document.querySelector('#classic-task-select');
+      const originalFeedback=document.querySelector('#classic-feedback').textContent;
+      const options=[...select.options].filter(option=>option.value).length;
+      select.value='bent-three-practice-title';
+      document.querySelector('#classic-task-go').click();
+      const taskSelected=location.hash==='#bent-three-practice-title';
+      const taskFeedbackUnchanged=document.querySelector('#classic-feedback').textContent===originalFeedback;
+      const search=document.querySelector('#classic-atlas-search');
+      search.value='Carpenter';
+      search.dispatchEvent(new Event('input',{bubbles:true}));
+      const hits=[...document.querySelectorAll('#classic-atlas-result-list button[data-concept-id]')];
+      const result={options,taskSelected,taskFeedbackUnchanged,hitIds:hits.map(x=>x.dataset.conceptId),
+        shownCards:[...document.querySelectorAll('#classic-atlas-grid .classic-catalog-card:not([hidden])')].map(x=>x.dataset.conceptId)};
+      search.value='';
+      search.dispatchEvent(new Event('input',{bubbles:true}));
+      return result;
+    })()`);
+    assert.equal(finderFlow.options,10);
+    assert.equal(finderFlow.taskSelected,true);
+    assert.equal(finderFlow.taskFeedbackUnchanged,true);
+    assert.ok(finderFlow.hitIds.includes('carpenters-square-v1'));
+    assert.deepEqual(finderFlow.shownCards,finderFlow.hitIds.slice(0,1));
+
+
     const bentThreeState = await evaluate(socket, `(() => ({
       points: document.querySelectorAll('#bent-three-board [data-bent-three-x][data-bent-three-y]').length,
       prompt: document.querySelector('#bent-three-prompt').textContent,
