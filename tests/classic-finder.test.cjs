@@ -1,0 +1,40 @@
+const test=require("node:test");
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const path=require("node:path");
+const root=path.resolve(__dirname,"..");
+const html=fs.readFileSync(path.join(root,"classic-shapes.html"),"utf8");
+const finder=fs.readFileSync(path.join(root,"classic-finder.js"),"utf8");
+const css=fs.readFileSync(path.join(root,"classic-finder.css"),"utf8");
+const Catalog=require("../classic-shapes-catalog.js");
+test("G2 finder reuses all existing practice anchors and never creates its own scoring",()=>{
+ const links=[...html.matchAll(/href="#([^"]+)" data-task-type="([^"]+)"/g)];
+ assert.equal(links.length,10);
+ for(const [,id] of links)assert.ok(html.includes('id="'+id+'"'),"missing "+id);
+ assert.match(html,/id="classic-task-select"/);
+ assert.match(html,/id="classic-task-go"/);
+ assert.match(finder,/taskLinks\.some/);
+ assert.doesNotMatch(finder,/correctMove|formalEligible|mastery|localStorage|scheduler|firstResponse|scoreMove/);
+});
+test("G1 finder derives names from the catalog, preserves original ontology cards and status",()=>{
+ assert.ok(Catalog.entries.length>=16);
+ assert.match(html,/id="classic-atlas-search"/);
+ assert.match(html,/id="classic-atlas-review"/);
+ assert.match(html,/id="classic-atlas-result-list"/);
+ assert.match(html,/id="classic-atlas-grid"/);
+ assert.match(finder,/Catalog\.entries\.filter/);
+ assert.match(finder,/\.\.\.entry\.aliases\.map/);
+ assert.match(finder,/\.\.\.entry\.zhAliases\.map/);
+ assert.match(finder,/entry\.reviewStatus === review/);
+ assert.match(finder,/grid\.querySelectorAll/);
+ assert.match(finder,/card\.hidden = card\.dataset\.conceptId !== selectedId/);
+ assert.doesNotMatch(finder,/innerHTML|localStorage|sessionStorage|practiceStatus ===.*playable/);
+});
+test("responsive finder is keyboard-visible, supports narrow result/detail and does not change page mode",()=>{
+ assert.match(css,/@media\(max-width:760px\)/);
+ assert.match(css,/data-mobile-view="detail"/);
+ assert.match(css,/focus-visible/);
+ assert.match(css,/position:sticky/);
+ assert.match(finder,/focus\(\{preventScroll:true\}\)/);
+ assert.doesNotMatch(finder,/GoClassicShapesMode|history\.replaceState|history\.pushState|hash\s*=\s*["']#atlas/);
+});
