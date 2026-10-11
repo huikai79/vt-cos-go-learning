@@ -10,7 +10,9 @@
   <title>圍棋從哪裡來？｜悟之一手</title>
   <link rel="stylesheet" href="history.css?v=history-explore-v6">
   <link rel="stylesheet" href="experience-system.css?v=award-experience-v4">
+  <link rel="stylesheet" href="reading-toc.css?v=reading-toc-v1">
   <script defer src="back-to-top.js?v=back-to-top-v1"></script>
+  <script defer src="reading-toc.js?v=reading-toc-v1"></script>
 </head>
 <body class="explore-page history-page" id="page-top">
   <a class="skip-link" href="#history-main">跳到歷史內容</a>
@@ -33,7 +35,8 @@
     <a href="global-go-observatory.html">全球觀察</a>
   </nav>
 
-  <main id="history-main">
+  <main id="history-main" class="reading-layout">
+    <div class="reading-article">
     <section class="history-hero" aria-labelledby="history-title">
       <span class="history-kicker">HISTORY · EVIDENCE LENS</span>
       <h1 id="history-title"><span class="title-line">故事可以很遠，</span><em class="title-line">證據只走到這裡。</em></h1>
@@ -41,13 +44,7 @@
       <div class="history-hero-actions">
         <a class="primary-link" href="#questions">從五個問題開始</a>
       </div>
-      <nav class="explore-reading-index" aria-label="歷史頁面章節目錄">
-        <span>本頁章節</span>
-        <a href="#transitions">證據與觀念的轉折</a>
-        <a href="#frontier">研究前沿</a>
-        <a href="#sources">本頁來源入口</a>
-      </nav>
-    </section>
+          </section>
 
     <section class="history-section evidence-guide" id="evidence" aria-labelledby="evidence-title">
       <div class="section-head">
@@ -292,6 +289,25 @@
         <a class="secondary-link" href="classic-shapes.html#page-top">看世界死活名型館</a>
       </div>
     </section>
+    </div>
+    <aside class="reading-toc-rail" aria-label="文章章節快速導覽">
+      <details class="reading-toc-panel" open>
+        <summary>本頁目錄</summary>
+        <strong class="reading-toc-title">本頁目錄</strong>
+        <nav class="reading-toc-links" aria-label="本頁目錄">
+          <a href="#evidence">如何看證據</a>
+          <a href="#questions">五個歷史問題</a>
+          <a href="#origin" data-subsection="true">起源與傳說</a>
+          <a href="#board-size" data-subsection="true">17 路與 19 路</a>
+          <a href="#cosmology" data-subsection="true">天地與棋盤</a>
+          <a href="#rules" data-subsection="true">古今規則</a>
+          <a href="#stories" data-subsection="true">著名典故</a>
+          <a href="#transitions">證據與觀念轉折</a>
+          <a href="#frontier">仍待研究的問題</a>
+          <a href="#sources">參考來源</a>
+        </nav>
+      </details>
+    </aside>
   </main>
 
   <footer>
