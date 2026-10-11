@@ -13,6 +13,7 @@ for(const [filename,ids] of Object.entries(cases)){
    const html=fs.readFileSync(path.join(root,filename),"utf8");
    assert.match(html,/<main id="[^"]+" class="reading-layout">/);
    assert.match(html,/class="reading-article"/);
+   assert.ok(html.indexOf('class="reading-toc-rail"') < html.indexOf('class="reading-article"'),"keyboard TOC must precede article");
    assert.equal((html.match(/class="reading-toc-rail"/g)||[]).length,1);
    assert.match(html,/<details class="reading-toc-panel" open>/);
    assert.match(html,/<nav class="reading-toc-links" aria-label="本頁目錄">/);
@@ -29,6 +30,7 @@ test("reading TOC has mobile disclosure, live position and no learner-state writ
  const css=fs.readFileSync(path.join(root,"reading-toc.css"),"utf8");
  const js=fs.readFileSync(path.join(root,"reading-toc.js"),"utf8");
  assert.match(css,/position:sticky/);
+ assert.match(css,/reading-toc-rail\{[^}]*order:2/);
  assert.match(css,/@media\(max-width:1199px\)/);
  assert.match(css,/focus-visible/);
  assert.match(css,/scroll-margin-top/);
