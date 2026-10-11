@@ -87,5 +87,5 @@ test("Math 首屏不重複介紹右側關係卡，重要閱讀章節皆可直接
     assert.ok(html.includes('href="#'+id+'"'));
     assert.match(html,new RegExp('<section[^>]*id="'+id+'"'));
   }
-  assert.match(html,/nav class="explore-reading-index" aria-label="數學頁面章節目錄"/);
+  assert.match(html,/nav class="reading-toc-links" aria-label="本頁目錄"/);
 });
