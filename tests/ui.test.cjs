@@ -2438,6 +2438,34 @@ async function main() {
       advancedCtaVisible: (() => { const node = document.querySelector('.history-cta a[href="advanced.html#page-top"]'); return Boolean(node && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0); })()
     }))()`);
     assert.ok(historyMobile.scrollWidth <= historyMobile.width + 1, `history mobile horizontal overflow: ${JSON.stringify(historyMobile)}`);
+
+    // Responsive TOC: the desktop rail stays sticky; entering compact mode
+    // closes its disclosure without changing hash or learner state.
+    const tocMobile = await evaluate(socket, `(() => {
+      const panel=document.querySelector('.reading-toc-panel');
+      const trigger=panel.querySelector('summary');
+      return {open:panel.open,summaryVisible:getComputedStyle(trigger).display!=='none',
+        width:trigger.getBoundingClientRect().width,links:panel.querySelectorAll('a[href^="#"]').length};
+    })()`);
+    assert.equal(tocMobile.open,false,"mobile TOC should be collapsed on entering compact layout");
+    assert.equal(tocMobile.summaryVisible,true);
+    assert.ok(tocMobile.width>44 && tocMobile.links>=5);
+    const tocDesktop = await (async () => {
+      await command(socket,"Emulation.setDeviceMetricsOverride",{width:1440,height:900,deviceScaleFactor:1,mobile:false});
+      return evaluate(socket,`(() => {
+        const panel=document.querySelector('.reading-toc-panel');
+        const target=document.querySelector('#sources');
+        return {open:panel.open,position:getComputedStyle(panel).position,
+          visible:panel.getBoundingClientRect().width>0,target:!!target};
+      })()`);
+    })();
+    assert.equal(tocDesktop.open,true);
+    assert.equal(tocDesktop.position,"sticky");
+    assert.equal(tocDesktop.target,true);
+    await command(socket,"Emulation.setDeviceMetricsOverride",{width:375,height:812,deviceScaleFactor:1,mobile:true});
+    const tocReentered=await evaluate(socket,"document.querySelector('.reading-toc-panel').open");
+    assert.equal(tocReentered,false,"desktop-to-mobile transition must close reading disclosure");
+
     assert.equal(historyMobile.ctaDirection, "column");
     assert.equal(historyMobile.advancedCtaVisible, true);
     assert.ok(historyMobile.sourceColumns.split(" ").length === 1);
