@@ -2032,8 +2032,8 @@ async function main() {
       const search=document.querySelector('#classic-atlas-search');
       search.value='Carpenter';
       search.dispatchEvent(new Event('input',{bubbles:true}));
-      const hits=[...document.querySelectorAll('#classic-atlas-result-list button[data-concept-id]')];
-      const result={options,taskSelected,taskFeedbackUnchanged,hitIds:hits.map(x=>x.dataset.conceptId),
+      const hits=[...document.querySelectorAll('#classic-atlas-result-list button[data-lookup-concept-id]')];
+      const result={options,taskSelected,taskFeedbackUnchanged,hitIds:hits.map(x=>x.dataset.lookupConceptId),
         shownCards:[...document.querySelectorAll('#classic-atlas-grid .classic-catalog-card:not([hidden])')].map(x=>x.dataset.conceptId)};
       search.value='';
       search.dispatchEvent(new Event('input',{bubbles:true}));
