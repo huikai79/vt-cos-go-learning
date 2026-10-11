@@ -14,7 +14,7 @@ test("圍棋 × 數學頁維持 Explore-only，不接 learner runtime", () => {
   assert.doesNotMatch(html, /src="(?:app|scheduler|learner-progress|learning-metrics|practice-events|live-evidence)\.js/);
   assert.doesNotMatch(html, /localStorage/);
   const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"[^>]*><\/script>/gi)].map((match) => match[1]);
-  assert.deepEqual(scripts, ["back-to-top.js?v=back-to-top-v1"]);
+  assert.deepEqual(scripts, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1"]);
   assert.match(record, /learner_runtime_authority: none/);
   assert.match(record, /promotion_decision: do_not_promote_to_core/);
 });
@@ -87,5 +87,5 @@ test("Math 首屏不重複介紹右側關係卡，重要閱讀章節皆可直接
     assert.ok(html.includes('href="#'+id+'"'));
     assert.match(html,new RegExp('<section[^>]*id="'+id+'"'));
   }
-  assert.match(html,/nav class="explore-reading-index" aria-label="數學頁面章節目錄"/);
+  assert.match(html,/nav class="reading-toc-links" aria-label="本頁目錄"/);
 });

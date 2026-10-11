@@ -9,7 +9,14 @@ function Wait-DebuggingPort([string]$Profile) {
   $marker = Join-Path $Profile "DevToolsActivePort"
   for ($retry = 0; $retry -lt 100; $retry += 1) {
     if (Test-Path -LiteralPath $marker) {
-      return [int](Get-Content -LiteralPath $marker -TotalCount 1)
+      try {
+        $port = [int](Get-Content -LiteralPath $marker -TotalCount 1 -ErrorAction Stop)
+        if ($port -gt 0) { return $port }
+      } catch [System.IO.IOException] {
+        # Chromium may still hold DevToolsActivePort while publishing the port.
+      } catch [System.UnauthorizedAccessException] {
+        # Retry transient Windows file-sharing/access race during startup.
+      }
     }
     Start-Sleep -Milliseconds 100
   }

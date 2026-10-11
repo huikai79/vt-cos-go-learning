@@ -2021,6 +2021,31 @@ async function main() {
     assert.match(ontologyCatalogState.bentWarning, /不同規則下可能出現不同結果/);
     assert.equal(ontologyCatalogState.ontologyMeta, true);
 
+    const finderFlow = await evaluate(socket, `(() => {
+      const select=document.querySelector('#classic-task-select');
+      const originalFeedback=document.querySelector('#classic-feedback').textContent;
+      const options=[...select.options].filter(option=>option.value).length;
+      select.value='bent-three-practice-title';
+      document.querySelector('#classic-task-go').click();
+      const taskSelected=location.hash==='#bent-three-practice-title';
+      const taskFeedbackUnchanged=document.querySelector('#classic-feedback').textContent===originalFeedback;
+      const search=document.querySelector('#classic-atlas-search');
+      search.value='Carpenter';
+      search.dispatchEvent(new Event('input',{bubbles:true}));
+      const hits=[...document.querySelectorAll('#classic-atlas-result-list button[data-lookup-concept-id]')];
+      const result={options,taskSelected,taskFeedbackUnchanged,hitIds:hits.map(x=>x.dataset.lookupConceptId),
+        shownCards:[...document.querySelectorAll('#classic-atlas-grid .classic-catalog-card:not([hidden])')].map(x=>x.dataset.conceptId)};
+      search.value='';
+      search.dispatchEvent(new Event('input',{bubbles:true}));
+      return result;
+    })()`);
+    assert.equal(finderFlow.options,10);
+    assert.equal(finderFlow.taskSelected,true);
+    assert.equal(finderFlow.taskFeedbackUnchanged,true);
+    assert.ok(finderFlow.hitIds.includes('carpenters-square-v1'));
+    assert.deepEqual(finderFlow.shownCards,finderFlow.hitIds.slice(0,1));
+
+
     const bentThreeState = await evaluate(socket, `(() => ({
       points: document.querySelectorAll('#bent-three-board [data-bent-three-x][data-bent-three-y]').length,
       prompt: document.querySelector('#bent-three-prompt').textContent,
@@ -2333,6 +2358,34 @@ async function main() {
     assert.equal(bigPigsMouthCorrect.name, "大豬嘴／J Group");
     assert.equal(bigPigsMouthCorrect.nextDisabled, false);
 
+    // Regression: reproduce the user's route from Home -> 名型館#page-top ->
+    // 多語圖鑑. The destination starts hidden and must become visible AND
+    // enter the viewport after an explicit click. Merely changing hash is insufficient.
+    await command(socket, "Page.navigate", { url: classicPage + "#page-top" });
+    let classicCrossPageReady = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      classicCrossPageReady = await evaluate(socket, "document.readyState === 'complete' && Boolean(document.querySelector('#atlas') && document.querySelector('.classic-mode-link[href=\\\"#atlas\\\"]'))");
+      if (classicCrossPageReady) break;
+      await delay(100);
+    }
+    assert.equal(classicCrossPageReady, true);
+    await evaluate(socket, "(() => { scrollTo(0,0); document.querySelector('.classic-mode-link[href=\\\"#atlas\\\"]').click(); })()");
+    await delay(950);
+    const classicAtlasClick = await evaluate(socket, `(() => {
+      const panel=document.querySelector('#atlas');
+      const box=panel.getBoundingClientRect();
+      return {hash:location.hash,mode:document.body.dataset.classicMode,
+        atlasHidden:panel.hidden,atlasDisplay:getComputedStyle(panel).display,
+        top:box.top,bottom:box.bottom,scrollY,viewportHeight:innerHeight,
+        results:document.querySelectorAll('#classic-atlas-result-list button').length};
+    })()`);
+    assert.equal(classicAtlasClick.hash, "#atlas");
+    assert.equal(classicAtlasClick.mode, "atlas");
+    assert.equal(classicAtlasClick.atlasHidden, false);
+    assert.ok(classicAtlasClick.top < classicAtlasClick.viewportHeight && classicAtlasClick.bottom > 115
+      && classicAtlasClick.scrollY > 50,
+      "Classic Atlas clicked but viewport never reached visible catalog: " + JSON.stringify(classicAtlasClick));
+
     await command(socket, "Page.navigate", { url: historyPage });
     let historyReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
@@ -2416,7 +2469,7 @@ async function main() {
     assert.equal(historyDesktop.questions, 5);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
     assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-29");
-    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1"]);
+    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1"]);
     assert.equal(historyDesktop.historyVersion, true);
     assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);
     assert.ok(historyDesktop.minContrast >= 4.5, `history minimum contrast: ${historyDesktop.minContrast}`);
@@ -2438,6 +2491,34 @@ async function main() {
       advancedCtaVisible: (() => { const node = document.querySelector('.history-cta a[href="advanced.html#page-top"]'); return Boolean(node && node.getBoundingClientRect().width > 0 && node.getBoundingClientRect().height > 0); })()
     }))()`);
     assert.ok(historyMobile.scrollWidth <= historyMobile.width + 1, `history mobile horizontal overflow: ${JSON.stringify(historyMobile)}`);
+
+    // Responsive TOC: the desktop rail stays sticky; entering compact mode
+    // closes its disclosure without changing hash or learner state.
+    const tocMobile = await evaluate(socket, `(() => {
+      const panel=document.querySelector('.reading-toc-panel');
+      const trigger=panel.querySelector('summary');
+      return {open:panel.open,summaryVisible:getComputedStyle(trigger).display!=='none',
+        width:trigger.getBoundingClientRect().width,links:panel.querySelectorAll('a[href^="#"]').length};
+    })()`);
+    assert.equal(tocMobile.open,false,"mobile TOC should be collapsed on entering compact layout");
+    assert.equal(tocMobile.summaryVisible,true);
+    assert.ok(tocMobile.width>44 && tocMobile.links>=5);
+    const tocDesktop = await (async () => {
+      await command(socket,"Emulation.setDeviceMetricsOverride",{width:1440,height:900,deviceScaleFactor:1,mobile:false});
+      return evaluate(socket,`(() => {
+        const panel=document.querySelector('.reading-toc-panel');
+        const target=document.querySelector('#sources');
+        return {open:panel.open,position:getComputedStyle(panel).position,
+          visible:panel.getBoundingClientRect().width>0,target:!!target};
+      })()`);
+    })();
+    assert.equal(tocDesktop.open,true);
+    assert.equal(tocDesktop.position,"sticky");
+    assert.equal(tocDesktop.target,true);
+    await command(socket,"Emulation.setDeviceMetricsOverride",{width:375,height:812,deviceScaleFactor:1,mobile:true});
+    const tocReentered=await evaluate(socket,"document.querySelector('.reading-toc-panel').open");
+    assert.equal(tocReentered,false,"desktop-to-mobile transition must close reading disclosure");
+
     assert.equal(historyMobile.ctaDirection, "column");
     assert.equal(historyMobile.advancedCtaVisible, true);
     assert.ok(historyMobile.sourceColumns.split(" ").length === 1);
