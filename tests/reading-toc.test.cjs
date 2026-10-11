@@ -36,7 +36,7 @@ test("reading TOC has mobile disclosure, live position and no learner-state writ
  assert.match(css,/scroll-margin-top/);
  assert.match(js,/aria-current/);
  assert.match(js,/hashchange/);
- assert.match(js,/toc\.open = false/);
+ assert.match(js,/toc\.open = !mobile\.matches/);
  assert.doesNotMatch(js,/localStorage|sessionStorage|scheduler|scoring|formalEligible|fetch\(/);
  assert.doesNotMatch(js,/scrollTo\(|scrollRestoration/);
 });
