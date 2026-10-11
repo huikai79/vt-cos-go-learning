@@ -103,9 +103,18 @@ test("整站設計候選完整列入公開 manifest，但 production entrypoints
   }
 });
 
-test("兩個公開入口與 README 使用同一品牌名稱", () => {
-  for (const file of ["index.html", "r1-review.html", "README.md"]) {
+test("兩個公開入口與雙語 README 沿用同一產品品牌", () => {
+  for (const file of ["index.html", "r1-review.html"]) {
     assert.match(fs.readFileSync(path.join(root, file), "utf8"), /VT-COS｜悟之一手/, file);
+  }
+  const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
+  // Current main has an English-first README; existing development branches
+  // retain the Chinese-first README. Both use the same VT-COS product brand.
+  assert.match(readme, /VT-COS(?:｜悟之一手| Go Learning)/, "README.md");
+  if (readme.includes("README.zh-Hant.md")) {
+    const translated = path.join(root, "README.zh-Hant.md");
+    assert.ok(fs.existsSync(translated), "English README must link to a real Chinese README");
+    assert.match(fs.readFileSync(translated, "utf8"), /VT-COS｜悟之一手/, "README.zh-Hant.md");
   }
 });
 
