@@ -6,11 +6,9 @@
   const mobile = window.matchMedia("(max-width: 1199px)");
   // The desktop rail is always open; narrow layouts use a user-controlled disclosure.
   function updateLayout() {
-    if (!mobile.matches) toc.open = true;
-    else if (!toc.dataset.mobileInitialized) {
-      toc.open = false;
-      toc.dataset.mobileInitialized = "true";
-    }
+    // Desktop rail stays expanded. Every transition into the compact layout
+    // starts closed, even when the page was first loaded at desktop width.
+    toc.open = !mobile.matches;
   }
   updateLayout();
   if (mobile.addEventListener) mobile.addEventListener("change", updateLayout);
