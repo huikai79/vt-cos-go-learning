@@ -1,0 +1,39 @@
+/* G1/G2 Classic task navigation without duplicating any practice scorer. */
+.classic-task-switcher{position:sticky;top:124px;z-index:12;margin:0 0 22px;padding:12px 14px;border:1px solid #d5e1d2;border-radius:12px;background:#fbfcf8f5;box-shadow:0 4px 16px #24452e16}
+.classic-task-switcher-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.classic-task-switcher-line label{font-weight:800;color:#284a34}
+.classic-task-switcher select{flex:1;min-width:170px;min-height:44px;border:1px solid #9eb49c;border-radius:8px;padding:8px 12px;background:#fff;color:#243d2d;font:inherit}
+.classic-task-switcher p{margin:7px 0;color:#506750;font-size:.86rem;line-height:1.55}
+.classic-task-all{margin-top:8px}
+.classic-task-all summary,.classic-atlas-category-options summary{cursor:pointer;min-height:44px;padding:11px 0;color:#31583e;font-weight:700}
+.classic-task-all .classic-practice-jumps{margin:8px 0}
+.classic-atlas-query-tools{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
+.classic-atlas-query-tools label{display:grid;gap:6px;flex:1;min-width:220px;color:#254633;font-weight:750;font-size:.88rem}
+.classic-atlas-query-tools :is(input,select){min-width:0;width:100%;min-height:44px;border:1px solid #9eb49c;border-radius:8px;background:#fff;color:#243d2d;padding:9px 11px;font:inherit;font-weight:400}
+.classic-atlas-lookup{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);align-items:start;gap:16px}
+.classic-atlas-results{position:sticky;top:128px;min-width:0;max-height:calc(100vh - 150px);overflow-y:auto;border:1px solid #dbe5d8;border-radius:12px;background:#fff;padding:12px}
+.classic-atlas-results h3{margin:0 0 10px;font-size:1rem}
+.classic-atlas-result-list{display:grid;gap:6px}
+.classic-atlas-result-choice{display:grid;text-align:left;gap:4px;min-height:54px;width:100%;padding:10px 12px;background:#f8faf6;color:#284633;border:1px solid #dde8dc;border-radius:8px;font:inherit;cursor:pointer}
+.classic-atlas-result-choice small{color:#526858;line-height:1.4}
+.classic-atlas-result-choice[aria-pressed="true"]{border-color:#315d40;background:#eaf2e8;box-shadow:inset 3px 0 #315d40}
+.classic-atlas-result-choice:hover{background:#eaf2e8}
+.classic-atlas-detail{min-width:0}
+.classic-atlas-detail #classic-atlas-grid{display:block}
+.classic-atlas-detail .classic-catalog-card{width:100%}
+.classic-atlas-detail .classic-catalog-card[hidden]{display:none!important}
+.classic-atlas-detail #classic-atlas-back{display:none}
+.classic-atlas-empty{line-height:1.6;color:#617364}
+.classic-shapes-page :is(.classic-task-switcher select,.classic-task-switcher button,.classic-task-all summary,.classic-atlas-query-tools input,.classic-atlas-query-tools select,.classic-atlas-category-options summary,.classic-atlas-result-choice,#classic-atlas-back):focus-visible{outline:3px solid #a86a10;outline-offset:3px}
+@media(max-width:760px){
+ .classic-task-switcher{top:112px}
+ .classic-task-switcher-line{align-items:stretch}
+ .classic-task-switcher-line label{width:100%}
+ .classic-task-switcher select{min-width:0}
+ .classic-atlas-lookup{display:block;scroll-margin-top:150px}
+ .classic-atlas-results{position:static;max-height:none;overflow:visible}
+ .classic-atlas-detail #classic-atlas-back{display:inline-flex;align-items:center;min-height:44px;margin:0 0 12px}
+ .classic-atlas-lookup[data-mobile-view="detail"] .classic-atlas-results{display:none}
+ .classic-atlas-lookup[data-mobile-view="list"] .classic-atlas-detail{display:none}
+}
+@media(max-width:390px){.classic-task-switcher-line{display:grid;grid-template-columns:1fr}.classic-atlas-query-tools label{min-width:0}}
