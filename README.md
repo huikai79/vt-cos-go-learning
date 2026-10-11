@@ -1,191 +1,51 @@
-2026-10-01 SGF Review R1–R7 hardening：Advanced 既有 19×19 決策點複盤新增明示執棋視角（我執黑／我執白／只查看棋譜）、規則重建的棋盤事件導航、事件前 3／5／10 手回看，以及只含 SGF＋複盤視角＋選定手數的 review-only package。事件導航不把大型提子或同點再佔自動叫成錯手／劫／能力弱點；複盤包不匯入歷史 evidence。既有 first candidate／retry、No-AI 人工複盤、稍後重做與 optional KataGo bounded comparison 都保留，且仍不更新 KC／scheduler／T2-T3／formal evaluation。
+[繁體中文完整說明](README.zh-Hant.md)
 
-2026-09-30 Final-phase Evidence Handoff v1：工程擴張停止後，新增 reviewer/human evidence handoff 工具：77 題 R1a 既有答案盲審入口之外，新增 19 課短講外部棋理審查頁、三位 target novice＋accessibility 收集頁，以及只讀 final-phase status CLI。所有工具都綁目前 formal teaching candidate 與內容 fingerprint，且真人回條不進 public release。這只是收集工具就緒；R1a、短講外審、usability、accessibility、R1b、private unseen 與 learning effect 狀態均未因本輪自動升格。
+# VT-COS Go Learning — A Move of Insight
 
-2026-09-30 Advanced P0–P4 overlap audit：先確認既有 main 已完成 P0 Double Atari Comparable Framework v2，因此沒有重做。補完的缺口為：以現有 Enclosure Capture rules fixtures 建立 19×19 兩步 full-board practice／process／24h／7d 流程；新增 Double Atari fresh 7-day public process-check；新增 urgent-atari／Double Atari／Enclosure 的 cross-family 描述性 first-response view；並設定 P0–P3 完成後停止繼續擴張 family／spacing／adaptive scheduler 的 engineering boundary。Advanced Evidence Bundle 升為 v4。這些功能只建立可重算的公開練習／流程檢查，不代表 KC、retention、transfer 或 learning effect 已驗證。
+**Evidence-aware interactive Go learning prototype with explicit boundaries between practice, public evaluation, and formal learning-effect claims.**
 
-2026-09-30 Comparable Framework v2：進階頁新增第二組 19×19 全盤可比較練習，使用既有 rules-backed「雙打吃」Teaching Candidate。v2 不改寫原本 urgent-atari Comparable／Delayed 紀錄；舊 v1 與新 v2 使用不同 storage/event versions。Double Atari 依練習 → 不同新局面 → 至少 24 小時後第三局面執行，首答與重試分開保存，成功條件由 rules engine 從盤面推導；這些公開題不更新 KC、scheduler 或正式評量。Advanced Evidence Bundle 現為 v3，同時匯出 v1 與 v2 evidence streams；仍只有 export，沒有 restore/import。
+Live version: https://huikai.com.kg/vt-cos-go-learning/
 
-2026-09-30 Enclosure Capture Family v1：依四個本站原創、非單純鏡射的 rules-backed fixtures，新增一個較粗的「包圍吃子」Teaching Candidate，教「先切斷援兵 → 唯一延長 → 延長後仍一氣 → 下一手局部提子」；「門吃／抱吃」仍只作來源術語候選，沒有足夠棋盤分岔條件時不硬拆兩個 KC。\n\n2026-09-30 Capture Pattern Concept Anchors v1：跨語與棋盤規則查核後，新增一個 rules-backed「雙打吃」Teaching Candidate；同一原創示意由 rules engine 驗證兩串分離白棋從各兩氣同時變為各一氣，且落子不立即提子。中文「門吃／抱吃」已有入門教材分類證據，但本輪不強迫映射成 `ゲタ/net` 或其他單一外語術語，也不新增 KC／sequence family。\n\n2026-09-30 吃子與對殺主線更新：Advanced choice practice 新增兩個「打吃方向」候選練習，分別練「先預測逃路」與「先堵連接路」。這是 Teaching Candidate／task-feature 試行，不建立新 KC，也不改既有四 family 多手 sequence、固定交錯 policy、scheduler、T2/T3 或 formal evaluation；教材截圖因來源／授權未確認只作研究線索，不進公開資產。
+VT-COS Go Learning is a local-first learning prototype for Go. It combines a structured curriculum, board-based exercises, delayed checks, SGF decision review, evidence export, and rules-backed validation while keeping engineering completion separate from claims about learning effectiveness.
 
-2026-09-29 Delayed Comparable Retrieval v1：進階頁在 immediate comparable check 之後新增固定 24 小時延後的第三局面；不到時間不開題，到期後以新的 19×19 盤面再次做相同 bounded 判斷，並保存實際相隔時間與第一次作答。這是公開流程檢查與固定 baseline，不是自適應排程，也不是正式未見評量。Advanced 原始事件備份升為 bundle v2，包含 delayed stream／analysis；仍只有單向 export，沒有 restore/import。
+## What this project demonstrates
 
-2026-09-29 Comparable Position v1：進階頁新增 4 個 19×19 全盤判斷局面。前兩題先熟悉「找出唯一只剩一氣的己方棋串，再下出能讓它增加到至少兩氣的一手」，後兩題改變棋串大小、形狀、棋色、位置與全盤干擾，再做同類判斷。答案由 rules engine 從棋盤事實推導，不使用 KataGo 排名。後兩題仍是公開流程檢查，不是正式未見評量，也不更新能力分數或複習排程。
+- A 15-unit, 19-lesson core curriculum with 106 learner-facing questions.
+- Board-state and rules-backed checks for bounded Go tasks.
+- Separation of first attempts, retries, exposure history, and delayed checks.
+- Explicit distinction between practice data, public test material, and evidence that could qualify for formal evaluation.
+- SGF-based decision review and bounded comparison workflows.
+- Recomputable learner/evidence state instead of unsupported mastery percentages.
+- Local storage, exportable evidence, and explicit versioning of learner-facing flows.
+- Engineering gates that prevent public exercises or implementation completion from being treated as proof of retention, transfer, usability, or learning effect.
 
-2026-09-29 Decision Point Comparison v1：19×19 決策點複盤在揭露原著後，可選擇用 KataGo 比較「我的第一候選」與「原著」。只有規則與貼目明確、第一候選合法且兩手不同時才可送出；搜尋只限制在這兩手，結果用自然語句呈現為本次搜尋偏好，不當作標準答案、錯手判定或能力分數。分析失敗不回退成 heuristic，也不影響原本複盤紀錄。
+## Evidence status
 
-2026-09-29 SGF Decision Review v1：進階頁新增 19×19 單一決策點複盤。先匯入 SGF、選一手、在原著隱藏時提出第一候選，再揭露原著做歷史比較；第一候選、retry、exposure 與版本 metadata 分開保存。這是 practice artifact，不是最佳手評分、transfer 或正式評量。
+**Validated:** the prototype and its engineering/evidence workflows are implemented and testable.
 
-# VT-COS｜悟之一手：個人圍棋互動課程
+**Not established:** formal learning effectiveness, private-unseen generalization, independent content validity, usability, and accessibility outcomes.
 
-**English name:** `A Move of Insight`
+Publicly exposed questions are not treated as a formal hidden holdout. Engineering completion does not automatically promote an educational claim.
 
-> VT-COS（Vibe Thinking – Cognitive Operating System）旗下的個人圍棋學習原型。
+## Evaluation philosophy
 
-線上版本：[https://huikai.com.kg/vt-cos-go-learning/](https://huikai.com.kg/vt-cos-go-learning/)；GitHub 預設網址 [https://huikai79.github.io/vt-cos-go-learning/](https://huikai79.github.io/vt-cos-go-learning/) 會轉向同一網站。
+The project deliberately separates:
 
-目前是可運作的個人離線學習原型，尚不是可判定學習成效的正式驗收系統。2026-09-21 已將七天批次升為 `personal-pilot-v3`：八題皆來自使用者舊 R1 自我審查中已看過的 22 題，只檢查操作、七天返回、資料完整性與負擔，`formalEligible=false`。一般原始匯出仍遮蔽公開保留組的答案，但完整題庫與答案已隨 GitHub 原始碼公開；48 題均標記為 `public_source`、`formalHoldoutEligible=false`，整個舊 formal holdout pool 已退役。正式評量若要重啟，必須建立從未公開的新題庫與角色分離流程。現況以[完成矩陣](COMPLETION_MATRIX.md)為準；正式教學停止線見[正式教學閘門](TEACHING_GATE.md)，發布邊界見[公開發布架構](PUBLICATION_ARCHITECTURE.md)。
+**Practice → immediate check → delayed check → new-position application → formal evaluation**
 
-同日完成導覽、工具說明、首次使用、棋盤鍵盤操作與學習者流水線：側欄區分初級 1–5、中級 6–10、高級 11–15。為避免每題重複佔用版面，主畫面只保留目前行動與兩個入口；完整「先看懂 → 自己作答 → 修正重算 → 延後新題 → 局面應用」流程改由視窗按需查看，一般進課時，每課短講與棋盤示範只在第一次進入該課時自動顯示，關閉後仍可隨時重開。短講的自動顯示抑制狀態與待看狀態都保存在本機；`seenLessonIntros` 只控制是否再次自動彈出，不代表完成短講或形成 learner evidence；重新載入不會重複打擾或遺失待看短講；但正式完成前一單元並跨入下一單元時，即使曾預覽下一單元，仍會重新開啟該單元短講。完成一課或一個單元後，下一步按鈕仍會明示「進入下一課短講」或「進入第 N 單元短講」；同一課內直接前往下一題。19 課都有棋盤示範；只有存在可觀察狀態轉移時才使用「上一步／看下一步」多步播放，相鄰完全同圖由 visual-delta regression 阻擋。第 1 課先聚焦角上黑棋，再揭示兩口氣；第 4 單元的直三示範保留做活／破眼短讀。另有 practice-only「經典眼形探索」，先讓學習者自行找急所，作答後才揭示「直三」，再做換方向、攻守交換與相似反例。探索頁重用既有題目 source of truth，不寫入 KC、scheduler、T2／T3 或 formal evaluation。第 9–19 課以 5×5 縮圖表達局部比較或階段順序，文字明示它們不是唯一全局答案。10 個後續單元另以 9×9 棋盤提供局部觀察點選題，題幹與解說都明示只判定指定局部，避免把教學要點誤當成全局唯一最佳手。匯入單一主線的 9 路 SGF 後可選任意可落子的原局著手重建局部，並保存候選手、預期應手、理由及人工確認紀錄；兩種匯出都帶有重建該手所需的原局面與來源指紋，局部復盤也可另匯出 SGF 交給 KaTrain。課程改為先選單元、再明確點選課程；棋盤每次只有一個 Tab 停駐點，可用方向鍵移動並以 Enter／Space 落子。側欄另顯示可觀察錯誤、SCD 階段、再犯間隔及資料不足原因；同一診斷寫入兩種匯出。有題目真正到期時，首頁才顯示「今日到期」直接入口。工具面板預設先顯示日常練習與棋譜複盤；七天流程試行、複習策略、學習摘要與完整備份則收在「進階設定與資料」，並明示 Core 側欄的 JSON 備份涵蓋 Core、固定應用探測、局部復盤與實戰原始事件；獨立 Advanced 事件由進階頁的「匯出進階練習原始事件」另行備份。R1a 審查頁已從學習者工具選單移除，只供不同於學習者的外部審查者使用。此介面版號為 `learner-flow-v57`；內容目錄版本為 5；棋盤練習頁為 `live-game-ui-v11`。19 課短講保留按課關鍵詞定義，示意圖圖例改為只顯示本課實際使用的標記；劫、真假眼、短讀、官子雙結果、棄／救比較與複盤標記改成更完整的逐步圖，自由棋盤也補上 Pass、死子、面積計分、貼目、簡單劫與 SGF 的白話說明。一般練習的正誤結果以圖示、明確標題與不同背景 banner 區分；題目卡收斂為「題型 · 重點 → 問題」，真正問題使用最高視覺權重並成為換題後焦點，作答說明移到選項下方，純文字選擇題不再保留大面積固定空白。「記住這句」首答前隱藏，非 evaluation 的第一次有效回答後才揭露；個人 pilot 的結果與記憶 cue 遮蔽不受影響。核心學習／操作文字維持 16px 級，並補上 `zh-Hant-TW`、繁中字型 fallback、20px 手機留白、44px 常用控制、visible focus 與安全 CJK 換行基線；metadata 仍保留較低視覺權重。這是工程調整，不代表真人可用性或學習成效已驗證。設計判斷與未解事項見 [前端操作與視覺稽核](UI_UX_AUDIT.md)。
+Those stages are not interchangeable. A successful public exercise can demonstrate that a workflow functions, but it does not by itself establish retention, transfer, or learning effectiveness.
 
-2026-09-28 首頁視覺整合升至 `learner-flow-v47`：先前生成的整頁設計稿與棋盤 PNG 只作視覺參考，正式首頁改用 deterministic inline SVG。Hero 直接畫出可核對的「最後一口氣」9 路局部棋形；核心課程三階段各有一致的小棋盤縮圖；「怎樣才算真的學會」改為第一次自己作答、隔一段時間再做、換新棋形、仍能自己判斷四格。這些圖只改善 learner-facing 視覺與閱讀節奏，不改題目、答案、scoring、scheduler、event schema 或 formal evaluation，也不把生成圖當棋盤真值。正式 usability 與學習成效狀態不變。
+## Key documentation
 
-2026-09-28 首頁目前是永久 reader-first 學習樞紐：根網址 `/` 不會因已有進度就自動略過首頁。Hero 仍把完全零基礎的 Core 放在第一主路徑；「基礎建立／局部與棋局判斷／全局與綜合應用」三張卡只對應 Core 單元 1–5／6–10／11–15，後兩張分別直達第 6 與第 11 單元。Core workspace 以 `#core` 表示。獨立 `advanced.html` 仍是 Core 後續的 practice-only 進階訓練，不屬於 1–15，也不佔用三張 Core 階段卡。此導覽修正不碰題目、KC、scoring、scheduler、storage 或 evidence semantics。
+- [Completion Matrix](COMPLETION_MATRIX.md) — current implementation and evidence status
+- [Teaching Gate](TEACHING_GATE.md) — conditions for stronger teaching claims
+- [Publication Architecture](PUBLICATION_ARCHITECTURE.md) — public/private evidence boundaries
+- [Design Plan](DESIGN_PLAN.md) — evaluation and curriculum design
+- [Learning Metrics Research](RESEARCH_LEARNING_METRICS.md) — metric definitions and limitations
+- [UI/UX Audit](UI_UX_AUDIT.md) — interface decisions and unresolved usability questions
 
-這是單人、離線使用的圍棋學習程式；15 單元、19 課、106 題現在定位為 Core Curriculum，不宣稱完成後等同特定 K／段位。另有獨立 `advanced.html` 作 Core 後續進階訓練：保留讀棋／手筋、中盤攻防、官子／全局判斷三條 practice-only 訓練線與 12 個 choice Experience；目前有兩個「打吃方向」、一個「雙打吃」與一個較粗的「包圍吃子」Teaching Candidate，只記可觀察 task features，不建立新 KC；「門吃／抱吃」的 label split 仍為 UNKNOWN；棋盤 Response 仍把倒撲、枷、對殺、征子各保留兩個變形，共 8 題；第二變形不是只做旋轉，而分別改提子數／局部棋串、出口幾何、learner 棋色、棋盤大小與征子路線長度。全部先經 rules-backed sequence contract 重播，仍只作 practice-only family seed。兩種模式都保存首答與重試但不更新 KC、scheduler、T2／T3 或正式評量，現有初級、中級、高級各五個單元，共 15 單元、19 課、106 題，另有 148 題／43 個母題家族的 Phase 2 變形庫。9×9 人機局另有 `live-eligibility-v1`／`live-scoring-v1`：每個學習者回合先掃描整盤，只把唯一一手提子與 computer-provoked 唯一直接救棋升為 bounded live T3；其餘回合仍保存為 unscored。`learner-evidence-progress-v2` 把課程／延後 T0–T2 與這些 live T3 並列為可重算 evidence state，並顯示資料收集 readiness（是否已掃描、出現 eligible、取得首答與跨局 session）；不輸出 mastery 百分比，也不直接改 scheduler。直接以瀏覽器開啟 `index.html`，不需伺服器。課程包含 28 題棋盤落子、10 題局部棋形點選與 68 題文字選擇；後續單元的點選題只判定題幹指定的局部觀察點，不宣稱為全局最佳手。固定應用探測、9 路 SGF 任意手數局部重建、排程及匯出均可操作；進度以第 7 版 schema 儲存在瀏覽器 `localStorage`。新增的 48 題涵蓋直三做活／破眼及第二眼缺口的補／破，並含非 holdout T2 流程題；錯誤分類只描述可觀察的技能任務結果，不推定心理根因。目前的「七天流程試行」使用已知曝光題，不能當成正式未見、保留、遷移或學習成效證據。
+## Why it is relevant to my AI evaluation work
 
-後續功能、基礎變形庫、初級死活題組、自適應複習與真人驗證安排，見 `DESIGN_PLAN.md`。目前保留原有 100 題吃子、連接與救棋，另新增 48 題兩類基礎死活；內容效度仍待獨立審題，這兩類也不等於完整死活課綱。完整承諾與狀態見 [完成矩陣](COMPLETION_MATRIX.md)。
+The project applies the same discipline I use in AI evaluation: distinguish observable behavior from interpretation, isolate exposed material from stronger evaluation evidence, preserve provenance, keep retries separate from first attempts, and avoid promoting claims beyond the evidence.
 
-2026-09-20 計畫補充：技能卡視為可依資料修訂的假說；保存題目特徵與歷史版本，以輪替未見題檢查保留與應用。先用兩個技能及固定間隔練習／已核對回饋試行，再比較自適應選題的額外效益。學習成本、保留、遷移分開觀察；市場功能只作參考，個人離線使用範圍照原計畫。詳見 [設計計畫](DESIGN_PLAN.md)與[附件查核](RESEARCH_LEARNING_METRICS.md)。
-
-排序政策採 Minimal Sufficient Policy：正式比較先建立含必要先備、分散提取與簡單交錯選題的強基準，再逐層加入反覆弱點、保留／遷移與有決策價值的診斷。每層都須在相同學習預算下證明增量效益，否則回退；目前固定與候選自適應排程只屬工程方案，尚未取得學習效果證據。有題目到期時首頁會顯示入口，但仍由使用者主動開啟，不會自動打斷新課。
-
-後續課程以「自行嘗試 → 具體回饋 → 關閉答案重建 → 日後新題」為最小流程，依辨識、讀棋與應用需要提供協助。原七階段循環是跨日教學願景；睡眠／休息是支持條件，不設鞏固完成狀態。原判斷只抽樣或主動記錄，先保存再揭露回饋。
-
-## 教學目標
-
-「讓每次失敗留下可用的回饋，以可比較機會中的長期表現，以及未見局面的保留與應用，判斷進步。」實作上把它拆成「需要幾次相關練習，才能在延後的無提示新棋形測驗達標」及「成功經歷多少次相關決策機會才再犯」；兩者作同條件下的流程診斷，不要求逐期改善，主要驗收仍是獨立新題與應用。完成題數只作輔助資訊。
-
-目前「指定棋串的一手提子」與「指定兩串的一手直接連接」已有技能卡及事件資料；這證明資料能保存，不證明技能模型有效。排程已改為每次呈現只以首答更新，重試另記；固定應用探測已保存呈現、未答與中斷分母。SGF 可依原局手數重建可落子的著手並保存復盤資料，但原著仍不能當作經確認的錯誤修正。
-
-「首次作答」指每次開題後的第一個已記錄作答；「首次曝光」另外由題目層級保存。離開未作答的試行題會記為 `unanswered`，下次載入仍未關閉的題目會記為 `interrupted`；兩者都不當成功。這仍只涵蓋兩個試行技能，現有數字不足以判定穩定掌握。
-
-研究核對及計數限制見 [RESEARCH_LEARNING_METRICS.md](RESEARCH_LEARNING_METRICS.md)；正式指標、T0–T3 驗收與可調門檻見 [DESIGN_PLAN.md](DESIGN_PLAN.md)。這些是後續設計，尚未經圍棋學習成效研究驗證。
-
-## 第一單元：氣與吃子
-
-| 課次 | 內容 | 題數 |
-|---|---|---:|
-| 1 | 中央、邊、角、相連棋串的氣；斜對角不相連 | 5 |
-| 2 | 中央、邊、角及兩顆相連棋的提子 | 4 |
-| 3 | 被打吃時延長棋串、增加氣 | 1 |
-
-## 第二單元：連與斷
-
-| 課次 | 內容 | 題數 |
-|---|---|---:|
-| 4 | 辨認直連、斜接與被對方棋子隔開的棋串 | 4 |
-| 5 | 找共同空點，落子把兩串棋直接接起來 | 3 |
-| 6 | 佔住對方兩串棋的直接連接點 | 3 |
-
-「斷點」題只判定能否阻止對方下一手**從該點直接連接**；對方可能另找路徑。答題以棋盤落子後的棋串關係與共同氣判定。
-
-## 完整課程
-
-| 等級 | 單元 | 每單元題數 |
-|---|---|---:|
-| 初級 | 氣與吃子、連與斷、禁著與劫、眼與基礎死活、9 路小局 | 10、10、6、14、6 |
-| 中級 | 佈局基礎、地與厚勢、攻守與弱棋、死活閱讀、官子與數目 | 各 6 |
-| 高級 | 全局方向、戰鬥與棄子、劫爭與劫材、定石與變化、棋譜複盤 | 各 6 |
-
-各單元均有短講、立即作答、提示、答案理由、錯題複習與本機進度。前兩單元採棋盤狀態判定；「禁著與劫」採概念選擇題；簡單劫另有引擎測試，目前未接成連續劫題作答流程；需要連續變化、全局比較或棋譜判讀的內容採有明確理由的選擇題，避免把沒有唯一座標答案的局面誤標為單一正解。詳細對照在 `CURRICULUM.md`。
-
-題目以原創棋形與文字編寫。教材編排參考以下棋協資料，於 2026-09-18 至 19 日查核：
-
-- [日本棋院：入門至初級課程例](https://www.nihonkiin.or.jp/teach/school_teach/digest/11.html)：由 9 路入門、13 路初級到 19 路及初段，涵蓋提子、連斷、禁著、劫、死活、佈局、攻守、官子與詰碁。
-- [日本棋院：打吃與救棋](https://www.nihonkiin.or.jp/teach/lesson/school/atari.html)：一口氣為打吃，直線連接可增加棋串的氣，斜對角不形成同一棋串。
-- [日本棋院：切斷與連接](https://www.nihonkiin.or.jp/teach/lesson/school/kiritsunagi.html)：辨認沿線連接、斜接與切斷位置。
-- [英國圍棋協會：教初學者](https://media-iframe.britgo.org/organisers/handbook/club4)：先教足以開始下棋的規則，初局使用 9 路盤，不宜一次塞入所有細節。
-- [英國圍棋協會：先提子](https://britgo.org/capturego)：以先提到棋的一方獲勝，練習基本攻防。
-
-## 字體與版面
-
-使用系統已有的「Noto Sans TC／微軟正黑體」字體序列，不連線下載字體。中文教學與題幹為 16px、次要資訊為 14px、課程與題目標題為 32px／24px；以段落行高和較深文字色維持可讀性。桌面左欄固定於視窗內；手機以單元選單及該單元課程清單導覽，不以長距離橫向滑動選課。
-
-尺度與檢查依據：[Ant Design 字體規範](https://ant.design/docs/spec/font/?locale=en-US)的有限字級、系統字體優先順序；[W3C 中文排版需求](https://w3c.github.io/clreq/)；[WCAG 2.2](https://www.w3.org/TR/wcag/)的文字縮放與窄視窗重排原則。這些是設計參考，尚未宣稱通過完整無障礙稽核。
-
-## 設計邊界
-
-- 原型具備短教學、點選棋盤、即時判定、錯題複習、固定應用探測、5×5／7×7 基礎與過渡棋盤、9×9 完整小棋盤對局、19×19 全盤 practice，以及 9 路 SGF 可落子著手重建與復盤紀錄匯出。5／7 路只作 practice scaffold；3×3 已退出學習者可玩階段但保留底層相容，9×9 才定位為完整小棋盤對局；三種 active 尺寸都不自動成為正式 T2／T3。完成 9 路局部復盤後可另匯出標準 SGF 交給 KaTrain 開啟；5／7／9／19 路以 bounded heuristic 練習電腦作零安裝預設；進階 provider 另支援每台裝置自行啟動的 localhost KataGo bridge，以及使用者自架的 Remote HTTP(S) API。GitHub Pages 本身不能執行 KataGo，現行公開部署也沒有共用託管 KataGo endpoint，因此不能把 provider contract 的存在解讀成所有網站訪客都能直接使用 KataGo。
-- 題目棋形為教學局面；答題引擎檢查氣、提子、自殺手、簡單劫，並對照題目指定目標。後續若擴充到實戰，需補規則集與棋譜格式。
-- 本機瀏覽器可直接使用；沒有網路請求、外部字體或第三方程式庫。
-- Core 棋譜單點復盤仍只接受單一 9 路主線 SGF；Advanced 的 SGF Decision Review v1 另接受單一 19 路主線，用於 practice-only 決策點候選重建。兩者都不接受多盤 collection 或分支變化；檔案上限 1,000,000 bytes、10,000 個節點、128 層巢狀。19 路模式只比較候選與歷史原著，不判定最佳手，也不更新 KC／scheduler／T2-T3／formal evaluation。
-
-## GitHub 公開邊界
-
-- 公開品牌名稱為 `VT-COS｜悟之一手`；英文名稱為 `VT-COS｜A Move of Insight`。母品牌、產品名、對外說法與視覺使用邊界見 [BRAND.md](BRAND.md)。品牌歸屬不取代 `LICENSE`，也不代表已證明教學成效。
-
-- 本資料夾已建立為獨立公開 repository：[huikai79/vt-cos-go-learning](https://github.com/huikai79/vt-cos-go-learning)。父層 `VT-Workflow` 不在這個 Git 邊界內。
-- GitHub Pages 已從 `main`／`/` 發布。帳號層的 `huikai.com.kg` 自訂網域會自動套用到這個 project site；正式 HTTPS 網址與 `github.io` 轉址均已通過完整 Edge UI suite。
-- `gtp_logs/` 含本機使用者路徑、硬體及 KataGo 執行資訊，已由本資料夾的 `.gitignore` 排除。個人事件匯出、學習摘要、局部復盤及 R1 審題草稿／回條也預設排除。
-- 擁有者已於 2026-09-21 接受題庫、答案與 R1 審題工具公開。題庫來源拆成 `phase2-foundation-bank.js` 的 100 題基礎技巧與 `phase2-life-death-bank.js` 的 48 題基礎死活，再由 `phase2-content.js` 相容組裝。`pool: "holdout"` 僅保留排程與資料相容用途；48 題都帶有公開曝光時間與不得作 formal holdout 的機器可讀標記。
-- 公開檔案的機器可讀真相來源是 `release-manifest.json`；完整資料流、發布單位與 fresh-clone 閘門見 [PUBLICATION_ARCHITECTURE.md](PUBLICATION_ARCHITECTURE.md)。
-
-## 授權
-
-本專案以 [MIT License](LICENSE) 發布。品牌名稱與呈現方式見 [BRAND.md](BRAND.md)；MIT 授權適用於程式與文件的重用，不額外建立商標權利。
-
-## 驗證
-
-在本資料夾執行 `node tests/go.test.cjs`，驗證 15 單元、106 題的資料完整性，及棋盤題的氣數、提子、救棋、連接、斷點、基礎死活急所、禁著和簡單劫；執行 `node tests/live-game.test.cjs` 驗證 5／7／9／19 路 active practice，以及 3×3 legacy 邊界 regression、提子、Pass、計分、續局、SGF round-trip、live evidence UI 接線與 9×9 相容；執行 `node tests/live-evidence.test.cjs` 驗證結果前 eligibility、first response／retry、未答分母、actor provenance、版本隔離與跨局 session；執行 `node tests/learner-progress.test.cjs` 驗證 T0–T2 與 bounded live T3 的描述性 evidence state；執行 `node tests/phase2-content.test.cjs` 驗證 148 題變形庫、公開曝光契約、直三的一至三手結果及第二眼真眼區域；執行 `node tests/sgf.test.cjs`，驗證課程端 9 路 SGF 解析、停一手編號、簡單劫、多盤／分支拒絕及資源上限。Windows 可執行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/repository-boundary.ps1`，檢查獨立 Git 根目錄、workflow、gitlink、symlink 與 reparse point；若有 Chrome 或 Edge，也可執行 `node tests/ui.test.cjs` 驗證主要使用流程與版面。
-
-### Windows 本機 KataGo bridge smoke
-
-Move Provider 的 CI contract 通過後，真正的 Windows KataGo executable 全鏈路仍需在有 KataGo、config 與 model 的本機執行一次。
-
-若電腦使用 KaTrain 1.20.0，可先用自動發現 wrapper。它讀取 `~/.katrain/config.json` 的 engine 設定；自訂的絕對路徑直接沿用，bundled engine 則只在 KaTrain 程式目錄與常見安裝目錄尋找 `katrain\KataGo\katago.exe`。找不到或同一搜尋範圍出現多套 bundled engine 時會停止，不自行選一套：
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katrain-katago-smoke.ps1
-```
-
-若 KaTrain 是解壓在自訂資料夾，補一個 root 即可：
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katrain-katago-smoke.ps1 `
-  -KaTrainRoot "D:\你的\KaTrain資料夾"
-```
-
-只有自動發現失敗時，才需要手動指定三個檔案：
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/katago-bridge-smoke.ps1 `
-  -KataGoExe "C:\path\to\katago.exe" `
-  -KataGoConfig "C:\path\to\gtp_example.cfg" `
-  -KataGoModel "C:\path\to\model.bin.gz"
-```
-
-腳本現在會依序驗證 `/v1/move` 與 `/v1/compare`。兩段都成功後，才會寫入本機 `.local-evidence/katago-smoke-receipt.json`，並立刻用 `scripts/verify-katago-smoke-receipt.cjs` 驗證。receipt 綁定目前 repository commit、關鍵 contract 檔 SHA-256、KataGo executable／config／model SHA-256、engine version 與兩端點結果；若 contract 後續改動，舊 receipt 會變 stale。receipt 不公開、不保存本機完整路徑或引擎檔案內容。只有兩段 smoke 與 receipt verifier 都 PASS，才能把「本機 KataGo bridge 真機 smoke」與「Decision Point Comparison 真機 smoke」記為 PASS。缺檔、無法確認 engine version、bridge 未啟動、KataGo failure、候選不完整、HTTP/JSON failure、receipt stale 或超時都維持 FAIL／ERROR，不以 heuristic bot 代替。
-
-2026-09-21 的規則、題庫、排程、SGF、trial、狀態與 Chrome 測試均通過。新增反證測試會比較驗收正答與錯答後的棋盤快照、驗證同題先錯後對仍保留首答錯誤、檢查固定應用呈現分母、v3 至 v6→v7 遷移、兩輪內容插題後的索引保存及保留題匯出遮蔽。這些結果只保留為工程證據。
-
-## 下一步
-
-R0 已通過。R1a 已完成第二套規則實作的 70 題核心唯一解窮舉，外部審查母體涵蓋完整 148 題題庫的 43 個家族代表與全部 48 題公開保留組，合併為 77 題；v4 審查頁只載入去答案資料並分開三項獨立聲明，但尚未取得合格外部回條。 **R1a 只覆蓋題庫，不代表 19 課短講已外審；Short Talk UX v2 另提供 `lesson-content-review-verify.cjs` 與 19 課 draft receipt，正式教學 gate 要求兩種外部內容回條分開成立。**舊自我審查草稿使其中 22 題曾被目前使用者直接看過，`personal-pilot-v3` 只從這 22 題選八題作流程試行；GitHub 公開則使全部 48 題退出正式未見池。R1b 的基線／追蹤難度可比性仍未建立。KaTrain 已改用 KataGo 1.18.1 同版本官方設定並補齊桌面 `analysis` 模式所需欄位，GPU 校準快取已保存；固定 9 路局面（黑 D4、白 E4）已由 GTP 回應 `E5`，並由 `analysis` 回傳 JSON，原版桌面程式也已建立分析引擎子程序。這只證明分析工具可用，不證明候選手是唯一教學正解。詳細狀態見 [R1 內容核對](R1_CONTENT_AUDIT.md) 與 [正式教學閘門](TEACHING_GATE.md)。
-
-## 2026-09-24｜SGF 單點復盤語義更新
-
-網站的棋譜功能現明確定位為「單點原著重建」：選任意一手後，先在該手之前的盤面憑記憶下出原著。介面以「與原著一致／不同」描述結果，不再使用一般「答對／答錯」語言；原著只代表棋譜歷史事實，不代表唯一最佳手。此模式固定為 practice，不更新 T2／T3、KC、scheduler 或正式評量。
-
-整盤／連續猜手目前未實作，也不是現階段開發優先項；若真人使用顯示單點操作造成可重複復盤瓶頸，才會以既有 SGF pipeline 做最小連續化實驗，而不是另建第二套棋譜系統。
-
-
-## 2026-09-26｜經典眼形探索 v1
-
-參考日本棋院基本詰碁的反覆／換色／換方向編排，以及 Go Magic 等網站「短講 → 急所 → 題目」的互動節奏，第 4 單元新增選修探索入口。v1 只使用本專案既有、已版本化的直三與第二眼缺口題，先測教學流程，不新增未經外部審題的名型。名稱在第一手後揭示，之後依序做旋轉、攻守交換與相似反例；此頁固定為 practice-only。這是工程與內容呈現更新，不代表 R1a、真人 usability 或學習成效通過。
-
-
-2026-09-28 首頁配圖修正升至 `learner-flow-v48`：撤回 v47 對首頁資訊架構的額外改版，恢復原本 Hero 四步、三張課程階段卡與三項「真的學會」證據。配圖只放在原先規劃位置：Hero 同一面板一張棋盤圖，三張課程階段卡各一張小棋盤圖；不新增第四個學習證據、不把整頁 mockup 當網頁圖片。四個 SVG 為獨立靜態資產並納入 formal candidate fingerprint。這是 learner-facing 視覺修正，不改 scoring、scheduler、事件或正式評量語義。
-
-
-2026-09-28 首頁原生成配圖正式落地（`learner-flow-v49`）：重新掃描前面已確認的設計方向後，移除 v48 另外重畫的簡化 SVG，改用原先生成的 Hero、三階段與三項學習證據插畫，共 7 個獨立 WebP。首頁結構不變，assessment 仍為 3 項；生成圖只負責視覺呈現，不作棋盤規則或答案真值。Hero 未經規則驗證的手寫棋理句不進正式資產。
-
-
-2026-09-28 首頁 mockup 正式成為版面基準（`learner-flow-v50`）：桌面導覽、Hero 左文右圖比例、三階段直接學習入口、四格學習循環、研究動作卡、歷史／能力雙欄與 FAQ 依已確認 mockup 重建；文字與功能仍以 repo current truth 為準。其後已修正三階段入口語義：三張卡只對應 Core 1–15，局部與全局分別直達第 6 與第 11 單元；Advanced 維持獨立 practice-only 路線。
-
-
-2026-09-28 M1 作答閉環修正（`learner-flow-v53`）：一般練習將答案結果、提示、棋盤非法操作與本機儲存警告分成不同畫面區域。答錯後開提示不再覆蓋「答錯，再看一次」；非法操作不冒充答錯；儲存失敗不覆蓋已產生的作答結果。Correct 後提示入口降出目前任務，Wrong 仍留在原題重試。first response／retry、scoring、scheduler、事件 schema、evidence taxonomy 與 formal evaluation 遮蔽語義不變。此為 learner-facing engineering correction，正式 usability 仍待凍結 candidate 後真人 gate。
-
-
-## 2026-09-28｜M2 Learning Workspace / Course Navigation
-
-- `learner-flow-v53` 將目前課程位置、單元瀏覽、今日入口與進階工具分層；桌面保留 sidebar，375px 將課程目錄收合到「課程與單元」。
-- 選擇 Unit 只改變瀏覽中的課程目錄，不改目前 lesson、題目或 learner event；只有點選實際 lesson 才切換學習內容。
-- 到期複習／錯題只有非零時才出現在 sidebar 的「今天」區塊；不以 0 題製造假的今日任務。
-- 此變更不修改 scoring、first-response/retry、scheduler policy、storage/event schema、evidence taxonomy 或 formal evaluation masking。工程測試不等於真人 usability 證據。
-
-## 2026-09-30｜Short Talk UX v2 refresh
-
-舊 PR #109 已包含多項短講修正，但分支落後最新 main；本輪沒有直接合併舊 branch，而是在 2026-09-30 current main 上選擇性移植。短講現在以 `demoSteps` 為唯一棋盤示範 source of truth，第 1 課採 progressive reveal，step caption 不重複、legend 依實際 marker 顯示、最後一步可從頭再看。mobile CSS 的單欄 override 位於 base rule 之後，320px 開啟 Modal 與 200% text 有 browser regression；manual close/start/Esc 與 auto Esc 的焦點語義也被測試鎖住。content catalog 升至 5，但舊 `seenLessonIntros` 保留為 auto-display suppression，不重設學習狀態。formal candidate 重新凍結為 `formal-teaching-candidate-2026-09-30-c`／`fnv1a32-js16-15b4184a`；19 課短講另綁 `fnv1a32-8e153412` 的外部棋理 review contract。工程發布通過仍不能替代 R1a、短講外審、真人 usability／accessibility 或 learning effect。
-
-\n\n2026-10-01 首頁 Mockup Fidelity v56：依核准 Mockup 完成第二輪高擬真重整，保留「悟之一手」主品牌與「VT-COS｜學習引擎底盤」底盤品牌；Hero、三個 Core 入口、四步學習方法、雙欄理念／能力、FAQ 與 final CTA 使用一致的米白／深綠／暖金設計語言。這是 presentation-only 工程更新，不改題目、答案、scoring、scheduler、learner evidence 或 formal evaluation；正式真人 usability/accessibility 仍待收集。\n\n\n2026-10-01 首頁 Visual Fidelity v57：依實際頁面與核准 Mockup 的並排檢討，補回 Hero 木質場景、山水／石堆語義 mood art 與深綠山水 final CTA，並移除重複的第二套方法 section。新增圖像只作品牌／情緒呈現，不作棋盤真值、scoring 或答案 authority；正式真人 usability/accessibility 仍未完成。\n
+For the full curriculum, release history, installation/use details, and source notes, see the [Traditional Chinese README](README.zh-Hant.md).
