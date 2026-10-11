@@ -2358,6 +2358,34 @@ async function main() {
     assert.equal(bigPigsMouthCorrect.name, "大豬嘴／J Group");
     assert.equal(bigPigsMouthCorrect.nextDisabled, false);
 
+    // Regression: reproduce the user's route from Home -> 名型館#page-top ->
+    // 多語圖鑑. The destination starts hidden and must become visible AND
+    // enter the viewport after an explicit click. Merely changing hash is insufficient.
+    await command(socket, "Page.navigate", { url: classicPage + "#page-top" });
+    let classicCrossPageReady = false;
+    for (let retry = 0; retry < 30; retry += 1) {
+      classicCrossPageReady = await evaluate(socket, "document.readyState === 'complete' && Boolean(document.querySelector('#atlas') && document.querySelector('.classic-mode-link[href=\\\"#atlas\\\"]'))");
+      if (classicCrossPageReady) break;
+      await delay(100);
+    }
+    assert.equal(classicCrossPageReady, true);
+    await evaluate(socket, "(() => { scrollTo(0,0); document.querySelector('.classic-mode-link[href=\\\"#atlas\\\"]').click(); })()");
+    await delay(950);
+    const classicAtlasClick = await evaluate(socket, `(() => {
+      const panel=document.querySelector('#atlas');
+      const box=panel.getBoundingClientRect();
+      return {hash:location.hash,mode:document.body.dataset.classicMode,
+        atlasHidden:panel.hidden,atlasDisplay:getComputedStyle(panel).display,
+        top:box.top,bottom:box.bottom,scrollY,viewportHeight:innerHeight,
+        results:document.querySelectorAll('#classic-atlas-result-list button').length};
+    })()`);
+    assert.equal(classicAtlasClick.hash, "#atlas");
+    assert.equal(classicAtlasClick.mode, "atlas");
+    assert.equal(classicAtlasClick.atlasHidden, false);
+    assert.ok(classicAtlasClick.top < classicAtlasClick.viewportHeight && classicAtlasClick.bottom > 115
+      && classicAtlasClick.scrollY > 50,
+      "Classic Atlas clicked but viewport never reached visible catalog: " + JSON.stringify(classicAtlasClick));
+
     await command(socket, "Page.navigate", { url: historyPage });
     let historyReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
