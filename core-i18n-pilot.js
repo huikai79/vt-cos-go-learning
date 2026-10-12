@@ -1,188 +1,212 @@
-"use strict";
 (function (root) {
-  // Presentation-only pilot: never edits GoContent, answer evaluation, events or storage.
+  "use strict";
+  // A single public Core task. All text here is presentation only.
+  // Scoring, source items, exposure, learner events and saved schema stay authoritative in app.js.
   const TASK_ID = "u1-06";
   const EN = "en";
   const ZH = "zh-Hant-TW";
   const TERMS = Object.freeze({
-    liberty: "liberty — an empty intersection next to a stone, along a board line",
-    atari: "atari — a stone or connected group has only one liberty left",
-    capture: "capture — fill the last liberty of an opposing group to remove it"
+    liberty: "Liberty: an empty point directly next to a stone along a board line.",
+    atari: "Atari: a stone or connected group has just one liberty left.",
+    capture: "Capture: fill an opposing group's last liberty so its stones are removed."
   });
-  const CONTENT = Object.freeze({
-    lesson: "Atari and capturing stones",
-    questionTitle: "Capture a stone in the centre",
-    prompt: "Black to play. Choose the white stone's last liberty to capture it.",
-    hint: "The point immediately below the white stone is still empty.",
-    explanation: "Black fills White's last liberty from below, so the white stone is captured.",
-    error: "That move has not captured the marked white stone. Look for its last empty neighbouring point, then try again.",
-    occupied: "There is already a stone here. Choose an empty intersection.",
-    illegal: "This move is not legal in the current position. Choose another intersection."
+  const COPY = Object.freeze({
+    title: "Capture one white stone",
+    prompt: "Black to play. Find White's last liberty and play there to capture the white stone.",
+    hint: "Look at the empty point immediately below the white stone.",
+    success: "Black filled White's last liberty. White has no liberties left, so the stone is removed.",
+    error: "That move has not captured White. Count the empty points directly next to the white stone, then try again.",
+    occupied: "A stone is already on that point. Choose an empty point.",
+    illegal: "The rules did not allow that move. Try a different empty point.",
+    storageFailure: "Progress could not be saved in this browser. Check your storage permissions or available space. Do not assume this answer was saved.",
+    recoveryFailure: "An older progress file could not be read, and the browser could not save a recovery copy. Changes have not been saved.",
+    recoverySaved: "Older progress could not be loaded safely. A local recovery copy was kept; this does not mean the old progress was restored."
   });
-  const translations = Object.freeze({
-    "#lesson-kicker": "Unit 1 · Beginner",
-    "#question-number": "Question 1 of 4",
-    "#lesson-title": CONTENT.lesson,
-    "#lesson-subtitle": "Lesson 2 · 4 questions",
-    "#lesson-badge": "Capture basics",
-    "#question-tag": "Capture practice",
-    "#question-title": CONTENT.questionTitle,
-    "#question-prompt": CONTENT.prompt,
-    ".question-prompt-label": "Question",
-    ".workspace-task-cue strong": "Now",
-    ".board-card .card-top > span:first-child": "9 × 9 practice board",
-    ".board-card .board-status": "Local practice",
-    "#player-color": "● Black to play",
-    ".board-foot > span:nth-child(2)": "○ White",
-    "#board-instruction": "Click an intersection, or use arrow keys and press Enter or Space",
-    "#answer-policy": "Choose a point on the board. You can try again if your answer is incorrect.",
-    "#hint-button": "Show a hint",
-    ".takeaway > span": "Remember",
-    "#takeaway-text": "Capture a group by filling its last liberty.",
-    ".footer-note": "Practice only. Progress stays in this browser; completing a question is not a measure of mastery."
-  });
-  let locale = ZH;
+  const doc = root.document || null;
+  const originals = new Map();
+  let requested = ZH;
+  let context = null;
   let active = false;
-  let previous = new Map();
-  let lastEnglish = new Map();
-  let lastContext = null;\n  let requestedLocale = ZH;
-  const dom = root.document || null;
 
-  function getNode(selector) { return dom && dom.querySelector(selector); }
-  function write(selector, value, html = false) {
-    const node = getNode(selector);
+  function remember(node, property, newValue) {
     if (!node) return;
-    const key = selector + (html ? ":html" : ":text");
-    const current = html ? node.innerHTML : node.textContent;
-    if (!previous.has(key) || (lastEnglish.has(key) && current !== lastEnglish.get(key))) previous.set(key, current);
-    if (current !== value) {
-      if (html) node.innerHTML = value;
-      else node.textContent = value;
-    }
-    lastEnglish.set(key, html ? node.innerHTML : node.textContent);
+    let properties = originals.get(node);
+    if (!properties) { properties = new Map(); originals.set(node, properties); }
+    if (!properties.has(property)) properties.set(property, { original: property.startsWith("attr:") ? node.getAttribute(property.slice(5)) : node[property], translated: null });
+    if (property.startsWith("attr:")) node.setAttribute(property.slice(5), newValue);
+    else node[property] = newValue;
+    properties.get(property).translated = property.startsWith("attr:") ? node.getAttribute(property.slice(5)) : node[property];
   }
   function restore() {
-    for (const [key, original] of previous.entries()) {
-      const html = key.endsWith(":html");
-      const selector = key.slice(0, -5);
-      const node = getNode(selector);
-      if (!node) continue;
-      const current = html ? node.innerHTML : node.textContent;
-      if (current === lastEnglish.get(key)) {
-        if (html) node.innerHTML = original;
-        else node.textContent = original;
+    for (const [node, fields] of originals) {
+      for (const [property, record] of fields) {
+        const isAttr = property.startsWith("attr:");
+        const name = property.slice(5);
+        const current = isAttr ? node.getAttribute(name) : node[property];
+        // Never restore stale text over a newly rendered learner state.
+        if (current !== record.translated) continue;
+        if (isAttr) {
+          if (record.original === null) node.removeAttribute(name);
+          else node.setAttribute(name, record.original);
+        } else node[property] = record.original;
       }
     }
-    previous = new Map();
-    lastEnglish = new Map();
+    originals.clear();
   }
-  function boardAria() {
-    const board = getNode("#board");
-    if (!board) return;
-    const group = board.querySelector('svg[role="group"]');
-    if (group) group.setAttribute("aria-label", "9 by 9 board: capture the white stone in the centre");
-    board.querySelectorAll("[data-board-point]").forEach((point) => {
-      const row = Number(point.dataset.y) + 1;
-      const col = Number(point.dataset.x) + 1;
-      const original = point.getAttribute("aria-label") || "";
-      let status = "status unavailable";
-      if (original.includes("空點，可落子") || original.includes("empty")) status = "empty; playable";
-      else if (original.includes("黑棋，已有棋子") || original.includes("black stone")) status = "black stone; occupied";
-      else if (original.includes("白棋，已有棋子") || original.includes("white stone")) status = "white stone; occupied";
-      point.setAttribute("aria-label", "Row " + row + ", column " + col + ": " + status);
-    });
+  function node(selector) { return doc && doc.querySelector(selector); }
+  function text(selector, value) {
+    const el = node(selector);
+    if (el) { remember(el, "textContent", value); remember(el, "attr:lang", EN); }
   }
-  function warningText(zh) {
-    if (/舊進度格式損壞/.test(zh)) return "Previous progress could not be read or backed up. Changes have not been saved. Check browser storage before continuing.";
-    if (/無法寫入|未保存/.test(zh)) return "Progress could not be saved. Check browser storage permissions and free space before continuing.";
-    if (/原始內容已保留/.test(zh)) return "Older progress could not be read safely. A local recovery copy was kept; do not assume that older progress was restored.";
-    return "A storage error occurred. Progress may not have been saved; do not assume the operation succeeded.";
+  function html(selector, value) {
+    const el = node(selector);
+    if (el) { remember(el, "innerHTML", value); remember(el, "attr:lang", EN); }
   }
-  function phaseLabel(context) {
-    if (context.solved && context.answersThisTurn > 1) return "Task: practice · Status: corrected after retry";
-    if (context.solved) return "Task: practice · Status: answer recorded";
-    if (context.answersThisTurn > 0) return "Task: practice · Status: retry after an incorrect answer";
-    if (context.hintShown) return "Task: practice · Status: hint viewed, answer pending";
-    return "Task: practice · Status: try without the answer";
+  function attribute(selector, key, value) {
+    const el = node(selector);
+    if (el) remember(el, "attr:" + key, value);
   }
-  function nowLabel(context) {
-    if (context.solved) return "Review why Black's move captured White. Then continue.";
-    if (context.answersThisTurn > 0) return "Count White's remaining liberties and try another move. Your first answer is kept.";
-    if (context.hintShown) return "Use the hint to choose a move. The hint does not count as an answer.";
-    return "Find White's last liberty and play one black stone.";
+  function phaseLabel(s) {
+    if (s.solved && s.answersThisTurn > 1) return "Practice · Correct after retry";
+    if (s.solved) return "Practice · Correct answer recorded";
+    if (s.answersThisTurn > 0) return "Practice · Try again";
+    if (s.hintShown) return "Practice · Hint viewed; first answer pending";
+    return "Practice · Answer independently";
   }
-  function feedbackHtml(context, old) {
-    if (!old) return "";
-    if (context.solved) return '<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">Correct</strong><span class="answer-explanation">' + CONTENT.explanation + '</span>';
-    if (context.answersThisTurn > 0) return '<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">Not yet — try again</strong><span class="answer-explanation">' + CONTENT.error + '</span>';
-    return "";
+  function nowLabel(s) {
+    if (s.solved) return "Read the reason for the capture, then go to the next question.";
+    if (s.answersThisTurn > 0) return "Count the white stone's liberties again. Your first answer remains recorded.";
+    if (s.hintShown) return "Use the hint to find a move. Showing a hint is not an answer.";
+    return "Find the last liberty of the white stone and play there.";
   }
-  function refresh(context) {
-    if (!dom) return;
-    const valid = Boolean(context && context.problemId === TASK_ID && !context.externalMode);
-    const chooser = getNode("#core-pilot-locale");
-    const enOption = chooser && chooser.querySelector('option[value="en"]');
-    if (enOption) enOption.disabled = !valid;
-    if (!valid && locale === EN) { restore(); locale = ZH; }\n\n    if (valid && requestedLocale === EN) locale = EN;
-    active = valid && locale === EN;
-    const status = getNode("#core-pilot-status");
-    if (status) status.textContent = valid
-      ? (active ? "English pilot: this task only. Human language review is pending." : "English is available for this one capture task (pilot).")
-      : "English for this task is not available here yet; Traditional Chinese remains in use.";
-    if (chooser) chooser.value = active ? EN : ZH;
-    dom.body.classList.toggle("i18n-core-pilot-en", active);
-    dom.documentElement.lang = active ? EN : ZH;
+  function warningText(message) {
+    if (message.includes("舊進度格式損壞")) return COPY.recoveryFailure;
+    if (message.includes("復原副本") || message.includes("原始內容已保留")) return COPY.recoverySaved;
+    if (message.includes("無法寫入") || message.includes("未保存")) return COPY.storageFailure;
+    return "A browser storage problem was reported; the save result is not confirmed.";
+  }
+  function localeFromUrl() {
+    if (!root.location || !root.location.href || typeof URL === "undefined") return ZH;
+    return new URL(root.location.href).searchParams.get("lang") === EN ? EN : ZH;
+  }
+  function feedbackHtml(s) {
+    if (s.solved) return '<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">Correct</strong><span class="answer-explanation">' + COPY.success + '</span>';
+    return '<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">Not yet — try again</strong><span class="answer-explanation">' + COPY.error + '</span>';
+  }
+  function apply(s) {
+    restore();
+    const supported = Boolean(s && s.problemId === TASK_ID && !s.externalMode);
+    active = supported && requested === EN;
+    const chooser = node("#core-pilot-locale");
+    if (chooser) {
+      const option = chooser.querySelector('option[value="en"]');
+      if (option) option.disabled = !supported;
+      chooser.value = active ? EN : ZH;
+    }
+    const availability = node("#core-pilot-status");
+    if (availability) availability.textContent = supported
+      ? (active ? "English candidate for this capture task only. Language and Go-content review are pending." : "English is available as an unreviewed pilot for this capture task.")
+      : "English is not yet available for this question. The original Chinese text is shown.";
     if (!active) return;
-    for (const [selector, message] of Object.entries(translations)) write(selector, message);
-    write("#learning-stage-badge", phaseLabel(context));
-    write("#learning-now-summary", nowLabel(context));
-    const answerArea = getNode("#answer-area");
-    if (answerArea) write("#answer-area", '<span class="move-guide">Select a board intersection, or move with the arrow keys and press Enter or Space.<br>You can retry after an incorrect answer. Ask for a hint if needed.</span>', true);
-    if (context.hintShown && !context.solved) {
-      write("#hint-feedback", CONTENT.hint);
-      write("#hint-button", "Hint shown");
+
+    // The rest of the website is not translated: keep html[lang=zh-Hant-TW].
+    // Mark only genuinely translated surfaces with lang=en.
+    attribute(".practice-grid", "lang", EN);
+    const fixed = {
+      "#lesson-kicker": "Unit 1 · Beginner",
+      "#lesson-title": "Atari and capturing",
+      "#lesson-subtitle": "Lesson 2 · Four questions",
+      "#lesson-badge": "Capture practice",
+      "#question-number": "Question 1 of 4",
+      "#question-tag": "Play a move",
+      "#question-title": COPY.title,
+      "#question-prompt": COPY.prompt,
+      ".question-prompt-label": "Question",
+      ".workspace-task-cue strong": "Now",
+      "#player-color": "● Black to play",
+      ".board-foot > span:nth-child(2)": "○ White",
+      "#board-instruction": "Click a board point, or use arrow keys, then Enter or Space.",
+      "#answer-policy": "Choose a point on the board. If the move is wrong, you can retry.",
+      "#hint-button": "Show a hint",
+      ".board-card .card-top > span:first-child": "9 × 9 practice board",
+      ".board-card .board-status": "Local practice",
+      ".takeaway > span": "Remember",
+      "#takeaway-text": "Find the opponent's last liberty before trying to capture.",
+      "#teaching-text": "A stone or connected group is in atari when it has one liberty left. If the opponent fills that last liberty, the group is captured and removed.",
+      "#teaching-check": "Find the last liberty before playing the capturing move.",
+      "#lesson-intro-title": "Learn first: Atari and capturing",
+      "#lesson-intro-kicker": "Short lesson · one automatic introduction per lesson",
+      "#lesson-intro-button": "Review this short lesson",
+      "#lesson-intro-first-use": "Look at the example, then try the board question yourself. The next review will use another position.",
+      "#sidebar-current-task-label": "Practice",
+      "#sidebar-current-task-description": "Play a move and review the result",
+      "#top-course-context": "Unit 1 · Lesson 2",
+      "#current-course-context": "Unit 1 · Lesson 2",
+      "#learning-stage-badge": phaseLabel(s),
+      "#sidebar-question-phase": s.solved ? "Answer recorded" : s.answersThisTurn ? "Retry" : s.hintShown ? "Hint viewed" : "Your turn",
+      "#learning-now": nowLabel(s),
+      "#learning-now-summary": nowLabel(s),
+      "#learning-why": "This is an existing public practice question, not a private or formal evaluation.",
+      "#learning-next": s.solved ? "Continue to the next question." : "Choose one move and check the result.",
+      "#workspace-next-summary": s.solved ? "Continue to the next question." : "Choose a move on the board.",
+      "#lesson-term-count": "(2 terms)"
+    };
+    for (const [selector, value] of Object.entries(fixed)) text(selector, value);
+    html("#lesson-term-list", "<div><dt>Atari</dt><dd>" + TERMS.atari + "</dd></div><div><dt>Capture</dt><dd>" + TERMS.capture + "</dd></div>");
+    html("#answer-area", '<span class="move-guide">Choose a point on the board, or move with the arrow keys and press Enter or Space. You may retry after an incorrect answer.</span>');
+    html("#lesson-intro-start-button", 'Start this question <span aria-hidden="true">→</span>');
+    const captions = [
+      "White is surrounded above, left and right. The marked empty point is its last liberty.",
+      "Black plays on White's last liberty, so the white stone is removed."
+    ];
+    text("#teaching-demo-caption", captions[s.demoStepIndex === 1 ? 1 : 0]);
+    if (s.hintShown && !s.solved) {
+      text("#hint-feedback", COPY.hint);
+      text("#hint-button", "Hint shown");
     }
-    if (context.solved) {
-      write("#next-button", 'Next question <span aria-hidden="true">→</span>', true);
-    }
-    if (context.answersThisTurn > 0) {
-      write("#feedback", feedbackHtml(context, getNode("#feedback")?.innerHTML), true);
-    }
-    const interaction = getNode("#interaction-feedback");
-    if (interaction && !interaction.hidden && interaction.textContent) {
-      const message = interaction.textContent;
-      write("#interaction-feedback", /已有棋子|already a stone/.test(message) ? CONTENT.occupied : CONTENT.illegal);
-    }
-    const system = getNode("#system-status");
-    if (system && !system.hidden && system.textContent) write("#system-status", warningText(system.textContent));
-    getNode("#board-card")?.setAttribute("aria-label", "Interactive 9 by 9 Go board");
-    boardAria();
+    if (s.answersThisTurn > 0) html("#feedback", feedbackHtml(s));
+    if (s.solved) html("#next-button", 'Next question <span aria-hidden="true">→</span>');
+    const issue = node("#interaction-feedback");
+    if (issue && !issue.hidden && issue.textContent) text("#interaction-feedback", /已有棋子/.test(issue.textContent) ? COPY.occupied : COPY.illegal);
+    const system = node("#system-status");
+    if (system && !system.hidden && system.textContent) text("#system-status", warningText(system.textContent));
+
+    attribute("#board-card", "aria-label", "Interactive 9 by 9 Go board");
+    attribute("#board", "aria-label", "9 by 9 Go board");
+    const boardSvg = node('#board svg[role="group"]');
+    if (boardSvg) remember(boardSvg, "attr:aria-label", "9 by 9 Go board for capturing one white stone");
+    const board = node("#board");
+    if (board) board.querySelectorAll("[data-board-point]").forEach((point) => {
+      const existing = point.getAttribute("aria-label") || "";
+      const status = /黑棋/.test(existing) ? "black stone; occupied"
+        : /白棋/.test(existing) ? "white stone; occupied"
+        : point.dataset.occupied === "true" ? "occupied" : "empty point; playable";
+      remember(point, "attr:aria-label", "Row " + (Number(point.dataset.y) + 1) + ", column " + (Number(point.dataset.x) + 1) + ": " + status);
+    });
+    // Dynamic task names and ARIA are translated, but storage/export keys never change.
   }
-  function sync(context) {
-    lastContext = context;
-    if (active && (!context || context.problemId !== TASK_ID)) restore();\n
-    refresh(context);
+  function sync(nextContext) {
+    context = nextContext;
+    apply(context);
   }
   function choose(value) {
     if (value !== EN && value !== ZH) return;
-    requestedLocale = value;\n    locale = value;
-    if (value === ZH) restore();
-    if (lastContext) refresh(lastContext);
-    // Language preference is presentation-only: it never enters learner events.
-    if (root.history && root.location) {
+    if (value === EN && (!context || context.problemId !== TASK_ID || context.externalMode)) return;
+    requested = value;
+    apply(context);
+    if (root.history && root.location && root.location.href && typeof URL !== "undefined") {
       const url = new URL(root.location.href);
-      if (value === EN) url.searchParams.set("lang", "en");
+      if (value === EN) url.searchParams.set("lang", EN);
       else url.searchParams.delete("lang");
       root.history.replaceState(null, "", url.toString());
     }
   }
-  if (dom) {
-    locale = new URL(root.location.href).searchParams.get("lang") === EN ? EN : ZH;\n    requestedLocale = locale;
-    dom.addEventListener("DOMContentLoaded", () => {
-      getNode("#core-pilot-locale")?.addEventListener("change", (event) => choose(event.target.value));
-    }, { once: true });
-  }
-  const api = Object.freeze({ TASK_ID, EN, ZH, TERMS, CONTENT, phaseLabel, nowLabel, warningText, sync, choose });
+  requested = localeFromUrl();
+  if (doc && typeof doc.addEventListener === "function") doc.addEventListener("DOMContentLoaded", () => {
+    const chooser = node("#core-pilot-locale");
+    if (chooser) chooser.addEventListener("change", () => choose(chooser.value));
+  }, { once: true });
+  const api = Object.freeze({ TASK_ID, EN, ZH, TERMS, COPY, sync, choose, phaseLabel, nowLabel, warningText });
   root.GoI18nPilot = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);
