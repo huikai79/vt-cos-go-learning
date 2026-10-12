@@ -160,7 +160,7 @@
   }
   function sync(context) {
     lastContext = context;
-    if (active && (!context || context.problemId !== TASK_ID)) restore();
+    if (active && (!context || context.problemId !== TASK_ID)) restore();\n    if (active && context && context.problemId === TASK_ID) restore();
     refresh(context);
   }
   function choose(value) {
