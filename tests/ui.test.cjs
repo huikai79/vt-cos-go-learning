@@ -2970,7 +2970,7 @@ async function main() {
     await command(socket, "Page.navigate", {url: page + "#core"});
     let pilotReady = false;
     for (let retry = 0; retry < 40; retry += 1) {
-      pilotReady = await evaluate(socket, "Boolean(window.GoI18nPilot && document.querySelector('#lesson-nav [data-lesson=\\\"1\\\"]'))");
+      pilotReady = await evaluate(socket, "Boolean(window.GoI18nPilot && document.querySelector('#lesson-nav [data-lesson]'))");
       if (pilotReady) break;
       await delay(100);
     }
