@@ -54,7 +54,7 @@
     if (!node) return;
     const key = selector + (html ? ":html" : ":text");
     const current = html ? node.innerHTML : node.textContent;
-    if (current !== lastEnglish.get(key)) previous.set(key, current);
+    if (!previous.has(key)) previous.set(key, current);
     if (current !== value) {
       if (html) node.innerHTML = value;
       else node.textContent = value;
@@ -64,7 +64,7 @@
   function restore() {
     for (const [key, original] of previous.entries()) {
       const html = key.endsWith(":html");
-      const selector = key.slice(0, -(html ? 5 : 5));
+      const selector = key.slice(0, -5);
       const node = getNode(selector);
       if (!node) continue;
       const current = html ? node.innerHTML : node.textContent;
