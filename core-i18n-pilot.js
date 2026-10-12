@@ -54,7 +54,7 @@
     if (!node) return;
     const key = selector + (html ? ":html" : ":text");
     const current = html ? node.innerHTML : node.textContent;
-    if (!previous.has(key)) previous.set(key, current);
+    if (!previous.has(key) || (lastEnglish.has(key) && current !== lastEnglish.get(key))) previous.set(key, current);
     if (current !== value) {
       if (html) node.innerHTML = value;
       else node.textContent = value;
@@ -160,7 +160,7 @@
   }
   function sync(context) {
     lastContext = context;
-    if (active && (!context || context.problemId !== TASK_ID)) restore();\n    if (active && context && context.problemId === TASK_ID) restore();
+    if (active && (!context || context.problemId !== TASK_ID)) restore();\n
     refresh(context);
   }
   function choose(value) {
