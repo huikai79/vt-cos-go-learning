@@ -123,7 +123,7 @@
     const chooser = getNode("#core-pilot-locale");
     const enOption = chooser && chooser.querySelector('option[value="en"]');
     if (enOption) enOption.disabled = !valid;
-    if (!valid && locale === EN) { restore(); locale = ZH; }\n    if (valid && requestedLocale === EN) locale = EN;
+    if (!valid && locale === EN) { restore(); locale = ZH; }\n    if (valid && locale === ZH && lastEnglish.size) restore();\n    if (valid && requestedLocale === EN) locale = EN;
     active = valid && locale === EN;
     const status = getNode("#core-pilot-status");
     if (status) status.textContent = valid
