@@ -45,7 +45,7 @@
   let active = false;
   let previous = new Map();
   let lastEnglish = new Map();
-  let lastContext = null;
+  let lastContext = null;\n  let requestedLocale = ZH;
   const dom = root.document || null;
 
   function getNode(selector) { return dom && dom.querySelector(selector); }
@@ -123,7 +123,7 @@
     const chooser = getNode("#core-pilot-locale");
     const enOption = chooser && chooser.querySelector('option[value="en"]');
     if (enOption) enOption.disabled = !valid;
-    if (!valid && locale === EN) { restore(); locale = ZH; }
+    if (!valid && locale === EN) { restore(); locale = ZH; }\n    if (valid && requestedLocale === EN) locale = EN;
     active = valid && locale === EN;
     const status = getNode("#core-pilot-status");
     if (status) status.textContent = valid
@@ -165,7 +165,7 @@
   }
   function choose(value) {
     if (value !== EN && value !== ZH) return;
-    locale = value;
+    requestedLocale = value;\n    locale = value;
     if (value === ZH) restore();
     if (lastContext) refresh(lastContext);
     // Language preference is presentation-only: it never enters learner events.
@@ -177,7 +177,7 @@
     }
   }
   if (dom) {
-    locale = new URL(root.location.href).searchParams.get("lang") === EN ? EN : ZH;
+    locale = new URL(root.location.href).searchParams.get("lang") === EN ? EN : ZH;\n    requestedLocale = locale;
     dom.addEventListener("DOMContentLoaded", () => {
       getNode("#core-pilot-locale")?.addEventListener("change", (event) => choose(event.target.value));
     }, { once: true });
