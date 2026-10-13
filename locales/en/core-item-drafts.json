@@ -3,7 +3,7 @@
   "locale": "en",
   "status": "candidate-not-runtime",
   "canonicalSource": "GoContent.problems",
-  "itemCount": 58,
+  "itemCount": 76,
   "items": {
     "u1-01": {
       "id": "u1-01",
@@ -788,6 +788,294 @@
       ],
       "hint": "The usefulness of thickness changes with the position.",
       "explanation": "Thickness cannot be valued by one universal point formula; assess the nearby groups and potential development.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-01": {
+      "id": "u8-01",
+      "title": "Recognise a weak group",
+      "prompt": "Which group is most likely to be weak?",
+      "options": [
+        "A surrounded group with few liberties and little eye space",
+        "A safe group with two eyes and strong outside support",
+        "A group that already surrounds secure corner territory"
+      ],
+      "hint": "Weak groups often lack a safe way to live or escape.",
+      "explanation": "A group with limited liberties, little eye space and pressure from the opponent needs attention.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-02": {
+      "id": "u8-02",
+      "title": "Why attack a weak group?",
+      "prompt": "What is a useful aim when attacking an opponent's weak group?",
+      "options": [
+        "Put the opponent under pressure while building strength or another gain",
+        "Capture every opposing stone regardless of cost",
+        "Keep chasing as far as possible"
+      ],
+      "hint": "Attacking does not have to end in a capture.",
+      "explanation": "A good attack can build your own strength, territory or initiative without capturing the whole group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-03": {
+      "id": "u8-03",
+      "title": "Make sure your own stones are safe",
+      "prompt": "Your group has only one liberty, while another opposing group looks weak. What should you do first?",
+      "options": [
+        "Check whether your own group faces immediate capture",
+        "Start chasing the opponent at once",
+        "Count the final score"
+      ],
+      "hint": "An unsafe group can turn an attack against you.",
+      "explanation": "Deal with a genuinely urgent danger to your own stones before beginning another attack.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-04": {
+      "id": "u8-04",
+      "title": "Chase toward your strength",
+      "prompt": "Why can it help to push an opposing weak group toward your thick position?",
+      "options": [
+        "Your strong stones can support the fight",
+        "Your opponent automatically gains an extra liberty",
+        "That direction guarantees territory"
+      ],
+      "hint": "Which side already has safer, better-supported stones?",
+      "explanation": "Friendly thickness can make an attack safer and more effective when the opponent runs toward it.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-05": {
+      "id": "u8-05",
+      "title": "Know when to stop attacking",
+      "prompt": "The opposing group has become safe, while continuing the chase would weaken your stones. What is a better choice?",
+      "options": [
+        "Stop the chase and look for a more valuable move",
+        "Continue the chase forever",
+        "Remove your own strong stones"
+      ],
+      "hint": "Keep asking what you gain from each attacking move.",
+      "explanation": "When an attack no longer gains anything and risks weakening your position, consider playing elsewhere.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-06": {
+      "id": "u8-06",
+      "title": "Test your attack against resistance",
+      "prompt": "Before attacking, which question is most valuable?",
+      "options": [
+        "What do I gain if the opponent chooses their strongest escape?",
+        "Does the move look aggressive?",
+        "Will the move fill every point on the board?"
+      ],
+      "hint": "Assume your opponent finds a good reply.",
+      "explanation": "Check the best likely defence. An attack is worthwhile when you still gain something against serious resistance.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-01": {
+      "id": "u9-01",
+      "title": "Read the opponent's reply",
+      "prompt": "How should you approach a life-and-death problem?",
+      "options": [
+        "Read moves for both sides, including the strongest replies",
+        "Choose a move because it looks attractive",
+        "Decide from the number of stones alone"
+      ],
+      "hint": "Your opponent will not have to follow the line you hope for.",
+      "explanation": "Life-and-death reading means testing each candidate move against the opponent's strongest answers.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-02": {
+      "id": "u9-02",
+      "title": "What makes a point vital?",
+      "prompt": "What can a vital point change in a life-and-death position?",
+      "options": [
+        "Eye space, liberties or connections",
+        "The size of the board",
+        "Which colour moved first in the game"
+      ],
+      "hint": "Look for a point that significantly changes the local position.",
+      "explanation": "Vital points matter because playing on them can change eye shapes, liberties or whether stones connect.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-03": {
+      "id": "u9-03",
+      "title": "Record whose turn it is",
+      "prompt": "A position can live with Black to play and die with White to play. What must the problem statement specify?",
+      "options": [
+        "Which player moves first",
+        "Only a coordinate",
+        "Neither player's turn"
+      ],
+      "hint": "The same stones can lead to different results depending on who plays.",
+      "explanation": "The player to move is essential information in a life-and-death task; a coordinate alone may not define the problem.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-04": {
+      "id": "u9-04",
+      "title": "Why connecting weak groups helps",
+      "prompt": "If two weak groups can safely connect, what might improve?",
+      "options": [
+        "They share liberties and eye space and may become safer",
+        "They immediately lose a liberty in every position",
+        "They necessarily lose all territory"
+      ],
+      "hint": "Remember what directly connected stones have in common.",
+      "explanation": "A secure connection lets groups share liberties and potential eyes, which may improve their chances of living.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-05": {
+      "id": "u9-05",
+      "title": "Challenge your own reading",
+      "prompt": "After finding one sequence in which your group lives, what should you do next?",
+      "options": [
+        "Look for a stronger opposing reply that could refute it",
+        "Declare the group alive immediately",
+        "Count the whole-board score instead"
+      ],
+      "hint": "Try to find the move your opponent would most like to play.",
+      "explanation": "Your first successful-looking line is only a candidate. Test it against stronger resistance before trusting it.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-06": {
+      "id": "u9-06",
+      "title": "Build up reading practice",
+      "prompt": "Which practice approach is appropriate for learning life-and-death reading?",
+      "options": [
+        "Start with small local positions that specify who moves, then increase the reading depth",
+        "Only analyse full 19×19 games from the beginning",
+        "Memorise solution diagrams without reading"
+      ],
+      "hint": "Short, clearly defined sequences are easier to check accurately.",
+      "explanation": "Begin with small, well-specified local positions and gradually increase the number of replies to consider.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-01": {
+      "id": "u10-01",
+      "title": "Compare both endgame outcomes",
+      "prompt": "An endgame move gains you two points and also prevents your opponent from gaining two. How should you evaluate its size?",
+      "options": [
+        "Compare the score difference between the two possible orders of play",
+        "Count only the points you gain",
+        "Count only the stones on the board"
+      ],
+      "hint": "Look at what changes if your opponent plays there first.",
+      "explanation": "An endgame move's local value depends on the swing between your playing first and the opponent's playing first.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-02": {
+      "id": "u10-02",
+      "title": "Choose between two safe endgame moves",
+      "prompt": "Two endgame moves are equally safe: one makes a six-point difference, the other a two-point difference. Which is generally played first?",
+      "options": [
+        "The six-point swing",
+        "The two-point swing",
+        "Either one without comparison"
+      ],
+      "hint": "With urgency equal, compare the size of the swing.",
+      "explanation": "All else equal, the move with the larger point swing is usually the more valuable endgame choice.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-03": {
+      "id": "u10-03",
+      "title": "Urgent before large",
+      "prompt": "One endgame move is small but needed to keep your corner alive. Another is larger but not urgent. What should you examine first?",
+      "options": [
+        "Protect the urgent life-and-death position",
+        "Always take the larger endgame points",
+        "Pass immediately"
+      ],
+      "hint": "Survival can matter more than a small point count.",
+      "explanation": "When a group faces a genuine life-and-death threat, deal with that urgency before comparing ordinary endgame gains.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-04": {
+      "id": "u10-04",
+      "title": "Before counting the score",
+      "prompt": "What should players settle before a final territorial count?",
+      "options": [
+        "The status of groups and any uncertain boundaries",
+        "A completely new opening",
+        "Only the number of stones played"
+      ],
+      "hint": "Unsettled stones may make ownership uncertain.",
+      "explanation": "Resolve the status of groups and unclear boundaries before treating the counted territory as agreed.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-05": {
+      "id": "u10-05",
+      "title": "What is a sente endgame move?",
+      "prompt": "An endgame move creates a threat the opponent is usually compelled to answer. What may be its advantage?",
+      "options": [
+        "It may preserve the initiative so you can play elsewhere next",
+        "It must be larger than every other endgame move",
+        "It cannot affect the score"
+      ],
+      "hint": "A move is sente only when ignoring it carries a meaningful cost.",
+      "explanation": "A genuine sente endgame move may gain points while allowing you to move first in another area; confirm that the reply is actually needed.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-06": {
+      "id": "u10-06",
+      "title": "Find the source of a scoring mistake",
+      "prompt": "Your predicted final score differs greatly from the actual result. What should you review?",
+      "options": [
+        "Missed dead stones, unsettled borders and exchanges",
+        "Only your bad luck",
+        "Whether to make the board larger"
+      ],
+      "hint": "Look for a concrete difference between estimated and actual ownership.",
+      "explanation": "Recheck the status of groups, borders and exchanges to turn the scoring error into a specific question for future games.",
       "sourceVersion": "content.js-public-2026-10-13",
       "editorialStatus": "draft",
       "goReview": "pending",
