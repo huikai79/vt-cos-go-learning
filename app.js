@@ -362,6 +362,12 @@
     }
   }
 
+  function syncI18n() {
+    if (!window.GoI18nPilot) return;
+    window.GoI18nPilot.sync({ problemId: current().id, externalMode: state.externalMode,
+      solved: state.solved, answersThisTurn: state.answersThisTurn,
+      hintShown: state.hintShown, demoStepIndex });
+  }
   function current() { return state.scheduledProblem || problems[state.index]; }
   function currentLesson() {
     if (current().lesson !== undefined) return lessons[current().lesson];
@@ -1336,6 +1342,7 @@
     renderProgress();
     showStorageWarning();
     syncLessonIntroDialog();
+    syncI18n();
   }
 
   function renderProgress() {
@@ -1470,6 +1477,7 @@
     renderSgfReview();
     renderProgress();
     renderLearningFlow();
+    syncI18n();
   }
 
   function onMove(x, y) {
@@ -1485,6 +1493,7 @@
     const result = playMove(state.board, x, y, current().playerColor || BLACK);
     if (!result.legal) {
       showAuxiliaryFeedback("interaction-feedback", result.reason);
+      syncI18n();
       return;
     }
     clearAuxiliaryFeedback("interaction-feedback");
@@ -1719,6 +1728,7 @@
     if (state.externalMode !== "evaluation") setBoardCursor(x, y, false);
     if (point.dataset.occupied === "true") {
       showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+      syncI18n();
       return;
     }
     onMove(x, y);
@@ -1760,6 +1770,7 @@
     $("hint-button").disabled = true;
     renderLearningFlow();
     save();
+    syncI18n();
   });
   $("next-button").addEventListener("click", nextProblem);
   $("resume-button").addEventListener("click", () => {

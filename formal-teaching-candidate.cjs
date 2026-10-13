@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const PROTOCOL_ID = "go-formal-teaching-candidate-v1";
-const ASSET_SET_VERSION = 22;
+const ASSET_SET_VERSION = 23;
 const ASSET_PATHS = Object.freeze([
   "index.html",
   "styles.css",
@@ -35,7 +35,8 @@ const ASSET_PATHS = Object.freeze([
   "practice-events.js",
   "live-evidence.js",
   "learner-progress.js",
-  "app.js"
+  "app.js",
+  "core-i18n-pilot.js"
 ]);
 function nonEmpty(value) {
   return typeof value === "string" && value.trim().length > 0;

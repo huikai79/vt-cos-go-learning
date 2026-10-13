@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "protocolId": "go-formal-teaching-candidate-v1",
-  "candidateId": "formal-teaching-candidate-2026-10-08-i",
-  "frozenAt": "2026-10-08T16:05:00.000Z",
-  "assetSetVersion": 22,
-  "assetFingerprint": "fnv1a32-js16-b78d5876",
+  "candidateId": "formal-teaching-candidate-2026-10-12-i18n-pilot-b",
+  "frozenAt": "2026-10-12T11:24:00.000Z",
+  "assetSetVersion": 23,
+  "assetFingerprint": "fnv1a32-js16-f5f07ac2",
   "assetPaths": [
     "index.html",
     "styles.css",
@@ -36,7 +36,8 @@
     "practice-events.js",
     "live-evidence.js",
     "learner-progress.js",
-    "app.js"
+    "app.js",
+    "core-i18n-pilot.js"
   ],
   "criticalTasks": [
     "start_course",
@@ -45,5 +46,5 @@
     "reload_and_resume",
     "export_learning_data"
   ],
-  "scopeNote": "On user screenshot review, History/Math redundant secondary Hero buttons replaced with plain editorial section TOCs for previously hard-to-find material. CSS adds scroll-margin and focus visibility. No research-claim semantic change; formal candidate rebinding because shared CSS changed. Prototype parity remains PARTIAL; real UX/unseen learning not measured. All prior candidate receipts invalid."
+  "scopeNote": "English u1-06 practice display-only pilot from fixed public SHA 7f06005d8c887aa52055ef6f6651d2aa64a89d5e. English translation incomplete for entire site; human language and Go-content review pending. No scoring, first answer, hint exposure, scheduler, event, or formal eligibility changes. Prior candidate human receipts not transferable; release blocked pending all gates. Pilot module now included in frozen assetSetVersion 23."
 }

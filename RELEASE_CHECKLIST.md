@@ -1,3 +1,7 @@
+## 2026-10-12｜英文 Core 試點（未發布）
+
+2026-10-12 Public English Core i18n PILOT candidate (Draft; NOT RELEASED): fixed remote main 7f06005d8c887aa52055ef6f6651d2aa64a89d5e, branch feat/public-i18n-english-core-pilot-20261012. Added presentation-only module core-i18n-pilot.js and a selector for public practice item u1-06; English appears only for the scoped question, while the rest of the site stays in Traditional Chinese. Rules, GoContent item and answer, goal, scores, first answer, retries, hint event, exposure, storage keys, scheduler and formal evaluation remain unchanged by contract; browser/CI regression and user review still PENDING. English translation, accessible navigation, readable exports and other target languages are NOT COMPLETE. Frozen Core presentation candidate formal-teaching-candidate-2026-10-12-i18n-pilot-a / fnv1a32-js16-e6b18acb rebinding invalidates prior human receipts. Human en language/Go-content review PENDING, formal teaching/evaluation BLOCKED, learning effect NOT_MEASURED. Public-private release boundary needs repo scan and human diff before any merge/deploy; rollback revert branch changes. No private Prototype work.
+
 # GitHub 發布清單
 
 ## 發布方式

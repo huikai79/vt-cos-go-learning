@@ -2965,6 +2965,90 @@ async function main() {
     }
     await command(socket,"Emulation.setDeviceMetricsOverride",{width:1280,height:900,deviceScaleFactor:1,mobile:false});
 
+    // English task pilot: negative contract on real browser, event persistence
+    // and reversibility. Run in a fresh Core navigation before R1 review checks.
+    // A new navigation may not commit before Runtime.evaluate. The previous
+    // page can already contain both selectors, yielding a false ready signal.
+    const pilotUrl = page + "?core_i18n_ci=1#core";
+    await command(socket, "Page.navigate", {url: pilotUrl});
+    let pilotReady = false;
+    for (let retry = 0; retry < 40; retry += 1) {
+      pilotReady = await evaluate(socket, "Boolean(location.search.includes('core_i18n_ci=1') && window.GoI18nPilot && document.querySelector('#lesson-nav [data-lesson]'))");
+      if (pilotReady) break;
+      await delay(100);
+    }
+    assert.equal(pilotReady, true, "English pilot controls unavailable in Core");
+    const pilotProbe = await evaluate(socket, `(() => {
+      try {
+      const byId = (id) => document.getElementById(id);
+      const unitSelector = byId('unit-select');
+      unitSelector.value = '0';
+      unitSelector.dispatchEvent(new Event('change', {bubbles:true}));
+      const lessonButton = document.querySelector('#lesson-nav [data-lesson="1"]');
+      if (!lessonButton) throw new Error('Unit 1 lesson 2 navigation is absent after selecting unit 1');
+      lessonButton.click();
+      const initial = JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
+      const firstExposureCount = initial.events.filter(e => e.problemId === 'u1-06' && e.type === 'presented').length;
+      const select = byId('core-pilot-locale');
+      const chinese = byId('question-prompt').textContent;
+      select.value = 'en'; select.dispatchEvent(new Event('change', {bubbles:true}));
+      const english = byId('question-prompt').textContent;
+      const langAfter = document.documentElement.lang;
+      const englishMarked = document.querySelector('.practice-grid').getAttribute('lang');
+      const before = localStorage.getItem('go-learning-prototype-v7');
+      const occupied = document.querySelector('#board [data-x="4"][data-y="4"]');
+      occupied.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const occupiedEnglish = byId('interaction-feedback').textContent;
+      const wrong = document.querySelector('#board [data-x="8"][data-y="8"]');
+      wrong.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const wrongText = byId('feedback').textContent;
+      const afterWrong = JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
+      byId('hint-button').click();
+      const hinted = byId('hint-feedback').textContent;
+      const afterHint = JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
+      const correct = document.querySelector('#board [data-x="4"][data-y="5"]');
+      correct.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const successful = byId('feedback').textContent;
+      const afterCorrect = JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
+      select.value = 'zh-Hant-TW';select.dispatchEvent(new Event('change',{bubbles:true}));
+      const reverted = byId('question-prompt').textContent;
+      const afterSwitch = localStorage.getItem('go-learning-prototype-v7');
+      const answerEvents = afterCorrect.events.filter(e => e.problemId === 'u1-06' && e.type === 'answer');
+      const hintEvents = afterCorrect.events.filter(e => e.problemId === 'u1-06' && e.type === 'hint');
+      return {
+        pilotQuestion: english, chineseDifferent: chinese !== english,
+        langAfter, englishMarked, persistedBeforeChoice: before === localStorage.getItem('go-learning-prototype-v7') ? false : true,
+        occupiedEnglish, wrongText, hinted, successful, reverted,
+        switchedBack: reverted === chinese,
+        eventsPreserved: afterSwitch === JSON.stringify(afterCorrect),
+        firstExposureCount,
+        answerAttempts: answerEvents.map(e => e.answerAttempt),
+        firstAnswers: answerEvents.map(e => e.firstAnswer),
+        hintCount: hintEvents.length,
+        hintsQualified: hintEvents.map(e => e.qualifiedOpportunity),
+        afterWrongAnswerCount: afterWrong.events.filter(e => e.problemId === 'u1-06' && e.type === 'answer').length,
+        afterHintAnswerCount: afterHint.events.filter(e => e.problemId === 'u1-06' && e.type === 'answer').length
+      };
+      } catch (error) { return { pilotException: String(error && (error.stack || error.message) || error) }; }
+    })()`);
+    assert.equal(pilotProbe.pilotException, undefined, JSON.stringify(pilotProbe));
+    assert.equal(pilotProbe.chineseDifferent, true, "English never translated the prompt");
+    assert.match(pilotProbe.pilotQuestion, /Black to play/);
+    assert.equal(pilotProbe.langAfter, "zh-Hant-TW", "untranslated page must not claim full English");
+    assert.equal(pilotProbe.englishMarked, "en");
+    assert.match(pilotProbe.occupiedEnglish, /already on that point/);
+    assert.match(pilotProbe.wrongText, /try again/i);
+    assert.match(pilotProbe.hinted, /below the white stone/);
+    assert.match(pilotProbe.successful, /Correct/);
+    assert.equal(pilotProbe.switchedBack, true);
+    assert.equal(pilotProbe.eventsPreserved, true);
+    assert.deepEqual(pilotProbe.answerAttempts, [1, 2]);
+    assert.deepEqual(pilotProbe.firstAnswers, [true, false]);
+    assert.equal(pilotProbe.hintCount, 1);
+    assert.deepEqual(pilotProbe.hintsQualified, [false]);
+    assert.equal(pilotProbe.afterWrongAnswerCount, 1);
+    assert.equal(pilotProbe.afterHintAnswerCount, 1);
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {

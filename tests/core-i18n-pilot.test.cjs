@@ -1,0 +1,41 @@
+"use strict";
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const root = path.resolve(__dirname, "..");
+const read = (name) => fs.readFileSync(path.join(root, name), "utf8");
+const pilot = require("../core-i18n-pilot.js");
+test("English capture pilot is actual UI wiring, never a parallel answer key", () => {
+  const html = read("index.html"), app = read("app.js"), src = read("core-i18n-pilot.js");
+  assert.match(html, /<script defer src="core-i18n-pilot\.js"><\/script>/);
+  assert.match(html, /id="core-pilot-locale"/);
+  assert.match(app, /function syncI18n\(\)/);
+  assert.match(app, /window\.GoI18nPilot\.sync\(/);
+  assert.doesNotMatch(src, /(?:playMove|goalReached|recordEvent|localStorage\.setItem|\.answer\s*=|\.scoring\s*=)/);
+  assert.match(src, /TASK_ID = "u1-06"/);
+  assert.match(src, /html\[lang=zh-Hant-TW\]/);
+  assert.match(html, /<html lang="zh-Hant-TW">/);
+});
+test("English pilot states remain distinct without disclosing the answer early", () => {
+  assert.match(pilot.phaseLabel({solved:false,answersThisTurn:0,hintShown:false}), /independently/);
+  assert.match(pilot.phaseLabel({solved:false,answersThisTurn:0,hintShown:true}), /Hint viewed/);
+  assert.match(pilot.phaseLabel({solved:false,answersThisTurn:1,hintShown:false}), /Try again/);
+  assert.match(pilot.phaseLabel({solved:true,answersThisTurn:2,hintShown:true}), /after retry/);
+  assert.doesNotMatch(pilot.nowLabel({solved:false,answersThisTurn:0,hintShown:false}), /below|down|row 6|column 5/i);
+  assert.match(pilot.warningText("無法寫入瀏覽器儲存空間；本次變更未保存"), /could not be saved/);
+  assert.match(pilot.warningText("舊進度格式損壞，而且無法建立復原副本"), /could not save a recovery copy/);
+  assert.equal(pilot.TASK_ID, "u1-06");
+});
+test("pilot board question preserves canonical item, scoring, and formal boundary", () => {
+  const core = require("../content.js");
+  const item = core.problems.find((p) => p.id === pilot.TASK_ID);
+  assert.equal(item.type, "move");
+  assert.deepEqual(item.answer, [4, 5]);
+  assert.equal(item.goal.type, "capture");
+  assert.equal(item.goal.count, 1);
+  assert.match(pilot.COPY.prompt, /Black to play/);
+  assert.match(pilot.COPY.prompt, /last liberty/);
+  assert.match(pilot.COPY.success, /removed/);
+  assert.match(read("release-manifest.json"), /core-i18n-pilot\.js/);
+});

@@ -402,7 +402,9 @@
     "ui-audit-screenshots/go-learning-answered-desktop.png",
     "ui-audit-screenshots/go-learning-desktop.png",
     "ui-audit-screenshots/go-learning-mobile.png",
-    "ui-audit-screenshots/go-learning-text-choice-desktop.png"
+    "ui-audit-screenshots/go-learning-text-choice-desktop.png",
+    "core-i18n-pilot.js",
+    "tests/core-i18n-pilot.test.cjs"
   ],
   "excludedPatterns": [
     "gtp_logs/",
