@@ -3,7 +3,7 @@
   "locale": "en",
   "status": "candidate-not-runtime",
   "canonicalSource": "GoContent.problems",
-  "itemCount": 76,
+  "itemCount": 106,
   "items": {
     "u1-01": {
       "id": "u1-01",
@@ -1076,6 +1076,486 @@
       ],
       "hint": "Look for a concrete difference between estimated and actual ownership.",
       "explanation": "Recheck the status of groups, borders and exchanges to turn the scoring error into a specific question for future games.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-01": {
+      "id": "u11-01",
+      "title": "Look at the whole board",
+      "prompt": "A local fight could continue, but one of your groups elsewhere is about to be captured. What should you do first?",
+      "options": [
+        "Pause and check whether saving that weak group is more urgent",
+        "Always finish the local fight",
+        "Look only at the last move"
+      ],
+      "hint": "Compare urgent problems across the board.",
+      "explanation": "A group in immediate danger may deserve attention before an unfinished local fight.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-02": {
+      "id": "u11-02",
+      "title": "Recognise a large point",
+      "prompt": "Which area is most likely to offer a large move?",
+      "options": [
+        "An unsettled open area that you can influence without weakening yourself",
+        "A corner whose boundaries are already fully secure",
+        "One of your groups that has only one liberty"
+      ],
+      "hint": "A large move often affects a substantial undecided area.",
+      "explanation": "An open area with significant potential can matter more than a place already settled.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-03": {
+      "id": "u11-03",
+      "title": "One move, two jobs",
+      "prompt": "Why can a move that both strengthens your group and limits the opponent's space be valuable?",
+      "options": [
+        "It addresses two whole-board needs at once",
+        "It must capture stones immediately",
+        "It only adds one liberty"
+      ],
+      "hint": "Think about how much useful work one stone performs.",
+      "explanation": "Combining defence with pressure can make a move efficient in the whole-board position.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-04": {
+      "id": "u11-04",
+      "title": "Think beyond captured stones",
+      "prompt": "You capture two stones locally, but the opponent builds powerful outside thickness. What should you do before judging the trade?",
+      "options": [
+        "Compare the local gain with the effects across the board",
+        "Count only the captured stones",
+        "Look only at who gave atari first"
+      ],
+      "hint": "A small local win can carry a bigger outside cost.",
+      "explanation": "Judge the exchange by territory, thickness, weak groups and future possibilities—not capture count alone.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-05": {
+      "id": "u11-05",
+      "title": "Mark the urgent areas",
+      "prompt": "When looking across the whole board, what should you identify first?",
+      "options": [
+        "Weak groups, big unsettled spaces and urgent points",
+        "Only corners that are already safe",
+        "The four edges of the board"
+      ],
+      "hint": "Find the areas where one move could change the position most.",
+      "explanation": "Identifying weak groups, open space and immediate threats helps you choose a useful direction.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-06": {
+      "id": "u11-06",
+      "title": "Direction is not a memorised coordinate",
+      "prompt": "What is the least useful approach to learning whole-board direction?",
+      "options": [
+        "Memorise fixed coordinates without checking the other stones",
+        "Compare urgency with potential size",
+        "Check where supporting stones are"
+      ],
+      "hint": "The same point can serve different purposes in different positions.",
+      "explanation": "Choose a direction from the relationships between groups and spaces rather than a fixed-coordinate rule.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-01": {
+      "id": "u12-01",
+      "title": "Should you save every stone?",
+      "prompt": "A small group can be sacrificed, leaving you strong outside with an attack against a larger opposing group. What should you compare?",
+      "options": [
+        "The whole-board compensation from giving up the stones",
+        "Assume every stone must be rescued",
+        "Count only how many stones you lose"
+      ],
+      "hint": "A sacrifice is worthwhile only when it buys something useful.",
+      "explanation": "Giving up a few stones may be reasonable if the resulting thickness, initiative or attack is worth more.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-02": {
+      "id": "u12-02",
+      "title": "The value of taking the initiative",
+      "prompt": "A move generally makes the opponent respond, allowing you to reach the next large point first. Why might that help?",
+      "options": [
+        "The chance to move first elsewhere has value",
+        "Forcing a reply never costs anything",
+        "Every forcing move is correct"
+      ],
+      "hint": "The initiative means retaining choices about where to play next.",
+      "explanation": "A forcing move can preserve initiative, but its own cost and whether the opponent truly must reply still matter.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-03": {
+      "id": "u12-03",
+      "title": "Check safety before invading",
+      "prompt": "Before entering your opponent's area, what do you most need to know?",
+      "options": [
+        "Whether your stones have a way to connect, escape or live",
+        "Whether you have fewer stones in total",
+        "Whether the centre is always safe"
+      ],
+      "hint": "An invasion needs a realistic survival plan.",
+      "explanation": "Without a route to safety, an invasion may simply create another weak group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-04": {
+      "id": "u12-04",
+      "title": "Attack where you have support",
+      "prompt": "Your opponent has an unsettled group and you have strong nearby stones. What is a reasonable aim?",
+      "options": [
+        "Gain strength, territory or initiative while staying safe",
+        "Guarantee that you capture every stone",
+        "Attach to your opponent on every move"
+      ],
+      "hint": "Capturing everything is not the only useful result.",
+      "explanation": "Your strong stones may let you press the weak group and gain territory, outside strength or the initiative.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-05": {
+      "id": "u12-05",
+      "title": "Know when to sacrifice",
+      "prompt": "Your stones cannot escape safely, and every attempted rescue adds more stones at risk. What might be better?",
+      "options": [
+        "Stop adding stones and seek compensation outside",
+        "Keep adding stones without limit",
+        "Pretend the group does not exist"
+      ],
+      "hint": "Adding another stone can increase the loss.",
+      "explanation": "A timely sacrifice may contain the damage and free you to gain something elsewhere.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-06": {
+      "id": "u12-06",
+      "title": "Review the turning point of a fight",
+      "prompt": "After a failed fight, which review question is most useful?",
+      "options": [
+        "When did my previously safe group become weak?",
+        "How many stones did my opponent place?",
+        "Were the stones physically heavy?"
+      ],
+      "hint": "Find the decision that changed the group's safety.",
+      "explanation": "Identify when the group became weak and when you missed a chance to stabilise it.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-01": {
+      "id": "u13-01",
+      "title": "Is that really a ko threat?",
+      "prompt": "If your opponent can ignore a move elsewhere with little consequence, can you rely on it as a ko threat?",
+      "options": [
+        "No, it does not put enough pressure on the opponent",
+        "Yes, because it costs nothing",
+        "It must be better than a large threat"
+      ],
+      "hint": "An effective ko threat needs a reply.",
+      "explanation": "A threat that the opponent can easily ignore is not a reliable way to regain the ko.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-02": {
+      "id": "u13-02",
+      "title": "How much is the ko worth?",
+      "prompt": "Before committing to a ko fight, what should you compare?",
+      "options": [
+        "The whole-board consequences of winning and losing the ko",
+        "Who first noticed the ko",
+        "How near the ko is to the centre"
+      ],
+      "hint": "A ko can affect much more than the stone being captured.",
+      "explanation": "Estimate the consequences of both outcomes before spending valuable threats on the fight.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-03": {
+      "id": "u13-03",
+      "title": "An expensive ko threat",
+      "prompt": "You use an enormous threat elsewhere to fight over a very small ko, giving the opponent a large gain. What might be wrong?",
+      "options": [
+        "The cost of the threat exceeds the value of the ko",
+        "Larger threats are always better",
+        "A threat never has a cost"
+      ],
+      "hint": "A ko threat is an exchange, not a free move.",
+      "explanation": "If the concession required by your threat costs more than the ko is worth, the whole exchange may be poor.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-04": {
+      "id": "u13-04",
+      "title": "Where might a useful threat be?",
+      "prompt": "When looking for ko threats, what deserves attention first?",
+      "options": [
+        "A move that threatens an important group, territory or connection",
+        "An empty corner that matters to neither player",
+        "A point deep inside your already dead group"
+      ],
+      "hint": "Look for something your opponent cannot afford to lose.",
+      "explanation": "Threats against important groups, territory and connections are more likely to demand a reply.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-05": {
+      "id": "u13-05",
+      "title": "Why play a ko threat elsewhere?",
+      "prompt": "You leave the ko point to make a threat elsewhere, hoping to retake the ko after a reply. What is the purpose?",
+      "options": [
+        "Use the turn elsewhere to earn another chance at the ko",
+        "Cancel all the rules of the game",
+        "Guarantee victory in a single step"
+      ],
+      "hint": "The threat is played while you cannot immediately retake.",
+      "explanation": "A meaningful threat can draw a reply and give you an opportunity to contest the ko again.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-06": {
+      "id": "u13-06",
+      "title": "Review a ko exchange",
+      "prompt": "After a ko fight, what should you examine?",
+      "options": [
+        "Each threat used by both sides and what it actually cost",
+        "Only who captured the ko last",
+        "Ignore moves made elsewhere"
+      ],
+      "hint": "Much of a ko fight's value is decided away from the ko point.",
+      "explanation": "Reviewing the threats and replies reveals the cost of the whole exchange.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-01": {
+      "id": "u14-01",
+      "title": "What does joseki mean?",
+      "prompt": "What best describes a joseki?",
+      "options": [
+        "A common corner exchange considered reasonable under certain conditions",
+        "The only sequence that must be copied in every game",
+        "A formula that guarantees a win"
+      ],
+      "hint": "Nearby stones and whole-board direction still matter.",
+      "explanation": "Joseki are established corner patterns, not universally correct moves regardless of context.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-02": {
+      "id": "u14-02",
+      "title": "Before choosing a corner variation",
+      "prompt": "What should you check before choosing a joseki variation?",
+      "options": [
+        "Where the outside strength will face and which stones are nearby",
+        "How many pages are in your game record",
+        "Whether the opponent is playing quickly"
+      ],
+      "hint": "The same local sequence may work differently with different neighbours.",
+      "explanation": "Choose a variation that fits the surrounding stones, outside influence and whole-board needs.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-03": {
+      "id": "u14-03",
+      "title": "When memorisation stops helping",
+      "prompt": "You remember the first half of a joseki, but the surrounding stones differ from your example. What should you do?",
+      "options": [
+        "Reassess the direction instead of blindly continuing the sequence",
+        "Finish the memorised sequence no matter what",
+        "Change the colours of the stones"
+      ],
+      "hint": "A remembered sequence has conditions.",
+      "explanation": "If the surrounding position differs, judge the purpose of the next move rather than copying it automatically.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-04": {
+      "id": "u14-04",
+      "title": "After a joseki, check the groups",
+      "prompt": "A corner sequence ends, but your outside group is still thin and vulnerable. What deserves attention?",
+      "options": [
+        "Strengthen it or consider how its weakness affects the position",
+        "Start another identical joseki immediately",
+        "Ignore it because the corner sequence ended"
+      ],
+      "hint": "Ending the local pattern does not end whole-board problems.",
+      "explanation": "Examine which groups are unsettled and what follow-up moves remain after the corner exchange.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-05": {
+      "id": "u14-05",
+      "title": "Territory or outside influence?",
+      "prompt": "Two reasonable corner variations offer different outcomes: one secures territory, the other outside influence. How should you choose?",
+      "options": [
+        "Compare which outcome fits the nearby position and your plan",
+        "Always select territory",
+        "Always select outside influence"
+      ],
+      "hint": "Neither kind of gain is universally better.",
+      "explanation": "Nearby weak groups, development opportunities and whole-board direction determine which exchange is more useful.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-06": {
+      "id": "u14-06",
+      "title": "Learn why a joseki works",
+      "prompt": "Which is a more useful way to study joseki?",
+      "options": [
+        "Understand the aims and directions before learning longer sequences",
+        "Memorise as many long sequences as possible without context",
+        "Force yourself to use a new sequence in every game"
+      ],
+      "hint": "Understanding lets you judge unfamiliar positions.",
+      "explanation": "Learn what each exchange aims to accomplish so you can adapt to different surrounding stones.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-01": {
+      "id": "u15-01",
+      "title": "Where should a game review begin?",
+      "prompt": "After a game, which moments are most useful to revisit first?",
+      "options": [
+        "A few turning points involving large gains, losses or group survival",
+        "Every move for exactly the same length of time",
+        "Only the most attractive shape on the board"
+      ],
+      "hint": "Look for moments that changed the game significantly.",
+      "explanation": "Starting from a few influential decisions makes a review more focused.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-02": {
+      "id": "u15-02",
+      "title": "Record your own reasoning first",
+      "prompt": "Why write down what you were thinking before consulting an AI or review tool?",
+      "options": [
+        "You can compare your original judgment with the suggestions",
+        "The AI will then play the game for you",
+        "It means you no longer need to review"
+      ],
+      "hint": "The difference in reasoning matters, not only the coordinate.",
+      "explanation": "Keeping your original explanation makes it easier to find what you missed or misunderstood.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-03": {
+      "id": "u15-03",
+      "title": "How should you use an AI candidate?",
+      "prompt": "An AI tool suggests a move with a higher estimated win rate. What is the most useful next step?",
+      "options": [
+        "Ask what problem it improves, then check the idea yourself",
+        "Memorise only the coordinate",
+        "Call every other move incorrect"
+      ],
+      "hint": "Treat a candidate move as a question to investigate.",
+      "explanation": "Use AI estimates to examine weaknesses, direction or trade-offs; they do not prove a unique teaching answer.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-04": {
+      "id": "u15-04",
+      "title": "Choose one question for the next game",
+      "prompt": "A review reveals many mistakes. What is a manageable next practice goal?",
+      "options": [
+        "Select one observable decision to revisit in your next game",
+        "Fix every weakness at once",
+        "Stop playing"
+      ],
+      "hint": "A concrete target can be checked in a later position.",
+      "explanation": "Choose one action to practise, such as checking your own groups before starting an attack.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-05": {
+      "id": "u15-05",
+      "title": "Record more than the result",
+      "prompt": "You lost a game but avoided a particular illegal move you used to make. What should your notes include?",
+      "options": [
+        "The observed change and what still needs checking",
+        "Only the win or loss",
+        "A statement that the game taught you nothing"
+      ],
+      "hint": "A game result does not describe every decision you made.",
+      "explanation": "Record the specific decision that differed and seek comparable situations before claiming lasting improvement.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-06": {
+      "id": "u15-06",
+      "title": "A useful takeaway from one review",
+      "prompt": "What is the minimum useful outcome of a personal game review?",
+      "options": [
+        "One turning point, why it mattered and one question for the next game",
+        "The physical weight of all stones",
+        "Only an AI win-rate screenshot"
+      ],
+      "hint": "Leave the review with something you can check while playing.",
+      "explanation": "A turning point, an explanation and a specific next-game question make the review actionable.",
       "sourceVersion": "content.js-public-2026-10-13",
       "editorialStatus": "draft",
       "goReview": "pending",
