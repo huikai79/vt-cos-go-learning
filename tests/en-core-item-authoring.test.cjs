@@ -17,6 +17,11 @@ test("English item drafts have unique canonical item IDs and preserve all source
   assert.equal(item.editorialStatus,"draft");
   assert.equal(item.goReview,"pending");
   assert.equal(item.nativeReview,"pending");
+  const canonical=originals.get(id);
+  if(canonical.type==="choice"){
+    assert.equal(item.options.length,canonical.options.length,"option count mismatch: "+id);
+    assert.ok(Number.isInteger(canonical.answer)&&canonical.answer>=0&&canonical.answer<item.options.length);
+  }
   assert.ok(!("answer" in item)&&!("goal" in item)&&!("stones" in item)&&!("scoring" in item),id);
  }
 });
