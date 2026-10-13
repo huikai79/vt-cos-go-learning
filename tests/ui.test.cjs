@@ -2967,10 +2967,13 @@ async function main() {
 
     // English task pilot: negative contract on real browser, event persistence
     // and reversibility. Run in a fresh Core navigation before R1 review checks.
-    await command(socket, "Page.navigate", {url: page + "#core"});
+    // A new navigation may not commit before Runtime.evaluate. The previous
+    // page can already contain both selectors, yielding a false ready signal.
+    const pilotUrl = page + "?core_i18n_ci=1#core";
+    await command(socket, "Page.navigate", {url: pilotUrl});
     let pilotReady = false;
     for (let retry = 0; retry < 40; retry += 1) {
-      pilotReady = await evaluate(socket, "Boolean(window.GoI18nPilot && document.querySelector('#lesson-nav [data-lesson]'))");
+      pilotReady = await evaluate(socket, "Boolean(location.search.includes('core_i18n_ci=1') && window.GoI18nPilot && document.querySelector('#lesson-nav [data-lesson]'))");
       if (pilotReady) break;
       await delay(100);
     }
