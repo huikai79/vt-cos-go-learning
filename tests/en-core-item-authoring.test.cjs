@@ -30,7 +30,7 @@ test("Unreviewed item copy is not published as a complete English locale",()=>{
  const en=manifest.locales.find(x=>x.id==="en");
  assert.equal(en.publishable,false);
  assert.equal(draft.status,"candidate-not-runtime");
- assert.equal(draft.contentAuthority,"GoContent");
+ assert.match(draft.contentAuthority,/never supply answer\/scoring\/goal\/exposure\/firstResponse/);
  const html=fs.readFileSync(path.join(__dirname,"../index.html"),"utf8");
  assert.doesNotMatch(html,/core-item-drafts\.json/);
 });
