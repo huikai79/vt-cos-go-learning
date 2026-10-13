@@ -2981,7 +2981,12 @@ async function main() {
     const pilotProbe = await evaluate(socket, `(() => {
       try {
       const byId = (id) => document.getElementById(id);
-      document.querySelector('#lesson-nav [data-lesson="1"]').click();
+      const unitSelector = byId('unit-select');
+      unitSelector.value = '0';
+      unitSelector.dispatchEvent(new Event('change', {bubbles:true}));
+      const lessonButton = document.querySelector('#lesson-nav [data-lesson="1"]');
+      if (!lessonButton) throw new Error('Unit 1 lesson 2 navigation is absent after selecting unit 1');
+      lessonButton.click();
       const initial = JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
       const firstExposureCount = initial.events.filter(e => e.problemId === 'u1-06' && e.type === 'presented').length;
       const select = byId('core-pilot-locale');
