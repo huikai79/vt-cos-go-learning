@@ -2979,6 +2979,7 @@ async function main() {
     }
     assert.equal(pilotReady, true, "English pilot controls unavailable in Core");
     const pilotProbe = await evaluate(socket, `(() => {
+      try {
       const byId = (id) => document.getElementById(id);
       document.querySelector('#lesson-nav [data-lesson="1"]').click();
       const initial = JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
@@ -3023,7 +3024,9 @@ async function main() {
         afterWrongAnswerCount: afterWrong.events.filter(e => e.problemId === 'u1-06' && e.type === 'answer').length,
         afterHintAnswerCount: afterHint.events.filter(e => e.problemId === 'u1-06' && e.type === 'answer').length
       };
+      } catch (error) { return { pilotException: String(error && (error.stack || error.message) || error) }; }
     })()`);
+    assert.equal(pilotProbe.pilotException, undefined, JSON.stringify(pilotProbe));
     assert.equal(pilotProbe.chineseDifferent, true, "English never translated the prompt");
     assert.match(pilotProbe.pilotQuestion, /Black to play/);
     assert.equal(pilotProbe.langAfter, "zh-Hant-TW", "untranslated page must not claim full English");
