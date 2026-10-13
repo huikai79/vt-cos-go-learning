@@ -3,7 +3,7 @@
   "locale": "en",
   "status": "candidate-not-runtime",
   "canonicalSource": "GoContent.problems",
-  "itemCount": 34,
+  "itemCount": 46,
   "items": {
     "u1-01": {
       "id": "u1-01",
@@ -404,6 +404,198 @@
       ],
       "hint": "The lessons use the common beginner version that looks one board position back.",
       "explanation": "This engine implements simple ko and prevents an immediate return to the previous board position.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-01": {
+      "id": "u4-01",
+      "title": "Why two real eyes matter",
+      "prompt": "A surrounded black group has two separate real eyes that White cannot safely fill. What does this usually tell you?",
+      "options": [
+        "Black is alive in this basic position",
+        "Black must be captured",
+        "Eyes have no connection to life and death"
+      ],
+      "hint": "Think about whether White can occupy both eye points without being captured.",
+      "explanation": "Two separate real eyes prevent White from safely filling both spaces in this basic position.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-02": {
+      "id": "u4-02",
+      "title": "One eye is not enough",
+      "prompt": "A surrounded group has only one eye. Which conclusion is safest?",
+      "options": [
+        "The group must be alive",
+        "The next player and vital points still matter",
+        "The group must be dead"
+      ],
+      "hint": "One eye alone does not guarantee life.",
+      "explanation": "With only one eye, the outcome may depend on who plays first and which vital point they choose.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-03": {
+      "id": "u4-03",
+      "title": "A vital point for both sides",
+      "prompt": "A point that stops your opponent from forming a second eye can also help you make one. Which principle is this closest to?",
+      "options": [
+        "Your opponent's vital point may also be yours",
+        "The corner is always the smallest area",
+        "Capturing always comes first"
+      ],
+      "hint": "Both players may be fighting for the same eye-shaping point.",
+      "explanation": "In life-and-death positions, both sides may need the same vital point for different reasons.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-04": {
+      "id": "u4-04",
+      "title": "A false eye",
+      "prompt": "An empty point looks like an eye, but the opponent can play there safely. How should you treat it?",
+      "options": [
+        "A secure real eye",
+        "A false or incomplete eye",
+        "An extra liberty that guarantees life"
+      ],
+      "hint": "A real eye is a space the opponent cannot safely occupy.",
+      "explanation": "A space the opponent can enter safely is not a secure real eye; examine the surrounding stones.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-05": {
+      "id": "u4-05",
+      "title": "How to start reading life and death",
+      "prompt": "What is a useful first step when solving a basic life-and-death problem?",
+      "options": [
+        "Find a point that can change the eye shape",
+        "Choose any empty point",
+        "Count the entire board first"
+      ],
+      "hint": "Look for a move that could change the local position significantly.",
+      "explanation": "Find a vital point, then consider the opponent's strongest reply rather than stopping at your first idea.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-06": {
+      "id": "u4-06",
+      "title": "Who plays first?",
+      "prompt": "In one local position, Black can live when Black plays first, but White can kill when White plays first. What does that show?",
+      "options": [
+        "The order of play can decide life and death",
+        "Stone colour makes no difference to the task",
+        "One eye is always enough"
+      ],
+      "hint": "Which player can claim the vital point first?",
+      "explanation": "When an eye shape is unfinished, the player to move can determine whether a group lives.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-01": {
+      "id": "u5-01",
+      "title": "Why practice on a 9×9 board?",
+      "prompt": "What is the main benefit of finishing a game on a 9×9 board as a beginner?",
+      "options": [
+        "You can experience the opening, fighting and ending sooner",
+        "Half the Go rules disappear",
+        "You never need to count liberties"
+      ],
+      "hint": "A smaller board reaches local fights and the end of the game sooner.",
+      "explanation": "A 9×9 board keeps the rules of Go while making it easier to finish and review a whole game.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-02": {
+      "id": "u5-02",
+      "title": "The first goal of the opening",
+      "prompt": "At the beginning of a 9×9 game, which aim is generally more useful?",
+      "options": [
+        "Develop stones with room to grow",
+        "Fill the first line immediately",
+        "Chase one distant stone at all costs"
+      ],
+      "hint": "Give your stones room for later moves.",
+      "explanation": "Early moves should build useful space and relationships between stones, rather than start an unnecessary chase.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-03": {
+      "id": "u5-03",
+      "title": "What should you notice in the middle game?",
+      "prompt": "One of your groups is surrounded while a small empty corner remains. What should you check first?",
+      "options": [
+        "Whether your surrounded group is in urgent danger",
+        "The small empty corner",
+        "Whichever area you notice first"
+      ],
+      "hint": "If a group is lost, the nearby territory may be lost as well.",
+      "explanation": "Check the safety of an urgently weak group before pursuing a smaller gain elsewhere.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-04": {
+      "id": "u5-04",
+      "title": "Recognising the endgame",
+      "prompt": "Both players' large groups are mostly safe. Most remaining moves settle a boundary or gain a few points. Which stage does this resemble?",
+      "options": [
+        "The endgame",
+        "The opening",
+        "The start of a ko fight"
+      ],
+      "hint": "Notice when the focus shifts from group survival to boundaries.",
+      "explanation": "Settling borders and comparing small territorial gains are typical endgame tasks.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-05": {
+      "id": "u5-05",
+      "title": "When both players are ready to stop",
+      "prompt": "Both players believe there are no useful moves left. What is the normal next step?",
+      "options": [
+        "Pass in turn according to the rules and proceed to scoring",
+        "Clear the board immediately",
+        "Play another move in an empty corner"
+      ],
+      "hint": "Think about the procedure for ending a game.",
+      "explanation": "After two consecutive passes, the game proceeds to the applicable end-of-game and scoring procedure.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-06": {
+      "id": "u5-06",
+      "title": "One useful question after a short game",
+      "prompt": "After a 9×9 game, which review question is most useful for your next game?",
+      "options": [
+        "Which move made my group vulnerable, and what did I overlook?",
+        "How many minutes did the game take?",
+        "How heavy was my opponent's stone?"
+      ],
+      "hint": "Look for one decision you can recognise and check next time.",
+      "explanation": "Reviewing one overlooked threat or weak group gives you a concrete question to test in another game.",
       "sourceVersion": "content.js-public-2026-10-13",
       "editorialStatus": "draft",
       "goReview": "pending",
