@@ -9,7 +9,7 @@ test("English item drafts have unique canonical item IDs and preserve all source
  const originals=new Map(core.problems.map(p=>[p.id,p]));
  const keys=Object.keys(draft.items);
  assert.equal(keys.length,draft.itemCount);
- assert.ok(keys.length>0 && keys.length<core.problems.length,"partial coverage must not be advertised as full");
+ assert.equal(keys.length,core.problems.length,"every canonical Core item must have an English copy candidate");
  for(const [id,item] of Object.entries(draft.items)){
   assert.ok(originals.has(id),"unknown item "+id);
   assert.equal(id,item.id);
