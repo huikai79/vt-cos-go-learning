@@ -1,0 +1,415 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "canonicalSource": "GoContent.problems",
+  "itemCount": 34,
+  "items": {
+    "u1-01": {
+      "id": "u1-01",
+      "title": "One stone in the middle",
+      "prompt": "How many liberties does the marked black stone have?",
+      "hint": "Count only the empty points touching the stone along a board line.",
+      "explanation": "The four neighbouring intersections—up, down, left and right—are empty, so this stone has four liberties.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-02": {
+      "id": "u1-02",
+      "title": "One stone on the edge",
+      "prompt": "How many liberties does the marked black stone have?",
+      "hint": "The area outside the board cannot be counted.",
+      "explanation": "The black stone has three adjacent empty intersections: left, right and below.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-03": {
+      "id": "u1-03",
+      "title": "One stone in the corner",
+      "prompt": "How many liberties does the marked black stone have?",
+      "hint": "A corner has only two board lines leading inward.",
+      "explanation": "Only the points to the right and below are liberties, so the stone has two.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-04": {
+      "id": "u1-04",
+      "title": "Two connected stones",
+      "prompt": "How many liberties does this connected black group have?",
+      "hint": "The intersection between the stones is occupied, so it is not a liberty.",
+      "explanation": "Both stones form one group. Count the six different empty intersections around that group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-05": {
+      "id": "u1-05",
+      "title": "Does a diagonal count?",
+      "prompt": "Do the two marked black stones already form one connected group?",
+      "hint": "Stones connect along horizontal or vertical board lines, not across a diagonal.",
+      "explanation": "The stones touch only diagonally. They are still two separate groups.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-06": {
+      "id": "u1-06",
+      "title": "Capture in the middle",
+      "prompt": "Black to play. Capture the marked white stone by taking its last liberty.",
+      "hint": "Look for the empty point directly next to White that is not occupied by Black.",
+      "explanation": "Black fills White's final liberty. With no liberties left, the white stone is captured.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-07": {
+      "id": "u1-07",
+      "title": "Capture at the edge",
+      "prompt": "Black to play. Find White's last liberty and capture the stone.",
+      "hint": "The board edge gives White no extra liberty. Check the point below it.",
+      "explanation": "The last liberty of this edge stone is directly below it; Black captures there.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-08": {
+      "id": "u1-08",
+      "title": "Capture in the corner",
+      "prompt": "Black to play. Capture the white stone in the corner.",
+      "hint": "A corner stone can only gain liberties at the two neighbouring intersections on the board.",
+      "explanation": "The point to the right is occupied by Black. The remaining liberty is below White.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-09": {
+      "id": "u1-09",
+      "title": "Capture two stones together",
+      "prompt": "Black to play. Capture the marked pair of connected white stones in one move.",
+      "hint": "Count the empty points around both white stones as one group.",
+      "explanation": "The two white stones share their liberties. Filling the last empty point below the left-hand stone captures the whole group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-10": {
+      "id": "u1-10",
+      "title": "Save a stone in atari",
+      "prompt": "Black to play. Extend the marked black stone to escape atari.",
+      "hint": "The black stone has one liberty left. Check how many liberties the group would have after extending.",
+      "explanation": "Extending downward connects two black stones into one group with more liberties.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-01": {
+      "id": "u2-01",
+      "title": "Side-by-side stones",
+      "prompt": "Are the two marked black stones in the same connected group?",
+      "hint": "Follow the horizontal board line between them.",
+      "explanation": "The black stones touch directly along a horizontal line, so they belong to one group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-02": {
+      "id": "u2-02",
+      "title": "Stones above and below",
+      "prompt": "Are the two marked white stones in the same connected group?",
+      "hint": "Follow the vertical board line between them.",
+      "explanation": "The white stones touch directly along a vertical line, so they form one group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-03": {
+      "id": "u2-03",
+      "title": "Diagonal stones remain separate",
+      "prompt": "Are the two marked black stones already one connected group?",
+      "hint": "A diagonal contact is not a direct connection along a board line.",
+      "explanation": "Although they look close, the two stones are still separate groups.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-04": {
+      "id": "u2-04",
+      "title": "An opposing stone between them",
+      "prompt": "Are the two marked black stones part of one connected group?",
+      "hint": "Check what occupies the intersection between the black stones.",
+      "explanation": "A white stone separates them. The marked black stones are not directly connected.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-05": {
+      "id": "u2-05",
+      "title": "Join across the middle",
+      "prompt": "Black to play. Connect the two marked black stones directly with one move.",
+      "hint": "Find the empty intersection that touches both black stones along the board lines.",
+      "explanation": "Black plays on the shared adjacent point, linking the two stones into one group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-06": {
+      "id": "u2-06",
+      "title": "Join vertically",
+      "prompt": "Black to play. Connect the upper and lower black stones into one group.",
+      "hint": "Check the empty intersection between the two black stones.",
+      "explanation": "Black fills the middle point, making a vertical connection between the stones.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-07": {
+      "id": "u2-07",
+      "title": "Connect near the edge",
+      "prompt": "Black to play. Join the two black stones near the left edge.",
+      "hint": "Look for the empty point touching both black stones.",
+      "explanation": "Filling the shared point joins the two stones along the same row.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-08": {
+      "id": "u2-08",
+      "title": "A cutting point in the middle",
+      "prompt": "Black to play. Occupy the point where the two marked white stones could connect directly.",
+      "hint": "Find the empty point directly between the two white stones.",
+      "explanation": "Black occupies the middle point, preventing White from connecting there in one move.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-09": {
+      "id": "u2-09",
+      "title": "Stop a vertical connection",
+      "prompt": "Black to play. Prevent the upper and lower white stones from connecting directly through the middle.",
+      "hint": "Look for the empty intersection shared by both white stones.",
+      "explanation": "Black occupies that intersection, stopping this direct vertical connection.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-10": {
+      "id": "u2-10",
+      "title": "Find the connecting point near the edge",
+      "prompt": "Black to play. Which point would White need to connect the two marked stones directly? Occupy it.",
+      "hint": "Look along the straight line between the two white stones.",
+      "explanation": "Black occupies the point between them, so White cannot connect there in one move.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m01": {
+      "id": "u4-m01",
+      "title": "Find the first vital point",
+      "prompt": "Black to play. Find the point that turns this three-point eye space into two separate real eyes.",
+      "hint": "Compare the middle point with the two ends. Which move separates the remaining empty space?",
+      "explanation": "Black plays in the middle, leaving one enclosed empty point on each side. This is the basic straight-three eye-space shape.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m02": {
+      "id": "u4-m02",
+      "title": "Rotate the same eye shape",
+      "prompt": "Black to play. Where is the vital point when the three-point shape is vertical?",
+      "hint": "Rotating the shape does not change which point divides it into two.",
+      "explanation": "Black occupies the middle. The top and bottom empty points become separate real eyes.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m03": {
+      "id": "u4-m03",
+      "title": "Deny White two eyes",
+      "prompt": "Black to play. White wants to make two eyes from this connected three-point space. Which vital point should Black take first?",
+      "hint": "Think about what would happen if White occupied the central point first.",
+      "explanation": "Black takes the centre so White cannot use that point to split its eye space. White's strongest follow-up still needs to be read.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m04": {
+      "id": "u4-m04",
+      "title": "Attack the rotated eye shape",
+      "prompt": "Black to play. Find the point that prevents White from making two eyes in the vertical shape.",
+      "hint": "Find the middle of the three connected empty intersections.",
+      "explanation": "Taking the middle denies White this two-eye formation. The task checks the first vital point, not every later killing variation.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m05": {
+      "id": "u4-m05",
+      "title": "Complete a second eye horizontally",
+      "prompt": "Black to play. The left eye is already enclosed. Fill the missing boundary point of the second eye.",
+      "hint": "Inspect the four neighbouring points around the right-hand empty eye space.",
+      "explanation": "Black closes the missing boundary. Both separate empty points become enclosed real eyes.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m06": {
+      "id": "u4-m06",
+      "title": "Complete a second eye vertically",
+      "prompt": "Black to play. Close the missing boundary point of the second eye in this rotated shape.",
+      "hint": "Confirm the existing eye, then inspect which side of the other eye remains open.",
+      "explanation": "Filling the gap leaves two separate enclosed eye points. The orientation does not change the condition.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m07": {
+      "id": "u4-m07",
+      "title": "Block White's second eye",
+      "prompt": "Black to play. White is one move away from making a second eye. Occupy the missing boundary point first.",
+      "hint": "Do not fill the already complete eye. Find the gap around the other candidate eye.",
+      "explanation": "Black enters the outer gap, so the second empty point touches an opposing stone and is no longer a real white eye.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m08": {
+      "id": "u4-m08",
+      "title": "Block the rotated second eye",
+      "prompt": "Black to play. Occupy the gap in White's second-eye boundary before White can close it.",
+      "hint": "Compare both candidate eye points. One still has an unclosed boundary.",
+      "explanation": "Black takes the gap, leaving White with only its existing eye in this task. This alone does not prove the entire group will die.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-01": {
+      "id": "u3-01",
+      "title": "A move with no liberties",
+      "prompt": "Black plays a stone that would have no liberties after the move, and no white stones are captured. Is that legal?",
+      "options": [
+        "Yes, any point can be played first",
+        "No, it is an illegal self-capture",
+        "Yes, but it is risky"
+      ],
+      "hint": "Imagine the liberties of Black's group after the move.",
+      "explanation": "A move that leaves your group with no liberties and captures nothing is illegal under these rules.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-02": {
+      "id": "u3-02",
+      "title": "Capturing removes the problem",
+      "prompt": "Black plays into a surrounded point but captures neighbouring white stones. How should the move be judged?",
+      "options": [
+        "Legal if Black has liberties after the capture",
+        "Illegal because the point appeared surrounded",
+        "Black must pass instead"
+      ],
+      "hint": "When you play, remove captured stones before counting your group's remaining liberties.",
+      "explanation": "The captured white stones are removed first. If Black then has liberties, this move is legal.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-03": {
+      "id": "u3-03",
+      "title": "Why does ko exist?",
+      "prompt": "Why does the simple ko rule prevent immediate recapture?",
+      "options": [
+        "To prevent a repeating position from continuing forever",
+        "To make the board smaller",
+        "To ensure Black wins"
+      ],
+      "hint": "What would happen if each player captured back on every turn?",
+      "explanation": "The ko rule prevents two players from repeating the same board position indefinitely.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-04": {
+      "id": "u3-04",
+      "title": "After a ko capture",
+      "prompt": "White has just captured a black stone in a simple ko. What may Black do next?",
+      "options": [
+        "Recapture immediately on that point",
+        "Play elsewhere first",
+        "Remove White's stone by hand"
+      ],
+      "hint": "Simple ko forbids the immediate move that recreates the previous position.",
+      "explanation": "Black cannot recapture immediately. Black must play elsewhere first.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-05": {
+      "id": "u3-05",
+      "title": "What is a ko threat?",
+      "prompt": "Black plays elsewhere and creates a threat White may have to answer before Black fights for the ko again. What is that move called?",
+      "options": [
+        "A ko threat",
+        "An illegal move",
+        "An endgame move"
+      ],
+      "hint": "This threat creates a reason for the opponent to respond before the ko fight continues.",
+      "explanation": "A move that pressures the opponent to answer while fighting a ko is called a ko threat.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-06": {
+      "id": "u3-06",
+      "title": "Which ko rule does this app use?",
+      "prompt": "Which repetition restriction does the current interactive rules engine enforce?",
+      "options": [
+        "Simple ko: no immediate return to the preceding board position",
+        "Superko: no repetition of any earlier position",
+        "No ko restriction"
+      ],
+      "hint": "The lessons use the common beginner version that looks one board position back.",
+      "explanation": "This engine implements simple ko and prevents an immediate return to the previous board position.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    }
+  },
+  "disclosurePolicy": "Never insert hint-specific location in prompt or unhinted status; after-answer explanations may reveal solution.",
+  "contentAuthority": "Only natural-language copy; never supply answer/scoring/goal/exposure/firstResponse."
+}
