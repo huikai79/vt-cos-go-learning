@@ -3,7 +3,7 @@
   "locale": "en",
   "status": "candidate-not-runtime",
   "canonicalSource": "GoContent.problems",
-  "itemCount": 46,
+  "itemCount": 58,
   "items": {
     "u1-01": {
       "id": "u1-01",
@@ -596,6 +596,198 @@
       ],
       "hint": "Look for one decision you can recognise and check next time.",
       "explanation": "Reviewing one overlooked threat or weak group gives you a concrete question to test in another game.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-01": {
+      "id": "u6-01",
+      "title": "Why corners often come first",
+      "prompt": "Why do players often look toward the corners early on an empty board?",
+      "options": [
+        "Two board edges help surround territory more efficiently",
+        "A stone in the corner can never be captured",
+        "Corner stones have no liberties"
+      ],
+      "hint": "In a corner, you have fewer sides to enclose than in the centre.",
+      "explanation": "The two board edges make it possible to secure an area with fewer stones. This is a useful opening principle, not an absolute rule.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-02": {
+      "id": "u6-02",
+      "title": "Develop toward friendly support",
+      "prompt": "You already have a stone in one corner. Why might you extend toward nearby friendly stones?",
+      "options": [
+        "Your new and existing stones can support one another",
+        "Your stones should always be as far apart as possible",
+        "The only aim is to add one liberty"
+      ],
+      "hint": "Notice whether the new stone gives your existing stones a useful direction.",
+      "explanation": "Moves that work with nearby friendly stones tend to develop more effectively than isolated moves.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-03": {
+      "id": "u6-03",
+      "title": "No universally best opening point",
+      "prompt": "Someone says the star point is always better than the 3–4 point. What is the best response?",
+      "options": [
+        "Neither is always best; consider the board and your plan",
+        "Yes, the same point is best in every game",
+        "That rule applies only to 9×9 boards"
+      ],
+      "hint": "Opening patterns depend on the position, not a single memorised coordinate.",
+      "explanation": "Both the star point and the 3–4 point have legitimate uses. Their value depends on nearby stones and the overall plan.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-04": {
+      "id": "u6-04",
+      "title": "Look nearby before extending",
+      "prompt": "Before deciding which side to extend toward, what should you examine?",
+      "options": [
+        "Nearby friendly and opposing stones, and the available space",
+        "How shiny the stones are",
+        "Which player first picked up a stone"
+      ],
+      "hint": "Support and pressure from other stones change how an extension works.",
+      "explanation": "Nearby stones show which direction offers room to develop and which direction invites an attack.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-05": {
+      "id": "u6-05",
+      "title": "Urgent or simply large?",
+      "prompt": "One of your groups is under pressure, but there is also a large open area elsewhere. What should you compare first?",
+      "options": [
+        "Whether the pressured group needs an urgent move",
+        "Which empty area has the nicest colour",
+        "Whether the board looks symmetrical"
+      ],
+      "hint": "A large opening point may be less important than a group in immediate trouble.",
+      "explanation": "Compare the urgency of protecting the weak group with the value of the open area. A truly urgent threat often comes first.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-06": {
+      "id": "u6-06",
+      "title": "A question after every opening move",
+      "prompt": "After an opening move, which question is most useful?",
+      "options": [
+        "How does this move work with my nearby stones?",
+        "How many centimetres is it from the centre?",
+        "Can this move capture something immediately?"
+      ],
+      "hint": "The value of an opening stone often comes from its relationship to other stones.",
+      "explanation": "Checking how the move supports existing stones gives a more reliable sense of direction than examining the stone alone.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-01": {
+      "id": "u7-01",
+      "title": "What counts as territory?",
+      "prompt": "Which description best matches reasonably secure territory?",
+      "options": [
+        "An area with fairly clear boundaries that can be counted",
+        "Any single isolated stone",
+        "A large central space neither player has settled"
+      ],
+      "hint": "Look for an area whose ownership is relatively clear.",
+      "explanation": "Secure territory has boundaries firm enough that its points can be counted with reasonable confidence.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-02": {
+      "id": "u7-02",
+      "title": "What is thickness?",
+      "prompt": "Which position best illustrates thickness in Go?",
+      "options": [
+        "A safe, solid shape that can support play farther out",
+        "A group in atari with only one liberty",
+        "An area whose points are already guaranteed"
+      ],
+      "hint": "Thickness is about safety and what your stones can help you do next.",
+      "explanation": "A thick group is relatively secure and can support fighting or development nearby; it does not have a fixed point value.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-03": {
+      "id": "u7-03",
+      "title": "Thickness is not a fixed number",
+      "prompt": "If you build a thick wall, does that automatically mean you are many points ahead?",
+      "options": [
+        "No; its value depends on how it can be used across the board",
+        "Yes; each thick stone is worth exactly ten points",
+        "Yes, provided the wall is in a corner"
+      ],
+      "hint": "A wall needs useful targets or room in which to exert influence.",
+      "explanation": "Thickness has no fixed conversion into territory. The nearby weak groups and open space determine how valuable it may become.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-04": {
+      "id": "u7-04",
+      "title": "Trading territory for influence",
+      "prompt": "An exchange gives you more immediate territory but gives your opponent outside influence. What should you examine before judging it?",
+      "options": [
+        "Where the influence points and whether it has useful targets",
+        "Which player has more individual stones",
+        "The colour of the wooden board frame"
+      ],
+      "hint": "Influence matters most when it can affect actual positions.",
+      "explanation": "Judge both sides of the exchange in context: how secure is the territory, and can the opponent use the outside strength?",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-05": {
+      "id": "u7-05",
+      "title": "Do not fight a strong wall blindly",
+      "prompt": "Why can fighting right beside an opponent's solid, thick wall be dangerous?",
+      "options": [
+        "Their nearby strength gives them support in the fight",
+        "The rules forbid playing next to a wall",
+        "The wall automatically removes your liberties"
+      ],
+      "hint": "Consider which player's stones are better supported.",
+      "explanation": "The opponent's solid wall may make their fighting stones safer and leave you with fewer useful options.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-06": {
+      "id": "u7-06",
+      "title": "Compare the whole board",
+      "prompt": "Which is the least reliable way to compare territory with thickness?",
+      "options": [
+        "Assign every thick wall one fixed point value",
+        "Look at the surrounding groups",
+        "Look for directions in which the position can develop"
+      ],
+      "hint": "The usefulness of thickness changes with the position.",
+      "explanation": "Thickness cannot be valued by one universal point formula; assess the nearby groups and potential development.",
       "sourceVersion": "content.js-public-2026-10-13",
       "editorialStatus": "draft",
       "goReview": "pending",
