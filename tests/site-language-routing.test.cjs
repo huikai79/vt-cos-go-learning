@@ -23,7 +23,7 @@ test("unknown and incomplete locales never claim an English website",()=>{
   assert.equal(new URL(dest).searchParams.get("size"),"9");
   assert.equal(new URL(dest).hash,"#core");
  }
- assert.equal(router.stateFor(base+"&lang=xxx").status,"unknown");
+ assert.equal(router.stateFor(router.routeFor(base,"en").replace("lang=en","lang=xxx")).status,"unknown");
  assert.equal(router.routeFor(base,"xx"),null);
 });
 test("locale routing preserves existing page query and never touches event records",()=>{
