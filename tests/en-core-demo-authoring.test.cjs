@@ -23,7 +23,7 @@ test("English demonstration copy maps to all canonical lesson steps without dupl
  }
 });
 test("English glossary candidates remain distinct from demo copy and incomplete scope remains blocked",()=>{
- assert.equal(terms.lessons.length,8);
+ assert.equal(terms.lessons.length,content.lessons.length);
  for(const [i,l] of terms.lessons.entries()){
   assert.equal(l.lessonIndex,i);
   assert.deepEqual(Object.keys(l).sort(),["editorialStatus","goReview","lessonIndex","nativeReview","sourceVersion","terms"].sort());
