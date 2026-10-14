@@ -52,6 +52,9 @@
     return !name.includes("/") && (name === "" || /\.html$/i.test(name));
   }
   function preserveLocaleLinks(doc, href, requested) {
+    // Do not rewrite source-locale hrefs: existing navigation and deep-link
+    // contracts depend on their original relative URL forms.
+    if (requested === SOURCE) return;
     for (const anchor of doc.querySelectorAll("a[href]")) {
       if (anchor.hasAttribute("download") || (anchor.target && anchor.target !== "_self")) continue;
       const raw = anchor.getAttribute("href");
