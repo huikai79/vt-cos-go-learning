@@ -13,7 +13,7 @@
   function assertKeys(copy, allowed, id) {
     if (!copy || typeof copy !== "object" || Array.isArray(copy)) blocked(id + " is missing");
     for (const name of Object.keys(copy)) {
-      if (forbidden.has(name)) blocked(id + " contains protected field " + name);
+      if (forbidden.has(name) && !(name === "id" && allowed.includes("id"))) blocked(id + " contains protected field " + name);
       if (!allowed.includes(name)) blocked(id + " has unexpected field " + name);
     }
   }
