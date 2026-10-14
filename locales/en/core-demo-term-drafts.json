@@ -11,18 +11,6 @@
       "editorialStatus": "draft",
       "goReview": "pending",
       "nativeReview": "pending",
-      "demoSteps": [
-        {
-          "stepIndex": 0,
-          "label": "Black stone in the corner",
-          "caption": "Start with the stone in the corner. There are no intersections beyond the board edges, so those directions cannot be liberties."
-        },
-        {
-          "stepIndex": 1,
-          "label": "Two liberties in the corner",
-          "caption": "Only the empty points to the right and below touch this stone along a line. It has two liberties; the diagonal point does not count."
-        }
-      ],
       "terms": [
         {
           "termIndex": 0,
@@ -37,18 +25,6 @@
       "editorialStatus": "draft",
       "goReview": "pending",
       "nativeReview": "pending",
-      "demoSteps": [
-        {
-          "stepIndex": 0,
-          "label": "White's final liberty",
-          "caption": "Black occupies three of White's neighbouring points. Identify the one empty point still touching White."
-        },
-        {
-          "stepIndex": 1,
-          "label": "Black captures White",
-          "caption": "Black fills White's last liberty. With no liberties remaining, the white stone is removed from the board."
-        }
-      ],
       "terms": [
         {
           "termIndex": 0,
@@ -68,18 +44,6 @@
       "editorialStatus": "draft",
       "goReview": "pending",
       "nativeReview": "pending",
-      "demoSteps": [
-        {
-          "stepIndex": 0,
-          "label": "Black has one liberty left",
-          "caption": "Black has only the empty point below. First check that this intersection is still available."
-        },
-        {
-          "stepIndex": 1,
-          "label": "Black extends to connect",
-          "caption": "After Black extends downward, the two black stones form one group. Count the liberties of the connected group again."
-        }
-      ],
       "terms": [
         {
           "termIndex": 0,
@@ -94,18 +58,6 @@
       "editorialStatus": "draft",
       "goReview": "pending",
       "nativeReview": "pending",
-      "demoSteps": [
-        {
-          "stepIndex": 0,
-          "label": "Two black stones are connected",
-          "caption": "The two stones on the left touch along a board line, so they already belong to one group."
-        },
-        {
-          "stepIndex": 1,
-          "label": "A diagonal stone is a separate group",
-          "caption": "The lower-right stone sits diagonally from its neighbour. It is not directly connected, although a diagonal relationship may matter later."
-        }
-      ],
       "terms": [
         {
           "termIndex": 0,
@@ -120,18 +72,6 @@
       "editorialStatus": "draft",
       "goReview": "pending",
       "nativeReview": "pending",
-      "demoSteps": [
-        {
-          "stepIndex": 0,
-          "label": "The point between two black stones",
-          "caption": "Both black stones touch the empty point in the middle. Playing there can connect them directly."
-        },
-        {
-          "stepIndex": 1,
-          "label": "One connected black group",
-          "caption": "Once Black plays between them, the three black stones are connected. Count their liberties as one group."
-        }
-      ],
       "terms": [
         {
           "termIndex": 0,
@@ -146,18 +86,6 @@
       "editorialStatus": "draft",
       "goReview": "pending",
       "nativeReview": "pending",
-      "demoSteps": [
-        {
-          "stepIndex": 0,
-          "label": "Where White could connect",
-          "caption": "The empty point between these two white stones would let White connect them on its next turn."
-        },
-        {
-          "stepIndex": 1,
-          "label": "Black occupies the cutting point",
-          "caption": "Black takes the middle point, preventing that direct connection. Whether White can connect another way is a separate question."
-        }
-      ],
       "terms": [
         {
           "termIndex": 0,
@@ -172,38 +100,6 @@
       "editorialStatus": "draft",
       "goReview": "pending",
       "nativeReview": "pending",
-      "demoSteps": [
-        {
-          "stepIndex": 0,
-          "label": "An empty point surrounded by White",
-          "caption": "The central intersection is surrounded on all four sides. Black would have no liberty there and would capture nothing."
-        },
-        {
-          "stepIndex": 1,
-          "label": "An illegal self-capture point",
-          "caption": "Black cannot play at the marked point under these rules. The cross indicates an illegal move, not merely a poor move."
-        },
-        {
-          "stepIndex": 2,
-          "label": "Before White captures in a ko",
-          "caption": "The central black stone has one liberty left. White can play on the marked point to capture it."
-        },
-        {
-          "stepIndex": 3,
-          "label": "A ko position after White captures",
-          "caption": "White captures Black, but the newly played white stone has only one liberty. An immediate black recapture would recreate the preceding position."
-        },
-        {
-          "stepIndex": 4,
-          "label": "Immediate recapture is forbidden",
-          "caption": "Under simple ko, Black cannot recapture immediately at the marked point. Black must first play elsewhere."
-        },
-        {
-          "stepIndex": 5,
-          "label": "Retaking after an exchange elsewhere",
-          "caption": "After moves elsewhere, the ko can be contested again. The blue square marks White's previous point; whether this exchange is worth making depends on the whole board."
-        }
-      ],
       "terms": [
         {
           "termIndex": 0,
@@ -228,33 +124,6 @@
       "editorialStatus": "draft",
       "goReview": "pending",
       "nativeReview": "pending",
-      "demoSteps": [
-        {
-          "stepIndex": 0,
-          "label": "Three connected empty points",
-          "caption": "White surrounds the outside of Black's group. The three highlighted empty points still form one space, not two eyes."
-        },
-        {
-          "stepIndex": 1,
-          "label": "Black plays at the central vital point",
-          "caption": "Playing at the centre separates the two remaining empty points. In this enclosed example, they become two real eyes."
-        },
-        {
-          "stepIndex": 2,
-          "label": "Black contests White's vital point",
-          "caption": "White is also surrounded. Black takes the central point first; judging the outcome still requires checking White's replies."
-        },
-        {
-          "stepIndex": 3,
-          "label": "A point that looks like an eye",
-          "caption": "The centre appears enclosed, but the black stone above has only that point as its remaining liberty."
-        },
-        {
-          "stepIndex": 4,
-          "label": "White can enter this false eye",
-          "caption": "White plays at the centre and captures the black stone above. A space the opponent can enter safely is not a secure real eye."
-        }
-      ],
       "terms": [
         {
           "termIndex": 0,
@@ -279,6 +148,6 @@
       ]
     }
   ],
-  "sourceSemantics": "Presentation-only; positions, demonstration order, answers and scoring remain in canonical GoContent.",
-  "missing": "Lessons 9–19 demo captions and glossary entries, plus further pages, states, runtime wiring and review"
+  "sourceSemantics": "Glossary terms only; demonstration captions have one source of truth at locales/en/core-demo-drafts.json. Neither copy is allowed to change item rules or scoring.",
+  "missing": "Glossary terms for lessons 9–19 and human review; all locale runtime pages still blocked."
 }
