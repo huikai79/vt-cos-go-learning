@@ -26,3 +26,14 @@ test("unknown locales fail and scoring never comes from translation",()=>{
  const runtime=fs.readFileSync(require("node:path").join(__dirname,"../core-locale-view.js"),"utf8");
  assert.doesNotMatch(runtime,/localStorage|sessionStorage|\.setItem\s*\(|\.answer\s*=/);
 });
+test("English UI separates formal hidden feedback, ordinary retry and storage-safe errors",()=>{
+ const {uiText}=require("../core-locale-view.js");
+ assert.match(uiText("en","evaluationRecorded",""),/Results stay hidden/);
+ assert.doesNotMatch(uiText("en","evaluationRecorded",""),/Correct|Incorrect|wrong/i);
+ assert.match(uiText("en","retryAfterWrong",""),/try again/);
+ assert.match(uiText("en","occupiedPoint",""),/already a stone/);
+ assert.equal(uiText("zh-Hant-TW","correctTitle","答對了"),"答對了");
+ assert.throws(()=>uiText("en","nonexistent",""),/LOCALE_COPY_BLOCKED|missing UI string/);
+ assert.equal(uiText("en","termCount","",{count:1}),"(1 term)");
+ assert.equal(uiText("en","termCount","",{count:2}),"(2 terms)");
+});
