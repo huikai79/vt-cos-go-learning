@@ -37,3 +37,14 @@ test("English UI separates formal hidden feedback, ordinary retry and storage-sa
  assert.equal(uiText("en","termCount","",{count:1}),"(1 term)");
  assert.equal(uiText("en","termCount","",{count:2}),"(2 terms)");
 });
+
+test("instructions and keyboard accessibility copy are presentation only",()=>{
+ const {uiText}=require("../core-locale-view.js");
+ for(const key of ["moveInstruction","choiceFocused","choiceRead","spotInstruction","playableBoard","observedBoard","selectedPointBoard","hintShown","demoRestart","demoNext"]) {
+  assert.ok(uiText("en",key,"").length>3,key);
+ }
+ assert.match(uiText("en","evaluationPolicy",""),/Correctness stays hidden/);
+ assert.equal(uiText("en","liberties","",{count:1}),"1 liberty");
+ assert.equal(uiText("en","liberties","",{count:4}),"4 liberties");
+ assert.equal(uiText("zh-Hant-TW","moveInstruction","點選落子"),"點選落子");
+});
