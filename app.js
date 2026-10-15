@@ -1790,7 +1790,7 @@
       const active = state.activeApplicationPresentation;
       state.applicationEvents.push({ type: "hint", occurredAt: new Date().toISOString(), presentationId: active && active.presentationId, problemId: current().id, firstAnswerPending: state.answersThisTurn === 0, evidenceTaxonomyVersion: current().evidenceTaxonomyVersion || EvidenceTaxonomy.CURRENT_VERSION, transferLevel: current().transferLevel || "T3", evaluationContext: current().evaluationContext || "standardized", uiVersion: active && active.uiVersion || uiVersion });
     }
-    $("hint-button").textContent = "提示已顯示";
+    $("hint-button").textContent = uiText("hintShown", "提示已顯示");
     $("hint-button").disabled = true;
     renderLearningFlow();
     save();
