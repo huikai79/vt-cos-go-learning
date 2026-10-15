@@ -177,11 +177,11 @@
           rawValue: storageReadIssue.raw
         }));
         storageReadIssue = null;
-        storageRecoveryNotice = "偵測到無法安全載入的舊進度；原始內容已保留在本機復原副本，課程已用可讀狀態啟動。";
+        storageRecoveryNotice = uiText("storageRecoverySaved", "偵測到無法安全載入的舊進度；原始內容已保留在本機復原副本，課程已用可讀狀態啟動。");
       }
       catch (_) {
         storageWriteFailed = true;
-        storageWarningMessage = "舊進度格式損壞，而且無法建立復原副本；為避免覆寫，本次變更未保存。請先檢查瀏覽器儲存空間。";
+        storageWarningMessage = uiText("storageRecoveryFailed", "舊進度格式損壞，而且無法建立復原副本；為避免覆寫，本次變更未保存。請先檢查瀏覽器儲存空間。");
         showStorageWarning();
         return false;
       }
@@ -221,7 +221,7 @@
     }
     catch (_) {
       storageWriteFailed = true;
-      storageWarningMessage = "無法寫入瀏覽器儲存空間；本次變更未保存。請先匯出可用資料，並檢查瀏覽器的儲存權限或剩餘空間。";
+      storageWarningMessage = uiText("storageWriteFailed", "無法寫入瀏覽器儲存空間；本次變更未保存。請先匯出可用資料，並檢查瀏覽器的儲存權限或剩餘空間。");
       showStorageWarning();
       return false;
     }
@@ -1523,7 +1523,7 @@
     if (problem.type !== "move") return;
     const result = playMove(state.board, x, y, current().playerColor || BLACK);
     if (!result.legal) {
-      showAuxiliaryFeedback("interaction-feedback", result.reason);
+      showAuxiliaryFeedback("interaction-feedback", window.GoCoreLocaleView && window.GoCoreLocaleView.legalMoveFailureText ? window.GoCoreLocaleView.legalMoveFailureText(displayLocale, result.reason) : result.reason);
       return;
     }
     clearAuxiliaryFeedback("interaction-feedback");
@@ -1544,7 +1544,7 @@
       startProblem(0, "external_complete");
       $("feedback").className = storageWriteFailed ? "feedback error" : "feedback success";
       $("feedback").textContent = storageWriteFailed
-        ? "本次結果仍在目前頁面，但無法寫入瀏覽器儲存空間；離開前請先匯出可用資料。"
+        ? uiText("storageUnsavedResult", "本次結果仍在目前頁面，但無法寫入瀏覽器儲存空間；離開前請先匯出可用資料。")
         : completedMode === "local_sgf" ? "單點復盤已保存；原判斷與原棋譜重建會一併寫入匯出紀錄。" : "局面應用練習已完成；它與自然實戰分開記錄。";
       revealQuestionStart();
       return;
@@ -1774,7 +1774,7 @@
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       if (point.dataset.occupied === "true") {
-        showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+        showAuxiliaryFeedback("interaction-feedback", uiText("occupiedPoint", "這裡已有棋子，不能落子。"));
         return;
       }
       onMove(Number(point.dataset.x), Number(point.dataset.y));
