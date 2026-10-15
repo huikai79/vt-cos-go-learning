@@ -138,7 +138,11 @@
     liberties: ({count}) => count + " " + (count === 1 ? "liberty" : "liberties"),
     questionCounter: ({index,total}) => "Question " + index + " of " + total + " in this lesson",
     currentQuestion: "Current question",
-    unknownProblemCopy: "This question's English wording is unavailable. No answer has been submitted."
+    unknownProblemCopy: "This question's English wording is unavailable. No answer has been submitted.",
+    storageRecoverySaved: "Your previous progress could not be loaded safely. A copy of the original data was saved on this device, and the course opened in a readable state.",
+    storageRecoveryFailed: "The saved progress could not be read, and a recovery copy could not be created. Your changes have not been saved. Check browser storage before continuing.",
+    storageWriteFailed: "Your changes could not be saved in this browser. Export any available records before leaving, and check storage permissions or available space.",
+    storageUnsavedResult: "The result is visible on this page, but it could not be saved in the browser. Export available records before leaving."
   });
   function uiText(locale, key, sourceText, params = {}) {
     if (locale === "zh-Hant-TW") return sourceText;
@@ -159,7 +163,21 @@
     if (item.id !== canonical.id) blocked("retry source mismatch " + canonical.id);
     return checkedText(item.text, "retry text");
   }
-  const api = Object.freeze({ languageView, uiText, englishUi, retryText });
+  // Engine remains the rule authority; this maps only known reasons to
+  // learner copy. An unknown reason must remain unverified, never success.
+  const illegalReasons = Object.freeze({
+    "只能下在空的交叉點。": "That intersection is already occupied. Choose an empty one.",
+    "這手沒有氣，也沒有提掉對方的棋。": "This move would leave your group with no liberties and capture nothing, so it is not legal.",
+    "這手會立刻回到上一個棋形；依簡單劫規則，必須先在別處下一手。": "This would immediately repeat the previous position. Under simple ko, you must play elsewhere first."
+  });
+  function legalMoveFailureText(locale, canonicalReason) {
+    if (locale === "zh-Hant-TW") return canonicalReason;
+    if (locale !== "en") blocked("legal move error locale " + String(locale));
+    return Object.hasOwn(illegalReasons, canonicalReason)
+      ? illegalReasons[canonicalReason]
+      : "The rules engine could not verify this move. No answer was recorded.";
+  }
+  const api = Object.freeze({ languageView, uiText, englishUi, retryText, legalMoveFailureText });
   root.GoCoreLocaleView = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);
