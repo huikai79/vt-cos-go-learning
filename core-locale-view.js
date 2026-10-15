@@ -92,6 +92,7 @@
   // In particular, an evaluation first answer must never reveal correctness.
   const englishUi = Object.freeze({
     hintButton: "Show a hint",
+    hintShown: "Hint shown",
     correctTitle: "Correct",
     incorrectTitle: "Not quite",
     localSgfCorrect: "Matches the recorded move",
