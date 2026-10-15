@@ -13,6 +13,18 @@ test("eleven public pages load the same locale guard without changing source lan
   assert.match(s,/<html lang="zh-Hant(?:-TW)?">/,page);
  }
 });
+test("Core app initializes its fail-closed projection only after both language modules",()=>{
+ const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
+ const order=["site-language.js?v=public-site-locale-gate-v1","core-locale-view.js?v=core-copy-guard-v1","app.js?v=learner-workspace-v70"];
+ let last=-1;
+ for(const name of order){const idx=html.indexOf('src="'+name+'"');assert.ok(idx>last,"bad script order: "+name);last=idx;}
+ const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
+ assert.match(app,/visibleProblem\(current\(\)\)\.hint/);
+ assert.match(app,/presentation\.explanation/);
+ assert.match(app,/presentation\.options\.map/);
+ assert.match(app,/const problem = current\(\);/);
+ assert.match(app,/recordEvent\("answer"/);
+});
 test("unknown and incomplete locales never claim an English website",()=>{
  const base="https://example.test/vt-cos-go-learning/index.html?size=9#core";
  assert.equal(router.stateFor(base).status,"source");
