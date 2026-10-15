@@ -2,6 +2,29 @@
   "use strict";
   const { BLACK, boardFromStones, groupAt, playMove } = window.GoCore;
   const { units, lessons, problems, skills } = window.GoContent;
+  // Only a released, complete-site locale may supply learner-visible copy.
+  // All Go facts, IDs, answers, events and schedules remain canonical.
+  const localeRoute = window.GoSiteLanguage && window.GoSiteLanguage.stateFor(window.location.href);
+  const displayLocale = localeRoute && localeRoute.status === "available" ? localeRoute.requested : "zh-Hant-TW";
+  const coreCopy = window.GoCoreLocaleView.languageView(window.GoContent,
+    displayLocale === "zh-Hant-TW" ? null : window.GoReviewedCoreBundle, displayLocale);
+  function visibleProblem(problem) {
+    return coreCopy.problem(problem.id) || problem;
+  }
+  function visibleLesson(lesson) {
+    const index = lessons.indexOf(lesson);
+    if (index < 0) return lesson;
+    const copy = coreCopy.lesson(index);
+    if (copy === lesson) return lesson;
+    return { ...lesson, ...copy,
+      demoSteps: lesson.demoSteps.map((step, i) => ({ ...step, ...copy.demoSteps[i] })),
+      terms: lesson.terms.map((term, i) => ({ ...term, ...copy.terms[i] }))
+    };
+  }
+  function visibleUnit(index) {
+    const copy = coreCopy.unit(index);
+    return copy === units[index] ? copy : { ...units[index], ...copy };
+  }
   const { phase2Problems } = window.GoPhase2Content;
   const { fixedApplicationProbes, sampleSgf } = window.GoPhase4Content;
   const Sgf = window.GoSgf;
@@ -927,24 +950,25 @@
     if (!list) return;
     list.innerHTML = units.map((unit, index) => {
       const lessonCount = lessons.filter((lesson) => lesson.unit === index).length;
-      return `<li><button type="button" data-site-intro-unit="${index}"><span class="intro-unit-number">${String(index + 1).padStart(2, "0")}</span><span><strong>${escapeHtml(unit.title)}</strong><small>${lessonCount} 課</small></span><span aria-hidden="true">→</span></button></li>`;
+      return `<li><button type="button" data-site-intro-unit="${index}"><span class="intro-unit-number">${String(index + 1).padStart(2, "0")}</span><span><strong>${escapeHtml(visibleUnit(index).title)}</strong><small>${lessonCount} 課</small></span><span aria-hidden="true">→</span></button></li>`;
     }).join("");
   }
 
   function renderNav() {
     const unitIndex = state.navUnitIndex;
-    const unit = units[unitIndex];
+    const unit = visibleUnit(unitIndex);
     const currentLessonIndex = problems[state.index].lesson;
-    const currentLesson = lessons[currentLessonIndex];
+    const currentLesson = visibleLesson(lessons[currentLessonIndex]);
     const currentUnitIndex = currentLesson.unit;
     $("current-course-context").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
     $("top-course-context").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
-    $("unit-select").innerHTML = units.map((item, index) => `<option value="${index}" ${index === unitIndex ? "selected" : ""}>第 ${index + 1} 單元 · ${escapeHtml(item.title)}</option>`).join("");
+    $("unit-select").innerHTML = units.map((item, index) => `<option value="${index}" ${index === unitIndex ? "selected" : ""}>第 ${index + 1} 單元 · ${escapeHtml(visibleUnit(index).title)}</option>`).join("");
     $("unit-select").value = String(unitIndex);
     $("previous-unit-button").disabled = unitIndex === 0;
     $("next-unit-button").disabled = unitIndex === units.length - 1;
     $("unit-meta").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
-    $("lesson-nav").innerHTML = `<div class="nav-unit"><div class="nav-unit-title">${unitIndex === currentUnitIndex ? "本單元課程" : "查看第 " + (unitIndex + 1) + " 單元 · " + escapeHtml(unit.title)}</div>${lessons.map((lesson, index) => {
+    $("lesson-nav").innerHTML = `<div class="nav-unit"><div class="nav-unit-title">${unitIndex === currentUnitIndex ? "本單元課程" : "查看第 " + (unitIndex + 1) + " 單元 · " + escapeHtml(unit.title)}</div>${lessons.map((canonicalLesson, index) => {
+      const lesson = visibleLesson(canonicalLesson);
       const active = !state.externalMode && currentLessonIndex === index;
       return lesson.unit === unitIndex ? `<button type="button" class="lesson-link ${active ? "active" : ""}" ${active ? 'aria-current="page"' : ""} data-lesson="${index}"><span class="lesson-index">${String(index + 1).padStart(2, "0")}</span><span class="lesson-copy"><strong>${escapeHtml(lesson.title)}${active ? ' <span class="current-label">目前</span>' : ""}</strong><small>${escapeHtml(lesson.subtitle)}</small></span></button>` : "";
     }).join("")}</div>`;
@@ -1226,6 +1250,7 @@
 
   function renderAnswer() {
     const problem = current();
+    const presentation = visibleProblem(problem);
     if (problem.type === "move") {
       $("answer-area").innerHTML = `<span class="move-guide">點選棋盤，或用方向鍵逐點移動，再按 Enter／空白鍵落子。<br>答錯可再試；需要時可先看提示。</span>`;
       $("board-instruction").textContent = "點選落子；鍵盤可用方向鍵移動，Enter／空白鍵落子";
@@ -1238,7 +1263,7 @@
       return;
     }
     if (problem.type === "choice") {
-      $("answer-area").innerHTML = problem.options.map((label, index) => `<button class="option-button choice-button" type="button" data-answer="${index}">${escapeHtml(label)}</button>`).join("");
+      $("answer-area").innerHTML = presentation.options.map((label, index) => `<button class="option-button choice-button" type="button" data-answer="${index}">${escapeHtml(label)}</button>`).join("");
       $("board-instruction").textContent = problem.focus.length ? "觀察金色圈出的棋子" : "閱讀題幹後選擇答案";
       $("answer-policy").textContent = state.externalMode === "evaluation" ? "選擇後會立即記錄首答，完成整批前不顯示正誤。" : "選擇答案後會立即作答；答錯可以再試。";
       $("board-card").setAttribute("aria-label", "觀察用題目棋盤");
@@ -1260,7 +1285,8 @@
 
   function render() {
     const problem = current();
-    const lesson = currentLesson();
+    const presentation = visibleProblem(problem);
+    const lesson = visibleLesson(currentLesson());
     const isTextPractice = problem.type === "choice" && problem.stones.length === 0;
     document.querySelector(".practice-grid").classList.toggle("text-practice", isTextPractice);
     document.querySelector(".content-wrap")?.classList.toggle("text-practice-layout", isTextPractice);
@@ -1300,8 +1326,8 @@
     renderDemoBoards(lesson);
     const skill = currentSkill();
     $("question-tag").textContent = state.externalMode === "application" ? "局面應用練習" : state.externalMode === "evaluation" ? "無提示流程試行" : state.externalMode === "local_sgf" ? "棋譜單點復盤" : skill ? `練習技能 · ${skill.learnerLabel || skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
-    $("question-title").textContent = problem.title;
-    $("question-prompt").textContent = problem.prompt;
+    $("question-title").textContent = presentation.title;
+    $("question-prompt").textContent = presentation.prompt;
     $("takeaway-text").textContent = lesson.takeaway;
     $("takeaway").hidden = true;
     $("feedback").className = "feedback";
@@ -1389,6 +1415,7 @@
 
   function reportAnswer(correct, reason, answerValue) {
     const problem = current();
+    const presentation = visibleProblem(problem);
     if (!state.externalMode) {
       state.hasStarted = true;
       markCurrentLessonIntroSeen();
@@ -1445,8 +1472,8 @@
       if (!state.externalMode && state.reviewMode && state.wrongThisTurn === 0) state.missed.delete(problem.id);
       feedback.className = "feedback answer-result success";
       feedback.innerHTML = state.externalMode === "local_sgf"
-        ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原棋譜一致</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`
-        : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">答對了</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
+        ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原棋譜一致</strong><span class="answer-explanation">${escapeHtml(presentation.explanation)}</span>`
+        : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">答對了</strong><span class="answer-explanation">${escapeHtml(presentation.explanation)}</span>`;
       $("next-button").disabled = false;
       $("next-button").hidden = false;
       $("hint-button").hidden = true;
@@ -1743,7 +1770,7 @@
   });
   $("hint-button").addEventListener("click", () => {
     if (state.solved || state.hintShown || state.externalMode === "evaluation") return;
-    showAuxiliaryFeedback("hint-feedback", current().hint);
+    showAuxiliaryFeedback("hint-feedback", visibleProblem(current()).hint);
     state.hintShown = true;
     markCurrentLessonIntroSeen();
     recordEvent("hint", {
