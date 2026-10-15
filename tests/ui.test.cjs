@@ -179,7 +179,7 @@ async function main() {
   assert.match(sourceCss, /\.hint-feedback\{[^}]*background:/);
   assert.match(sourceCss, /\.interaction-feedback\{[^}]*background:/);
   assert.match(sourceCss, /\.system-status\{[^}]*background:/);
-  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", current\(\)\.hint\)/);
+  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", visibleProblem\(current\(\)\)\.hint\)/);
   assert.match(sourceApp, /showAuxiliaryFeedback\("interaction-feedback", result\.reason\)/);
   assert.doesNotMatch(sourceApp, /\$\("feedback"\)\.textContent = current\(\)\.hint/);
   assert.match(sourceHtml, /<details class="advanced-evidence-details">/);
