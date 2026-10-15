@@ -87,7 +87,67 @@
       problem: (id) => localizedProblems.get(id) || blocked("missing item " + id)
     });
   }
-  const api = Object.freeze({ languageView });
+  // DRAFT English UI copy. This is only a presentation dictionary:
+  // selecting "en" is impossible while the full-site locale gate is closed.
+  // In particular, an evaluation first answer must never reveal correctness.
+  const englishUi = Object.freeze({
+    hintButton: "Show a hint",
+    correctTitle: "Correct",
+    incorrectTitle: "Not quite",
+    localSgfCorrect: "Matches the recorded move",
+    localSgfIncorrect: "Different from the recorded move",
+    evaluationRecorded: "Your first answer has been recorded. Results stay hidden until this batch is complete.",
+    retryAfterWrong: "This answer does not meet the task. Check the board, then try again or open a hint.",
+    localSgfRetry: "You can try again. This compares the recorded move, not whether your move is necessarily bad.",
+    occupiedPoint: "There is already a stone here. Choose an empty intersection.",
+    demoCount: ({current,total}) => "Step " + current + " of " + total,
+    demoRestart: "Review from the start ↺",
+    demoNext: "Next step →",
+    introTitle: ({title}) => "First, explore: " + title,
+    termCount: ({count}) => "(" + count + " " + (count === 1 ? "term" : "terms") + ")",
+    firstLessonStart: "Ready? Start question 1",
+    lessonStart: "Start this lesson’s practice",
+    firstLessonIntro: "First visit · Start after the example",
+    lessonIntro: "Lesson overview · Shown automatically once per lesson",
+    showLessonIntro: "Review this lesson",
+    showProblemIntro: "Read the explanation for this question",
+    nextQuestion: "Next question",
+    nextLesson: "Explore the next lesson",
+    nextUnit: ({unit}) => "Explore Unit " + unit,
+    finishCore: "Finish the Core course",
+    playerBlack: "● Black to play",
+    playerWhite: "○ White to play",
+    pickPoint: "◎ Select a point",
+    moveGuide: "Select a point on the board, or use the arrow keys and Enter or Space. You can retry an incorrect answer or ask for a hint.",
+    moveInstruction: "Select an intersection. With a keyboard, use the arrow keys and Enter or Space.",
+    movePolicy: "Choose an intersection. You can try again if your answer is incorrect.",
+    evaluationPolicy: "Your first answer is recorded immediately. Correctness stays hidden until the batch is complete.",
+    localSgfPolicy: "Play the move you remember from the game record. A different choice can be retried; it is not necessarily a bad move.",
+    choiceFocused: "Look at the stones marked with gold circles.",
+    choiceRead: "Read the question and choose an answer.",
+    choicePolicy: "Choose an answer to submit it. You can retry an incorrect choice.",
+    spotGuide: "Select an intersection, or use the arrow keys and Enter or Space. This question asks about a local point; it does not identify the only best move on the whole board.",
+    spotInstruction: "Select the point to compare, using the arrow keys and Enter or Space if preferred.",
+    spotPolicy: "Your selected point is submitted immediately. You can retry an incorrect answer.",
+    observedBoard: "Board for observing the position",
+    playableBoard: "Board where you can play a move",
+    selectedPointBoard: "Board where you can select a local point",
+    connectYes: "Yes, one connected group",
+    connectNo: "No, two separate groups",
+    liberties: ({count}) => count + " " + (count === 1 ? "liberty" : "liberties"),
+    questionCounter: ({index,total}) => "Question " + index + " of " + total + " in this lesson",
+    currentQuestion: "Current question",
+    unknownProblemCopy: "This question's English wording is unavailable. No answer has been submitted."
+  });
+  function uiText(locale, key, sourceText, params = {}) {
+    if (locale === "zh-Hant-TW") return sourceText;
+    if (locale !== "en" || !Object.hasOwn(englishUi, key)) blocked("missing UI string " + locale + ":" + key);
+    const entry = englishUi[key];
+    const result = typeof entry === "function" ? entry(params) : entry;
+    if (typeof result !== "string" || !result.trim() || result.includes("undefined") || result.includes("NaN")) blocked("invalid UI text " + key);
+    return result;
+  }
+  const api = Object.freeze({ languageView, uiText, englishUi });
   root.GoCoreLocaleView = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);
