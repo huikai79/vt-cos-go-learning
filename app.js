@@ -15,6 +15,11 @@
       ? window.GoCoreLocaleView.uiText(displayLocale, key, chinese, params)
       : chinese;
   }
+  function visibleRetry(problem) {
+    return window.GoCoreLocaleView && window.GoCoreLocaleView.retryText
+      ? window.GoCoreLocaleView.retryText(displayLocale, problem, window.GoReviewedCoreRetries)
+      : (problem.retry || "再找一次沿線相鄰的交叉點。");
+  }
   function visibleProblem(problem) {
     return coreCopy.problem(problem.id) || problem;
   }
@@ -1743,7 +1748,7 @@
     const value = current().type === "count" || current().type === "choice" ? Number(button.dataset.answer) : button.dataset.answer === "true";
     const correct = value === current().answer;
     button.classList.add(correct ? "correct" : "wrong");
-    reportAnswer(correct, current().retry || "再找一次沿線相鄰的交叉點。", button.textContent.trim());
+    reportAnswer(correct, correct ? "" : visibleRetry(current()), button.textContent.trim());
   });
   $("board").addEventListener("click", (event) => {
     const point = event.target.closest("[data-x]");
