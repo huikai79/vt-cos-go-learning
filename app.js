@@ -10,6 +10,11 @@
     ? window.GoCoreLocaleView.languageView(window.GoContent,
         displayLocale === "zh-Hant-TW" ? null : window.GoReviewedCoreBundle, displayLocale)
     : { unit: (i) => units[i], lesson: (i) => lessons[i], problem: (id) => problems.find((p) => p.id === id) };
+  function uiText(key, chinese, params) {
+    return window.GoCoreLocaleView && window.GoCoreLocaleView.uiText
+      ? window.GoCoreLocaleView.uiText(displayLocale, key, chinese, params)
+      : chinese;
+  }
   function visibleProblem(problem) {
     return coreCopy.problem(problem.id) || problem;
   }
@@ -1337,7 +1342,7 @@
     clearAuxiliaryFeedback("interaction-feedback");
     clearAuxiliaryFeedback("hint-feedback");
     $("hint-button").hidden = false;
-    $("hint-button").textContent = "給我一點提示";
+    $("hint-button").textContent = uiText("hintButton", "給我一點提示");
     $("hint-button").disabled = state.externalMode === "evaluation";
     $("answer-policy").hidden = false;
     $("next-button").disabled = true;
@@ -1430,7 +1435,7 @@
       state.solved = true;
       const feedback = $("feedback");
       feedback.className = "feedback";
-      feedback.textContent = "首答已記錄；完成整批前不顯示正誤。";
+      feedback.textContent = uiText("evaluationRecorded", "首答已記錄；完成整批前不顯示正誤。");
       $("next-button").disabled = false;
       $("next-button").hidden = false;
       $("hint-button").hidden = true;
@@ -1475,7 +1480,7 @@
       feedback.className = "feedback answer-result success";
       feedback.innerHTML = state.externalMode === "local_sgf"
         ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原棋譜一致</strong><span class="answer-explanation">${escapeHtml(presentation.explanation)}</span>`
-        : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">答對了</strong><span class="answer-explanation">${escapeHtml(presentation.explanation)}</span>`;
+        : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">${escapeHtml(uiText("correctTitle", "答對了"))}</strong><span class="answer-explanation">${escapeHtml(presentation.explanation)}</span>`;
       $("next-button").disabled = false;
       $("next-button").hidden = false;
       $("hint-button").hidden = true;
@@ -1492,7 +1497,7 @@
         : `${reason} 再試一次，或看看提示。`;
       feedback.innerHTML = state.externalMode === "local_sgf"
         ? `<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">與原棋譜不同</strong><span class="answer-explanation">${escapeHtml(retryMessage)}</span>`
-        : `<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">答錯，再看一次</strong><span class="answer-explanation">${escapeHtml(retryMessage)}</span>`;
+        : `<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">${escapeHtml(uiText("incorrectTitle", "答錯，再看一次"))}</strong><span class="answer-explanation">${escapeHtml(retryMessage)}</span>`;
     }
     save();
     renderSgfReflection();
@@ -1747,7 +1752,7 @@
     const y = Number(point.dataset.y);
     if (state.externalMode !== "evaluation") setBoardCursor(x, y, false);
     if (point.dataset.occupied === "true") {
-      showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+      showAuxiliaryFeedback("interaction-feedback", uiText("occupiedPoint", "這裡已有棋子，不能落子。"));
       return;
     }
     onMove(x, y);
