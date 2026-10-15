@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "partial-draft-not-for-runtime-or-release",
+  "canonicalSource": "content.js:GoContent.problems[*].id",
+  "disclosure": "Show only after an incorrect response. Never use as a pre-answer prompt or substitute for the user's explicit hint. Preserve initial response and attempt number.",
+  "review": {
+    "go": "pending",
+    "nativeEnglish": "pending",
+    "humanUsability": "not_measured"
+  },
+  "items": {
+    "u1-01": {
+      "id": "u1-01",
+      "text": "Look again at the marked stone and check whether each counted point is both empty and directly adjacent.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-02": {
+      "id": "u1-02",
+      "text": "Recount the intersections next to this edge stone. A neighbouring position must actually be on the board.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-03": {
+      "id": "u1-03",
+      "text": "Compare the corner with the centre: how many neighbouring intersections can a stone reach from here?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-04": {
+      "id": "u1-04",
+      "text": "Treat the two connected stones as one group. Check your list for repeated empty intersections.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-05": {
+      "id": "u1-05",
+      "text": "Try tracing a path between the marked stones using direct contacts along the lines. Is that path there already?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-06": {
+      "id": "u1-06",
+      "text": "Your move did not capture the marked white stone. Check the group's liberties after that move rather than following a diagonal.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-07": {
+      "id": "u1-07",
+      "text": "The white stone is still on the board. Recheck which empty intersections actually touch it at the edge.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-08": {
+      "id": "u1-08",
+      "text": "The target still has room. Check the empty neighbours within the corner, without counting points beyond the board.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-09": {
+      "id": "u1-09",
+      "text": "The two white stones are one group. Recount the empty intersections touching either stone, counting shared points only once.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-10": {
+      "id": "u1-10",
+      "text": "Black remains in danger after that move. Compare the connected group's liberties before and after your extension.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-01": {
+      "id": "u2-01",
+      "text": "Look for a chain of same-colour stones joining the marked pair through direct horizontal or vertical contacts.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-02": {
+      "id": "u2-02",
+      "text": "Trace the group between the marked stones, including direct contacts above and below.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-03": {
+      "id": "u2-03",
+      "text": "Consider whether the stones actually touch along a line now, rather than whether they could support one another later.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-04": {
+      "id": "u2-04",
+      "text": "Follow the board line between the black stones and check whether every intermediate stone is also black.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-05": {
+      "id": "u2-05",
+      "text": "After your move, are the two marked black stones joined by a continuous chain of touching black stones?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-06": {
+      "id": "u2-06",
+      "text": "Check the connection after playing: can you trace directly from the upper stone to the lower one?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-07": {
+      "id": "u2-07",
+      "text": "Recheck whether your new stone directly touches both of the marked black stones despite their closeness to the edge.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-08": {
+      "id": "u2-08",
+      "text": "Your move has not occupied the direct connection route in this task. Trace the shortest line between White's two marked stones.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-09": {
+      "id": "u2-09",
+      "text": "Consider the line from the upper white stone to the lower one. Which connection route is your move actually blocking?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-10": {
+      "id": "u2-10",
+      "text": "The proposed move did not block White's specified direct connection. Check the board line joining the marked stones.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    }
+  },
+  "missing": "Remaining 86 of 106 Core item-specific retry states, plus external tasks and all-site human review"
+}
