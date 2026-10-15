@@ -148,7 +148,18 @@
     if (typeof result !== "string" || !result.trim() || result.includes("undefined") || result.includes("NaN")) blocked("invalid UI text " + key);
     return result;
   }
-  const api = Object.freeze({ languageView, uiText, englishUi });
+  // Retry language is a post-answer channel, not a hint or grading source.
+  // Missing/unreviewed item-specific retry copy blocks that locale.
+  function retryText(locale, canonical, retryBundle) {
+    if (locale === "zh-Hant-TW") return canonical.retry || "再找一次沿線相鄰的交叉點。";
+    if (locale !== "en" || !retryBundle || retryBundle.locale !== "en" || retryBundle.status !== "approved-for-runtime") blocked("retry bundle unavailable");
+    const item = retryBundle.items && retryBundle.items[canonical.id];
+    if (!item || item.editorialStatus !== "approved" || item.goReview !== "approved" || item.nativeReview !== "approved") blocked("unreviewed retry " + canonical.id);
+    assertKeys(item, ["id", "text", "editorialStatus", "goReview", "nativeReview"], "retry " + canonical.id);
+    if (item.id !== canonical.id) blocked("retry source mismatch " + canonical.id);
+    return checkedText(item.text, "retry text");
+  }
+  const api = Object.freeze({ languageView, uiText, englishUi, retryText });
   root.GoCoreLocaleView = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);
