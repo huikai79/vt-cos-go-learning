@@ -6,8 +6,10 @@
   // All Go facts, IDs, answers, events and schedules remain canonical.
   const localeRoute = window.GoSiteLanguage && window.GoSiteLanguage.stateFor(window.location.href);
   const displayLocale = localeRoute && localeRoute.status === "available" ? localeRoute.requested : "zh-Hant-TW";
-  const coreCopy = window.GoCoreLocaleView.languageView(window.GoContent,
-    displayLocale === "zh-Hant-TW" ? null : window.GoReviewedCoreBundle, displayLocale);
+  const coreCopy = window.GoCoreLocaleView && window.GoCoreLocaleView.languageView
+    ? window.GoCoreLocaleView.languageView(window.GoContent,
+        displayLocale === "zh-Hant-TW" ? null : window.GoReviewedCoreBundle, displayLocale)
+    : { unit: (i) => units[i], lesson: (i) => lessons[i], problem: (id) => problems.find((p) => p.id === id) };
   function visibleProblem(problem) {
     return coreCopy.problem(problem.id) || problem;
   }
