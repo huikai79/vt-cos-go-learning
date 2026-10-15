@@ -48,3 +48,22 @@ test("instructions and keyboard accessibility copy are presentation only",()=>{
  assert.equal(uiText("en","liberties","",{count:4}),"4 liberties");
  assert.equal(uiText("zh-Hant-TW","moveInstruction","點選落子"),"點選落子");
 });
+
+test("storage failures and unknown engine reasons remain explicit failures in English",()=>{
+ const {uiText,legalMoveFailureText}=require("../core-locale-view.js");
+ for(const key of ["storageRecoverySaved","storageRecoveryFailed","storageWriteFailed","storageUnsavedResult"]){
+   const text=uiText("en",key,"");
+   assert.ok(text.length>45,key);
+ }
+ assert.match(uiText("en","storageWriteFailed",""),/could not be saved/);
+ assert.match(uiText("en","storageRecoveryFailed",""),/not been saved/);
+ assert.match(legalMoveFailureText("en","這手沒有氣，也沒有提掉對方的棋。"),/not legal/);
+ assert.match(legalMoveFailureText("en","這手會立刻回到上一個棋形；依簡單劫規則，必須先在別處下一手。"),/simple ko/);
+ assert.match(legalMoveFailureText("en","provider unexpectedly failed"),/could not verify/);
+ assert.doesNotMatch(legalMoveFailureText("en","provider unexpectedly failed"),/success|correct/i);
+ assert.equal(legalMoveFailureText("zh-Hant-TW","任意原始錯誤"),"任意原始錯誤");
+ const app=require("node:fs").readFileSync(require("node:path").join(__dirname,"../app.js"),"utf8");
+ assert.match(app,/uiText\("storageWriteFailed"/);
+ assert.match(app,/legalMoveFailureText\(displayLocale, result.reason\)/);
+ assert.match(app,/firstAnswer: isFirstAnswer/);
+});
