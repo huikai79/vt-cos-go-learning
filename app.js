@@ -1198,10 +1198,10 @@
     teachingBoard.hidden = false;
     teachingBoard.innerHTML = demoBoardMarkup(step);
     $("teaching-demo-caption").textContent = step.caption;
-    $("teaching-demo-count").textContent = steps.length > 1 ? `第 ${demoStepIndex + 1} / ${steps.length} 步` : "";
+    $("teaching-demo-count").textContent = steps.length > 1 ? uiText("demoCount", `第 ${demoStepIndex + 1} / ${steps.length} 步`, {current: demoStepIndex + 1, total: steps.length}) : "";
     $("teaching-demo-previous").disabled = demoStepIndex === 0;
     $("teaching-demo-next").disabled = false;
-    $("teaching-demo-next").textContent = demoStepIndex === steps.length - 1 ? "從頭再看 ↺" : "看下一步 →";
+    $("teaching-demo-next").textContent = demoStepIndex === steps.length - 1 ? uiText("demoRestart", "從頭再看 ↺") : uiText("demoNext", "看下一步 →");
     stepper.hidden = false;
     $("teaching-demo-previous").hidden = steps.length < 2;
     $("teaching-demo-next").hidden = steps.length < 2;
@@ -1259,35 +1259,35 @@
     const problem = current();
     const presentation = visibleProblem(problem);
     if (problem.type === "move") {
-      $("answer-area").innerHTML = `<span class="move-guide">點選棋盤，或用方向鍵逐點移動，再按 Enter／空白鍵落子。<br>答錯可再試；需要時可先看提示。</span>`;
-      $("board-instruction").textContent = "點選落子；鍵盤可用方向鍵移動，Enter／空白鍵落子";
+      $("answer-area").innerHTML = `<span class="move-guide">${displayLocale === "zh-Hant-TW" ? "點選棋盤，或用方向鍵逐點移動，再按 Enter／空白鍵落子。<br>答錯可再試；需要時可先看提示。" : escapeHtml(uiText("moveGuide", ""))}</span>`;
+      $("board-instruction").textContent = uiText("moveInstruction", "點選落子；鍵盤可用方向鍵移動，Enter／空白鍵落子");
       $("answer-policy").textContent = state.externalMode === "evaluation"
-        ? "點選後會立即記錄首答，完成整批前不顯示正誤。"
+        ? uiText("evaluationPolicy", "點選後會立即記錄首答，完成整批前不顯示正誤。")
         : state.externalMode === "local_sgf"
-          ? "請下出你記得的原棋譜著手；與原棋譜不同可以再試，這不代表該手一定不好。"
-          : "請在棋盤上選一點；答錯可以再試。";
-      $("board-card").setAttribute("aria-label", "可落子的題目棋盤");
+          ? uiText("localSgfPolicy", "請下出你記得的原棋譜著手；與原棋譜不同可以再試，這不代表該手一定不好。")
+          : uiText("movePolicy", "請在棋盤上選一點；答錯可以再試。");
+      $("board-card").setAttribute("aria-label", uiText("playableBoard", "可落子的題目棋盤"));
       return;
     }
     if (problem.type === "choice") {
       $("answer-area").innerHTML = presentation.options.map((label, index) => `<button class="option-button choice-button" type="button" data-answer="${index}">${escapeHtml(label)}</button>`).join("");
-      $("board-instruction").textContent = problem.focus.length ? "觀察金色圈出的棋子" : "閱讀題幹後選擇答案";
-      $("answer-policy").textContent = state.externalMode === "evaluation" ? "選擇後會立即記錄首答，完成整批前不顯示正誤。" : "選擇答案後會立即作答；答錯可以再試。";
-      $("board-card").setAttribute("aria-label", "觀察用題目棋盤");
+      $("board-instruction").textContent = problem.focus.length ? uiText("choiceFocused", "觀察金色圈出的棋子") : uiText("choiceRead", "閱讀題幹後選擇答案");
+      $("answer-policy").textContent = state.externalMode === "evaluation" ? uiText("evaluationPolicy", "選擇後會立即記錄首答，完成整批前不顯示正誤。") : uiText("choicePolicy", "選擇答案後會立即作答；答錯可以再試。");
+      $("board-card").setAttribute("aria-label", uiText("observedBoard", "觀察用題目棋盤"));
       return;
     }
     if (problem.type === "spot") {
-      $("answer-area").innerHTML = `<span class="move-guide">點選棋盤上的位置，或用方向鍵移動後按 Enter／空白鍵選擇。<br>這題只判定題幹指定的局部觀察點，不代表全局唯一最佳手。</span>`;
-      $("board-instruction").textContent = "點選要比較的位置；鍵盤可用方向鍵移動，Enter／空白鍵選擇";
-      $("answer-policy").textContent = "選擇位置後會立即作答；答錯可以再試。";
-      $("board-card").setAttribute("aria-label", "可選擇位置的局部棋盤示意");
+      $("answer-area").innerHTML = `<span class="move-guide">${displayLocale === "zh-Hant-TW" ? "點選棋盤上的位置，或用方向鍵移動後按 Enter／空白鍵選擇。<br>這題只判定題幹指定的局部觀察點，不代表全局唯一最佳手。" : escapeHtml(uiText("spotGuide", ""))}</span>`;
+      $("board-instruction").textContent = uiText("spotInstruction", "點選要比較的位置；鍵盤可用方向鍵移動，Enter／空白鍵選擇");
+      $("answer-policy").textContent = uiText("spotPolicy", "選擇位置後會立即作答；答錯可以再試。");
+      $("board-card").setAttribute("aria-label", uiText("selectedPointBoard", "可選擇位置的局部棋盤示意"));
       return;
     }
     const values = problem.type === "count" ? [1, 2, 3, 4, 5, 6] : [true, false];
-    $("answer-area").innerHTML = values.map((value) => `<button class="option-button" type="button" data-answer="${value}">${problem.type === "connect" ? (value ? "有，同一串" : "沒有，分兩串") : value + " 口"}</button>`).join("");
-    $("board-instruction").textContent = "觀察金色圈出的棋子";
-    $("answer-policy").textContent = state.externalMode === "evaluation" ? "選擇後會立即記錄首答，完成整批前不顯示正誤。" : "選擇答案後會立即作答；答錯可以再試。";
-    $("board-card").setAttribute("aria-label", "觀察用題目棋盤");
+    $("answer-area").innerHTML = values.map((value) => `<button class="option-button" type="button" data-answer="${value}">${problem.type === "connect" ? (value ? uiText("connectYes", "有，同一串") : uiText("connectNo", "沒有，分兩串")) : uiText("liberties", value + " 口", {count: value})}</button>`).join("");
+    $("board-instruction").textContent = uiText("choiceFocused", "觀察金色圈出的棋子");
+    $("answer-policy").textContent = state.externalMode === "evaluation" ? uiText("evaluationPolicy", "選擇後會立即記錄首答，完成整批前不顯示正誤。") : uiText("choicePolicy", "選擇答案後會立即作答；答錯可以再試。");
+    $("board-card").setAttribute("aria-label", uiText("observedBoard", "觀察用題目棋盤"));
   }
 
   function render() {
