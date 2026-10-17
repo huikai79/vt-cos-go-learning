@@ -179,8 +179,8 @@ async function main() {
   assert.match(sourceCss, /\.hint-feedback\{[^}]*background:/);
   assert.match(sourceCss, /\.interaction-feedback\{[^}]*background:/);
   assert.match(sourceCss, /\.system-status\{[^}]*background:/);
-  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", current\(\)\.hint\)/);
-  assert.match(sourceApp, /showAuxiliaryFeedback\("interaction-feedback", result\.reason\)/);
+  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", visibleProblem\(current\(\)\)\.hint\)/);
+  assert.match(sourceApp, /legalMoveFailureText\(displayLocale, result\.reason\)/);
   assert.doesNotMatch(sourceApp, /\$\("feedback"\)\.textContent = current\(\)\.hint/);
   assert.match(sourceHtml, /<details class="advanced-evidence-details">/);
   assert.match(sourceHtml, /id="advanced-evidence-brief">尚無足夠資料<\/strong>/);
@@ -2469,7 +2469,7 @@ async function main() {
     assert.equal(historyDesktop.questions, 5);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
     assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-29");
-    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1"]);
+    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1", "site-language.js?v=public-site-locale-gate-v1"]);
     assert.equal(historyDesktop.historyVersion, true);
     assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);
     assert.ok(historyDesktop.minContrast >= 4.5, `history minimum contrast: ${historyDesktop.minContrast}`);

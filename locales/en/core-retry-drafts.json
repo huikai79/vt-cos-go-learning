@@ -1,0 +1,757 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "complete-draft-not-for-runtime-or-release",
+  "canonicalSource": "content.js:GoContent.problems[*].id",
+  "disclosure": "Show only after an incorrect response. Never use as a pre-answer prompt or substitute for the user's explicit hint. Preserve initial response and attempt number.",
+  "review": {
+    "go": "pending",
+    "nativeEnglish": "pending",
+    "humanUsability": "not_measured"
+  },
+  "items": {
+    "u1-01": {
+      "id": "u1-01",
+      "text": "Look again at the marked stone and check whether each counted point is both empty and directly adjacent.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-02": {
+      "id": "u1-02",
+      "text": "Recount the intersections next to this edge stone. A neighbouring position must actually be on the board.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-03": {
+      "id": "u1-03",
+      "text": "Compare the corner with the centre: how many neighbouring intersections can a stone reach from here?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-04": {
+      "id": "u1-04",
+      "text": "Treat the two connected stones as one group. Check your list for repeated empty intersections.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-05": {
+      "id": "u1-05",
+      "text": "Try tracing a path between the marked stones using direct contacts along the lines. Is that path there already?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-06": {
+      "id": "u1-06",
+      "text": "Your move did not capture the marked white stone. Check the group's liberties after that move rather than following a diagonal.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-07": {
+      "id": "u1-07",
+      "text": "The white stone is still on the board. Recheck which empty intersections actually touch it at the edge.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-08": {
+      "id": "u1-08",
+      "text": "The target still has room. Check the empty neighbours within the corner, without counting points beyond the board.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-09": {
+      "id": "u1-09",
+      "text": "The two white stones are one group. Recount the empty intersections touching either stone, counting shared points only once.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-10": {
+      "id": "u1-10",
+      "text": "Black remains in danger after that move. Compare the connected group's liberties before and after your extension.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-01": {
+      "id": "u2-01",
+      "text": "Look for a chain of same-colour stones joining the marked pair through direct horizontal or vertical contacts.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-02": {
+      "id": "u2-02",
+      "text": "Trace the group between the marked stones, including direct contacts above and below.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-03": {
+      "id": "u2-03",
+      "text": "Consider whether the stones actually touch along a line now, rather than whether they could support one another later.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-04": {
+      "id": "u2-04",
+      "text": "Follow the board line between the black stones and check whether every intermediate stone is also black.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-05": {
+      "id": "u2-05",
+      "text": "After your move, are the two marked black stones joined by a continuous chain of touching black stones?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-06": {
+      "id": "u2-06",
+      "text": "Check the connection after playing: can you trace directly from the upper stone to the lower one?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-07": {
+      "id": "u2-07",
+      "text": "Recheck whether your new stone directly touches both of the marked black stones despite their closeness to the edge.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-08": {
+      "id": "u2-08",
+      "text": "Your move has not occupied the direct connection route in this task. Trace the shortest line between White's two marked stones.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-09": {
+      "id": "u2-09",
+      "text": "Consider the line from the upper white stone to the lower one. Which connection route is your move actually blocking?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-10": {
+      "id": "u2-10",
+      "text": "The proposed move did not block White's specified direct connection. Check the board line joining the marked stones.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m01": {
+      "id": "u4-m01",
+      "text": "After that move, look at the empty space still inside Black's surrounding stones. Have you created two separate enclosed points, or is the space still joined?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m02": {
+      "id": "u4-m02",
+      "text": "The orientation has changed, but the local reading task has not. Recheck whether your move separates the remaining eye space into two parts.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m03": {
+      "id": "u4-m03",
+      "text": "Imagine White replying in this straight-three space. Does your move take away White's chance to create two distinct eyes, or leave that chance open?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m04": {
+      "id": "u4-m04",
+      "text": "Check the shape after rotating it. Your move should interfere with the two-eye plan, not merely occupy another nearby intersection.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m05": {
+      "id": "u4-m05",
+      "text": "One of Black's eyes is already secure. Look at the other candidate eye and check which of its surrounding points still need Black's support.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m06": {
+      "id": "u4-m06",
+      "text": "Read the vertical shape as an eye-boundary task. After your move, is the unfinished eye enclosed on every necessary side?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m07": {
+      "id": "u4-m07",
+      "text": "White already has one completed eye. Examine the incomplete eye space and whether your move prevents its enclosing boundary from being finished.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m08": {
+      "id": "u4-m08",
+      "text": "Do not treat the rotated board as a different rule. Recheck which part of White's second eye is still unfinished after your move.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-01": {
+      "id": "u3-01",
+      "text": "Judge the position after the move, including any captures. Would Black's group have a neighbouring empty point if no opposing stones were removed?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-02": {
+      "id": "u3-02",
+      "text": "Look at the full move sequence, not only the occupied point. Recheck what happens to neighbouring White stones before counting Black's liberties.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-03": {
+      "id": "u3-03",
+      "text": "Imagine both players immediately taking the same stone back in turn. What problem would that cause for the game?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-04": {
+      "id": "u3-04",
+      "text": "Distinguish an immediate recapture from a move elsewhere. Which action would recreate the preceding board position on this very turn?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-05": {
+      "id": "u3-05",
+      "text": "A threat played away from the ko matters only if the opponent has a real reason to answer it. Reconsider the role of that move in the exchange.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-06": {
+      "id": "u3-06",
+      "text": "Check the rule taught and enforced in this specific interactive engine. Do not assume every possible repetition rule is supported.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-01": {
+      "id": "u4-01",
+      "text": "Focus on whether White can safely occupy both enclosed points, not on the total number of stones surrounding the group.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-02": {
+      "id": "u4-02",
+      "text": "Consider what an opponent might do when there is only one enclosed eye space. Would the status be settled without reading any replies?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-03": {
+      "id": "u4-03",
+      "text": "Consider how the same eye-shaping intersection matters to each player. The question is about a shared local target, not move order alone.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-04": {
+      "id": "u4-04",
+      "text": "Test the eye-shaped space by imagining a legal opponent move there. Would entering that point be possible without immediately losing the stone?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-05": {
+      "id": "u4-05",
+      "text": "Look for a change to eyes, liberties or a connection, then ask what the other player would do. Avoid relying on appearance alone.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-06": {
+      "id": "u4-06",
+      "text": "Pay attention to the player-to-move condition. Would the same local sequence still be available if the opponent played first?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-01": {
+      "id": "u5-01",
+      "text": "Compare how quickly the two board sizes let you reach different stages of a game. The underlying rules do not change with the smaller board.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-02": {
+      "id": "u5-02",
+      "text": "Think about room for your stones to develop after the first few moves. Is an immediate local chase necessarily the best opening goal?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-03": {
+      "id": "u5-03",
+      "text": "The endangered group and the small corner offer different kinds of value. Check the cost if you ignore the more urgent position.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-04": {
+      "id": "u5-04",
+      "text": "Look at what remains undecided: major group survival or the last territorial boundaries? The phase depends on the work still needed.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-05": {
+      "id": "u5-05",
+      "text": "Recall the usual end-of-game procedure after both players decide there is no useful move. Do not confuse finishing with restarting.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-06": {
+      "id": "u5-06",
+      "text": "Choose a question tied to a decision you could recognise again. A useful review should identify something observable on a future board.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-01": {
+      "id": "u6-01",
+      "text": "Picture how many sides of an area need surrounding near a corner compared with the middle. Do not mistake efficiency for a guaranteed best move.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-02": {
+      "id": "u6-02",
+      "text": "Consider the support your existing corner stone provides and what your new stone could help it accomplish. Distance alone is not the target.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-03": {
+      "id": "u6-03",
+      "text": "Compare the purpose of each opening point in relation to nearby stones. A universal claim needs more than one familiar pattern.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-04": {
+      "id": "u6-04",
+      "text": "Before extending, look at the friendly and opposing stones already nearby. Ask what room and pressure each direction creates.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-05": {
+      "id": "u6-05",
+      "text": "The large space may remain available while the threatened group may not. Compare the consequences of delaying each option.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-06": {
+      "id": "u6-06",
+      "text": "After a development move, ask what it contributes to the surrounding position. Do not judge it only by immediate captures.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-01": {
+      "id": "u7-01",
+      "text": "Try drawing the boundary of the proposed area. Would both players agree it is relatively settled, or could either still contest it?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-02": {
+      "id": "u7-02",
+      "text": "Think about a group's stability and its ability to support nearby play. Thickness is not the same as a tally of secured points.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-03": {
+      "id": "u7-03",
+      "text": "Consider where a strong wall can influence later play. Its value cannot be read from the number of stones alone.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-04": {
+      "id": "u7-04",
+      "text": "The immediate territory is only one side of the exchange. Reconsider what the opponent could gain from the outward-facing strength.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-05": {
+      "id": "u7-05",
+      "text": "Check which side has nearby support before starting a fight beside the wall. Do not assume a wall changes the rules of liberties.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-06": {
+      "id": "u7-06",
+      "text": "Ask which whole-board factors make thickness useful in this position. A fixed formula is unlikely to describe every wall.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-01": {
+      "id": "u8-01",
+      "text": "Compare eye space, escape routes and nearby support for each group. A group's current liberty count alone may not tell the whole story.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-02": {
+      "id": "u8-02",
+      "text": "An attack may create useful pressure even if the stones escape. Revisit what your own position might gain during the chase.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-03": {
+      "id": "u8-03",
+      "text": "One group faces an immediate danger while the opponent has a separate weakness. Check whose threatened loss can happen on the next turn.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-04": {
+      "id": "u8-04",
+      "text": "Follow the likely escape route and notice which of your groups can support the chase. The direction matters more than appearances.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-05": {
+      "id": "u8-05",
+      "text": "The opponent may now be safe. Check whether another attacking move gains anything or instead exposes your own stones.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-06": {
+      "id": "u8-06",
+      "text": "Imagine the opponent finding a stronger defence than the one you hope for. Is there still a benefit to starting the attack?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-01": {
+      "id": "u9-01",
+      "text": "Your candidate move is only the first part of a sequence. Try reading the reply that most seriously challenges it.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-02": {
+      "id": "u9-02",
+      "text": "Compare the local eye space, connections and liberties before and after a candidate point is occupied. Which of these can change?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-03": {
+      "id": "u9-03",
+      "text": "The same stones can lead to different outcomes depending on who moves next. Check whether the problem gives that condition.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-04": {
+      "id": "u9-04",
+      "text": "When groups join directly, ask which liberties and potential eye spaces they may share. That is different from a loose diagonal relationship.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-05": {
+      "id": "u9-05",
+      "text": "A sequence that works against one reply may fail against another. Look for a more forceful response to your first idea.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-06": {
+      "id": "u9-06",
+      "text": "A good early reading task has a defined local position and move order. Consider whether the suggested practice builds that skill gradually.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-01": {
+      "id": "u10-01",
+      "text": "Evaluate both orders of play in the boundary exchange. One side's gain alone does not capture the whole local swing.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-02": {
+      "id": "u10-02",
+      "text": "With safety and urgency equal, compare the actual score swing of each move rather than just the number of stones involved.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-03": {
+      "id": "u10-03",
+      "text": "One choice preserves the life of a corner group; the other earns ordinary endgame points. Reconsider what happens if the urgent move is delayed.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-04": {
+      "id": "u10-04",
+      "text": "Before calling a territorial count final, check whether any groups or boundaries still have unresolved status.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-05": {
+      "id": "u10-05",
+      "text": "Ask whether the opponent genuinely needs to answer the threat. The value of keeping initiative depends on that response.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-06": {
+      "id": "u10-06",
+      "text": "Find a concrete difference between the estimate and the final score. Could unsettled stones, borders or the scoring method explain it?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-01": {
+      "id": "u11-01",
+      "text": "Look away from the current fight long enough to check the safety of your group elsewhere. What happens if it receives no move now?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-02": {
+      "id": "u11-02",
+      "text": "Compare how much an unsettled area can change with a single move. An already secure area may offer little extra value.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-03": {
+      "id": "u11-03",
+      "text": "Consider both effects of the candidate: does it make your group safer, and does it also limit the opponent's useful space?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-04": {
+      "id": "u11-04",
+      "text": "A local capture has a cost elsewhere in the position. Compare your gain with the thickness the opponent develops outside.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-05": {
+      "id": "u11-05",
+      "text": "Scan for groups at risk, large unsettled areas and moves that cannot be postponed. These are different reasons for urgency.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-06": {
+      "id": "u11-06",
+      "text": "A familiar coordinate can be useful in one opening and poor in another. Check the relationships between groups before choosing direction.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-01": {
+      "id": "u12-01",
+      "text": "Compare the stones given up with the strength and opportunities gained outside. Avoid deciding solely from the number of captured stones.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-02": {
+      "id": "u12-02",
+      "text": "A forcing move has value only if the answer matters. Reconsider whether the opponent needs to respond and what you can play next.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-03": {
+      "id": "u12-03",
+      "text": "An invasion needs a credible plan after the opponent answers. Inspect connections, escape routes and potential eye space.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-04": {
+      "id": "u12-04",
+      "text": "Strong friendly stones nearby can support an attack. What useful gain could your pressure make even if the target escapes?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-05": {
+      "id": "u12-05",
+      "text": "Before adding another rescue stone, estimate what happens if it is also captured. Compare that cost with leaving the group.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-06": {
+      "id": "u12-06",
+      "text": "Look for the move when the fight stopped being safe for your group. A review question should identify an observable turning point.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-01": {
+      "id": "u13-01",
+      "text": "A ko threat is meant to demand a response. Ask how costly it would be for the opponent to ignore the move you are considering.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-02": {
+      "id": "u13-02",
+      "text": "Compare the position if either player wins the ko. The cost of threats makes sense only against the value at stake.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-03": {
+      "id": "u13-03",
+      "text": "The threat and the ko are two parts of the same exchange. Revisit what your opponent gains when responding to the larger threat.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-04": {
+      "id": "u13-04",
+      "text": "A potential ko threat must matter to the opponent. Look for vulnerable groups, territory or connections rather than a harmless move.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-05": {
+      "id": "u13-05",
+      "text": "The move away from the ko is not the end of the fight. Consider what reply it seeks and what opportunity may follow.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-06": {
+      "id": "u13-06",
+      "text": "Include the moves played away from the ko when judging the exchange. The local capture alone does not give its total value.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-01": {
+      "id": "u14-01",
+      "text": "Recall why both players might accept a known corner exchange in a particular position. Does that make the sequence mandatory everywhere?",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-02": {
+      "id": "u14-02",
+      "text": "Look beyond the corner at the supporting and opposing stones. The outside direction can change whether a variation makes sense.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-03": {
+      "id": "u14-03",
+      "text": "When the surrounding stones differ, the remembered sequence may serve a different purpose. Recheck each move's intention.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-04": {
+      "id": "u14-04",
+      "text": "The corner sequence may be complete while another group remains weak. Examine what follow-up problems the exchange leaves behind.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-05": {
+      "id": "u14-05",
+      "text": "Both immediate territory and outside potential can be useful. Compare which outcome helps the actual neighbouring groups.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-06": {
+      "id": "u14-06",
+      "text": "Try describing what each exchange accomplishes rather than reciting the coordinates. That gives you a way to assess new positions.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-01": {
+      "id": "u15-01",
+      "text": "Find a move where group safety, territory or direction changed noticeably. Spending equal time on every move may hide that moment.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-02": {
+      "id": "u15-02",
+      "text": "If you record your own reasoning before reading suggestions, you can later compare the two accounts. Think about what that reveals.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-03": {
+      "id": "u15-03",
+      "text": "A tool's estimate is a candidate to investigate. Check which board problem the suggestion addresses instead of accepting its coordinate on authority.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-04": {
+      "id": "u15-04",
+      "text": "Choose one decision you could practise and observe in the next game. Trying to repair every mistake at once may not be actionable.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-05": {
+      "id": "u15-05",
+      "text": "A win or loss does not capture every behaviour in the game. Reconsider which specific decision improved and what still needs testing.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-06": {
+      "id": "u15-06",
+      "text": "Leave the review with a question about a turning point and something to check next time, rather than only a result or screenshot.",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    }
+  },
+  "missing": "Runtime approval, human Go and native-English review, exposure/hint audit and full-site remaining pages are still blocked."
+}
