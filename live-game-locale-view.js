@@ -42,6 +42,19 @@
     stonePoint: "{coord}: {color} stone.",
     scoringPoint: "{coord}: {color} stone; select to change its dead-stone mark.",
     importedResult: "Result recorded in SGF: {code}. This is imported data, not an independently verified score.",
+    savedState: "Saved on this device",
+    notSavedState: "Not saved",
+    computerTurnBlocked: "It is the computer's turn. You cannot play for it.",
+    illegalSuicide: "This move would leave your stones without liberties and capture nothing. It is not legal.",
+    illegalKo: "Simple ko: you cannot immediately recreate the previous board position. Play elsewhere first.",
+    cannotUndoFinished: "The confirmed game result cannot be undone. Start a new game or import an SGF.",
+    invalidDeadGroup: "Select a stone group to change its dead-stone mark. Empty intersections cannot be marked.",
+    finishedBlocked: "This game has ended. Start another game or export its SGF.",
+    newGameConfirm: "Starting a new game replaces the saved resumable game for this board size. Export SGF if you want a copy. Start a new game?",
+    newGame: "Started a new {size}×{size} {mode}.",
+    providerTesting: "Checking the selected opponent service…",
+    sgfTooLarge: "This SGF is too large to import (limit approximately {limitKB} KB). The current game was not replaced.",
+    sgfImportConfirm: "Importing an SGF replaces the resumable game for this board size. Export your current SGF if you want to keep it. Import now?",
     unknown: "The action could not be verified. No successful outcome should be assumed."
   });
   function blocked(reason) {
