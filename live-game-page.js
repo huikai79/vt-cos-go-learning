@@ -22,6 +22,32 @@
     19: { title: "19×19 全盤實戰練習", heading: "完整 19×19 自由棋盤", description: "把核心課程與進階練習學到的判斷放回標準全盤。支援停一手（Pass）、認輸、人工死子確認、中國式面積計分、SGF 匯入／匯出與本機續局；目前只作練習。", purpose: "全盤方向、弱棋、戰鬥與官子整合" }
   };
   const $ = (id) => document.getElementById(id);
+  // Only the site router may authorize a rendered language. Draft or URL
+  // preferences must never activate partially translated live-game copy.
+  const renderedLocale = window.GoSiteLanguage && window.GoSiteLanguage.stateFor(window.location.href).rendered || "zh-Hant-TW";
+  const englishDisplay = renderedLocale === "en"
+    ? (window.GoLiveLocaleView ? window.GoLiveLocaleView.createView() : (() => { throw new Error("live_english_copy_unavailable"); })())
+    : null;
+  function displayCopy(key, sourceText, values = {}) {
+    return englishDisplay ? englishDisplay.text(key, values) : sourceText;
+  }
+  function displayColor(color) { return englishDisplay ? (color === BLACK ? "Black" : "White") : colorLabel(color); }
+  function displayIllegal(reason) {
+    if (!englishDisplay) return reason || "操作失敗。";
+    const known = {
+      "棋局目前不是落子狀態。": "illegal",
+      "只能下在空的交叉點。": "occupied",
+      "這手沒有氣，也沒有提掉對方的棋。": "illegalSuicide",
+      "這手會立刻回到上一個棋形；依簡單劫規則，必須先在別處下一手。": "illegalKo",
+      "目前沒有可悔的著手。": "cannotUndo",
+      "已確認的終局結果不直接悔棋；請開新局或重新匯入棋譜。": "cannotUndoFinished",
+      "只有終局計分階段可以標記死子。": "invalidDeadGroup",
+      "請點選要標記的棋串。": "invalidDeadGroup",
+      "棋局尚未進入計分階段。": "scoreUnknown",
+      "目前不在計分階段。": "scoreUnknown"
+    };
+    return displayCopy(known[reason] || "unknownMove", "", { coord: "" });
+  }
   let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "computer", humanColor = BLACK, providerEndpoint = "http://127.0.0.1:8765/v1/move", botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "", liveEvidenceFailure = "", activeAssessment = null, activeAssessmentResponseCount = 0;
 
   function newPracticeSessionId() { return `live-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`; }
@@ -159,9 +185,9 @@
   function preserveBrokenSave(raw, reason) {
     try {
       localStorage.setItem(RECOVERY_KEY, JSON.stringify({ schemaVersion: 1, preservedAt: new Date().toISOString(), sourceKey: STORAGE_KEY, reason, rawValue: raw }));
-      loadNotice = "偵測到無法安全續載的棋局；原始內容已保存在本機 recovery 副本，這裡先開啟新局。";
+      loadNotice = displayCopy("recoveryCopy", "偵測到無法安全續載的棋局；原始內容已保存在本機 recovery 副本，這裡先開啟新局。");
     } catch (_) {
-      loadNotice = "偵測到損壞的棋局資料，而且無法建立 recovery 副本；本頁先以新局開啟。";
+      loadNotice = displayCopy("recoveryFailed", "偵測到損壞的棋局資料，而且無法建立 recovery 副本；本頁先以新局開啟。");
     }
   }
   function load() {
@@ -187,11 +213,11 @@
   function save() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 1, uiVersion: UI_VERSION, savedAt: new Date().toISOString(), game, auditEvents, opponentMode, humanColor, providerEndpoint, practiceSessionId }));
-      $("save-state").textContent = "已保存於這台電腦";
+      $("save-state").textContent = displayCopy("savedState", "已保存於這台電腦");
       return true;
     } catch (_) {
-      $("save-state").textContent = "未能保存";
-      showFeedback("無法寫入瀏覽器儲存空間；離開前請先匯出 SGF。", "error");
+      $("save-state").textContent = displayCopy("notSavedState", "未能保存");
+      showFeedback(displayCopy("storageFailure", "無法寫入瀏覽器儲存空間；離開前請先匯出 SGF。"), "error");
       return false;
     }
   }
@@ -343,7 +369,7 @@
         save(); ensureLiveAssessment();
       } catch (error) {
         event("computer_provider_error", { actor: "computer", providerKind: opponentMode, reason: error.message || "unknown" });
-        showFeedback("電腦對手目前無法取得下一手。這回合已停止，系統不會隨便替它下一手。", "error");
+        showFeedback(displayCopy("providerFailure", "電腦對手目前無法取得下一手。這回合已停止，系統不會隨便替它下一手。"), "error");
       } finally { botPending = false; render(); }
     }, 180);
   }
@@ -358,18 +384,18 @@
     closeAssessmentAfterTurn();
     event("new_game", { actor: "system", reason, opponentMode, humanColor: isComputerMode() ? humanColor : null, botVersion: isComputerMode() && Bot ? Bot.BOT_VERSION : null });
     saveOpponentSettings();
-    save();
+    const savedNewGame = save();
     render();
-    showFeedback(`已開始新的 ${requestedSize}×${requestedSize} ${isComputerMode() ? "人機練習" : "棋局"}。`, "success");
+    if (savedNewGame) showFeedback(displayCopy("newGame", `已開始新的 ${requestedSize}×${requestedSize} ${isComputerMode() ? "人機練習" : "棋局"}。`, { size: requestedSize, mode: isComputerMode() ? "computer practice game" : "local game" }), "success");
     ensureLiveAssessment();
     scheduleComputerTurn();
   }
 
   function applyResult(result, auditType, details = {}) {
-    if (!result.ok) { showFeedback(result.error || "操作失敗。", "error"); return false; }
+    if (!result.ok) { showFeedback(displayIllegal(result.error), "error"); return false; }
     game = result.game; event(auditType, details); const saved = save(); render();
     if (liveEvidenceFailure) {
-    showFeedback("棋局可以繼續，但這次的實戰學習紀錄沒有成功保存。本次不會顯示成已更新進度。", "error");
+    showFeedback(displayCopy("eventFailure", "棋局可以繼續，但這次的實戰學習紀錄沒有成功保存。本次不會顯示成已更新進度。"), "error");
     liveEvidenceFailure = "";
   } else if (practiceEventFailure) {
       showFeedback(`${details.successMessage || "操作完成。"} 但這次的練習紀錄沒有成功保存；本次不會顯示成已更新學習紀錄。`, "error");
@@ -380,11 +406,11 @@
   function actAt(x, y, refocus = false) {
     cursor = [x, y];
     if (game.status === "playing") {
-      if (!isHumanTurn() || botPending) { showFeedback("現在是電腦回合。", "error"); return; }
+      if (!isHumanTurn() || botPending) { showFeedback(displayCopy("computerTurnBlocked", "現在是電腦回合。"), "error"); return; }
       ensureLiveAssessment();
       if (game.board[y][x] !== EMPTY) {
         recordLiveResponse({ action: "play", point: [x, y], legal: false, reason: "occupied_point" });
-        showFeedback(`${coordName(x, y)} 已有棋子。`, "error");
+        showFeedback(displayCopy("occupied", `${coordName(x, y)} 已有棋子。`, { coord: coordName(x, y) }), "error");
         return;
       }
       const color = game.toPlay, result = Live.play(game, x, y);
@@ -397,12 +423,12 @@
       return;
     }
     if (game.status === "scoring") {
-      if (game.board[y][x] === EMPTY) { showFeedback("請點選要標記的棋串；空點不需要標記。", "error"); return; }
+      if (game.board[y][x] === EMPTY) { showFeedback(displayCopy("invalidDeadGroup", "請點選要標記的棋串；空點不需要標記。"), "error"); return; }
       const result = Live.toggleDeadGroup(game, x, y);
       if (applyResult(result, "dead_group_toggle", { point: [x, y], markedDead: result.markedDead, successMessage: result.markedDead ? "已標記這串為死子；請核對預覽分數。" : "已取消這串死子標記。" }) && refocus) setTimeout(focusCursor, 0);
       return;
     }
-    showFeedback("棋局已結束；請開始新局或匯出 SGF。", "error");
+    showFeedback(displayCopy("finishedBlocked", "棋局已結束；請開始新局或匯出 SGF。"), "error");
   }
   function focusCursor() {
     const point = $("live-board").querySelector(`[data-x="${cursor[0]}"][data-y="${cursor[1]}"]`);
@@ -456,10 +482,10 @@
     }
     closeAssessmentAfterTurn();
     event("undo", { actor: isComputerMode() ? "human" : "local_player", movesUndone: undone, opponentMode });
-    save(); render(); ensureLiveAssessment(); showFeedback(isComputerMode() ? "已回到你上一個決策前。" : "已悔一手；棋局依剩餘手順重新重建。", "success");
+    const savedUndo = save(); render(); ensureLiveAssessment(); if (savedUndo) showFeedback(isComputerMode() ? displayCopy("undoComputer", "已回到你上一個決策前。") : displayCopy("undo", "已悔一手；棋局依剩餘手順重新重建。"), "success");
   });
   $("resign-button").addEventListener("click", () => {
-    if (!confirm(`${colorLabel(game.toPlay)}棋確定認輸？`)) return;
+    if (!confirm(displayCopy("resignConfirm", `${colorLabel(game.toPlay)}棋確定認輸？`, { color: displayColor(game.toPlay) }))) return;
     ensureLiveAssessment();
     const loser = game.toPlay, result = Live.resign(game);
     recordLiveResponse({ action: "resign", point: null, legal: result.ok === true, reason: result.ok ? null : result.error || "resign_failed" });
@@ -478,7 +504,7 @@ ${previewText}
     applyResult(Live.finalizeScore(game), "score_confirmed", { deadStones: [...(game.deadStones || [])], successMessage: "終局結果已確認並保存。" });
   });
   $("new-game-button").addEventListener("click", () => {
-    if (game.moves.length && !confirm("開始新局會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定開始新局？")) return;
+    if (game.moves.length && !confirm(displayCopy("newGameConfirm", "開始新局會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定開始新局？"))) return;
     startNewGame("user_started");
   });
   $("opponent-mode").addEventListener("change", (event) => {
@@ -504,15 +530,15 @@ ${previewText}
     const status = $("provider-status");
     providerEndpoint = String($("provider-endpoint").value || "").trim();
     saveOpponentSettings();
-    status.textContent = "測試中…";
+    status.textContent = displayCopy("providerTesting", "測試中…");
     try {
       if (!MoveProvider || typeof MoveProvider.requestAction !== "function") throw new Error("move_provider_module_unavailable");
       const action = await MoveProvider.requestAction(game, { kind: opponentMode, endpoint: providerEndpoint, timeoutMs: 8000 });
-      status.textContent = `連線成功 · 回傳 ${action.type}`;
+      status.textContent = displayCopy("providerTestSuccess", `連線成功 · 回傳 ${action.type}`, { action: action.type });
       status.className = "success";
     } catch (error) {
       const hint = opponentMode === "katago" ? "；本機 KataGo 需要先啟動本機連接程式" : "；遠端模式需要可由此網頁存取的 HTTPS API";
-      status.textContent = `連線失敗 · ${error.message || "未知錯誤"}${hint}`;
+      status.textContent = displayCopy("providerTestFailure", `連線失敗 · ${error.message || "未知錯誤"}${hint}`);
       status.className = "error";
     }
   });
@@ -535,20 +561,20 @@ ${previewText}
   });
   $("import-sgf-input").addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0]; if (!file) return;
-    if (file.size > Sgf.MAX_SGF_FILE_BYTES) { showFeedback(`SGF 無法匯入：檔案太大（上限約 ${Math.round(Sgf.MAX_SGF_FILE_BYTES / 1024)} KB）。`, "error"); e.target.value = ""; return; }
-    if (game.moves.length && !confirm("匯入棋譜會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定匯入？")) { e.target.value = ""; return; }
+    if (file.size > Sgf.MAX_SGF_FILE_BYTES) { showFeedback(displayCopy("sgfTooLarge", `SGF 無法匯入：檔案太大（上限約 ${Math.round(Sgf.MAX_SGF_FILE_BYTES / 1024)} KB）。`, { limitKB: Math.round(Sgf.MAX_SGF_FILE_BYTES / 1024) }), "error"); e.target.value = ""; return; }
+    if (game.moves.length && !confirm(displayCopy("sgfImportConfirm", "匯入棋譜會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定匯入？"))) { e.target.value = ""; return; }
     const reader = new FileReader();
     reader.onload = () => {
       try {
         const imported = Live.fromSgf(String(reader.result || ""));
-        if (imported.boardSize !== requestedSize) throw new Error(`這是 ${imported.boardSize}×${imported.boardSize} 棋譜；請先切換到相同尺寸的練習棋盤再匯入。`);
+        if (imported.boardSize !== requestedSize) throw new Error(displayCopy("sgfWrongSize", `這是 ${imported.boardSize}×${imported.boardSize} 棋譜；請先切換到相同尺寸的練習棋盤再匯入。`, { size: imported.boardSize }));
         game = imported; auditEvents = []; closeAssessmentAfterTurn();
         event("sgf_import", { sourceName: file.name, importedStatus: game.status }); cursor = centerCursor(game.boardSize);
-        save(); render(); ensureLiveAssessment(); showFeedback(`已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, "success"); scheduleComputerTurn();
+        const savedImport = save(); render(); ensureLiveAssessment(); if (savedImport) showFeedback(displayCopy("sgfImport", `已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, { filename: file.name }), "success"); scheduleComputerTurn();
       } catch (error) { showFeedback(error.message, "error"); }
       e.target.value = "";
     };
-    reader.onerror = () => { showFeedback("無法讀取這個 SGF 檔案。", "error"); e.target.value = ""; };
+    reader.onerror = () => { showFeedback(displayCopy("sgfReadFailure", "無法讀取這個 SGF 檔案。"), "error"); e.target.value = ""; };
     reader.readAsText(file, "UTF-8");
   });
 
