@@ -40,3 +40,16 @@ test("candidate copy is isolated from game authority and does not invent success
   assert.equal(Object.hasOwn(candidate, "scoring"), false);
   assert.equal(Object.hasOwn(candidate, "events"), false);
 });
+
+test("Live Game runtime uses site-rendered locale, not requested draft language", () => {
+  const page = fs.readFileSync(path.join(__dirname, "../live-game-page.js"), "utf8");
+  assert.match(page, /GoSiteLanguage\.stateFor\(window\.location\.href\)\.rendered/);
+  assert.match(page, /GoLiveLocaleView\.createView\(\)/);
+  assert.doesNotMatch(page, /GoLiveLocaleView\.createView\(\{\s*preview:\s*true/);
+  assert.match(page, /if \(savedUndo\) showFeedback/);
+  assert.match(page, /if \(savedImport\) showFeedback/);
+  assert.match(page, /if \(savedNewGame\) showFeedback/);
+  for (const key of ["providerFailure", "storageFailure", "eventFailure", "sgfReadFailure", "scoreUnknown", "unknownMove", "sgfImport"]) {
+    assert.ok(Object.hasOwn(candidate.messages, key));
+  }
+});
