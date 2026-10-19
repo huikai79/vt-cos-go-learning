@@ -2991,21 +2991,21 @@ async function main() {
       const mode = document.querySelector('#opponent-mode');
       mode.value = 'local'; mode.dispatchEvent(new Event('change', {bubbles:true}));
       const first = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]');
-      first.click();
+      first.dispatchEvent(new MouseEvent('click', {bubbles:true}));
       const legalMoves = document.querySelector('#move-count').textContent;
       const pointAfterMove = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').getAttribute('aria-label');
-      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').click();
+      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));
       const illegalMessage = document.querySelector('#live-feedback').textContent;
       const afterIllegal = document.querySelector('#move-count').textContent;
-      document.querySelector('#pass-button').click();
-      document.querySelector('#pass-button').click();
+      document.querySelector('#pass-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      document.querySelector('#pass-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
       const scoring = !document.querySelector('#scoring-panel').hidden;
       const score = document.querySelector('#score-lines').textContent;
       const boardScoring = document.querySelector('#live-board svg').getAttribute('aria-label');
-      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').click();
+      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));
       const markedPoint = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').getAttribute('aria-label');
       window.confirm = () => true;
-      document.querySelector('#confirm-score-button').click();
+      document.querySelector('#confirm-score-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
       return {legalMoves, pointAfterMove, illegalMessage, afterIllegal, scoring, score,
         boardScoring, markedPoint, result:document.querySelector('#result-text').textContent,
         finished:!document.querySelector('#result-panel').hidden,
