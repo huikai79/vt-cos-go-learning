@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "scope": "index.html site-introduction: landing/navigation/preview/paths/method only; excludes Core lesson and dynamic exports",
+  "status": "candidate-not-runtime",
+  "sourceRef": "index.html @ feat/public-full-site-localization; audited 2026-10-19",
+  "review": {
+    "nativeEnglish": "pending",
+    "goAccuracy": "pending",
+    "accessibility": "pending",
+    "readerUsability": "not_measured"
+  },
+  "items": {
+    "landing-brand": {
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    },
+    "landing-navigation": {
+      "source": "學習路線",
+      "text": "Choose a learning path",
+      "review": "candidate"
+    },
+    "landing-courses": {
+      "source": "全站課程",
+      "text": "Browse courses",
+      "review": "candidate"
+    },
+    "landing-explore": {
+      "source": "探索",
+      "text": "Explore Go",
+      "review": "candidate"
+    },
+    "landing-advanced": {
+      "source": "進階",
+      "text": "Advanced practice",
+      "review": "candidate"
+    },
+    "landing-shapes": {
+      "source": "名型館",
+      "text": "Classic shapes",
+      "review": "candidate"
+    },
+    "hero-line-one": {
+      "source": "先做一手，",
+      "text": "Make a move.",
+      "review": "candidate"
+    },
+    "hero-line-two": {
+      "source": "再看懂為什麼。",
+      "text": "Then understand what happened.",
+      "review": "candidate"
+    },
+    "hero-intro": {
+      "source": "第一次接觸圍棋也可以開始。先在右側合成局面做一個可逆選擇；它不會寫入課程紀錄，也不會被當成正式作答。",
+      "text": "New to Go? Start with the example on the right. Reveal what follows from a possible move, then reset it. This synthetic preview does not count as a course answer or update your progress.",
+      "review": "candidate"
+    },
+    "hero-first-lesson": {
+      "source": "從第一課開始",
+      "text": "Start with lesson one",
+      "review": "candidate"
+    },
+    "hero-find-path": {
+      "source": "找適合我的入口",
+      "text": "Find your starting point",
+      "review": "candidate"
+    },
+    "trust-no-account": {
+      "source": "不需帳號",
+      "text": "No account required",
+      "review": "candidate"
+    },
+    "trust-local": {
+      "source": "本機即可開始",
+      "text": "Start on this device",
+      "review": "candidate"
+    },
+    "trust-first-response": {
+      "source": "首答與修正分開",
+      "text": "First choice and corrections stay separate",
+      "review": "candidate"
+    },
+    "preview-first-choice": {
+      "source": "尚未落子",
+      "text": "No move shown yet",
+      "review": "candidate"
+    },
+    "preview-result": {
+      "source": "原選點已保留",
+      "text": "Original choice still visible",
+      "review": "candidate"
+    },
+    "preview-question": {
+      "source": "哪裡能把兩塊空間真正分開？",
+      "text": "Where could Black try to separate these two spaces?",
+      "review": "candidate"
+    },
+    "preview-warning": {
+      "source": "金色是目前選點，不代表正確。",
+      "text": "The gold marker shows a possible choice, not a confirmed answer.",
+      "review": "candidate"
+    },
+    "preview-consequence": {
+      "source": "兩塊空間仍共用同一個破壞點",
+      "text": "The two spaces still share a point where White can break in",
+      "review": "candidate"
+    },
+    "preview-synthetic": {
+      "source": "合成示範，不寫入 learner evidence、分數或課程進度。",
+      "text": "Illustrative position only. It does not change your learning record, score or course progress.",
+      "review": "candidate"
+    },
+    "preview-action": {
+      "source": "在預覽落下一手",
+      "text": "Show a possible move",
+      "review": "candidate"
+    },
+    "preview-reset": {
+      "source": "回到作答前",
+      "text": "Reset the preview",
+      "review": "candidate"
+    },
+    "entry-title": {
+      "source": "第一次學圍棋，和已有基礎的人，不需要走同一條路。",
+      "text": "Start with the Go skills you already have",
+      "review": "candidate"
+    },
+    "entry-explainer": {
+      "source": "你可以依照現在的理解與目標，選擇一個起點。三個入口各自連到既有課程內容；它們不是棋力分級，也不保證學習結果。",
+      "text": "Choose a starting point based on what you want to practise. These paths link to existing lessons; they are not rank levels or promises of improvement.",
+      "review": "candidate"
+    },
+    "entry-beginner": {
+      "source": "基礎建立",
+      "text": "Build your foundations",
+      "review": "candidate"
+    },
+    "entry-beginner-detail": {
+      "source": "從氣、提子、連接與切斷開始",
+      "text": "Learn liberties, captures, connections and cuts",
+      "review": "candidate"
+    },
+    "entry-beginner-copy": {
+      "source": "用最小的棋盤，學會圍棋最核心的規則與棋形。適合完全新手，或想重新打好基礎的你。",
+      "text": "Use a small board to learn the rules and recognise basic shapes. Suitable if you are completely new to Go or returning to the basics.",
+      "review": "candidate"
+    },
+    "entry-local": {
+      "source": "局部閱讀與判斷",
+      "text": "Read local positions",
+      "review": "candidate"
+    },
+    "entry-local-copy": {
+      "source": "學會從局部棋形中，判斷哪一方有利、哪裡有風險，逐步培養計算與閱讀棋形的能力。",
+      "text": "Look at a local position, identify risks for each side and practise reading the next few moves.",
+      "review": "candidate"
+    },
+    "entry-wholeboard": {
+      "source": "全局判斷與應用",
+      "text": "Connect local decisions to the whole board",
+      "review": "candidate"
+    },
+    "entry-wholeboard-copy": {
+      "source": "在 9 路棋局中，練習全盤觀察、形勢判斷與策略選擇，將所學應用到完整對局。",
+      "text": "Use 9×9 games to practise whole-board awareness, judgement and decisions in a complete game.",
+      "review": "candidate"
+    },
+    "catalog-count": {
+      "source": "目前課程：15 單元 · 19 課 · 106 題。這些數字只描述內容量，不代表學習成效或棋力。",
+      "text": "Current catalogue: 15 units, 19 lessons and 106 Core items. These numbers describe content, not measured learning gains or playing rank.",
+      "review": "candidate"
+    },
+    "method-title": {
+      "source": "不是看做了幾題，而是看隔一段時間後還能不能自己做。",
+      "text": "Can you make the decision again later, without a hint?",
+      "review": "candidate"
+    },
+    "method-caveat": {
+      "source": "這四步是本站採用的練習流程，不是對個人學習效果的保證；可用它安排觀察、作答、回看與換形再判。",
+      "text": "These four steps organise practice and later checks. They do not guarantee that anyone has learned a skill.",
+      "review": "candidate"
+    },
+    "method-first": {
+      "source": "先自己做",
+      "text": "Try a move yourself",
+      "review": "candidate"
+    },
+    "method-feedback": {
+      "source": "看清楚問題",
+      "text": "Review what happened",
+      "review": "candidate"
+    },
+    "method-delayed": {
+      "source": "隔一段時間再做",
+      "text": "Return after a delay",
+      "review": "candidate"
+    },
+    "method-transfer": {
+      "source": "換一個不同的棋形",
+      "text": "Try a different position",
+      "review": "candidate"
+    }
+  },
+  "uncovered": [
+    "remaining index.html static content, learning workspace, export UI, accessible labels and homepage-experience.js state transitions",
+    "No runtime mounting until full English site gate passes"
+  ]
+}
