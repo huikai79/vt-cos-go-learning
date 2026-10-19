@@ -320,15 +320,15 @@
   }
   function renderChrome() {
     const size = game.boardSize, profile = currentProfile();
-    document.title = `VT-COS｜${profile.title}`;
-    $("live-brand-mode").textContent = `VT-COS · ${size}×${size} 棋盤練習`;
-    $("live-title").textContent = profile.title;
-    $("live-description").textContent = profile.description;
+    document.title = englishDisplay ? `A Move of Insight | ${displayCopy(`profile${size}Title`, "")}` : `VT-COS｜${profile.title}`;
+    $("live-brand-mode").textContent = displayCopy("brandMode", `VT-COS · ${size}×${size} 棋盤練習`, { size });
+    $("live-title").textContent = displayCopy(`profile${size}Title`, profile.title);
+    $("live-description").textContent = displayCopy(`profile${size}Description`, profile.description);
     $("board-size-label").textContent = `${size} × ${size}`;
-    $("board-heading").textContent = profile.heading;
-    $("practice-purpose").textContent = profile.purpose;
-    $("rules-summary").textContent = size >= 9 ? `中國式面積 · 貼 ${game.komi} · 簡單劫` : `微型練習盤 · ${game.komi ? `貼 ${game.komi}` : "無貼目"} · 簡單劫`;
-    $("import-label").textContent = `匯入 ${size} 路 SGF`;
+    $("board-heading").textContent = displayCopy(`profile${size}Heading`, profile.heading);
+    $("practice-purpose").textContent = displayCopy(`profile${size}Purpose`, profile.purpose);
+    $("rules-summary").textContent = size >= 9 ? displayCopy("rulesFull", `中國式面積 · 貼 ${game.komi} · 簡單劫`, { komi: game.komi }) : displayCopy("rulesSmall", `微型練習盤 · ${game.komi ? `貼 ${game.komi}` : "無貼目"} · 簡單劫`, { komi: game.komi });
+    $("import-label").textContent = displayCopy("importLabel", `匯入 ${size} 路 SGF`, { size });
     $("opponent-mode").value = opponentMode === "local" ? "local" : "computer";
     $("advanced-provider-mode").value = isComputerMode() ? opponentMode : "computer";
     $("human-color").value = String(humanColor);
@@ -339,13 +339,9 @@
     $("remote-help").hidden = opponentMode !== "remote";
     $("provider-endpoint").value = providerEndpoint;
     $("provider-endpoint").placeholder = opponentMode === "katago" ? "http://127.0.0.1:8765/v1/move" : "https://your-katago-service.example/v1/move";
-    $("opponent-summary").textContent = isComputerMode() ? "練習電腦" : "雙人同機";
-    $("opponent-detail").textContent = opponentMode === "katago" ? `進階 · KataGo · 你執${colorLabel(humanColor)}` : opponentMode === "remote" ? `進階 · 自訂 API · 你執${colorLabel(humanColor)}` : isComputerMode() ? `內建對手 · 你執${colorLabel(humanColor)}` : "兩人輪流操作這台裝置";
-    $("footer-boundary").textContent = size === 19
-      ? "19×19 是標準全盤練習；使用目前支援的劫爭規則與人工死子確認。這裡的勝負、電腦對局與計分只供練習，不會直接當成棋力或正式評量。"
-      : size === 9
-        ? "9×9 提供完整小棋盤對局；目前支援一般劫爭規則，但還沒有涵蓋所有棋規中的重複局面、終局爭議或裁判規則。"
-        : `${size}×${size} 是規則與局部技巧的練習棋盤。雖然可以完成停一手與計分流程，但一盤勝負不會直接當成正式棋力或完整對局能力的證明。`;
+    $("opponent-summary").textContent = isComputerMode() ? displayCopy("opponentComputer", "練習電腦") : displayCopy("opponentLocal", "雙人同機");
+    $("opponent-detail").textContent = opponentMode === "katago" ? displayCopy("opponentKataGo", `進階 · KataGo · 你執${colorLabel(humanColor)}`, { color: displayColor(humanColor) }) : opponentMode === "remote" ? displayCopy("opponentRemote", `進階 · 自訂 API · 你執${colorLabel(humanColor)}`, { color: displayColor(humanColor) }) : isComputerMode() ? displayCopy("opponentBuiltIn", `內建對手 · 你執${colorLabel(humanColor)}`, { color: displayColor(humanColor) }) : displayCopy("opponentLocal", "兩人輪流操作這台裝置");
+    $("footer-boundary").textContent = size === 19 ? displayCopy("boundary19", "19×19 是標準全盤練習；使用目前支援的劫爭規則與人工死子確認。這裡的勝負、電腦對局與計分只供練習，不會直接當成棋力或正式評量。") : size === 9 ? displayCopy("boundary9", "9×9 提供完整小棋盤對局；目前支援一般劫爭規則，但還沒有涵蓋所有棋規中的重複局面、終局爭議或裁判規則。") : displayCopy("boundarySmall", `${size}×${size} 是規則與局部技巧的練習棋盤。雖然可以完成停一手與計分流程，但一盤勝負不會直接當成正式棋力或完整對局能力的證明。`, { size });
     for (const link of document.querySelectorAll("[data-board-size-choice]")) {
       const active = Number(link.dataset.boardSizeChoice) === size;
       link.classList.toggle("active", active);
