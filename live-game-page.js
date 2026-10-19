@@ -223,9 +223,30 @@
   }
   function coordName(x, y) { return `${columns[x]}${game.boardSize - y}`; }
   function colorLabel(color) { return color === BLACK ? "黑" : "白"; }
+  function visibleResult() {
+    if (!englishDisplay) return Live.resultText(game);
+    const result = game && game.result;
+    if (!result) return displayCopy("resultUnknown", "");
+    if (result.type === "imported") return displayCopy("importedResult", "", { code: result.resultCode || "unknown" });
+    if (result.type === "resign") return displayCopy("resultResign", "", { color: displayColor(result.winner) });
+    if (result.winner === null) return displayCopy("resultTie", "");
+    if (result.type === "score" && typeof result.difference === "number")
+      return displayCopy("resultScore", "", { color: displayColor(result.winner), points: result.difference });
+    return displayCopy("resultUnknown", "");
+  }
   function lastPlayedMove() { return [...game.moves].reverse().find((move) => move.type === "play") || null; }
   function pointAria(x, y) {
     const stone = game.board[y][x], state = stone === BLACK ? "黑棋" : stone === WHITE ? "白棋" : "空點";
+    if (englishDisplay) {
+      const coord = coordName(x, y);
+      if (game.status === "scoring") {
+        if (stone === EMPTY) return displayCopy("pointScoringEmpty", "", { coord });
+        const dead = (game.deadStones || []).includes(x + "," + y);
+        return displayCopy(dead ? "pointScoringDead" : "scoringPoint", "", { coord, color: displayColor(stone) });
+      }
+      if (stone === EMPTY) return displayCopy("emptyPoint", "", { coord });
+      return displayCopy(game.status === "playing" ? "pointPlayingOccupied" : "stonePoint", "", { coord, color: displayColor(stone) });
+    }
     if (game.status === "playing") return `${coordName(x, y)}，${state}${stone === EMPTY ? "，可落子" : ""}`;
     if (game.status === "scoring") return `${coordName(x, y)}，${state}${stone === EMPTY ? "" : "，可切換死子標記"}`;
     return `${coordName(x, y)}，${state}`;
@@ -245,7 +266,7 @@
     const { offset, end, pitch, stoneRadius, hitRadius, focusRadius, starRadius, lastMoveRadius, lastMoveStroke, focusStroke, deadCrossStroke } = layout;
     const coordinateBand = Math.max(18, offset * 0.5);
     const dead = new Set(game.deadStones || []), last = lastPlayedMove();
-    const parts = [`<svg viewBox="0 0 ${layout.viewBoxSize} ${layout.viewBoxSize}" role="group" aria-label="${size} 路棋盤；${game.status === "playing" ? `輪到${colorLabel(game.toPlay)}棋` : game.status === "scoring" ? "終局死子確認" : "棋局已結束"}">`];
+    const parts = [`<svg viewBox="0 0 ${layout.viewBoxSize} ${layout.viewBoxSize}" role="group" aria-label="${englishDisplay ? displayCopy(game.status === "playing" ? "boardPlaying" : game.status === "scoring" ? "boardScoring" : "boardFinished", "", { size, color: displayColor(game.toPlay) }) : `${size} 路棋盤；${game.status === "playing" ? `輪到${colorLabel(game.toPlay)}棋` : game.status === "scoring" ? "終局死子確認" : "棋局已結束"}`}">`];
     for (let i = 0; i < size; i += 1) {
       const p = offset + i * pitch;
       parts.push(`<line class="grid-line" x1="${offset}" y1="${p}" x2="${end}" y2="${p}"/>`);
@@ -269,16 +290,31 @@
     }
     parts.push("</svg>");
     $("live-board").innerHTML = parts.join("");
-    $("live-board").setAttribute("aria-label", `${size} 路${size >= 9 ? "實戰" : "微型練習"}棋盤`);
+    $("live-board").setAttribute("aria-label", displayCopy("boardLabel", `${size} 路${size >= 9 ? "實戰" : "微型練習"}棋盤`, { size, kind: englishDisplay ? displayCopy(size >= 9 ? "boardKindFull" : "boardKindSmall", "") : "" }));
     $("live-board").setAttribute("aria-disabled", game.status === "finished" ? "true" : "false");
   }
   function scoreLineHtml(score) {
     if (!score) return "";
+    if (englishDisplay) {
+      const black = displayCopy("scoreBlack", "", { stones: score.blackStones, territory: score.blackTerritory, total: score.blackTotal });
+      const white = displayCopy("scoreWhite", "", { stones: score.whiteStones, territory: score.whiteTerritory, komi: score.komi, total: score.whiteTotal });
+      const neutral = displayCopy("scoreNeutral", "", { count: score.neutral });
+      const lead = score.winner === null ? displayCopy("scoreTie", "") : displayCopy("scoreLead", "", { color: displayColor(score.winner), points: score.difference });
+      return [black, white, neutral, lead].map((line) => "<div>" + line + "</div>").join("");
+    }
     const winner = score.winner === null ? "目前同分" : `目前${colorLabel(score.winner)}領先 ${score.difference} 目`;
     const komiText = score.komi ? ` ＋ 貼目 ${score.komi}` : "";
     return `<div><strong>黑</strong>：棋子 ${score.blackStones} ＋ 地 ${score.blackTerritory} ＝ ${score.blackTotal}</div><div><strong>白</strong>：棋子 ${score.whiteStones} ＋ 地 ${score.whiteTerritory}${komiText} ＝ ${score.whiteTotal}</div><div><strong>中立空點</strong>：${score.neutral}</div><div><strong>${winner}</strong></div>`;
   }
   function moveLabel(move) {
+    if (englishDisplay) {
+      const values = { number: move.number, color: displayColor(move.color) };
+      if (move.type === "pass") return displayCopy("movePass", "", values);
+      if (move.type !== "play" || !Array.isArray(move.point)) return displayCopy("moveUnknown", "", values);
+      values.coord = coordName(move.point[0], move.point[1]);
+      if (move.captured && move.captured.length) return displayCopy("moveCaptured", "", { ...values, count: move.captured.length, unit: displayCopy(move.captured.length === 1 ? "moveCapturedOne" : "moveCapturedMany", "") });
+      return displayCopy("movePlay", "", values);
+    }
     const prefix = `${move.number}. ${colorLabel(move.color)}`;
     return move.type === "pass" ? `${prefix} 停一手` : `${prefix} ${coordName(move.point[0], move.point[1])}${move.captured && move.captured.length ? ` · 提 ${move.captured.length}` : ""}`;
   }
@@ -321,17 +357,17 @@
     renderBoard();
     $("move-count").textContent = String(game.moves.length);
     $("capture-count").textContent = `黑 ${game.captures.black} · 白 ${game.captures.white}`;
-    $("turn-status").textContent = game.status === "playing" ? (isComputerTurn() ? `電腦（${colorLabel(game.toPlay)}）思考中` : `${colorLabel(game.toPlay)}棋落子`) : game.status === "scoring" ? "終局確認" : Live.resultText(game);
+    $("turn-status").textContent = game.status === "playing" ? (isComputerTurn() ? `電腦（${colorLabel(game.toPlay)}）思考中` : `${colorLabel(game.toPlay)}棋落子`) : game.status === "scoring" ? displayCopy("turnScoring", "終局確認") : visibleResult();
     const playerLocked = botPending || isComputerTurn();
     $("live-board").classList.toggle("computer-turn", playerLocked);
     $("pass-button").disabled = game.status !== "playing" || playerLocked; $("resign-button").disabled = game.status !== "playing" || playerLocked;
     $("undo-button").disabled = game.status === "finished" || !game.moves.length;
     $("scoring-panel").hidden = game.status !== "scoring"; $("result-panel").hidden = game.status !== "finished";
     $("score-lines").innerHTML = game.status === "scoring" ? scoreLineHtml(Live.currentScore(game)) : "";
-    $("result-text").textContent = game.status === "finished" ? Live.resultText(game) : "";
+    $("result-text").textContent = game.status === "finished" ? visibleResult() : "";
     $("board-help").textContent = game.status === "playing" ? (isComputerTurn() ? "電腦正在選擇合法練習手；完成後會自動輪到你。" : `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／空白鍵落子。`) : game.status === "scoring" ? "雙方連續各停一手後進入終局確認。點棋串切換死子標記；系統不自動判死活。" : game.boardSize === 9 ? "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。" : game.boardSize === 19 ? "棋局已結束。可匯出 SGF 交給 KaTrain／其他棋譜工具複盤；本站課程端的單點重建目前仍只支援 9×9。" : "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。";
     const recentMoves = game.moves.slice(-30);
-    $("move-log").innerHTML = recentMoves.length ? recentMoves.map((move) => `<li class="${move.type === "pass" ? "pass" : ""}">${moveLabel(move)}</li>`).join("") : "<li>尚未落子。</li>";
+    $("move-log").innerHTML = recentMoves.length ? recentMoves.map((move) => `<li class="${move.type === "pass" ? "pass" : ""}">${moveLabel(move)}</li>`).join("") : `<li>${displayCopy("noMoves", "尚未落子。")}</li>`;
   }
   async function requestComputerAction() {
     if (opponentMode === "computer") {
