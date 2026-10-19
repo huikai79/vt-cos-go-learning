@@ -203,7 +203,7 @@
       if (["local", "computer", "katago", "remote"].includes(payload.opponentMode)) opponentMode = payload.opponentMode;
       if (typeof payload.providerEndpoint === "string" && payload.providerEndpoint) providerEndpoint = payload.providerEndpoint;
       if ([BLACK, WHITE].includes(Number(payload.humanColor))) humanColor = Number(payload.humanColor);
-      loadNotice = game.status === "playing" ? `已從這台電腦續接上次未完成的 ${game.boardSize}×${game.boardSize} 棋局。` : `已載入這台電腦保存的 ${game.boardSize}×${game.boardSize} 棋局。`;
+      loadNotice = game.status === "playing" ? displayCopy("loadedResumed", `已從這台電腦續接上次未完成的 ${game.boardSize}×${game.boardSize} 棋局。`, { size: game.boardSize }) : displayCopy("loadedFinished", `已載入這台電腦保存的 ${game.boardSize}×${game.boardSize} 棋局。`, { size: game.boardSize });
       event("session_loaded", { status: game.status });
     } catch (error) {
       preserveBrokenSave(raw, error && error.message || "unknown_error");
@@ -391,17 +391,17 @@
           if (!result.ok) throw new Error("provider_illegal_move:" + (result.error || "unknown"));
           game = result.game; closeAssessmentAfterTurn();
           event("computer_move", { actor: "computer", color, point: action.point.slice(), captured: result.captured.length, botVersion: providerVersion, selectionReason: opponentMode, model: action.model || null });
-          showFeedback(`${opponentMode === "katago" ? "KataGo" : opponentMode === "remote" ? "API 對手" : "電腦"}${colorLabel(color)}棋下在 ${coordName(action.point[0], action.point[1])}。`, "success");
+          showFeedback(displayCopy("computerPlayed", `${opponentMode === "katago" ? "KataGo" : opponentMode === "remote" ? "API 對手" : "電腦"}${colorLabel(color)}棋下在 ${coordName(action.point[0], action.point[1])}。`, { opponent: displayCopy(opponentMode === "katago" ? "providerNameKataGo" : opponentMode === "remote" ? "providerNameRemote" : "providerNameBuiltIn", ""), color: displayColor(color), coord: coordName(action.point[0], action.point[1]) }), "success");
         } else if (action.type === "pass") {
           const result = Live.pass(game); if (!result.ok) throw new Error(result.error || "provider_pass_failed");
           game = result.game; closeAssessmentAfterTurn();
           event("computer_pass", { actor: "computer", color, botVersion: providerVersion, selectionReason: opponentMode, model: action.model || null });
-          showFeedback(result.game.status === "scoring" ? "對手停一手；雙方已連續停一手，請確認終局。" : "對手停一手。", "success");
+          showFeedback(result.game.status === "scoring" ? displayCopy("computerPassedScoring", "對手停一手；雙方已連續停一手，請確認終局。") : displayCopy("computerPassed", "對手停一手。"), "success");
         } else if (action.type === "resign") {
           const result = Live.resign(game); if (!result.ok) throw new Error(result.error || "provider_resign_failed");
           game = result.game; closeAssessmentAfterTurn();
           event("computer_resign", { actor: "computer", loser: color, botVersion: providerVersion, selectionReason: opponentMode, model: action.model || null });
-          showFeedback("對手認輸，棋局結束。", "success");
+          showFeedback(displayCopy("computerResigned", "對手認輸，棋局結束。"), "success");
         } else throw new Error("provider_action_invalid");
         save(); ensureLiveAssessment();
       } catch (error) {
@@ -435,9 +435,9 @@
     showFeedback(displayCopy("eventFailure", "棋局可以繼續，但這次的實戰學習紀錄沒有成功保存。本次不會顯示成已更新進度。"), "error");
     liveEvidenceFailure = "";
   } else if (practiceEventFailure) {
-      showFeedback(`${details.successMessage || "操作完成。"} 但這次的練習紀錄沒有成功保存；本次不會顯示成已更新學習紀錄。`, "error");
+      showFeedback(displayCopy("practiceEventNotSaved", `${details.successMessage || "操作完成。"} 但這次的練習紀錄沒有成功保存；本次不會顯示成已更新學習紀錄。`), "error");
       practiceEventFailure = "";
-    } else if (saved) showFeedback(details.successMessage || "已保存。", details.tone || "success");
+    } else if (saved) showFeedback(details.successMessage || displayCopy("operationSaved", "已保存。"), details.tone || "success");
     return true;
   }
   function actAt(x, y, refocus = false) {
@@ -452,7 +452,7 @@
       }
       const color = game.toPlay, result = Live.play(game, x, y);
       recordLiveResponse({ action: "play", point: [x, y], legal: result.ok === true, reason: result.ok ? null : result.error || "illegal_move" });
-      if (applyResult(result, "move", { actor: isComputerMode() ? "human" : "local_player", color, point: [x, y], captured: result.ok ? result.captured.length : 0, successMessage: `${colorLabel(color)}棋下在 ${coordName(x, y)}。` })) {
+      if (applyResult(result, "move", { actor: isComputerMode() ? "human" : "local_player", color, point: [x, y], captured: result.ok ? result.captured.length : 0, successMessage: displayCopy("humanPlayed", `${colorLabel(color)}棋下在 ${coordName(x, y)}。`, { color: displayColor(color), coord: coordName(x, y) }) })) {
         closeAssessmentAfterTurn();
         if (refocus) setTimeout(focusCursor, 0);
         scheduleComputerTurn();
@@ -462,7 +462,7 @@
     if (game.status === "scoring") {
       if (game.board[y][x] === EMPTY) { showFeedback(displayCopy("invalidDeadGroup", "請點選要標記的棋串；空點不需要標記。"), "error"); return; }
       const result = Live.toggleDeadGroup(game, x, y);
-      if (applyResult(result, "dead_group_toggle", { point: [x, y], markedDead: result.markedDead, successMessage: result.markedDead ? "已標記這串為死子；請核對預覽分數。" : "已取消這串死子標記。" }) && refocus) setTimeout(focusCursor, 0);
+      if (applyResult(result, "dead_group_toggle", { point: [x, y], markedDead: result.markedDead, successMessage: result.markedDead ? displayCopy("deadMarked", "已標記這串為死子；請核對預覽分數。") : displayCopy("deadUnmarked", "已取消這串死子標記。") }) && refocus) setTimeout(focusCursor, 0);
       return;
     }
     showFeedback(displayCopy("finishedBlocked", "棋局已結束；請開始新局或匯出 SGF。"), "error");
@@ -526,11 +526,11 @@
     ensureLiveAssessment();
     const loser = game.toPlay, result = Live.resign(game);
     recordLiveResponse({ action: "resign", point: null, legal: result.ok === true, reason: result.ok ? null : result.error || "resign_failed" });
-    if (applyResult(result, "resign", { actor: isComputerMode() ? "human" : "local_player", loser, successMessage: `${colorLabel(loser)}棋認輸，棋局結束。` })) closeAssessmentAfterTurn();
+    if (applyResult(result, "resign", { actor: isComputerMode() ? "human" : "local_player", loser, successMessage: displayCopy("humanResigned", `${colorLabel(loser)}棋認輸，棋局結束。`, { color: displayColor(loser) }) })) closeAssessmentAfterTurn();
   });
   $("resume-play-button").addEventListener("click", () => {
     const result = Live.resumeFromScoring(game);
-    if (applyResult(result, "resume_after_scoring_dispute", { successMessage: result.ok ? `恢復下棋，輪到${colorLabel(result.game.toPlay)}棋。` : "" })) scheduleComputerTurn();
+    if (applyResult(result, "resume_after_scoring_dispute", { successMessage: result.ok ? displayCopy("resume", `恢復下棋，輪到${colorLabel(result.game.toPlay)}棋。`, { color: displayColor(result.game.toPlay) }) : "" })) scheduleComputerTurn();
   });
   $("confirm-score-button").addEventListener("click", () => {
     const preview = Live.currentScore(game);
@@ -580,11 +580,11 @@
   });
   $("provider-endpoint").addEventListener("change", (event) => {
     providerEndpoint = String(event.target.value || "").trim(); saveOpponentSettings(); save();
-    showFeedback("對手服務的 API 位址已保存；下一個電腦回合會使用這個連線位址。", "success");
+    showFeedback(displayCopy("providerEndpointSelected", "對手服務的 API 位址已保存；下一個電腦回合會使用這個連線位址。"), "success");
   });
   $("human-color").addEventListener("change", (event) => {
     const nextColor = Number(event.target.value) === WHITE ? WHITE : BLACK;
-    if (game.moves.length && !confirm("更換執棋顏色需要開始同尺寸新局。若要保留這盤，請先匯出 SGF。確定更換？")) { event.target.value = String(humanColor); return; }
+    if (game.moves.length && !confirm(displayCopy("changeColorConfirm", "更換執棋顏色需要開始同尺寸新局。若要保留這盤，請先匯出 SGF。確定更換？"))) { event.target.value = String(humanColor); return; }
     humanColor = nextColor;
     opponentMode = "computer";
     startNewGame("human_color_changed");
@@ -592,8 +592,8 @@
   $("export-sgf-button").addEventListener("click", () => {
     try {
       download(Live.toSgf(game), timestampFilename()); event("sgf_export", { status: game.status }); save();
-      showFeedback(game.boardSize === 9 ? "SGF 已建立；可用 KaTrain／其他棋譜工具開啟，也可回課程匯入做局部複盤。" : game.boardSize === 19 ? "19×19 SGF 已建立；可用 KaTrain／其他棋譜工具開啟。本站課程端單點重建目前仍只支援 9×9。" : "SGF 已建立；可用相容棋譜工具保存或檢視。", "success");
-    } catch (error) { showFeedback(error.message, "error"); }
+      showFeedback(game.boardSize === 9 ? displayCopy("sgfExport9", "SGF 已建立；可用 KaTrain／其他棋譜工具開啟，也可回課程匯入做局部複盤。") : game.boardSize === 19 ? displayCopy("sgfExport19", "19×19 SGF 已建立；可用 KaTrain／其他棋譜工具開啟。本站課程端單點重建目前仍只支援 9×9。") : displayCopy("sgfExportSmall", "SGF 已建立；可用相容棋譜工具保存或檢視。"), "success");
+    } catch (error) { showFeedback(displayCopy("sgfExportFailed", error && error.message || "無法建立 SGF。"), "error"); }
   });
   $("import-sgf-input").addEventListener("change", (e) => {
     const file = e.target.files && e.target.files[0]; if (!file) return;
@@ -607,7 +607,7 @@
         game = imported; auditEvents = []; closeAssessmentAfterTurn();
         event("sgf_import", { sourceName: file.name, importedStatus: game.status }); cursor = centerCursor(game.boardSize);
         const savedImport = save(); render(); ensureLiveAssessment(); if (savedImport) showFeedback(displayCopy("sgfImport", `已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, { filename: file.name }), "success"); scheduleComputerTurn();
-      } catch (error) { showFeedback(error.message, "error"); }
+      } catch (error) { showFeedback(englishDisplay ? displayCopy("sgfImportFailed", "") : error.message, "error"); }
       e.target.value = "";
     };
     reader.onerror = () => { showFeedback(displayCopy("sgfReadFailure", "無法讀取這個 SGF 檔案。"), "error"); e.target.value = ""; };
@@ -616,8 +616,8 @@
 
   loadOpponentSettings(); load(); save(); render(); ensureLiveAssessment(); scheduleComputerTurn();
   if (practiceEventFailure) {
-    showFeedback(`棋局可以繼續，但這次的練習紀錄沒有成功保存（${practiceEventFailure}）。本次不會顯示成已更新學習紀錄。`, "error");
+    showFeedback(displayCopy("startupEvidenceFailure", `棋局可以繼續，但這次的練習紀錄沒有成功保存（${practiceEventFailure}）。本次不會顯示成已更新學習紀錄。`), "error");
     practiceEventFailure = "";
-  } else if (retiredThreeByThreeRequested) showFeedback("3×3 已退出學習者練習階段；已改開 5×5 基礎練習棋盤。舊 3×3 紀錄仍保留，不會被覆寫。", "success");
+  } else if (retiredThreeByThreeRequested) showFeedback(displayCopy("retiredThree", "3×3 已退出學習者練習階段；已改開 5×5 基礎練習棋盤。舊 3×3 紀錄仍保留，不會被覆寫。"), "success");
   else if (loadNotice) showFeedback(loadNotice, loadNotice.includes("損壞") || loadNotice.includes("無法") ? "error" : "success");
 })();
