@@ -127,7 +127,7 @@ async function command(socket, method, params = {}) {
       clearTimeout(timeout);
       socket.removeEventListener("message", onMessage);
       if (message.error) reject(new Error(message.error.message));
-      else if (message.result.exceptionDetails) reject(new Error(message.result.exceptionDetails.text));
+      else if (message.result.exceptionDetails) reject(new Error(message.result.exceptionDetails.exception?.description || message.result.exceptionDetails.text));
       else resolve(message.result);
     }
     socket.addEventListener("message", onMessage);
