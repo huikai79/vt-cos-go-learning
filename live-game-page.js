@@ -48,7 +48,7 @@
     };
     return displayCopy(known[reason] || "unknownMove", "", { coord: "" });
   }
-  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", opponentMode = "computer", humanColor = BLACK, providerEndpoint = "http://127.0.0.1:8765/v1/move", botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "", liveEvidenceFailure = "", activeAssessment = null, activeAssessmentResponseCount = 0;
+  let game, auditEvents = [], cursor = centerCursor(requestedSize), loadNotice = "", loadNoticeTone = "success", opponentMode = "computer", humanColor = BLACK, providerEndpoint = "http://127.0.0.1:8765/v1/move", botPending = false, practiceSessionId = newPracticeSessionId(), practiceEventFailure = "", liveEvidenceFailure = "", activeAssessment = null, activeAssessmentResponseCount = 0;
 
   function newPracticeSessionId() { return `live-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`; }
   function centerCursor(size) { const middle = Math.floor(size / 2); return [middle, middle]; }
@@ -185,8 +185,10 @@
   function preserveBrokenSave(raw, reason) {
     try {
       localStorage.setItem(RECOVERY_KEY, JSON.stringify({ schemaVersion: 1, preservedAt: new Date().toISOString(), sourceKey: STORAGE_KEY, reason, rawValue: raw }));
+      loadNoticeTone = "error";
       loadNotice = displayCopy("recoveryCopy", "偵測到無法安全續載的棋局；原始內容已保存在本機 recovery 副本，這裡先開啟新局。");
     } catch (_) {
+      loadNoticeTone = "error";
       loadNotice = displayCopy("recoveryFailed", "偵測到損壞的棋局資料，而且無法建立 recovery 副本；本頁先以新局開啟。");
     }
   }
@@ -579,8 +581,9 @@
     }
   });
   $("provider-endpoint").addEventListener("change", (event) => {
-    providerEndpoint = String(event.target.value || "").trim(); saveOpponentSettings(); save();
-    showFeedback(displayCopy("providerEndpointSelected", "對手服務的 API 位址已保存；下一個電腦回合會使用這個連線位址。"), "success");
+    providerEndpoint = String(event.target.value || "").trim(); saveOpponentSettings();
+    const endpointSaved = save();
+    if (endpointSaved) showFeedback(displayCopy("providerEndpointSelected", "對手服務的 API 位址已保存；下一個電腦回合會使用這個連線位址。"), "success");
   });
   $("human-color").addEventListener("change", (event) => {
     const nextColor = Number(event.target.value) === WHITE ? WHITE : BLACK;
@@ -603,11 +606,11 @@
     reader.onload = () => {
       try {
         const imported = Live.fromSgf(String(reader.result || ""));
-        if (imported.boardSize !== requestedSize) throw new Error(displayCopy("sgfWrongSize", `這是 ${imported.boardSize}×${imported.boardSize} 棋譜；請先切換到相同尺寸的練習棋盤再匯入。`, { size: imported.boardSize }));
+        if (imported.boardSize !== requestedSize) throw Object.assign(new Error(displayCopy("sgfWrongSize", `這是 ${imported.boardSize}×${imported.boardSize} 棋譜；請先切換到相同尺寸的練習棋盤再匯入。`, { size: imported.boardSize })), { userFacingMismatch: true });
         game = imported; auditEvents = []; closeAssessmentAfterTurn();
         event("sgf_import", { sourceName: file.name, importedStatus: game.status }); cursor = centerCursor(game.boardSize);
         const savedImport = save(); render(); ensureLiveAssessment(); if (savedImport) showFeedback(displayCopy("sgfImport", `已匯入 ${file.name}${game.status === "playing" ? "，可繼續下棋" : ""}。`, { filename: file.name }), "success"); scheduleComputerTurn();
-      } catch (error) { showFeedback(englishDisplay ? displayCopy("sgfImportFailed", "") : error.message, "error"); }
+      } catch (error) { showFeedback(englishDisplay && !error.userFacingMismatch ? displayCopy("sgfImportFailed", "") : error.message, "error"); }
       e.target.value = "";
     };
     reader.onerror = () => { showFeedback(displayCopy("sgfReadFailure", "無法讀取這個 SGF 檔案。"), "error"); e.target.value = ""; };
@@ -619,5 +622,5 @@
     showFeedback(displayCopy("startupEvidenceFailure", `棋局可以繼續，但這次的練習紀錄沒有成功保存（${practiceEventFailure}）。本次不會顯示成已更新學習紀錄。`), "error");
     practiceEventFailure = "";
   } else if (retiredThreeByThreeRequested) showFeedback(displayCopy("retiredThree", "3×3 已退出學習者練習階段；已改開 5×5 基礎練習棋盤。舊 3×3 紀錄仍保留，不會被覆寫。"), "success");
-  else if (loadNotice) showFeedback(loadNotice, loadNotice.includes("損壞") || loadNotice.includes("無法") ? "error" : "success");
+  else if (loadNotice) showFeedback(loadNotice, loadNoticeTone);
 })();
