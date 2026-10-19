@@ -53,3 +53,27 @@ test("Live Game runtime uses site-rendered locale, not requested draft language"
     assert.ok(Object.hasOwn(candidate.messages, key));
   }
 });
+
+test("Live Game visible feedback branches have bounded English display mappings", () => {
+  const source = fs.readFileSync(path.join(__dirname, "../live-game-page.js"), "utf8");
+  const keys = [...source.matchAll(/displayCopy\("([a-zA-Z][a-zA-Z0-9]*)"/g)].map(m => m[1]);
+  for (const key of keys) assert.ok(Object.hasOwn(candidate.messages, key), "Missing English key: " + key);
+  for (const size of [5, 7, 9, 19]) {
+    for (const suffix of ["Title", "Heading", "Description", "Purpose"])
+      assert.ok(Object.hasOwn(candidate.messages, "profile" + size + suffix));
+  }
+  for (const snippet of [
+    'displayCopy("computerPlayed"', 'displayCopy("computerPassedScoring"',
+    'displayCopy("computerResigned"', 'displayCopy("humanPlayed"',
+    'displayCopy("deadMarked"', 'displayCopy("humanResigned"',
+    'displayCopy("sgfExportFailed"', 'displayCopy("sgfImportFailed"',
+    'displayCopy("startupEvidenceFailure"', 'displayCopy("practiceEventNotSaved"'
+  ]) assert.ok(source.includes(snippet), "Unmapped learner-facing branch: " + snippet);
+  const view = candidate.createView({ preview: true });
+  assert.match(view.text("loadedResumed", {size: 9}), /9×9/);
+  assert.match(view.text("computerPlayed", {opponent: "KataGo", color: "White", coord: "D4"}), /KataGo/);
+  assert.match(view.text("humanPlayed", {color: "Black", coord: "D4"}), /Black/);
+  assert.match(view.text("practiceEventNotSaved"), /not saved/);
+  assert.match(view.text("sgfImportFailed"), /could not be imported/);
+  assert.match(view.text("sgfExportFailed"), /could not be prepared/);
+});
