@@ -2965,6 +2965,86 @@ async function main() {
     }
     await command(socket,"Emulation.setDeviceMetricsOverride",{width:1280,height:900,deviceScaleFactor:1,mobile:false});
 
+    // Live Game real-browser negative/normal flow: source locale stays Chinese
+    // even for requested ?lang=en; no draft string may enter runtime.
+    await command(socket, "Page.navigate", { url: livePage + "&lang=en" });
+    let liveReady = false;
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      liveReady = await evaluate(socket, "Boolean(document.querySelector('#live-board svg') && document.querySelector('#site-locale-status'))");
+      if (liveReady) break;
+      await delay(100);
+    }
+    assert.equal(liveReady, true, "Live Game did not load with blocked English request");
+    const initialLive = await evaluate(socket, `(() => ({
+      board: document.querySelector('#live-board').getAttribute('aria-label'),
+      point: document.querySelector('#live-board .live-point').getAttribute('aria-label'),
+      rendered: window.GoSiteLanguage.stateFor(location.href).rendered,
+      localeAvailable: document.querySelector('#site-locale-status').textContent,
+      moveCount: document.querySelector('#move-count').textContent
+    }))()`);
+    assert.equal(initialLive.rendered, "zh-Hant-TW");
+    assert.match(initialLive.board, /9 路/);
+    assert.match(initialLive.localeAvailable, /尚未提供完整版本/);
+    assert.equal(initialLive.moveCount, "0");
+
+    const liveFlow = await evaluate(socket, `(() => {
+      const mode = document.querySelector('#opponent-mode');
+      mode.value = 'local'; mode.dispatchEvent(new Event('change', {bubbles:true}));
+      const first = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]');
+      first.click();
+      const legalMoves = document.querySelector('#move-count').textContent;
+      const pointAfterMove = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').getAttribute('aria-label');
+      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').click();
+      const illegalMessage = document.querySelector('#live-feedback').textContent;
+      const afterIllegal = document.querySelector('#move-count').textContent;
+      document.querySelector('#pass-button').click();
+      document.querySelector('#pass-button').click();
+      const scoring = !document.querySelector('#scoring-panel').hidden;
+      const score = document.querySelector('#score-lines').textContent;
+      const boardScoring = document.querySelector('#live-board svg').getAttribute('aria-label');
+      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').click();
+      const markedPoint = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').getAttribute('aria-label');
+      window.confirm = () => true;
+      document.querySelector('#confirm-score-button').click();
+      return {legalMoves, pointAfterMove, illegalMessage, afterIllegal, scoring, score,
+        boardScoring, markedPoint, result:document.querySelector('#result-text').textContent,
+        finished:!document.querySelector('#result-panel').hidden,
+        boardFinished:document.querySelector('#live-board svg').getAttribute('aria-label')};
+    })()`);
+    assert.equal(liveFlow.legalMoves, "1");
+    assert.equal(liveFlow.afterIllegal, "1", "occupied move altered the game");
+    assert.match(liveFlow.pointAfterMove, /黑棋/);
+    assert.match(liveFlow.illegalMessage, /已有棋子/);
+    assert.equal(liveFlow.scoring, true);
+    assert.match(liveFlow.score, /棋子/);
+    assert.match(liveFlow.boardScoring, /終局死子確認/);
+    assert.match(liveFlow.markedPoint, /可切換死子標記/);
+    assert.equal(liveFlow.finished, true);
+    assert.ok(liveFlow.result.length > 0);
+    assert.match(liveFlow.boardFinished, /棋局已結束/);
+
+    // An unavailable provider must not produce a move or a success event.
+    const providerProbe = await evaluate(socket, `(async () => {
+      document.querySelector('#new-game-button').click();
+      const mode = document.querySelector('#advanced-provider-mode');
+      mode.value = 'remote'; mode.dispatchEvent(new Event('change', {bubbles:true}));
+      const endpoint = document.querySelector('#provider-endpoint');
+      endpoint.value = 'https://127.0.0.1:1/unavailable';
+      endpoint.dispatchEvent(new Event('change', {bubbles:true}));
+      document.querySelector('#test-provider-button').click();
+      for(let i=0;i<100;i++) {
+        if(document.querySelector('#provider-status').classList.contains('error')) break;
+        await new Promise(resolve=>setTimeout(resolve,100));
+      }
+      return {status:document.querySelector('#provider-status').textContent,
+        error:document.querySelector('#provider-status').classList.contains('error'),
+        count:document.querySelector('#move-count').textContent};
+    })()`);
+    assert.equal(providerProbe.error, true, "failed provider test was presented as success");
+    assert.match(providerProbe.status, /連線失敗/);
+    assert.equal(providerProbe.count, "0");
+    process.stdout.write("PASS: Live Game browser ARIA, score, history, finished result, blocked locale and provider error\\n");
+
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
     for (let retry = 0; retry < 30; retry += 1) {
