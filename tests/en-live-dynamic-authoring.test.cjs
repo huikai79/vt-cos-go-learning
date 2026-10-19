@@ -77,3 +77,14 @@ test("Live Game visible feedback branches have bounded English display mappings"
   assert.match(view.text("sgfImportFailed"), /could not be imported/);
   assert.match(view.text("sgfExportFailed"), /could not be prepared/);
 });
+
+test("Recovery and persistence outcomes do not depend on Chinese wording or pretend success", () => {
+ const page = fs.readFileSync(path.join(__dirname, "../live-game-page.js"), "utf8");
+ assert.match(page, /loadNoticeTone = "error";/);
+ assert.match(page, /showFeedback\(loadNotice, loadNoticeTone\)/);
+ assert.doesNotMatch(page, /loadNotice\.includes\("損壞"\)/);
+ assert.match(page, /const endpointSaved = save\(\);/);
+ assert.match(page, /if \(endpointSaved\) showFeedback/);
+ assert.match(page, /userFacingMismatch: true/);
+ assert.match(page, /englishDisplay && !error\.userFacingMismatch/);
+});
