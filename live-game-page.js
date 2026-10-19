@@ -356,8 +356,8 @@
     renderChrome();
     renderBoard();
     $("move-count").textContent = String(game.moves.length);
-    $("capture-count").textContent = `黑 ${game.captures.black} · 白 ${game.captures.white}`;
-    $("turn-status").textContent = game.status === "playing" ? (isComputerTurn() ? `電腦（${colorLabel(game.toPlay)}）思考中` : `${colorLabel(game.toPlay)}棋落子`) : game.status === "scoring" ? displayCopy("turnScoring", "終局確認") : visibleResult();
+    $("capture-count").textContent = displayCopy("captureCounts", `黑 ${game.captures.black} · 白 ${game.captures.white}`, { black: game.captures.black, white: game.captures.white });
+    $("turn-status").textContent = game.status === "playing" ? (isComputerTurn() ? displayCopy("turnComputer", `電腦（${colorLabel(game.toPlay)}）思考中`, { color: displayColor(game.toPlay) }) : displayCopy("turnHuman", `${colorLabel(game.toPlay)}棋落子`, { color: displayColor(game.toPlay) })) : game.status === "scoring" ? displayCopy("turnScoring", "終局確認") : visibleResult();
     const playerLocked = botPending || isComputerTurn();
     $("live-board").classList.toggle("computer-turn", playerLocked);
     $("pass-button").disabled = game.status !== "playing" || playerLocked; $("resign-button").disabled = game.status !== "playing" || playerLocked;
@@ -365,7 +365,12 @@
     $("scoring-panel").hidden = game.status !== "scoring"; $("result-panel").hidden = game.status !== "finished";
     $("score-lines").innerHTML = game.status === "scoring" ? scoreLineHtml(Live.currentScore(game)) : "";
     $("result-text").textContent = game.status === "finished" ? visibleResult() : "";
-    $("board-help").textContent = game.status === "playing" ? (isComputerTurn() ? "電腦正在選擇合法練習手；完成後會自動輪到你。" : `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／空白鍵落子。`) : game.status === "scoring" ? "雙方連續各停一手後進入終局確認。點棋串切換死子標記；系統不自動判死活。" : game.boardSize === 9 ? "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。" : game.boardSize === 19 ? "棋局已結束。可匯出 SGF 交給 KaTrain／其他棋譜工具複盤；本站課程端的單點重建目前仍只支援 9×9。" : "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。";
+    $("board-help").textContent = game.status === "playing"
+      ? (isComputerTurn() ? displayCopy("helpComputer", "電腦正在選擇合法練習手；完成後會自動輪到你。") : displayCopy("humanTurn", `輪到${colorLabel(game.toPlay)}棋。點空點落子；方向鍵移動，Enter／空白鍵落子。`, { color: displayColor(game.toPlay) }))
+      : game.status === "scoring" ? displayCopy("helpScoring", "雙方連續各停一手後進入終局確認。點棋串切換死子標記；系統不自動判死活。")
+      : game.boardSize === 9 ? displayCopy("helpFinished9", "棋局已結束。可匯出 SGF 回課程做局部複盤，或開始新局。")
+      : game.boardSize === 19 ? displayCopy("helpFinished19", "棋局已結束。可匯出 SGF 交給 KaTrain／其他棋譜工具複盤；本站課程端的單點重建目前仍只支援 9×9。")
+      : displayCopy("helpFinishedSmall", "棋局已結束。可匯出 SGF 保存，或開始同尺寸新局。");
     const recentMoves = game.moves.slice(-30);
     $("move-log").innerHTML = recentMoves.length ? recentMoves.map((move) => `<li class="${move.type === "pass" ? "pass" : ""}">${moveLabel(move)}</li>`).join("") : `<li>${displayCopy("noMoves", "尚未落子。")}</li>`;
   }
@@ -504,7 +509,7 @@
     ensureLiveAssessment();
     const color = game.toPlay, result = Live.pass(game);
     recordLiveResponse({ action: "pass", point: null, legal: result.ok === true, reason: result.ok ? null : result.error || "pass_failed" });
-    if (applyResult(result, "pass", { actor: isComputerMode() ? "human" : "local_player", color, successMessage: result.ok && result.game.status === "scoring" ? "雙方連續 Pass，請確認死子與終局分數。" : `${colorLabel(color)}棋停一手。` })) { closeAssessmentAfterTurn(); scheduleComputerTurn(); }
+    if (applyResult(result, "pass", { actor: isComputerMode() ? "human" : "local_player", color, successMessage: result.ok && result.game.status === "scoring" ? displayCopy("bothPass", "雙方連續 Pass，請確認死子與終局分數。") : displayCopy("humanPassed", `${colorLabel(color)}棋停一手。`, { color: displayColor(color) }) })) { closeAssessmentAfterTurn(); scheduleComputerTurn(); }
   });
   $("undo-button").addEventListener("click", () => {
     if (botPending) return;
@@ -533,11 +538,10 @@
   });
   $("confirm-score-button").addEventListener("click", () => {
     const preview = Live.currentScore(game);
-    const previewText = preview && preview.winner ? `${colorLabel(preview.winner)}棋領先 ${preview.difference} 目` : "目前同分";
-    if (!confirm(`確認目前死子標記與分數？
-${previewText}
-確認後這局將標示為結束。`)) return;
-    applyResult(Live.finalizeScore(game), "score_confirmed", { deadStones: [...(game.deadStones || [])], successMessage: "終局結果已確認並保存。" });
+    const previewText = !preview ? displayCopy("scoreUnknown", "無法確認分數。") : preview.winner ? displayCopy("scoreLead", `${colorLabel(preview.winner)}棋領先 ${preview.difference} 目`, { color: displayColor(preview.winner), points: preview.difference }) : displayCopy("scoreTie", "目前同分");
+    if (!preview) { showFeedback(displayCopy("scoreUnknown", "無法確認分數。"), "error"); return; }
+    if (!confirm(displayCopy("scorePrompt", `確認目前死子標記與分數？\n${previewText}\n確認後這局將標示為結束。`, { summary: previewText }))) return;
+    applyResult(Live.finalizeScore(game), "score_confirmed", { deadStones: [...(game.deadStones || [])], successMessage: displayCopy("resultConfirmed", "終局結果已確認並保存。") });
   });
   $("new-game-button").addEventListener("click", () => {
     if (game.moves.length && !confirm(displayCopy("newGameConfirm", "開始新局會取代目前這個尺寸的本機續局狀態。若要保留這盤，請先匯出 SGF。確定開始新局？"))) return;
