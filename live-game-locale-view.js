@@ -143,6 +143,18 @@
     unknownProviderError: "The selected opponent service failed or returned an invalid action. No substitute move was made.",
     newGameLocal: "local game",
     newGameComputer: "computer practice game",
+    loadedResumed: "Resumed the unfinished {size}×{size} game saved on this device.",
+    loadedFinished: "Loaded the saved {size}×{size} game from this device.",
+    providerNameBuiltIn: "Practice computer",
+    providerNameRemote: "API opponent",
+    providerNameKataGo: "KataGo",
+    operationSaved: "Saved on this device.",
+    operationCompleted: "The action was completed.",
+    practiceEventNotSaved: "The game action was completed, but its practice record could not be saved. Learning progress was not confirmed as updated.",
+    sgfImportFailed: "This SGF could not be imported or verified. Your existing board is not confirmed as replaced.",
+    sgfExportFailed: "The SGF export could not be prepared. Do not assume a file was downloaded.",
+    providerApiUnavailable: "The selected provider could not return a valid action. The computer turn has stopped.",
+    startupEvidenceFailure: "The game can continue, but practice evidence was not saved. Learning progress was not confirmed as updated.",
     unknown: "The action could not be verified. No successful outcome should be assumed."
   });
   function blocked(reason) {
