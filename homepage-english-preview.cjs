@@ -11,8 +11,8 @@ function buildPreview(options = {}) {
  for(const item of records) {
    const file = item.sourceFile || "index.html";
    const k = file + "\u0000" + item.source;
-   if(sourceMap.has(k) && sourceMap.get(k) !== item.text) refuse("conflicting source text " + item.key);
-   sourceMap.set(k,item.text);
+   if(sourceMap.has(k) && sourceMap.get(k) !== item.text) sourceMap.set(k,null);
+   else if(!sourceMap.has(k)) sourceMap.set(k,item.text);
  }
  return Object.freeze({
   locale:"en",status:"isolated-candidate-preview",
@@ -22,7 +22,7 @@ function buildPreview(options = {}) {
   },
   sourceText(source, sourceFile = "index.html") {
     const k=sourceFile+"\u0000"+source;
-    if(!sourceMap.has(k)) refuse("no approved candidate mapping for source");
+    if(!sourceMap.has(k) || sourceMap.get(k) === null) refuse("missing or ambiguous mapping for source");
     return sourceMap.get(k);
   },
   coverageKeys:Object.freeze(records.map(x=>x.key))
