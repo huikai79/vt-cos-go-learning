@@ -740,11 +740,167 @@
       "text": "The illustration is reset. Nothing was added to your learning record.",
       "sourceFile": "homepage-experience.js",
       "review": "candidate"
+    },
+    "header-personal-practice": {
+      "source": "個人圍棋學習",
+      "text": "Go practice on your device",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "header-start-core": {
+      "source": "開始核心課程",
+      "text": "Start the Core course",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "hero-kicker": {
+      "source": "A MOVE THAT REMAINS · 從看得見的棋形開始",
+      "text": "A MOVE TO REVISIT · Start with the board in front of you",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "preview-try-move": {
+      "source": "試著找一手",
+      "text": "Consider a move",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "preview-result-numbered": {
+      "source": "01 · 原選點已保留",
+      "text": "01 · Original choice still visible",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "preview-method-new-shape": {
+      "source": "換新棋形",
+      "text": "Try a new board shape",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "catalog-experienced-tag": {
+      "source": "已有基礎",
+      "text": "Some Go experience",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "catalog-see-advanced": {
+      "source": "查看進階訓練",
+      "text": "Explore advanced practice",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "methods-outcome-lead": {
+      "source": "本站優先觀察：",
+      "text": "What we look for here:",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "methods-task-types-lead": {
+      "source": "進入學習後，畫面會標示目前任務：",
+      "text": "Your workspace shows the current task type:",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "outcome-rules-list-detail": {
+      "source": "：合法落子、氣與提子、連斷、眼、劫與基本死活。",
+      "text": ": legal moves, liberties and captures, connections and cuts, eyes, ko and basic life and death.",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "outcome-local-list-detail": {
+      "source": "：候選手、攻守、厚勢、死活與官子。",
+      "text": ": candidate moves, attack and defence, strong shapes, life and death, and endgame choices.",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "outcome-wholeboard-list-detail": {
+      "source": "：全局方向、戰鬥、棄子、劫材、定石條件與棋譜複盤。",
+      "text": ": whole-board direction, fighting, sacrifice, ko threats, conditions for joseki and reviewing game records.",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "outcome-no-rank-lead": {
+      "source": "目前不能換算：",
+      "text": "Rank equivalence is not available:",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "reference-nihonkiin-beginner": {
+      "source": "日本棋院｜楽しい囲碁入門",
+      "text": "Nihon Ki-in | Introductory Go lessons (Japanese)",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "reference-nihonkiin-course": {
+      "source": "日本棋院｜課程別技術指導範例",
+      "text": "Nihon Ki-in | Teaching examples by course level (Japanese)",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "reference-online-go-server": {
+      "source": "Online Go Server｜互動式入門路徑",
+      "text": "Online Go Server | Interactive beginner pathway",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "reference-go-magic": {
+      "source": "Go Magic｜互動課程與分級呈現",
+      "text": "Go Magic | Interactive lessons and levelled presentation",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "reference-brilliant": {
+      "source": "Brilliant｜learn by doing 與證據邊界敘事",
+      "text": "Brilliant | Learning by doing and communicating evidence limits",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "research-authority-tail": {
+      "source": "為準。",
+      "text": "as the reference.",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "footer-brand": {
+      "source": "悟之一手 × VT-COS",
+      "text": "A Move of Insight × VT-COS",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "header-navigation-aria": {
+      "source": "悟之一手首頁導覽",
+      "text": "A Move of Insight homepage navigation",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "header-brand-aria": {
+      "source": "VT-COS｜悟之一手首頁",
+      "text": "A Move of Insight home",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "header-sections-aria": {
+      "source": "首頁段落",
+      "text": "Homepage sections",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "hero-learning-path-aria": {
+      "source": "學習路徑",
+      "text": "Learning paths",
+      "sourceFile": "index.html",
+      "review": "candidate"
+    },
+    "entry-topics-aria": {
+      "source": "這個入口的內容",
+      "text": "Topics in this learning path",
+      "sourceFile": "index.html",
+      "review": "candidate"
     }
   },
   "uncovered": [
-    "Core/workspace states and other dynamic app.js messages remain unreviewed; homepage and readable export strings require separate review",
-    "Human English and Go terminology, keyboard/screen-reader and target-reader testing pending",
-    "Do not mount this candidate in live runtime or release English until full-site gate"
+    "Core workspace, app.js dynamic states and learner-readable exports still need separate source audit, content and runtime tests.",
+    "This editorial candidate has no runtime authority and is not an approved English release.",
+    "Human native-English, Go-content, accessibility and reader-usability checks remain pending."
   ]
 }
