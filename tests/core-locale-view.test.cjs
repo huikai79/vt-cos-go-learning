@@ -67,3 +67,17 @@ test("storage failures and unknown engine reasons remain explicit failures in En
  assert.match(app,/legalMoveFailureText\(displayLocale, result.reason\)/);
  assert.match(app,/firstAnswer: isFirstAnswer/);
 });
+
+test("Core progress and spaced review English are isolated from canonical counters",()=>{
+ const {uiText}=require("../core-locale-view.js");
+ assert.match(uiText("en","progressRemaining","",{count:1}),/1 question remaining/);
+ assert.match(uiText("en","progressRemaining","",{count:2}),/2 questions remaining/);
+ assert.match(uiText("en","scheduledReviewDue","",{count:2}),/not change Core lesson progress/);
+ assert.match(uiText("en","progressComplete","",{count:15}),/does not establish a playing rank/);
+ assert.match(uiText("en","dueReviewAria","",{count:1}),/1 review question is due/);
+ assert.equal(uiText("zh-Hant-TW","progressRemaining","還有 2 題待完成",{count:2}),"還有 2 題待完成");
+ const app=require("node:fs").readFileSync(require("node:path").join(__dirname,"../app.js"),"utf8");
+ for(const key of ["progressComplete","progressRemaining","dueReviewAria","scheduledReviewButton","scheduledReviewDue","scheduledReviewEmpty","resumeCurrentQuestion"]) assert.ok(app.includes('uiText("'+key+'"'),key);
+ assert.match(app,/state\.completed\.size \/ problems\.length \* 100/);
+ assert.match(app,/state\.scheduler\.reviews\[problem\.id\]/);
+});
