@@ -142,7 +142,18 @@
     storageRecoverySaved: "Your previous progress could not be loaded safely. A copy of the original data was saved on this device, and the course opened in a readable state.",
     storageRecoveryFailed: "The saved progress could not be read, and a recovery copy could not be created. Your changes have not been saved. Check browser storage before continuing.",
     storageWriteFailed: "Your changes could not be saved in this browser. Export any available records before leaving, and check storage permissions or available space.",
-    storageUnsavedResult: "The result is visible on this page, but it could not be saved in the browser. Export available records before leaving."
+    storageUnsavedResult: "The result is visible on this page, but it could not be saved in the browser. Export available records before leaving.",
+    progressComplete: ({count}) => "All " + count + " units are marked complete. This does not establish a playing rank.",
+    progressRemaining: ({count}) => count + " " + (count === 1 ? "question" : "questions") + " remaining in the Core course",
+    dueReviewAria: ({count}) => count + " " + (count === 1 ? "review question is" : "review questions are") + " due today",
+    scheduledReviewButton: ({count}) => "Review " + count + " due " + (count === 1 ? "question" : "questions"),
+    scheduledReviewDue: ({count}) => count + " " + (count === 1 ? "question is" : "questions are") + " due today. Reviewing them will not change Core lesson progress.",
+    scheduledReviewEmpty: "No review questions are due today. You can practise a new question and return for a spaced review later.",
+    scheduledPracticeButton: "Start spaced practice",
+    resumeCurrentCourse: "Return to the current Core lesson",
+    resumeCurrentQuestion: "Go to the current question",
+    startFirstQuestion: "Start question 1",
+    startCurrentQuestion: "Start this question",
   });
   function uiText(locale, key, sourceText, params = {}) {
     if (locale === "zh-Hant-TW") return sourceText;
