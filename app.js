@@ -1379,7 +1379,7 @@
   function renderProgress() {
     $("progress-count").textContent = `${state.completed.size} / ${problems.length}`;
     $("progress-bar").style.width = `${state.completed.size / problems.length * 100}%`;
-    $("progress-caption").textContent = state.completed.size === problems.length ? `目前 ${units.length} 個單元已完成` : `還有 ${problems.length - state.completed.size} 題待完成`;
+    $("progress-caption").textContent = state.completed.size === problems.length ? uiText("progressComplete", `目前 ${units.length} 個單元已完成`, {count:units.length}) : uiText("progressRemaining", `還有 ${problems.length - state.completed.size} 題待完成`, {count:problems.length-state.completed.size});
     $("review-count").textContent = state.missed.size;
     $("review-button").disabled = state.missed.size === 0;
     $("review-button").hidden = state.missed.size === 0;
@@ -1391,12 +1391,12 @@
     $("sidebar-due-review-count").textContent = dueCount;
     $("sidebar-due-review-button").hidden = dueCount === 0;
     $("today-navigation").hidden = dueCount === 0 && state.missed.size === 0;
-    $("due-review-button").setAttribute("aria-label", `今日有 ${dueCount} 題到期複習`);
-    $("scheduled-practice-button").textContent = dueCount ? `複習今日到期（${dueCount}）` : "開始間隔練習";
+    $("due-review-button").setAttribute("aria-label", uiText("dueReviewAria", `今日有 ${dueCount} 題到期複習`, {count:dueCount}));
+    $("scheduled-practice-button").textContent = dueCount ? uiText("scheduledReviewButton", `複習今日到期（${dueCount}）`, {count:dueCount}) : uiText("scheduledPracticeButton", "開始間隔練習");
     $("scheduled-practice-description").textContent = dueCount
-      ? `今天有 ${dueCount} 題到期；先做這些複習，不會改變核心課程進度。`
-      : "今天沒有到期題；可先做尚未練過的練習題，之後再依間隔回來複習。";
-    $("resume-button").textContent = state.externalMode ? "返回目前課程" : state.hasStarted ? "前往目前題目" : state.index === 0 ? "開始第 1 題" : "開始這一題";
+      ? uiText("scheduledReviewDue", `今天有 ${dueCount} 題到期；先做這些複習，不會改變核心課程進度。`, {count:dueCount})
+      : uiText("scheduledReviewEmpty", "今天沒有到期題；可先做尚未練過的練習題，之後再依間隔回來複習。");
+    $("resume-button").textContent = state.externalMode ? uiText("resumeCurrentCourse", "返回目前課程") : state.hasStarted ? uiText("resumeCurrentQuestion", "前往目前題目") : state.index === 0 ? uiText("startFirstQuestion", "開始第 1 題") : uiText("startCurrentQuestion", "開始這一題");
     const diagnostics = Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses });
     $("diagnostic-summary").textContent = diagnosticSummaryText(diagnostics);
     renderLivePracticeSummary();
