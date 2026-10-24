@@ -13,7 +13,7 @@
     "accessibility": "pending",
     "readerUsability": "not_measured"
   },
-  "scope": "Presentation wording and line templates only. This draft does not change original Markdown or machine-readable JSON exports.",
+  "scope": "Offline text templates for source-traced Core readable Markdown, including diagnostic, combined practice evidence and personal pilot candidate wording; not a replacement for the canonical app.js export.",
   "messages": {
     "reportTitle": {
       "sourceFragment": "# 個人圍棋練習紀錄",
@@ -384,11 +384,158 @@
       "sourceFragment": "個人圍棋練習紀錄.md",
       "text": "personal-go-practice-record.md",
       "review": "candidate"
+    },
+    "diagnosticBoundary": {
+      "sourceFile": "app.js",
+      "sourceFragment": "diagnostics.interpretationBoundary",
+      "text": "These diagnostics classify observable responses to specified skill tasks. They do not establish a psychological or cognitive cause. A completed correction-distance sample requires separate unhinted, non-holdout delayed T2 first responses.",
+      "review": "candidate"
+    },
+    "diagnosticNoError": {
+      "sourceFile": "app.js",
+      "sourceFragment": "尚無首答錯誤",
+      "text": "- {skill}: {opportunities} comparable opportunities; no observed first-response errors.",
+      "review": "candidate"
+    },
+    "diagnosticErrors": {
+      "sourceFile": "app.js",
+      "sourceFragment": "${skill.observedErrors} 次首答錯誤",
+      "text": "- {skill}: {errors} observed first-response errors.",
+      "review": "candidate"
+    },
+    "diagnosticAwaitFirst": {
+      "sourceFile": "app.js",
+      "sourceFragment": "等待第一次延後複習",
+      "text": "After the latest error: {count} comparable opportunities; awaiting the first eligible delayed review.",
+      "review": "candidate"
+    },
+    "diagnosticAwaitSecond": {
+      "sourceFile": "app.js",
+      "sourceFragment": "等待第二次延後複習",
+      "text": "After the latest error: {count} comparable opportunities; awaiting the second eligible delayed review.",
+      "review": "candidate"
+    },
+    "diagnosticCompleted": {
+      "sourceFile": "app.js",
+      "sourceFragment": "次完成的穩定修正距離樣本",
+      "text": "Completed correction-distance samples: {count}. This is diagnostic evidence only.",
+      "review": "candidate"
+    },
+    "diagnosticNoSample": {
+      "sourceFile": "app.js",
+      "sourceFragment": "尚無可完成的穩定修正距離樣本",
+      "text": "No completed correction-distance sample is available.",
+      "review": "candidate"
+    },
+    "diagnosticRecurrence": {
+      "sourceFile": "app.js",
+      "sourceFragment": "段再犯間隔",
+      "text": "Observed recurrence intervals: {count}.",
+      "review": "candidate"
+    },
+    "diagnosticLowerBound": {
+      "sourceFile": "app.js",
+      "sourceFragment": "未再犯下限",
+      "text": "Lower bound without an observed recurrence: {count} successful opportunities.",
+      "review": "candidate"
+    },
+    "diagnosticUnclassified": {
+      "sourceFile": "learning-metrics.js",
+      "sourceFragment": "尚未分類的技能結果",
+      "text": "Unclassified observable skill outcome ({id}); no specific diagnosis can be inferred.",
+      "review": "candidate"
+    },
+    "integratedUnknown": {
+      "sourceFile": "app.js",
+      "sourceFragment": "if (integrated)",
+      "text": "UNKNOWN: Combined practice evidence could not be verified. No combined progress result is inferred.",
+      "review": "candidate"
+    },
+    "integratedError": {
+      "sourceFile": "app.js",
+      "sourceFragment": "if (integrated)",
+      "text": "ERROR: Combined practice evidence could not be read ({reason}); no combined result is inferred.",
+      "review": "candidate"
+    },
+    "integratedBoundary": {
+      "sourceFile": "app.js",
+      "sourceFragment": "integrated.interpretationBoundary",
+      "text": "- Interpretation boundary: {boundary}",
+      "review": "candidate"
+    },
+    "integratedCollectionBoundary": {
+      "sourceFile": "app.js",
+      "sourceFragment": "readiness.interpretationBoundary",
+      "text": "- Live collection interpretation boundary: {boundary}",
+      "review": "candidate"
+    },
+    "integratedNoMastery": {
+      "sourceFile": "app.js",
+      "sourceFragment": "integrated.skills",
+      "text": "Combined records describe observed practice, delayed review and live opportunities; they do not certify mastery or a playing rank.",
+      "review": "candidate"
+    },
+    "trialPilotBoundary": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "reviewNotice =",
+      "text": "This is a personal usability and data-pipeline pilot. The questions were previously exposed during an older self-review and are not formal unseen items. These observations cannot establish learning gains, retention, transfer, causation or generalisation.",
+      "review": "candidate"
+    },
+    "trialProtocolBoundary": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "interpretation: \"兩批只作資料管線",
+      "text": "The two batches test data handling, return flow and task burden. Previously exposed items cannot support formal unseen evaluation or claims of improvement, retention, transfer, causality, effects on other learners or permanent mastery.",
+      "review": "candidate"
+    },
+    "trialBatch": {
+      "sourceFile": "app.js",
+      "sourceFragment": "summary.batchResults.map",
+      "text": "- {role} batch: {correct}/{total} correct recorded first responses (descriptive only).",
+      "review": "candidate"
+    },
+    "trialBaseline": {
+      "sourceFile": "app.js",
+      "sourceFragment": "batch.role === \"baseline\"",
+      "text": "baseline",
+      "review": "candidate"
+    },
+    "trialFollowup": {
+      "sourceFile": "app.js",
+      "sourceFragment": "\"追蹤\"",
+      "text": "follow-up",
+      "review": "candidate"
+    },
+    "trialNoBatches": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "batchResults.length < 2",
+      "text": "Insufficient pilot data: the baseline and seven-day follow-up are not both complete.",
+      "review": "candidate"
+    },
+    "trialTwoBatches": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "兩批描述完成，仍屬資料不足",
+      "text": "Both pilot batches have descriptions, but the evidence remains insufficient for an effectiveness claim.",
+      "review": "candidate"
+    },
+    "trialSkillDirection": {
+      "sourceFile": "app.js",
+      "sourceFragment": "bySkillDirection",
+      "text": "- {skill}: baseline {baselineCorrect}/{baselineTotal}; follow-up {followupCorrect}/{followupTotal}; descriptive difference {delta}.",
+      "review": "candidate"
+    },
+    "trialUnverifiedStatus": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "status: \"data_insufficient\"",
+      "text": "Insufficient data; no formal evaluation or learning-gain conclusion.",
+      "review": "candidate"
     }
   },
   "blocked": [
     "Full English readable export not activated; no output without an approved all-site locale and line-by-line evidence audit.",
     "Diagnostics.interpretationBoundary, trial summary, live skill names/states and user-entered notes must be context-reviewed before an English release.",
-    "Missing, unknown or storage/provider errors must remain errors, never rendered as verified success."
+    "Missing, unknown or storage/provider errors must remain errors, never rendered as verified success.",
+    "The personal trial is previously exposed and data_insufficient even when both batches have completed.",
+    "Diagnostic and integrated English output is partial preview only: no learner state changes and no validation of retention, transfer, rank, or mastery.",
+    "Output must be tested against independent canonical event and summary fixtures before runtime connection."
   ]
 }
