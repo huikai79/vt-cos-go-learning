@@ -127,7 +127,7 @@ async function command(socket, method, params = {}) {
       clearTimeout(timeout);
       socket.removeEventListener("message", onMessage);
       if (message.error) reject(new Error(message.error.message));
-      else if (message.result.exceptionDetails) reject(new Error(message.result.exceptionDetails.text));
+      else if (message.result.exceptionDetails) reject(new Error(message.result.exceptionDetails.exception?.description || message.result.exceptionDetails.text));
       else resolve(message.result);
     }
     socket.addEventListener("message", onMessage);
@@ -179,8 +179,8 @@ async function main() {
   assert.match(sourceCss, /\.hint-feedback\{[^}]*background:/);
   assert.match(sourceCss, /\.interaction-feedback\{[^}]*background:/);
   assert.match(sourceCss, /\.system-status\{[^}]*background:/);
-  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", current\(\)\.hint\)/);
-  assert.match(sourceApp, /showAuxiliaryFeedback\("interaction-feedback", result\.reason\)/);
+  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", visibleProblem\(current\(\)\)\.hint\)/);
+  assert.match(sourceApp, /legalMoveFailureText\(displayLocale, result\.reason\)/);
   assert.doesNotMatch(sourceApp, /\$\("feedback"\)\.textContent = current\(\)\.hint/);
   assert.match(sourceHtml, /<details class="advanced-evidence-details">/);
   assert.match(sourceHtml, /id="advanced-evidence-brief">尚無足夠資料<\/strong>/);
@@ -2469,7 +2469,7 @@ async function main() {
     assert.equal(historyDesktop.questions, 5);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
     assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-29");
-    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1"]);
+    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1", "site-language.js?v=public-site-locale-gate-v1"]);
     assert.equal(historyDesktop.historyVersion, true);
     assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);
     assert.ok(historyDesktop.minContrast >= 4.5, `history minimum contrast: ${historyDesktop.minContrast}`);
@@ -2964,6 +2964,86 @@ async function main() {
       }
     }
     await command(socket,"Emulation.setDeviceMetricsOverride",{width:1280,height:900,deviceScaleFactor:1,mobile:false});
+
+    // Live Game real-browser negative/normal flow: source locale stays Chinese
+    // even for requested ?lang=en; no draft string may enter runtime.
+    await command(socket, "Page.navigate", { url: livePage + "&lang=en" });
+    let liveReady = false;
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      liveReady = await evaluate(socket, "Boolean(document.querySelector('#live-board svg') && document.querySelector('#site-locale-status'))");
+      if (liveReady) break;
+      await delay(100);
+    }
+    assert.equal(liveReady, true, "Live Game did not load with blocked English request");
+    const initialLive = await evaluate(socket, `(() => ({
+      board: document.querySelector('#live-board').getAttribute('aria-label'),
+      point: document.querySelector('#live-board .live-point').getAttribute('aria-label'),
+      rendered: window.GoSiteLanguage.stateFor(location.href).rendered,
+      localeAvailable: document.querySelector('#site-locale-status').textContent,
+      moveCount: document.querySelector('#move-count').textContent
+    }))()`);
+    assert.equal(initialLive.rendered, "zh-Hant-TW");
+    assert.match(initialLive.board, /9 路/);
+    assert.match(initialLive.localeAvailable, /尚未提供完整版本/);
+    assert.equal(initialLive.moveCount, "0");
+
+    const liveFlow = await evaluate(socket, `(() => {
+      const mode = document.querySelector('#opponent-mode');
+      mode.value = 'local'; mode.dispatchEvent(new Event('change', {bubbles:true}));
+      const first = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]');
+      first.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const legalMoves = document.querySelector('#move-count').textContent;
+      const pointAfterMove = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').getAttribute('aria-label');
+      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const illegalMessage = document.querySelector('#live-feedback').textContent;
+      const afterIllegal = document.querySelector('#move-count').textContent;
+      document.querySelector('#pass-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      document.querySelector('#pass-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const scoring = !document.querySelector('#scoring-panel').hidden;
+      const score = document.querySelector('#score-lines').textContent;
+      const boardScoring = document.querySelector('#live-board svg').getAttribute('aria-label');
+      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const markedPoint = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').getAttribute('aria-label');
+      window.confirm = () => true;
+      document.querySelector('#confirm-score-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {legalMoves, pointAfterMove, illegalMessage, afterIllegal, scoring, score,
+        boardScoring, markedPoint, result:document.querySelector('#result-text').textContent,
+        finished:!document.querySelector('#result-panel').hidden,
+        boardFinished:document.querySelector('#live-board svg').getAttribute('aria-label')};
+    })()`);
+    assert.equal(liveFlow.legalMoves, "1");
+    assert.equal(liveFlow.afterIllegal, "1", "occupied move altered the game");
+    assert.match(liveFlow.pointAfterMove, /黑棋/);
+    assert.match(liveFlow.illegalMessage, /已有棋子/);
+    assert.equal(liveFlow.scoring, true);
+    assert.match(liveFlow.score, /棋子/);
+    assert.match(liveFlow.boardScoring, /終局死子確認/);
+    assert.match(liveFlow.markedPoint, /可切換死子標記/);
+    assert.equal(liveFlow.finished, true);
+    assert.ok(liveFlow.result.length > 0);
+    assert.match(liveFlow.boardFinished, /棋局已結束/);
+
+    // An unavailable provider must not produce a move or a success event.
+    const providerProbe = await evaluate(socket, `(async () => {
+      document.querySelector('#new-game-button').click();
+      const mode = document.querySelector('#advanced-provider-mode');
+      mode.value = 'remote'; mode.dispatchEvent(new Event('change', {bubbles:true}));
+      const endpoint = document.querySelector('#provider-endpoint');
+      endpoint.value = 'https://127.0.0.1:1/unavailable';
+      endpoint.dispatchEvent(new Event('change', {bubbles:true}));
+      document.querySelector('#test-provider-button').click();
+      for(let i=0;i<100;i++) {
+        if(document.querySelector('#provider-status').classList.contains('error')) break;
+        await new Promise(resolve=>setTimeout(resolve,100));
+      }
+      return {status:document.querySelector('#provider-status').textContent,
+        error:document.querySelector('#provider-status').classList.contains('error'),
+        count:document.querySelector('#move-count').textContent};
+    })()`);
+    assert.equal(providerProbe.error, true, "failed provider test was presented as success");
+    assert.match(providerProbe.status, /連線失敗/);
+    assert.equal(providerProbe.count, "0");
+    process.stdout.write("PASS: Live Game browser ARIA, score, history, finished result, blocked locale and provider error\\n");
 
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
