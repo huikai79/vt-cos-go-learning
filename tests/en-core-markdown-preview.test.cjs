@@ -1,0 +1,57 @@
+"use strict";
+const test=require("node:test");
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const path=require("node:path");
+const {previewReport}=require("../core-markdown-english-preview.cjs");
+const base=()=>({exportedAt:"2026-10-24T00:00:00Z",uiVersion:"learner-workspace-v70",completed:0,total:106,pendingReview:0,items:[],skills:[],events:[],sgf:[],diagnostics:{state:"empty",excluded:0},practice:{state:"absent"},live:{state:"absent"}});
+test("English Markdown preview is isolated, incomplete and preserves empty-state limits",()=>{
+ assert.throws(()=>previewReport(base()),{code:"LOCALE_EXPORT_BLOCKED"});
+ assert.throws(()=>previewReport(base(),{preview:true,runtime:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ assert.throws(()=>previewReport(base(),{preview:true,publishable:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ const result=previewReport(base(),{preview:true});
+ assert.equal(result.status,"candidate-preview");assert.equal(result.complete,false);
+ assert.match(result.content,/No comparable first responses without hints/);
+ assert.match(result.content,/Core questions completed: 0 \/ 106/);
+ assert.match(result.content,/## My Reflections/);
+ assert.equal(require("../site-locales.json").locales.find(x=>x.id==="en").publishable,false);
+ const app=fs.readFileSync(path.join(__dirname,"../app.js"),"utf8");
+ assert.doesNotMatch(app,/core-markdown-english-preview/);
+ assert.match(app,/downloadFile\(lines.join\("\\n"\), "text\/markdown;charset=utf-8", "個人圍棋練習紀錄.md"\)/);
+});
+test("First response, retry, hinted and unknown outcomes remain distinct",()=>{
+ const d=base();d.events=[
+  {occurredAt:"t1",skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:true,unhinted:true,outcome:"correct",elapsedMs:1000},
+  {occurredAt:"t2",skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:false,unhinted:false,outcome:"wrong",elapsedMs:2000},
+  {occurredAt:"t3",skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:null,unhinted:null,outcome:"UNKNOWN"},
+  {occurredAt:"t4",skill:"KC-1",item:"u1-01",type:"presentation_end",outcome:"unanswered"}
+ ];d.diagnostics={state:"partial",excluded:2};
+ const s=previewReport(d,{preview:true}).content;
+ for(const phrase of ["first response","retry response","no hint shown","after a hint","UNKNOWN (first-answer status)","UNKNOWN (answer outcome)","unanswered","eligibility-unknown"])assert.ok(s.includes(phrase),phrase);
+ assert.doesNotMatch(s,/mastery \d+%/i);
+});
+test("Read errors, unknown provider state and absent data are not reported as success",()=>{
+ const d=base();d.practice={state:"error",reason:"storage unavailable"};d.live={state:"unknown"};
+ const s=previewReport(d,{preview:true}).content;
+ assert.match(s,/ERROR: Practice event stream could not be read/);
+ assert.match(s,/UNKNOWN: live data could not be verified/);
+ assert.doesNotMatch(s,/Live data collection:.*eligible/);
+ d.live={state:"ok",assessed:3,eligible:1,unscored:2,versions:{eligibility:"v1",scoring:"v2",progress:"v3"},boundary:"practice only",skills:[]};
+ assert.match(previewReport(d,{preview:true}).content,/practice only/);
+ d.live.skills=[{name:"Reading",eligible:1,first:1,satisfied:2,unsatisfied:0,unanswered:0,state:"completed"}];
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+});
+test("SGF user notes are preserved but cannot inject a Markdown heading or column",()=>{
+ const d=base();
+ d.sgf=[{source:"match.sgf",number:3,skill:"liberties",date:"2026-10-24",reflection:{candidate:"D4 | <script>",reason:"line 1\n# Fake heading",opponent:"unsure",timing:"before"},review:{status:"unconfirmed",evidence:"",next:""}}];
+ const s=previewReport(d,{preview:true}).content;
+ assert.match(s,/D4 \\\| &lt;script&gt;/);
+ assert.match(s,/line 1 ⏎ # Fake heading/);
+ assert.match(s,/not confirmed/);
+ assert.doesNotMatch(s,/^# Fake heading/m);
+ d.sgf[0].review.status="accepted_without_review";
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+});
+test("Unsupported trial/integrated schema cannot masquerade as a complete translation",()=>{
+ for(const key of ["integrated","trial"]){const d=base();d[key]={};assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});}
+});
