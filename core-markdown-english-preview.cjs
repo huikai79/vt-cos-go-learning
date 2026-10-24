@@ -47,9 +47,9 @@ function previewReport(data, options={}) {
   for(const k of ["items","skills","events","sgf"]) if (!Array.isArray(data[k])) blocked(k + " must be an array");
   // Untranslated computed diagnostic explanations or state-dependent trial/integrated
   // prose must fail closed, not appear as an apparently complete English export.
-  if (data.integrated !== undefined || data.trial !== undefined) blocked("integrated/trial semantics need independent review");
+  // Only explicit, observed records may enter these candidate sections; no derived learner state is updated.
   const diagnostics=requireRecord(data.diagnostics,"diagnostics");
-  if (!["empty","partial"].includes(diagnostics.state)) blocked("diagnostic semantics unavailable");
+  if (!["empty","partial","error","unknown"].includes(diagnostics.state)) blocked("diagnostic status");
   count(diagnostics.excluded,"diagnostics.excluded");
   const out=[copy("reportTitle"),"",copy("exportedAt",{date:data.exportedAt}),
     copy("uiVersion",{version:data.uiVersion}),"",copy("completed",{completed:data.completed,total:data.total}),
@@ -70,7 +70,31 @@ function previewReport(data, options={}) {
   }
   out.push("",copy("diagnosticsHeading"),"");
   if(diagnostics.state==="empty") out.push(copy("diagnosticsEmpty"));
-  else out.push("- UNKNOWN: diagnostic interpretation requires a reviewed English summary; no mastery claim is made.");
+  else if(diagnostics.state==="error") out.push("- ERROR: diagnostic evidence could not be read; no finding is inferred.");
+  else if(diagnostics.state==="unknown") out.push("- UNKNOWN: diagnostic state could not be verified.");
+  else {
+    if(!Array.isArray(diagnostics.skills)) blocked("diagnostic skills missing");
+    out.push(copy("diagnosticBoundary"));
+    for(const skill of diagnostics.skills){
+      requireRecord(skill,"diagnostic skill");
+      text(skill.id,"diagnostic skill id");
+      count(skill.opportunities,"diagnostic opportunities");count(skill.errors,"diagnostic errors");
+      if(skill.errors>skill.opportunities)blocked("diagnostic denominator");
+      const label=skill.label==null?copy("diagnosticUnclassified",{id:skill.id}):text(skill.label,"diagnostic label");
+      out.push(skill.errors===0?copy("diagnosticNoError",{skill:label,opportunities:skill.opportunities}):
+        copy("diagnosticErrors",{skill:label,errors:skill.errors}));
+      const scd=requireRecord(skill.scd,"diagnostic scd");
+      if(scd.state==="awaiting_first")out.push(copy("diagnosticAwaitFirst",{count:count(scd.opportunities,"SCD opportunities")}));
+      else if(scd.state==="awaiting_second")out.push(copy("diagnosticAwaitSecond",{count:count(scd.opportunities,"SCD opportunities")}));
+      else if(scd.state==="completed")out.push(copy("diagnosticCompleted",{count:count(scd.samples,"SCD samples")}));
+      else if(scd.state==="no_sample")out.push(copy("diagnosticNoSample"));
+      else blocked("unrecognized SCD state");
+      const recurrence=requireRecord(skill.recurrence,"recurrence");
+      if(recurrence.state==="observed")out.push(copy("diagnosticRecurrence",{count:count(recurrence.intervals,"recurrence intervals")}));
+      else if(recurrence.state==="lower_bound")out.push(copy("diagnosticLowerBound",{count:count(recurrence.opportunities,"recurrence lower bound")}));
+      else if(recurrence.state!=="not_measured")blocked("unrecognized recurrence");
+    }
+  }
   out.push(copy("diagnosticsExcluded",{count:diagnostics.excluded}));
   if(data.events.length) {
     out.push("",copy("practiceEventsHeading"),"",copy("eventTableHeader"),"| --- | --- | --- | --- | --- | --- | --- |");
@@ -83,7 +107,7 @@ function previewReport(data, options={}) {
       const condition=e.type==="answer"?(e.unhinted===true?copy("eventUnhinted"):e.unhinted===false?copy("eventHinted"):"UNKNOWN (hint status)")
         :e.type==="hint"?copy("eventHint"):"—";
       let outcome="—";
-      if(e.type==="answer") outcome=e.outcome==="correct"?copy("eventCorrect"):e.outcome==="wrong"?copy("eventWrong"):"UNKNOWN (answer outcome)";
+      if(e.type==="answer") outcome=e.outcome==="correct"?copy("eventCorrect"):(e.outcome==="incorrect" || e.outcome==="wrong")?copy("eventWrong"):"UNKNOWN (answer outcome)";
       if(e.type==="presentation_end") outcome=e.outcome==="solved"?copy("eventSolved"):
         e.outcome==="unanswered"?copy("eventUnanswered"):e.outcome==="interrupted"?copy("eventInterrupted"):"UNKNOWN (presentation outcome)";
       const elapsed=Number.isFinite(e.elapsedMs)&&e.elapsedMs>=0?copy("eventElapsed",{seconds:Math.round(e.elapsedMs/1000)}):"—";
@@ -119,6 +143,75 @@ function previewReport(data, options={}) {
         state:typeof skill.state==="string"&&skill.state?skill.state:"UNKNOWN"}));
     }
   });
+  function evidenceStatus(value, name, heading, errorKey, render) {
+    if(value===undefined)return;
+    requireRecord(value,name);
+    if(!["ok","error","unknown","absent"].includes(value.state))blocked(name+" state");
+    if(value.state==="absent")return;
+    out.push("",copy(heading),"");
+    if(value.state==="unknown")out.push(copy("integratedUnknown"));
+    else if(value.state==="error")out.push(copy("integratedError",{reason:text(value.reason,name+".reason")}));
+    else render(value);
+  }
+  evidenceStatus(data.integrated,"integrated","integratedHeading","integratedError",x=>{
+    const versions=requireRecord(x.policy,"integrated policy");
+    out.push(copy("integratedPolicy",{version:text(versions.version,"integrated policy version")}));
+    out.push(copy("integratedBoundary",{boundary:text(x.boundary,"integrated boundary")}));
+    out.push(copy("integratedNoMastery"));
+    if(x.collection!==undefined){
+      const c=requireRecord(x.collection,"collection");
+      for(const k of ["inspected","eligible","first","unanswered","sessions"])count(c[k],"collection."+k);
+      out.push(copy("integratedCollection",{status:text(c.status,"collection status"),inspected:c.inspected,
+       eligible:c.eligible,first:c.first,unanswered:c.unanswered,sessions:c.sessions}));
+      out.push(copy("integratedCollectionBoundary",{boundary:text(c.boundary,"collection boundary")}));
+    }
+    if(!Array.isArray(x.skills))blocked("integrated skills");
+    for(const skill of x.skills){
+      requireRecord(skill,"integrated skill");
+      for(const k of ["practice","delayed","live","first","satisfied"])count(skill[k],"integrated "+k);
+      if(skill.satisfied>skill.first||skill.first>skill.live)blocked("integrated denominator");
+      out.push(copy("integratedSkill",{skill:text(skill.name,"integrated name"),practice:skill.practice,delayed:skill.delayed,
+       live:skill.live,satisfied:skill.satisfied,first:skill.first,next:text(skill.next,"next evidence")}));
+    }
+  });
+  if(data.trial!==undefined){
+    const t=requireRecord(data.trial,"trial");
+    if(!["ok","error","unknown","absent"].includes(t.state))blocked("trial state");
+    if(t.state!=="absent"){
+      out.push("",copy("trialHeading"),"");
+      if(t.state==="error")out.push("- ERROR: personal pilot information could not be read.");
+      else if(t.state==="unknown")out.push("- UNKNOWN: personal pilot state could not be verified.");
+      else {
+        if(t.status!=="data_insufficient"||t.formalEligible!==false)blocked("trial cannot become a formal evaluation");
+        out.push(copy("trialPilotBoundary"),copy("trialProtocolBoundary"),copy("trialUnverifiedStatus"));
+        if(!Array.isArray(t.batches))blocked("trial batches");
+        for(const batch of t.batches){
+          requireRecord(batch,"trial batch");
+          if(!["baseline","followup"].includes(batch.role))blocked("trial batch role");
+          count(batch.correct,"trial correct");count(batch.total,"trial total");
+          if(batch.correct>batch.total)blocked("trial denominator");
+          out.push(copy("trialBatch",{role:copy(batch.role==="baseline"?"trialBaseline":"trialFollowup"),correct:batch.correct,total:batch.total}));
+        }
+        if(t.batches.length<2)out.push(copy("trialNoBatches")); else out.push(copy("trialTwoBatches"));
+        const a=requireRecord(t.application,"trial application");
+        for(const k of ["correct","total","presented","unanswered","inappropriate","excluded"])count(a[k],"trial "+k);
+        if(a.correct>a.total)blocked("trial application denominator");
+        out.push(copy("trialApplication",a));
+        out.push(copy("trialBoundary",{boundary:copy("trialProtocolBoundary")}));
+        if(t.directions!==undefined){
+          if(!Array.isArray(t.directions))blocked("trial directions");
+          for(const z of t.directions){
+            requireRecord(z,"trial direction");
+            for(const k of ["baselineCorrect","baselineTotal","followupCorrect","followupTotal"])count(z[k],"direction "+k);
+            if(z.baselineCorrect>z.baselineTotal||z.followupCorrect>z.followupTotal)blocked("trial direction denominator");
+            const delta=z.followupCorrect-z.baselineCorrect;
+            out.push(copy("trialSkillDirection",{skill:text(z.skill,"trial skill"),baselineCorrect:z.baselineCorrect,baselineTotal:z.baselineTotal,
+              followupCorrect:z.followupCorrect,followupTotal:z.followupTotal,delta}));
+          }
+        }
+      }
+    }
+  }
   if(data.sgf.length){
     out.push("",copy("sgfHeading"),"",copy("sgfBoundary"),"");
     for(const entry of data.sgf){
@@ -145,6 +238,6 @@ function previewReport(data, options={}) {
   out.push("",copy("observationHeading"),"",copy("observationOne"),copy("observationTwo"),copy("observationThree"),"");
   return Object.freeze({status:"candidate-preview",locale:"en",complete:false,
     content:out.join("\n"),filename:copy("fileName"),
-    unreviewed:["integrated evidence","personal trial","diagnostic prose","localized canonical Go titles","full export review"]});
+    unreviewed:["human review of integrated/trial/diagnostic semantics","localized canonical Go titles","full export review"]});
 }
 module.exports=Object.freeze({previewReport});
