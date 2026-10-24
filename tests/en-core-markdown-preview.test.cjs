@@ -55,3 +55,50 @@ test("SGF user notes are preserved but cannot inject a Markdown heading or colum
 test("Unsupported trial/integrated schema cannot masquerade as a complete translation",()=>{
  for(const key of ["integrated","trial"]){const d=base();d[key]={};assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});}
 });
+
+test("Diagnostic cases retain observed errors, delayed checks, recurrence and unknown state",()=>{
+ const d=base();d.diagnostics={state:"partial",excluded:1,skills:[
+  {id:"kc-a",label:"Liberty task",opportunities:3,errors:1,scd:{state:"awaiting_second",opportunities:2},recurrence:{state:"lower_bound",opportunities:1}},
+  {id:"kc-b",label:null,opportunities:1,errors:0,scd:{state:"no_sample"},recurrence:{state:"not_measured"}}
+ ]};
+ let content=previewReport(d,{preview:true}).content;
+ for(const phrase of ["1 observed first-response errors","awaiting the second eligible delayed review","Lower bound","Unclassified observable skill outcome","eligibility-unknown"])assert.ok(content.includes(phrase),phrase);
+ d.diagnostics.skills[0].errors=4;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.diagnostics={state:"unknown",excluded:0};
+ assert.match(previewReport(d,{preview:true}).content,/UNKNOWN: diagnostic/);
+});
+test("Combined evidence remains descriptive, versioned, count-checked and explicit on error",()=>{
+ const d=base();d.integrated={state:"ok",policy:{version:"progress-v1"},boundary:"Practice is not proof of transfer",
+  collection:{status:"collecting",inspected:4,eligible:2,first:2,unanswered:1,sessions:1,boundary:"incomplete data"},
+  skills:[{name:"Liberties",practice:3,delayed:1,live:2,first:2,satisfied:1,next:"another independent check"}]};
+ const result=previewReport(d,{preview:true});
+ for(const phrase of ["progress-v1","Practice is not proof of transfer","collecting","another independent check","do not certify mastery"])assert.ok(result.content.includes(phrase),phrase);
+ assert.equal(result.complete,false);
+ d.integrated.skills[0].satisfied=3;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.integrated={state:"error",reason:"broken record"};
+ assert.match(previewReport(d,{preview:true}).content,/ERROR: Combined practice evidence/);
+});
+test("Personal trial does not become formal unseen evaluation, even with two batches",()=>{
+ const d=base();d.trial={state:"ok",status:"data_insufficient",formalEligible:false,
+  batches:[{role:"baseline",correct:1,total:2},{role:"followup",correct:2,total:2}],
+  application:{correct:1,total:3,presented:4,unanswered:1,inappropriate:1,excluded:2},
+  directions:[{skill:"Liberties",baselineCorrect:1,baselineTotal:2,followupCorrect:2,followupTotal:2}]};
+ const result=previewReport(d,{preview:true});
+ for(const phrase of ["previously exposed","remain insufficient","descriptive difference 1","hinted or repeated excluded 2","personal usability"])assert.ok(result.content.includes(phrase),phrase);
+ assert.equal(result.complete,false);
+ d.trial.formalEligible=true;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.trial.formalEligible=false;d.trial.batches[0].correct=5;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.trial={state:"unknown"};
+ assert.match(previewReport(d,{preview:true}).content,/UNKNOWN: personal pilot/);
+});
+test("Actual canonical incorrect answer is rendered as incorrect rather than UNKNOWN",()=>{
+ const d=base();
+ d.events=[{occurredAt:"t",type:"answer",firstAnswer:true,unhinted:true,outcome:"incorrect",skill:"kc",item:"u1"}];
+ const report=previewReport(d,{preview:true}).content;
+ assert.match(report,/incorrect for this task/);
+ assert.doesNotMatch(report,/UNKNOWN \(answer outcome\)/);
+});
