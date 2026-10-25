@@ -31,7 +31,7 @@ function copy(key, values={}) {
     return safe(v);
   });
 }
-function optionalText(value, fallbackKey) { return value == null || value === "" ? copy(fallbackKey) : safe(text(value,"user field")); }
+function optionalText(value, fallbackKey) { return value == null || value === "" ? copy(fallbackKey) : text(value,"user field"); }
 function previewReport(data, options={}) {
   if (!record(options) || options.preview !== true || options.runtime === true || options.publishable === true)
     blocked("offline candidate preview only");
@@ -111,7 +111,7 @@ function previewReport(data, options={}) {
       if(e.type==="presentation_end") outcome=e.outcome==="solved"?copy("eventSolved"):
         e.outcome==="unanswered"?copy("eventUnanswered"):e.outcome==="interrupted"?copy("eventInterrupted"):"UNKNOWN (presentation outcome)";
       const elapsed=Number.isFinite(e.elapsedMs)&&e.elapsedMs>=0?copy("eventElapsed",{seconds:Math.round(e.elapsedMs/1000)}):"—";
-      out.push("| "+[e.occurredAt,e.skill||"UNKNOWN",e.item||"UNKNOWN",eventName,condition,outcome,elapsed].map(safe).join(" | ")+" |");
+      out.push("| "+[...([e.occurredAt,e.skill||"UNKNOWN",e.item||"UNKNOWN"].map(safe)),eventName,condition,outcome,elapsed].join(" | ")+" |");
     }
   }
   function statusSection(value,name,heading,errorKey,okLines) {
