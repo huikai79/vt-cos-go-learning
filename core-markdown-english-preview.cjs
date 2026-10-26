@@ -219,6 +219,11 @@ function previewReport(data, options={}) {
       const source=text(entry.source,"SGF source");count(entry.number,"SGF move number");
       text(entry.skill,"SGF skill");text(entry.date,"SGF completion");
       out.push(copy("sgfRecord",{source,number:entry.number,skill:entry.skill,date:entry.date}));
+      count(entry.size,"SGF board size");
+      const position=requireRecord(entry.position,"SGF original position");
+      text(position.black,"SGF black stones");
+      text(position.white,"SGF white stones");
+      out.push(copy("sgfPosition",{size:entry.size,black:position.black,white:position.white}));
       const reflection=requireRecord(entry.reflection,"SGF reflection");
       out.push(copy("sgfCandidate",{candidate:optionalText(reflection.candidate,"sgfNotFilled")}),
         copy("sgfReason",{reason:optionalText(reflection.reason,"sgfNotFilled")}),
