@@ -376,6 +376,7 @@
     "tests/en-core-authoring.test.cjs",
     "tests/en-core-demo-authoring.test.cjs",
     "tests/en-core-item-authoring.test.cjs",
+    "tests/en-core-markdown-canonical-execution.test.cjs",
     "tests/en-core-markdown-export-authoring.test.cjs",
     "tests/en-core-markdown-parity.test.cjs",
     "tests/en-core-markdown-preview.test.cjs",
