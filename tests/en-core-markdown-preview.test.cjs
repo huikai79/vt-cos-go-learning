@@ -43,7 +43,7 @@ test("Read errors, unknown provider state and absent data are not reported as su
 });
 test("SGF user notes are preserved but cannot inject a Markdown heading or column",()=>{
  const d=base();
- d.sgf=[{source:"match.sgf",number:3,skill:"liberties",date:"2026-10-24",reflection:{candidate:"D4 | <script>",reason:"line 1\n# Fake heading",opponent:"unsure",timing:"before"},review:{status:"unconfirmed",evidence:"",next:""}}];
+ d.sgf=[{source:"match.sgf",number:3,skill:"liberties",date:"2026-10-24",size:9,position:{black:"(4,4)",white:"none"},reflection:{candidate:"D4 | <script>",reason:"line 1\n# Fake heading",opponent:"unsure",timing:"before"},review:{status:"unconfirmed",evidence:"",next:""}}];
  const s=previewReport(d,{preview:true}).content;
  assert.match(s,/D4 \\\| &lt;script&gt;/);
  assert.match(s,/line 1 ⏎ # Fake heading/);
