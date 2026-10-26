@@ -158,15 +158,55 @@ function adapt(snapshot,options={}) {
       followupCorrect:v.followup.correct,followupTotal:v.followup.total
     }));
   }
-  // Local SGF positions/notes need a separate full-shape preservation gate;
-  // never omit the user's review silently while claiming complete coverage.
+  // Map the same SGF entry and originalStones source fields as exportNotes().
+  // Reject missing or malformed positions: zero stones is not the same as an
+  // absent original position, and no rules/scoring inference is allowed here.
   if(!Array.isArray(state.localExercises))reject("local exercises missing");
-  if(state.localExercises.length)reject("local SGF positions need exact source-preserving adapter");
+  const sgf=state.localExercises.map((entry,index)=>{
+    required(entry,"SGF entry "+index);
+    const source=required(entry.source,"SGF source");
+    const boardSize=nonnegative(source.boardSize,"SGF board size");
+    if(boardSize<2 || boardSize>25)reject("SGF board size unsupported");
+    if(!Array.isArray(source.originalStones))reject("SGF original stones unavailable");
+    const seen=new Set();
+    const coords={black:[],white:[]};
+    for(const stone of source.originalStones){
+      if(!Array.isArray(stone)||stone.length!==3)reject("SGF stone tuple malformed");
+      const [x,y,color]=stone;
+      if(!Number.isSafeInteger(x)||!Number.isSafeInteger(y)||x<0||y<0||x>=boardSize||y>=boardSize)
+        reject("SGF original coordinate out of bounds");
+      if(color!==1 && color!==2)reject("SGF original stone color unrecognized");
+      const key=x+","+y;
+      if(seen.has(key))reject("SGF original intersection duplicated");
+      seen.add(key);
+      coords[color===1?"black":"white"].push("("+(x+1)+","+(y+1)+")");
+    }
+    const reflection=entry.reflection==null?null:required(entry.reflection,"SGF reflection");
+    if(reflection && typeof reflection.savedBeforeAnswer!=="boolean")reject("SGF reflection timing unknown");
+    const review=entry.review==null?null:required(entry.review,"SGF manual review");
+    if(review && !["unconfirmed","original_confirmed","alternative_confirmed"].includes(review.status))
+      reject("SGF review status unrecognized");
+    const timing=reflection?(reflection.savedBeforeAnswer?"before":"after"):"not_saved";
+    // The labels mean a manually entered review state, not independently
+    // validated correctness. Keep the exact free-text notes and source order.
+    return {
+      source:string(source.sourceName,"SGF sourceName"),
+      number:nonnegative(source.moveNumber,"SGF move number"),
+      skill:string(entry.linkedSkill,"SGF linkedSkill"),
+      date:string(entry.completedAt,"SGF completedAt"),
+      size:boardSize,
+      position:{black:coords.black.join(", ")||"none",white:coords.white.join(", ")||"none"},
+      reflection:{candidate:reflection?.candidate||"",reason:reflection?.reason||"",
+        opponent:reflection?.expectedOpponentResponse||"",timing},
+      review:{status:review?.status||"unconfirmed",evidence:review?.acceptableAnswer||"",
+        next:review?.nextCue||""}
+    };
+  });
   const report={
     exportedAt,uiVersion,total:problems.length,completed:completed.size,pendingReview:missed.size,
     items,skills:skillRows,diagnostics:{state:diagnosticRows.length?"partial":"empty",
       excluded:metrics.excludedResponsesWithoutQualification,skills:diagnosticRows},
-    events,practice,live,integrated,trial,sgf:[]
+    events,practice,live,integrated,trial,sgf
   };
   const audit=Object.freeze({
     status:"partial-source-adapter",
@@ -180,8 +220,11 @@ function adapt(snapshot,options={}) {
     })),
     metricsPolicyVersion:metrics.metricPolicyVersion,
     trialProtocolId:Trial.protocol.id,
+    sgfSourceCount:state.localExercises.length,
+    sgfPositionStoneCounts:sgf.map((x,i)=>state.localExercises[i].source.originalStones.length),
+    sgfReviewStates:sgf.map(x=>x.review.status),
     excludedDiagnostics:metrics.excludedResponsesWithoutQualification,
-    unsupported:["local SGF positions and reviews","all learner-facing localized skill/lesson names","actual canonical browser download parity"]
+    unsupported:["all learner-facing localized skill/lesson names","actual canonical browser download parity","manual review states are not independent Go correctness verification"]
   });
   return Object.freeze({status:"candidate-adapter",complete:false,report,audit});
 }
