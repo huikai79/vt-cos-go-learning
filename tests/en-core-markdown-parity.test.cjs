@@ -54,7 +54,7 @@ test("English preview does not trust unsupported canonical fields or inflate den
  assert.match(previewReport(d,{preview:true}).content,/UNKNOWN: Combined practice evidence/);
 });
 test("Markdown user input is escaped only once and remains readable",()=>{
- const d=base();d.sgf=[{source:"sample.sgf",number:1,skill:"cuts",date:"2026-10-25",
+ const d=base();d.sgf=[{source:"sample.sgf",number:1,skill:"cuts",date:"2026-10-25",size:9,position:{black:"(4,4)",white:"none"},
   reflection:{candidate:"D4 | <note>",reason:"reason \\ observation",opponent:"uncertain",timing:"before"},
   review:{status:"unconfirmed",evidence:"",next:""}}];
  const s=previewReport(d,{preview:true}).content;
