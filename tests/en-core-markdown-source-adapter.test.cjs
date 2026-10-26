@@ -43,6 +43,14 @@ test("Actual source events are adapted in order without upgrading eligibility",(
 test("Unknown and malformed source data fail closed, SGF is not silently dropped",()=>{
  const x=fixture();x.state.localExercises=[{id:"sgf-1"}];
  assert.throws(()=>adapt(x,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ x.state.localExercises=[{source:{sourceName:"sample.sgf",moveNumber:12,boardSize:9,originalStones:[[3,3,1],[4,4,2]]},linkedSkill:"capture-last-liberty-v1",completedAt:"2026-10-25",reflection:{candidate:"D4",reason:"Maybe | later",expectedOpponentResponse:"E5",savedBeforeAnswer:true},review:{status:"unconfirmed",acceptableAnswer:"",nextCue:""}}];
+ const sgf=render(x,{preview:true});
+ assert.match(sgf.preview.content,/Position \(9×9\): Black \(4,4\); White \(5,5\)/);
+ assert.match(sgf.preview.content,/not confirmed/);
+ assert.equal(sgf.converted.audit.sgfSourceCount,1);
+ assert.deepEqual(sgf.converted.audit.sgfPositionStoneCounts,[2]);
+ x.state.localExercises[0].source.originalStones.push([3,3,2]);
+ assert.throws(()=>render(x,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  x.state.localExercises=[];x.liveEvidence={ok:false,error:""};
  assert.throws(()=>adapt(x,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  x.liveEvidence={ok:false,error:"read failed"};x.integrated={state:"ok",summary:{progressPolicyVersion:"p",interpretationBoundary:"practice only",skills:[{skillId:"kc",practiceQualifiedOpportunities:2,completedDelayedT2Cycles:0,liveEligibleOpportunities:1,liveFirstResponses:1,liveSatisfiedFirstResponses:2,nextEvidenceNeed:"another observation"}]}};
