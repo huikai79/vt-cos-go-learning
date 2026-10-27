@@ -6,6 +6,7 @@ const path=require("node:path");
 const Metrics=require("../learning-metrics.js");
 const Trial=require("../trial.js");
 const {render}=require("../core-markdown-source-adapter.cjs");
+const {auditComparison}=require("../scripts/audit-core-markdown-differential.cjs");
 
 const source=fs.readFileSync(path.join(__dirname,"../app.js"),"utf8");
 function canonicalExport(snapshot) {
@@ -67,6 +68,17 @@ test("Execute ACTUAL Chinese exportNotes and English offline renderer on the SAM
  const snap=snapshot(),original=JSON.stringify(snap);
  const zh=canonicalExport(snap),en=render(snap,{preview:true});
  assert.equal(JSON.stringify(snap),original,"snapshot was mutated");
+ const comparison=auditComparison({snapshot:snap,canonical:zh,english:en});
+ assert.equal(comparison.releaseEligible,false);
+ assert.equal(comparison.status,"BLOCKED");
+ for(const id of ["core.completed-total","core.review","skills.first-unhinted-counts",
+   "events.count-order","events.first-retry-hints","events.version-audit","sgf.count-review","source-unchanged"]){
+   assert.equal(comparison.checks.find(x=>x.id===id)?.status,"MATCHED",id);
+ }
+ for(const id of ["names.reader-facing","timestamp.format","diagnostic.prose",
+   "integrated-and-trial.prose","event-versions.readable-export","browser-download","independent-review"]){
+   assert.equal(comparison.checks.find(x=>x.id===id)?.status,"REVIEW_REQUIRED",id);
+ }
  assert.equal(zh.mime,"text/markdown;charset=utf-8");
  assert.equal(en.converted.complete,false);
  assert.equal(en.preview.complete,false);
@@ -119,4 +131,25 @@ test("Preserve all original events including unknown eligibility without shrinki
  assert.equal(en.converted.report.skills[0].eligible,1);
  assert.equal(en.converted.audit.sourceEvents,snap.state.events.length);
  assert.match(en.preview.content,/UNKNOWN \(first-answer status\)/);
+});
+
+test("Differential audit detects dropped events and numerical drift, not only renamed headings",()=>{
+ const snap=snapshot(),zh=canonicalExport(snap),en=render(snap,{preview:true});
+ const altered={...en,preview:{...en.preview,content:en.preview.content.replace("Core questions completed: 1 / 2","Core questions completed: 2 / 2")}};
+ const mismatch=auditComparison({snapshot:snap,canonical:zh,english:altered});
+ assert.equal(mismatch.checks.find(x=>x.id==="core.completed-total").status,"BLOCKED");
+ const dropped={...en,preview:{...en.preview,content:en.preview.content.split("\n").filter(x=>!x.startsWith("| T4 |")).join("\n")}};
+ assert.equal(auditComparison({snapshot:snap,canonical:zh,english:dropped}).checks.find(x=>x.id==="events.count-order").status,"BLOCKED");
+ const badVersion={...en,converted:{...en.converted,audit:{...en.converted.audit,eventVersions:[]}}};
+ assert.equal(auditComparison({snapshot:snap,canonical:zh,english:badVersion}).checks.find(x=>x.id==="events.version-audit").status,"BLOCKED");
+});
+test("Unknown first-answer events still count and do not clear readable export blockers",()=>{
+ const snap=snapshot();
+ snap.state.events.push({type:"answer",occurredAt:"T6",skillId:"capture-last-liberty-v1",
+   problemId:"u2",outcome:"UNKNOWN",firstAnswer:null,unhinted:null,qualifiedOpportunity:false});
+ const zh=canonicalExport(snap),en=render(snap,{preview:true});
+ const audit=auditComparison({snapshot:snap,canonical:zh,english:en});
+ assert.equal(audit.checks.find(x=>x.id==="events.count-order").status,"MATCHED");
+ assert.equal(audit.checks.find(x=>x.id==="events.first-retry-hints").status,"MATCHED");
+ assert.equal(audit.releaseEligible,false);
 });
