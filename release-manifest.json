@@ -336,6 +336,7 @@
     "research/review-protocols/lgroup-mark-semantics-v1.json",
     "research/review-templates/lgroup-mark-semantics-receipt.example.json",
     "scheduler.js",
+    "scripts/audit-core-markdown-differential.cjs",
     "scripts/audit-english-homepage.cjs",
     "scripts/audit-public-locales.cjs",
     "scripts/build-r1-review-bank.cjs",
