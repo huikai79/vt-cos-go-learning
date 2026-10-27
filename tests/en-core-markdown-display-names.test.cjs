@@ -50,4 +50,10 @@ test("Offline Core report maps reader-facing names but retains original event ID
  const blocked=render(altered,{preview:true});
  assert.ok(blocked.converted.audit.unresolvedDisplayNames.includes("problem:"+problem.id));
  assert.equal(blocked.preview.complete,false);
+ const extra={...snapshot,state:{...snapshot.state,events:[...snapshot.state.events,
+  {type:"presented",occurredAt:"T2",skillId:skill.id,problemId:"unknown-item"}]}};
+ const unknown=render(extra,{preview:true});
+ assert.ok(unknown.converted.audit.unresolvedDisplayNames.includes("problem:unknown-item"));
+ assert.ok(unknown.preview.content.includes("unknown-item"));
+ assert.equal(unknown.preview.complete,false);
 });
