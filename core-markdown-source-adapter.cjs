@@ -5,6 +5,7 @@
 const Metrics = require("./learning-metrics.js");
 const Trial = require("./trial.js");
 const {previewReport} = require("./core-markdown-english-preview.cjs");
+const DisplayNames = require("./core-markdown-display-names.cjs");
 function reject(reason) {
   const error = new Error("Core Markdown source adapter blocked: " + reason);
   error.code = "LOCALE_EXPORT_BLOCKED";
@@ -51,6 +52,15 @@ function adapt(snapshot,options={}) {
     nonnegative(attempts[item.id],"attempt count");
   }
   const skillLookup=new Map(skills.map(x=>[x.id,x]));
+  const problemLookup=new Map(problems.map(x=>[x.id,x]));
+  const namesAudit=[];
+  const displayName=(source,kind)=>{
+    const label=kind==="skill"?DisplayNames.skillTitle(source):DisplayNames.problemTitle(source);
+    namesAudit.push({kind,id:label.id,sourceStatus:label.sourceStatus,review:label.review});
+    return label.text;
+  };
+  const skillName=id=>{const source=skillLookup.get(id);return source?displayName(source,"skill"):id;};
+  const problemName=id=>{const source=problemLookup.get(id);return source?displayName(source,"problem"):id;};
   const known=new Set(problems.map(x=>x.id));
   if([...completed,...missed].some(id=>!known.has(id)))reject("unknown completed or missed ID");
   // Exactly the same eligible numerator as the canonical exportNotes:
@@ -59,7 +69,7 @@ function adapt(snapshot,options={}) {
   const skillRows=skills.map(s=>{
     required(s,"skill");string(s.id,"skill.id");
     const eligible=skillEvents.filter(e=>e.type==="answer"&&e.skillId===s.id&&e.qualifiedOpportunity);
-    return {name:s.id,eligible:eligible.length,correct:eligible.filter(e=>e.outcome==="correct").length};
+    return {name:displayName(s,"skill"),eligible:eligible.length,correct:eligible.filter(e=>e.outcome==="correct").length};
   });
   // Metrics.summarize owns the actual eligibility and SCD/recurrence contracts.
   const metrics=Metrics.summarize({events:state.events,schedulerResponses:scheduler.responses});
@@ -73,17 +83,17 @@ function adapt(snapshot,options={}) {
       :s.recurrence.latestLowerBound?{state:"lower_bound",
         opportunities:nonnegative(s.recurrence.latestLowerBound.successfulOpportunitiesWithoutRecurrence,"recurrence lower bound")}
       :{state:"not_measured"};
-    return {id:s.skillId,label:null,opportunities:nonnegative(s.qualifiedOpportunities,"qualified"),
+    return {id:s.skillId,label:skillLookup.has(s.skillId)?skillName(s.skillId):null,opportunities:nonnegative(s.qualifiedOpportunities,"qualified"),
       errors:nonnegative(s.observedErrors,"errors"),scd,recurrence:rec};
   });
   const items=problems.map(p=>({
-    title:p.id,attempts:nonnegative(attempts[p.id]||0,"attempts"),completed:completed.has(p.id),needsReview:missed.has(p.id)
+    title:displayName(p,"problem"),attempts:nonnegative(attempts[p.id]||0,"attempts"),completed:completed.has(p.id),needsReview:missed.has(p.id)
   }));
   const events=skillEvents.map(e=>{
     const knownType=["presented","presentation_end","hint","answer"].includes(e.type);
     // Do not infer missing first-answer, hint, time, or outcome semantics.
-    return {occurredAt:string(e.occurredAt,"event.occurredAt"),skill:e.skillId,
-      item:e.problemId||"UNKNOWN",type:knownType?e.type:"unknown",
+    return {occurredAt:string(e.occurredAt,"event.occurredAt"),skill:skillName(e.skillId),
+      item:e.problemId?problemName(e.problemId):"UNKNOWN",type:knownType?e.type:"unknown",
       firstAnswer:e.firstAnswer===true?true:e.firstAnswer===false?false:null,
       unhinted:e.unhinted===true?true:e.unhinted===false?false:null,
       outcome:typeof e.outcome==="string"?e.outcome:"UNKNOWN",elapsedMs:e.elapsedMs};
@@ -102,7 +112,7 @@ function adapt(snapshot,options={}) {
       progress:string(le.summary.progressPolicyVersion,"progress version")},
     boundary:string(le.summary.interpretationBoundary,"live boundary"),
     skills:(le.summary.skills||[]).map(s=>({
-      name:string(s.skillId,"live skill id"),eligible:nonnegative(s.eligibleOpportunities,"live eligible"),
+      name:skillName(string(s.skillId,"live skill id")),eligible:nonnegative(s.eligibleOpportunities,"live eligible"),
       first:nonnegative(s.firstResponses,"live first"),satisfied:nonnegative(s.satisfiedFirstResponses,"live satisfied"),
       unsatisfied:nonnegative(s.notSatisfiedFirstResponses,"live unsatisfied"),
       unanswered:nonnegative(s.unansweredOpportunities,"live unanswered"),state:s.evidenceState||"UNKNOWN"
@@ -121,7 +131,7 @@ function adapt(snapshot,options={}) {
       integrated={state:"ok",policy:{version:string(c.progressPolicyVersion,"progress version")},
         boundary:string(c.interpretationBoundary,"integrated boundary"),
         skills:(c.skills||[]).map(s=>({
-          name:string(s.skillId,"integrated skill id"),
+          name:skillName(string(s.skillId,"integrated skill id")),
           practice:nonnegative(s.practiceQualifiedOpportunities,"practice qualified"),
           delayed:nonnegative(s.completedDelayedT2Cycles,"delayed cycles"),
           live:nonnegative(s.liveEligibleOpportunities,"live opportunities"),
@@ -154,7 +164,7 @@ function adapt(snapshot,options={}) {
       excluded:nonnegative(app.excludedHintedOrRepeated,"excluded applications")}};
   if(pilot.bySkillDirection){
     trial.directions=Object.entries(pilot.bySkillDirection).map(([id,v])=>({
-      skill:id,baselineCorrect:v.baseline.correct,baselineTotal:v.baseline.total,
+      skill:skillName(id),baselineCorrect:v.baseline.correct,baselineTotal:v.baseline.total,
       followupCorrect:v.followup.correct,followupTotal:v.followup.total
     }));
   }
@@ -192,7 +202,7 @@ function adapt(snapshot,options={}) {
     return {
       source:string(source.sourceName,"SGF sourceName"),
       number:nonnegative(source.moveNumber,"SGF move number"),
-      skill:string(entry.linkedSkill,"SGF linkedSkill"),
+      skill:skillName(string(entry.linkedSkill,"SGF linkedSkill")),
       date:string(entry.completedAt,"SGF completedAt"),
       size:boardSize,
       position:{black:coords.black.join(", ")||"none",white:coords.white.join(", ")||"none"},
@@ -224,7 +234,10 @@ function adapt(snapshot,options={}) {
     sgfPositionStoneCounts:sgf.map((x,i)=>state.localExercises[i].source.originalStones.length),
     sgfReviewStates:sgf.map(x=>x.review.status),
     excludedDiagnostics:metrics.excludedResponsesWithoutQualification,
-    unsupported:["all learner-facing localized skill/lesson names","actual canonical browser download parity","manual review states are not independent Go correctness verification"]
+    displayNameCandidates:namesAudit,
+    unresolvedDisplayNames:[...new Set(namesAudit.filter(x=>x.sourceStatus!=="source-matched").map(x=>x.kind+":"+x.id))],
+    displayNameReview:"PENDING",
+    unsupported:["native-English/Go review of candidate display names","actual canonical browser download parity","manual review states are not independent Go correctness verification"]
   });
   return Object.freeze({status:"candidate-adapter",complete:false,report,audit});
 }
