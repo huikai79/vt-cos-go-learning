@@ -51,7 +51,9 @@ function auditComparison({snapshot,canonical,english}={}){
    "Neither preview may claim release completion");
  // These are explicit blocking gaps. Canonical text uses localized titles;
  // the preview uses stable IDs, which are not a fluent English translation.
- check("names.reader-facing","REVIEW_REQUIRED","Chinese uses problem.title / skill.name; candidate English often displays IDs. Needs context-reviewed localized names");
+ invariant("names.source-coverage",Array.isArray(audit.unresolvedDisplayNames)&&audit.unresolvedDisplayNames.length===0,
+   "Only names with matching canonical IDs and titles may use English candidates; unresolved entries remain traceable");
+ check("names.reader-facing","REVIEW_REQUIRED","Source-matched candidate names are not approved. Native-English and Go terminology review is required before release");
  check("timestamp.format","REVIEW_REQUIRED","Chinese exportNotes reads current Date in zh-TW; English adapter uses snapshot.exportedAt. Same-instant display has not been verified");
  check("diagnostic.prose","REVIEW_REQUIRED","Chinese diagnosticSummaryText and English candidate diagnostic sentences have not passed Go/evidence semantic review");
  check("integrated-and-trial.prose","REVIEW_REQUIRED","Trial/combined record sentences and explanatory boundaries are not proven semantically equivalent");
