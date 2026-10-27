@@ -59,8 +59,9 @@ function adapt(snapshot,options={}) {
     namesAudit.push({kind,id:label.id,sourceStatus:label.sourceStatus,review:label.review});
     return label.text;
   };
-  const skillName=id=>{const source=skillLookup.get(id);return source?displayName(source,"skill"):id;};
-  const problemName=id=>{const source=problemLookup.get(id);return source?displayName(source,"problem"):id;};
+  const unresolved=(id,kind)=>{namesAudit.push({kind,id,sourceStatus:"catalog-missing",review:"candidate-unapproved"});return id;};
+  const skillName=id=>{const source=skillLookup.get(id);return source?displayName(source,"skill"):unresolved(id,"skill");};
+  const problemName=id=>{const source=problemLookup.get(id);return source?displayName(source,"problem"):unresolved(id,"problem");};
   const known=new Set(problems.map(x=>x.id));
   if([...completed,...missed].some(id=>!known.has(id)))reject("unknown completed or missed ID");
   // Exactly the same eligible numerator as the canonical exportNotes:
