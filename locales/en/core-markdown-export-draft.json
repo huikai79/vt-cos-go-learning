@@ -528,6 +528,30 @@
       "sourceFragment": "status: \"data_insufficient\"",
       "text": "Insufficient data; no formal evaluation or learning-gain conclusion.",
       "review": "candidate"
+    },
+    "diagnosticPolicy": {
+      "sourceFile": "learning-metrics.js",
+      "sourceFragment": "metricPolicyVersion: metricPolicy.id",
+      "text": "- Diagnostic metric policy: {version}. These observations are not a mastery estimate.",
+      "review": "candidate"
+    },
+    "diagnosticHistorical": {
+      "sourceFile": "learning-metrics.js",
+      "sourceFragment": "completed,",
+      "text": "- Previously completed delayed correction-distance samples: {count}. A newer error may still be awaiting follow-up.",
+      "review": "candidate"
+    },
+    "trialProtocol": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "id: \"personal-pilot-v3\"",
+      "text": "- Personal pilot protocol: {id}; descriptive use only, formal unseen evaluation unavailable.",
+      "review": "candidate"
+    },
+    "trialExposure": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "status: \"seen\"",
+      "text": "- Exposure: these pilot questions were previously seen in the R1 self-review. Neither batch is an unseen evaluation.",
+      "review": "candidate"
     }
   },
   "blocked": [
