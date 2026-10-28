@@ -62,6 +62,33 @@ test("Actual Chinese diagnostic function and English report retain active and hi
  assert.equal(rendered.preview.complete,false);
  assert.doesNotMatch(english,/mastery\s*\d+%/i);
 });
+test("Observed recurrence intervals preserve the latest censored lower bound from real Metrics.summarize",()=>{
+ const x=base();
+ // The first recurrence ends at the second error. A later correct opportunity
+ // belongs to the CURRENT non-recurrence lower bound, not to that past interval.
+ x.state.events=[answer(0,false),answer(1,true),answer(2,false),answer(3,true)];
+ const canonical=Metrics.summarize({events:x.state.events,schedulerResponses:[]});
+ const skill=canonical.skills.find(s=>s.skillId==="capture-last-liberty-v1");
+ assert.equal(skill.recurrence.intervals.length,1);
+ assert.equal(skill.recurrence.intervals[0].successfulOpportunitiesBetween,1);
+ assert.equal(skill.recurrence.latestLowerBound.successfulOpportunitiesWithoutRecurrence,1);
+ assert.match(chineseDiagnostic(canonical),/最近已觀察 1 段再犯間隔/);
+ const result=render(x,{preview:true});
+ const english=result.preview.content;
+ assert.equal(result.converted.report.diagnostics.skills[0].recurrence.latestLowerBound,1);
+ assert.match(english,/Observed recurrence intervals: 1/);
+ assert.match(english,/Lower bound since the most recent observed error.*: 1/);
+ assert.match(english,/first-response errors observed: 2; comparable opportunities: 4/);
+ assert.equal(result.preview.complete,false);
+ // Missing source lower-bound data is NOT evidence of zero recurrences.
+ const corrupted=structuredClone(result.converted.report);
+ delete corrupted.diagnostics.skills[0].recurrence.latestLowerBound;
+ assert.throws(()=>previewReport(corrupted,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ corrupted.diagnostics.skills[0].recurrence.latestLowerBound=-1;
+ assert.throws(()=>previewReport(corrupted,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ corrupted.diagnostics.skills[0].recurrence={state:"observed",intervals:0,latestLowerBound:1};
+ assert.throws(()=>previewReport(corrupted,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+});
 test("Actual Chinese and English diagnostics retain empty, hinted and no-error distinctions",()=>{
  const x=base();
  const empty=Metrics.summarize({events:[],schedulerResponses:[]});

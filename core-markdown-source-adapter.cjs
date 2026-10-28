@@ -83,7 +83,9 @@ function adapt(snapshot,options={}) {
       :s.scd.completed.length?{state:"completed",samples:nonnegative(s.scd.completed.length,"SCD samples")}
       :{state:"no_sample"};
     scd.completedSamples=nonnegative(s.scd.completed.length,"historical completed SCD samples");
-    const rec=s.recurrence.intervals.length?{state:"observed",intervals:s.recurrence.intervals.length}
+    const rec=s.recurrence.intervals.length?{state:"observed",
+        intervals:nonnegative(s.recurrence.intervals.length,"observed recurrence intervals"),
+        latestLowerBound:nonnegative(s.recurrence.latestLowerBound?.successfulOpportunitiesWithoutRecurrence,"current recurrence lower bound")}
       :s.recurrence.latestLowerBound?{state:"lower_bound",
         opportunities:nonnegative(s.recurrence.latestLowerBound.successfulOpportunitiesWithoutRecurrence,"recurrence lower bound")}
       :{state:"not_measured"};

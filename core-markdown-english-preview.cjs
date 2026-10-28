@@ -84,7 +84,7 @@ function previewReport(data, options={}) {
       if(skill.errors>skill.opportunities)blocked("diagnostic denominator");
       const label=skill.label==null?copy("diagnosticUnclassified",{id:skill.id}):text(skill.label,"diagnostic label");
       out.push(skill.errors===0?copy("diagnosticNoError",{skill:label,opportunities:skill.opportunities}):
-        copy("diagnosticErrors",{skill:label,errors:skill.errors}));
+        copy("diagnosticErrors",{skill:label,errors:skill.errors,opportunities:skill.opportunities}));
       const scd=requireRecord(skill.scd,"diagnostic scd");
       if(scd.state==="awaiting_first")out.push(copy("diagnosticAwaitFirst",{count:count(scd.opportunities,"SCD opportunities")}));
       else if(scd.state==="awaiting_second")out.push(copy("diagnosticAwaitSecond",{count:count(scd.opportunities,"SCD opportunities")}));
@@ -97,7 +97,12 @@ function previewReport(data, options={}) {
           out.push(copy("diagnosticHistorical",{count:scd.completedSamples}));
       }
       const recurrence=requireRecord(skill.recurrence,"recurrence");
-      if(recurrence.state==="observed")out.push(copy("diagnosticRecurrence",{count:count(recurrence.intervals,"recurrence intervals")}));
+      if(recurrence.state==="observed"){
+        const intervals=count(recurrence.intervals,"recurrence intervals");
+        if(intervals===0)blocked("observed recurrence has no intervals");
+        out.push(copy("diagnosticRecurrence",{count:intervals}));
+        out.push(copy("diagnosticLowerBound",{count:count(recurrence.latestLowerBound,"current recurrence lower bound")}));
+      }
       else if(recurrence.state==="lower_bound")out.push(copy("diagnosticLowerBound",{count:count(recurrence.opportunities,"recurrence lower bound")}));
       else if(recurrence.state!=="not_measured")blocked("unrecognized recurrence");
     }

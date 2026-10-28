@@ -398,9 +398,9 @@
       "review": "candidate"
     },
     "diagnosticErrors": {
-      "sourceFile": "app.js",
-      "sourceFragment": "${skill.observedErrors} 次首答錯誤",
-      "text": "- {skill}: first-response errors observed: {errors}.",
+      "sourceFile": "learning-metrics.js",
+      "sourceFragment": "qualifiedOpportunities: items.length",
+      "text": "- {skill}: first-response errors observed: {errors}; comparable opportunities: {opportunities}.",
       "review": "candidate"
     },
     "diagnosticAwaitFirst": {
@@ -436,7 +436,7 @@
     "diagnosticLowerBound": {
       "sourceFile": "app.js",
       "sourceFragment": "未再犯下限",
-      "text": "Lower bound without an observed recurrence: {count} successful opportunities.",
+      "text": "Lower bound since the most recent observed error (successful comparable opportunities without another observed error): {count}.",
       "review": "candidate"
     },
     "diagnosticUnclassified": {

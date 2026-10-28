@@ -113,9 +113,10 @@ test("Diagnostic policy and historical SCD samples survive an active later error
  const d=base();d.diagnostics={state:"partial",policyVersion:require("../learning-metrics.js").metricPolicy.id,
   excluded:0,skills:[{id:"capture-last-liberty-v1",label:"Capture a named group",opportunities:4,errors:2,
   scd:{state:"awaiting_second",opportunities:1,completedSamples:1},
-  recurrence:{state:"observed",intervals:1}}]};
+  recurrence:{state:"observed",intervals:1,latestLowerBound:0}}]};
  const preview=previewReport(d,{preview:true}).content;
  assert.match(preview,/Diagnostic metric policy:/);
+ assert.match(preview,/Lower bound since the most recent observed error.*: 0/);
  assert.match(preview,/Previously completed delayed correction-distance samples: 1/);
  assert.match(preview,/awaiting the second eligible delayed review/);
  assert.doesNotMatch(preview,/mastery [0-9]+%/i);
