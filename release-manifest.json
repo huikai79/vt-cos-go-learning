@@ -384,6 +384,7 @@
     "tests/en-core-markdown-parity.test.cjs",
     "tests/en-core-markdown-preview.test.cjs",
     "tests/en-core-markdown-source-adapter.test.cjs",
+    "tests/en-core-markdown-summary-parity.test.cjs",
     "tests/en-core-retry.test.cjs",
     "tests/en-homepage-coverage.test.cjs",
     "tests/en-homepage-introduction-authoring.test.cjs",
