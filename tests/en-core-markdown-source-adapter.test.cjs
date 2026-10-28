@@ -56,3 +56,40 @@ test("Unknown and malformed source data fail closed, SGF is not silently dropped
  x.liveEvidence={ok:false,error:"read failed"};x.integrated={state:"ok",summary:{progressPolicyVersion:"p",interpretationBoundary:"practice only",skills:[{skillId:"kc",practiceQualifiedOpportunities:2,completedDelayedT2Cycles:0,liveEligibleOpportunities:1,liveFirstResponses:1,liveSatisfiedFirstResponses:2,nextEvidenceNeed:"another observation"}]}};
  assert.throws(()=>render(x,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
 });
+
+test("An earlier completed delayed correction remains visible while a later error awaits review",()=>{
+ const x=fixture(),day=24*60*60*1000,start=Date.parse("2026-09-01T00:00:00Z");
+ const skill="capture-last-liberty-v1";
+ x.state.events=[0,1,7,8].map((offset,i)=>({
+   type:"answer",occurredAt:new Date(start+offset*day).toISOString(),
+   skillId:skill,problemId:"q1",qualifiedOpportunity:true,unhinted:true,firstAnswer:true,
+   transferLevel:"T2",pool:"practice",outcome:(i===0||i===3)?"incorrect":"correct",
+   elapsedMs:1000
+ }));
+ const {converted,preview}=render(x,{preview:true});
+ assert.equal(converted.report.diagnostics.skills[0].scd.completedSamples,1);
+ assert.equal(converted.report.diagnostics.skills[0].scd.state,"awaiting_first");
+ assert.equal(converted.report.diagnostics.skills[0].errors,2);
+ assert.match(preview.content,/Previously completed delayed correction-distance samples: 1/);
+ assert.match(preview.content,/awaiting the first eligible delayed review/);
+ assert.match(preview.content,/Diagnostic metric policy:/);
+ assert.equal(converted.complete,false);
+});
+test("Two completed previously seen pilot batches remain descriptive and not formal unseen assessment",()=>{
+ const x=fixture(),protocol=Trial.protocol;
+ x.state.trial={...Trial.emptyState(),batches:[
+  {id:"baseline",role:"baseline",label:"A",completedAt:"2026-09-01T00:00:00Z",problemIds:["a"]},
+  {id:"followup",role:"followup",label:"B",completedAt:"2026-09-08T00:00:00Z",problemIds:["b"]}
+ ],answers:[
+  {batchId:"baseline",problemId:"a",skillId:protocol.skills[0],correct:false},
+  {batchId:"followup",problemId:"b",skillId:protocol.skills[0],correct:true}
+ ]};
+ const result=render(x,{preview:true});
+ assert.equal(result.converted.report.trial.protocolId,protocol.id);
+ assert.equal(result.converted.report.trial.reviewGate,"personal_pilot_only");
+ assert.equal(result.converted.report.trial.previouslyExposed,true);
+ assert.equal(result.converted.report.trial.status,"data_insufficient");
+ assert.match(result.preview.content,/previously seen in the R1 self-review/);
+ assert.match(result.preview.content,/Both pilot batches have descriptions, but the evidence remains insufficient/);
+ assert.equal(result.preview.complete,false);
+});
