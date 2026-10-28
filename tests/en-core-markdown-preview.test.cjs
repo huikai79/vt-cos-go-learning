@@ -62,7 +62,7 @@ test("Diagnostic cases retain observed errors, delayed checks, recurrence and un
   {id:"kc-b",label:null,opportunities:1,errors:0,scd:{state:"no_sample"},recurrence:{state:"not_measured"}}
  ]};
  let content=previewReport(d,{preview:true}).content;
- for(const phrase of ["1 observed first-response errors","awaiting the second eligible delayed review","Lower bound","Unclassified observable skill outcome","eligibility-unknown"])assert.ok(content.includes(phrase),phrase);
+ for(const phrase of ["first-response errors observed: 1","awaiting the second eligible delayed review","Lower bound","Unclassified observable skill outcome","eligibility-unknown"])assert.ok(content.includes(phrase),phrase);
  d.diagnostics.skills[0].errors=4;
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  d.diagnostics={state:"unknown",excluded:0};
