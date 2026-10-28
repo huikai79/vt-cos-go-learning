@@ -25,7 +25,7 @@ test("First response, retry, hinted and unknown outcomes remain distinct",()=>{
   {occurredAt:"t2",skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:false,unhinted:false,outcome:"wrong",elapsedMs:2000},
   {occurredAt:"t3",skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:null,unhinted:null,outcome:"UNKNOWN"},
   {occurredAt:"t4",skill:"KC-1",item:"u1-01",type:"presentation_end",outcome:"unanswered"}
- ];d.diagnostics={state:"partial",excluded:2};
+ ];d.diagnostics={state:"partial",excluded:2,skills:[]};
  const s=previewReport(d,{preview:true}).content;
  for(const phrase of ["first response","retry response","no hint shown","after a hint","UNKNOWN (first-answer status)","UNKNOWN (answer outcome)","unanswered","eligibility-unknown"])assert.ok(s.includes(phrase),phrase);
  assert.doesNotMatch(s,/mastery \d+%/i);
@@ -87,7 +87,7 @@ test("Personal trial does not become formal unseen evaluation, even with two bat
   application:{correct:1,total:3,presented:4,unanswered:1,inappropriate:1,excluded:2},
   directions:[{skill:"Liberties",baselineCorrect:1,baselineTotal:2,followupCorrect:2,followupTotal:2}]};
  const result=previewReport(d,{preview:true});
- for(const phrase of ["previously exposed","remain insufficient","descriptive difference 1","hinted or repeated excluded 2","personal usability"])assert.ok(result.content.includes(phrase),phrase);
+ for(const phrase of ["previously exposed","evidence remains insufficient","descriptive difference 1","hinted or repeated excluded 2","personal usability"])assert.ok(result.content.includes(phrase),phrase);
  assert.equal(result.complete,false);
  d.trial.formalEligible=true;
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
