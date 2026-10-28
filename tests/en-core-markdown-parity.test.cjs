@@ -41,7 +41,7 @@ test("Canonical and English sections preserve descriptive counts but do not clai
  assert.match(english.content,/Core questions completed: 1 \/ 2/);
  assert.match(english.content,/Questions marked for review: 1/);
  assert.match(english.content,/1 eligible first unhinted opportunities; 0 correct first responses/);
- assert.match(english.content,/Hinted or eligibility-unknown responses excluded from this diagnostic: 1/);
+ assert.match(english.content,/Excluded from this diagnostic \(hinted, eligibility-unknown, or otherwise ineligible lesson\/scheduler responses\): 1/);
  assert.equal(english.complete,false);
  assert.ok(english.unreviewed.includes("full export review"));
 });
