@@ -50,7 +50,7 @@ test("Actual Chinese diagnostic function and English report retain active and hi
  assert.match(chinese,/2 次首答錯誤/);
  assert.match(chinese,/等待第一次延後複習/);
  assert.match(chinese,/1 段再犯間隔/);
- assert.match(english,/2 observed first-response errors/);
+ assert.match(english,/first-response errors observed: 2/);
  assert.match(english,/awaiting the first eligible delayed review/);
  assert.match(english,/Observed recurrence intervals: 1/);
  assert.match(english,/Previously completed delayed correction-distance samples: 1/);
