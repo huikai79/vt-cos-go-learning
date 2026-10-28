@@ -92,7 +92,7 @@
     },
     "diagnosticsExcluded": {
       "sourceFragment": "未納入診斷的提示後或資格不明作答：",
-      "text": "- Hinted or eligibility-unknown responses excluded from this diagnostic: {count}. This count must not be silently discarded from other reporting denominators.",
+      "text": "- Excluded from this diagnostic (hinted, eligibility-unknown, or otherwise ineligible lesson/scheduler responses): {count}. These records remain available for other reporting denominators.",
       "review": "candidate"
     },
     "diagnosticsRow": {
