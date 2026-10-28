@@ -74,12 +74,15 @@ function adapt(snapshot,options={}) {
   });
   // Metrics.summarize owns the actual eligibility and SCD/recurrence contracts.
   const metrics=Metrics.summarize({events:state.events,schedulerResponses:scheduler.responses});
+  if(metrics.schemaVersion!==1 || typeof metrics.metricPolicyVersion!=="string" || !metrics.metricPolicyVersion) reject("diagnostic metric contract changed");
   const diagnosticRows=metrics.skills.map(s=>{
+    if(!["awaiting_first_delayed_t2","awaiting_second_delayed_t2","completed","no_active_error"].includes(s.scd.status))reject("unknown SCD status");
     const active=s.scd.active;
     const scd=active?{state:active.firstDelayedProbeAt?"awaiting_second":"awaiting_first",
       opportunities:nonnegative(active.relevantOpportunityCount,"SCD opportunities")}
       :s.scd.completed.length?{state:"completed",samples:nonnegative(s.scd.completed.length,"SCD samples")}
       :{state:"no_sample"};
+    scd.completedSamples=nonnegative(s.scd.completed.length,"historical completed SCD samples");
     const rec=s.recurrence.intervals.length?{state:"observed",intervals:s.recurrence.intervals.length}
       :s.recurrence.latestLowerBound?{state:"lower_bound",
         opportunities:nonnegative(s.recurrence.latestLowerBound.successfulOpportunitiesWithoutRecurrence,"recurrence lower bound")}
@@ -156,6 +159,8 @@ function adapt(snapshot,options={}) {
     pilot.reviewGate!=="personal_pilot_only")reject("pilot eligibility changed");
   const app=required(pilot.application,"pilot application");
   const trial={state:"ok",status:"data_insufficient",formalEligible:false,
+    protocolId:Trial.protocol.id,reviewGate:pilot.reviewGate,
+    previouslyExposed:Trial.protocol.knownLearnerExposure?.status==="seen",
     batches:pilot.batchResults.map(row=>({role:row.role,correct:nonnegative(row.correct,"pilot correct"),
       total:nonnegative(row.total,"pilot total")})),
     application:{correct:nonnegative(app.correct,"application correct"),total:nonnegative(app.total,"application total"),
@@ -216,6 +221,7 @@ function adapt(snapshot,options={}) {
   const report={
     exportedAt,uiVersion,total:problems.length,completed:completed.size,pendingReview:missed.size,
     items,skills:skillRows,diagnostics:{state:diagnosticRows.length?"partial":"empty",
+      policyVersion:metrics.metricPolicyVersion,
       excluded:metrics.excludedResponsesWithoutQualification,skills:diagnosticRows},
     events,practice,live,integrated,trial,sgf
   };
