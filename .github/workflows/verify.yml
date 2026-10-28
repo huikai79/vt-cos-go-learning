@@ -30,13 +30,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # Retain a failing exit status, but do not let an existing frozen
+          # candidate failure hide later localization or evidence regressions.
+          failed=0
           for test_file in tests/*.test.cjs; do
             test_name="$(basename "$test_file")"
             if [ "$test_name" = "ui.test.cjs" ] || [ "$test_name" = "sgf-sabaki-oracle.test.cjs" ]; then
               continue
             fi
-            node "$test_file"
+            if ! node "$test_file"; then
+              echo "::error file=$test_file::Node test failure"
+              failed=1
+            fi
           done
+          if [ "$failed" -ne 0 ]; then
+            exit 1
+          fi
       - name: Rebuild deterministic R1 review bank
         shell: bash
         run: |
