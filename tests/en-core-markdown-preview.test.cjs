@@ -82,6 +82,7 @@ test("Combined evidence remains descriptive, versioned, count-checked and explic
 });
 test("Personal trial does not become formal unseen evaluation, even with two batches",()=>{
  const d=base();d.trial={state:"ok",status:"data_insufficient",formalEligible:false,
+  protocolId:require("../trial.js").protocol.id,reviewGate:"personal_pilot_only",previouslyExposed:true,
   batches:[{role:"baseline",correct:1,total:2},{role:"followup",correct:2,total:2}],
   application:{correct:1,total:3,presented:4,unanswered:1,inappropriate:1,excluded:2},
   directions:[{skill:"Liberties",baselineCorrect:1,baselineTotal:2,followupCorrect:2,followupTotal:2}]};
@@ -90,7 +91,12 @@ test("Personal trial does not become formal unseen evaluation, even with two bat
  assert.equal(result.complete,false);
  d.trial.formalEligible=true;
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
- d.trial.formalEligible=false;d.trial.batches[0].correct=5;
+ d.trial.formalEligible=false;d.trial.protocolId="wrong-protocol";
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.trial.protocolId=require("../trial.js").protocol.id;
+ d.trial.previouslyExposed=false;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.trial.previouslyExposed=true;d.trial.batches[0].correct=5;
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  d.trial={state:"unknown"};
  assert.match(previewReport(d,{preview:true}).content,/UNKNOWN: personal pilot/);
@@ -101,4 +107,18 @@ test("Actual canonical incorrect answer is rendered as incorrect rather than UNK
  const report=previewReport(d,{preview:true}).content;
  assert.match(report,/incorrect for this task/);
  assert.doesNotMatch(report,/UNKNOWN \(answer outcome\)/);
+});
+
+test("Diagnostic policy and historical SCD samples survive an active later error",()=>{
+ const d=base();d.diagnostics={state:"partial",policyVersion:require("../learning-metrics.js").metricPolicy.id,
+  excluded:0,skills:[{id:"capture-last-liberty-v1",label:"Capture a named group",opportunities:4,errors:2,
+  scd:{state:"awaiting_second",opportunities:1,completedSamples:1},
+  recurrence:{state:"observed",intervals:1}}]};
+ const preview=previewReport(d,{preview:true}).content;
+ assert.match(preview,/Diagnostic metric policy:/);
+ assert.match(preview,/Previously completed delayed correction-distance samples: 1/);
+ assert.match(preview,/awaiting the second eligible delayed review/);
+ assert.doesNotMatch(preview,/mastery [0-9]+%/i);
+ d.diagnostics.skills[0].scd.completedSamples=-1;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
 });
