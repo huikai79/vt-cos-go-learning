@@ -15,7 +15,12 @@ test("Core readable Markdown English candidate traces real export sources",()=>{
  assert.equal(draft.locale,"en");
  assert.ok(Object.keys(draft.messages).length>=70);
  for(const [key,row] of Object.entries(draft.messages)){
-  assert.ok(exportSource.includes(row.sourceFragment),"source drift "+key);
+  const sourceFile=row.sourceFile||"app.js";
+  assert.ok(["app.js","learning-metrics.js","trial.js"].includes(sourceFile),"untrusted source: "+key);
+  const scope=sourceFile==="app.js"
+    ?(row.sourceFile?source:exportSource)
+    :fs.readFileSync(path.join(root,sourceFile),"utf8");
+  assert.ok(scope.includes(row.sourceFragment),"source drift "+sourceFile+":"+key);
   assert.ok(row.text.trim(),"empty English "+key);
   assert.doesNotMatch(row.text,/[\u3400-\u9fff]/u,"untranslated "+key);
   assert.equal(row.review,"candidate");
@@ -34,5 +39,16 @@ test("Markdown candidate distinguishes first answer, retry, hinted, unknown and 
  assert.match(copy("skillsBoundary"),/not independent retention/);
  assert.match(copy("trialBoundary"),/Interpretation boundary/);
  assert.doesNotMatch(copy("liveReadError"),/successfully|verified gain/i);
+ assert.equal(draft.review.evidenceSemantics,"pending");
+});
+
+test("Diagnostic and pilot candidate messages use authoritative metrics/trial source anchors",()=>{
+ const d=draft.messages;
+ for(const key of ["diagnosticPolicy","diagnosticHistorical"])
+  assert.equal(d[key].sourceFile,"learning-metrics.js");
+ for(const key of ["trialProtocol","trialExposure"])
+  assert.equal(d[key].sourceFile,"trial.js");
+ assert.match(d.diagnosticsExcluded.text,/otherwise ineligible lesson\/scheduler responses/);
+ assert.match(d.trialExposure.text,/previously seen/);
  assert.equal(draft.review.evidenceSemantics,"pending");
 });
