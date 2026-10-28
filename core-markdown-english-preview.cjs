@@ -2,6 +2,7 @@
 // Offline, read-only editorial renderer: NEVER mount in the learner runtime.
 // The canonical app.js exportNotes and JSON event export remain authoritative.
 const draft = require("./locales/en/core-markdown-export-draft.json");
+const Trial = require("./trial.js");
 function blocked(reason) {
   const error = new Error("Core Markdown English preview blocked: " + reason);
   error.code = "LOCALE_EXPORT_BLOCKED";
@@ -69,6 +70,7 @@ function previewReport(data, options={}) {
     }
   }
   out.push("",copy("diagnosticsHeading"),"");
+  if(diagnostics.policyVersion!==undefined) out.push(copy("diagnosticPolicy",{version:text(diagnostics.policyVersion,"diagnostic policy version")}));
   if(diagnostics.state==="empty") out.push(copy("diagnosticsEmpty"));
   else if(diagnostics.state==="error") out.push("- ERROR: diagnostic evidence could not be read; no finding is inferred.");
   else if(diagnostics.state==="unknown") out.push("- UNKNOWN: diagnostic state could not be verified.");
@@ -89,6 +91,11 @@ function previewReport(data, options={}) {
       else if(scd.state==="completed")out.push(copy("diagnosticCompleted",{count:count(scd.samples,"SCD samples")}));
       else if(scd.state==="no_sample")out.push(copy("diagnosticNoSample"));
       else blocked("unrecognized SCD state");
+      if(scd.completedSamples!==undefined){
+        count(scd.completedSamples,"historical completed SCD samples");
+        if(scd.completedSamples>0 && scd.state!=="completed")
+          out.push(copy("diagnosticHistorical",{count:scd.completedSamples}));
+      }
       const recurrence=requireRecord(skill.recurrence,"recurrence");
       if(recurrence.state==="observed")out.push(copy("diagnosticRecurrence",{count:count(recurrence.intervals,"recurrence intervals")}));
       else if(recurrence.state==="lower_bound")out.push(copy("diagnosticLowerBound",{count:count(recurrence.opportunities,"recurrence lower bound")}));
@@ -182,8 +189,13 @@ function previewReport(data, options={}) {
       if(t.state==="error")out.push("- ERROR: personal pilot information could not be read.");
       else if(t.state==="unknown")out.push("- UNKNOWN: personal pilot state could not be verified.");
       else {
-        if(t.status!=="data_insufficient"||t.formalEligible!==false)blocked("trial cannot become a formal evaluation");
-        out.push(copy("trialPilotBoundary"),copy("trialProtocolBoundary"),copy("trialUnverifiedStatus"));
+        if(t.status!=="data_insufficient"||t.formalEligible!==false ||
+          t.protocolId!==Trial.protocol.id || t.reviewGate!=="personal_pilot_only" ||
+          t.previouslyExposed!==true || Trial.protocol.formalEligible!==false ||
+          Trial.protocol.knownLearnerExposure?.status!=="seen")
+          blocked("pilot protocol, prior exposure or formal eligibility changed");
+        out.push(copy("trialProtocol",{id:t.protocolId}),copy("trialExposure"),
+          copy("trialPilotBoundary"),copy("trialProtocolBoundary"),copy("trialUnverifiedStatus"));
         if(!Array.isArray(t.batches))blocked("trial batches");
         for(const batch of t.batches){
           requireRecord(batch,"trial batch");
