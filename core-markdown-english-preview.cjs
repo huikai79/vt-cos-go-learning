@@ -196,7 +196,11 @@ function previewReport(data, options={}) {
           blocked("pilot protocol, prior exposure or formal eligibility changed");
         out.push(copy("trialProtocol",{id:t.protocolId}),copy("trialExposure"),
           copy("trialPilotBoundary"),copy("trialProtocolBoundary"),copy("trialUnverifiedStatus"));
-        if(!Array.isArray(t.batches))blocked("trial batches");
+        if(!Array.isArray(t.batches) || t.batches.length>Trial.protocol.batches.length ||
+          t.batches.some((batch,i)=>!record(batch) || batch.role!==(i===0?"baseline":"followup")))
+          blocked("unexpected trial batch order or count");
+        if((t.batches.length===2)!==Array.isArray(t.directions))
+          blocked("trial direction availability differs from completed batches");
         for(const batch of t.batches){
           requireRecord(batch,"trial batch");
           if(!["baseline","followup"].includes(batch.role))blocked("trial batch role");
