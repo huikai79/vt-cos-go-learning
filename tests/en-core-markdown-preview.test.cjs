@@ -11,6 +11,7 @@ test("English Markdown preview is isolated, incomplete and preserves empty-state
  assert.throws(()=>previewReport(base(),{preview:true,publishable:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  const result=previewReport(base(),{preview:true});
  assert.equal(result.status,"candidate-preview");assert.equal(result.complete,false);
+ assert.match(result.content,/Oct 24, 2026.*00:00:00 UTC.*original source timestamp: 2026-10-24T00:00:00Z/);
  assert.match(result.content,/No comparable first responses without hints/);
  assert.match(result.content,/Core questions completed: 0 \/ 106/);
  assert.match(result.content,/## My Reflections/);
@@ -21,10 +22,10 @@ test("English Markdown preview is isolated, incomplete and preserves empty-state
 });
 test("First response, retry, hinted and unknown outcomes remain distinct",()=>{
  const d=base();d.events=[
-  {occurredAt:"t1",skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:true,unhinted:true,outcome:"correct",elapsedMs:1000},
-  {occurredAt:"t2",skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:false,unhinted:false,outcome:"wrong",elapsedMs:2000},
-  {occurredAt:"t3",skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:null,unhinted:null,outcome:"UNKNOWN"},
-  {occurredAt:"t4",skill:"KC-1",item:"u1-01",type:"presentation_end",outcome:"unanswered"}
+  {occurredAt:"2026-10-24T01:00:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:true,unhinted:true,outcome:"correct",elapsedMs:1000},
+  {occurredAt:"2026-10-24T02:00:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:false,unhinted:false,outcome:"wrong",elapsedMs:2000},
+  {occurredAt:"2026-10-24T03:00:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"KC-1",item:"u1-01",type:"answer",firstAnswer:null,unhinted:null,outcome:"UNKNOWN"},
+  {occurredAt:"2026-10-24T04:00:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"KC-1",item:"u1-01",type:"presentation_end",outcome:"unanswered"}
  ];d.diagnostics={state:"partial",excluded:2,skills:[]};
  const s=previewReport(d,{preview:true}).content;
  for(const phrase of ["first response","retry response","no hint shown","after a hint","UNKNOWN (first-answer status)","UNKNOWN (answer outcome)","unanswered","eligibility-unknown"])assert.ok(s.includes(phrase),phrase);
@@ -103,7 +104,7 @@ test("Personal trial does not become formal unseen evaluation, even with two bat
 });
 test("Actual canonical incorrect answer is rendered as incorrect rather than UNKNOWN",()=>{
  const d=base();
- d.events=[{occurredAt:"t",type:"answer",firstAnswer:true,unhinted:true,outcome:"incorrect",skill:"kc",item:"u1"}];
+ d.events=[{occurredAt:"2026-10-24T05:00:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},type:"answer",firstAnswer:true,unhinted:true,outcome:"incorrect",skill:"kc",item:"u1"}];
  const report=previewReport(d,{preview:true}).content;
  assert.match(report,/incorrect for this task/);
  assert.doesNotMatch(report,/UNKNOWN \(answer outcome\)/);
@@ -121,5 +122,26 @@ test("Diagnostic policy and historical SCD samples survive an active later error
  assert.match(preview,/awaiting the second eligible delayed review/);
  assert.doesNotMatch(preview,/mastery [0-9]+%/i);
  d.diagnostics.skills[0].scd.completedSamples=-1;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+});\ntest("UTC display preserves an explicit source offset; invalid and offset-free times are blocked",()=>{
+ const x=base();x.exportedAt="2026-10-29T23:15:40+08:00";
+ let report=previewReport(x,{preview:true}).content;
+ assert.match(report,/15:15:40 UTC/);
+ assert.match(report,/2026-10-29T23:15:40\\+08:00/);
+ for(const invalid of ["2026-10-29T23:15:40","2026-02-30T10:00:00Z","not-a-time"]){
+  x.exportedAt=invalid;
+  assert.throws(()=>previewReport(x,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ }
+ const d=base();d.events=[{occurredAt:"2026-10-24T05:00:00Z",type:"answer",firstAnswer:true,
+  unhinted:true,outcome:"correct",skill:"skill",item:"item",
+  versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null}}];
+ assert.match(previewReport(d,{preview:true}).content,/UNKNOWN \\(not recorded\\)/);
+ d.events[0].versions.skill="v2 | <script>";
+ assert.match(previewReport(d,{preview:true}).content,/skill: v2 \\\\| &lt;script&gt;/);
+ d.events[0].versions.skill=123;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.events[0].versions.skill=null;delete d.events[0].versions.scoring;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.events[0].versions.scoring=null;d.events[0].occurredAt="2026-10-24 05:00:00";
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
 });

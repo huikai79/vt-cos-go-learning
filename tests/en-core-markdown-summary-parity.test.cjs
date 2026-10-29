@@ -134,7 +134,7 @@ test("Actual trial summary remains descriptive in both languages with two previo
  assert.equal(result.preview.complete,false);
 });
 test("Incomplete, misordered and excess pilot batches fail closed, not 'two batches complete'",()=>{
- const minimal={exportedAt:"date",uiVersion:"v",completed:0,total:0,pendingReview:0,
+ const minimal={exportedAt:"2026-10-28T00:00:00Z",uiVersion:"v",completed:0,total:0,pendingReview:0,
   items:[],skills:[],events:[],sgf:[],diagnostics:{state:"empty",excluded:0},
   practice:{state:"absent"},live:{state:"absent"}};
  const pilot={state:"ok",status:"data_insufficient",formalEligible:false,protocolId:Trial.protocol.id,
@@ -148,4 +148,23 @@ test("Incomplete, misordered and excess pilot batches fail closed, not 'two batc
   [{role:"baseline",correct:0,total:1},{role:"followup",correct:1,total:1},{role:"followup",correct:0,total:1}]
  ])assert.throws(()=>previewReport({...p,trial:{...pilot,batches:bad}},{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  assert.throws(()=>previewReport({...p,trial:{...pilot,batches:[{role:"baseline",correct:0,total:1}],directions:[]}},{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+});
+\ntest("Source-stamped UTC export and event versions remain descriptive and do not invent missing metadata",()=>{
+ const x=base();
+ x.exportedAt="2026-10-29T23:01:02+08:00";
+ x.state.events=[{...answer(0,false),itemVersion:"item-a",skillVersion:"skill-b",
+   evidenceTaxonomyVersion:"tax-c",scoringContractVersion:"score-d"}];
+ const before=JSON.stringify(x);
+ const result=render(x,{preview:true});
+ assert.equal(JSON.stringify(x),before);
+ assert.equal(result.converted.report.exportedAt,x.exportedAt);
+ assert.equal(result.converted.report.events[0].occurredAt,x.state.events[0].occurredAt);
+ assert.deepEqual(result.converted.report.events[0].versions,
+   {item:"item-a",skill:"skill-b",evidenceTaxonomy:"tax-c",scoring:"score-d"});
+ assert.match(result.preview.content,/15:01:02 UTC/);
+ assert.ok(result.preview.content.includes(x.exportedAt));
+ assert.ok(result.preview.content.includes(x.state.events[0].occurredAt));
+ assert.match(result.preview.content,/item: item-a; skill: skill-b; evidence taxonomy: tax-c; scoring contract: score-d/);
+ assert.match(result.preview.content,/additional audit details from the canonical event records/);
+ assert.equal(result.preview.complete,false);
 });

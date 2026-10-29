@@ -30,6 +30,9 @@ test("Actual source events are adapted in order without upgrading eligibility",(
  assert.deepEqual(converted.audit.eventIds,["q1","q1","q1","q1"]);
  assert.equal(converted.audit.eventVersions[1].itemVersion,"v1");
  assert.equal(converted.audit.eventVersions[1].evidenceTaxonomyVersion,"tax-v1");
+ assert.deepEqual(converted.report.events[1].versions,{item:"v1",skill:null,evidenceTaxonomy:"tax-v1",scoring:null});
+ assert.match(preview.content,/item: v1; skill: UNKNOWN \\(not recorded\\); evidence taxonomy: tax-v1; scoring contract: UNKNOWN/);
+ assert.match(preview.content,/Oct 25, 2026.*01:01:00 UTC.*2026-10-25T01:01:00Z/);
  assert.equal(converted.report.skills[0].eligible,1);
  assert.equal(converted.report.skills[0].correct,0);
  assert.equal(converted.report.diagnostics.excluded,1);

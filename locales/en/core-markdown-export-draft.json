@@ -22,7 +22,7 @@
     },
     "exportedAt": {
       "sourceFragment": "匯出時間：",
-      "text": "Exported at: {date}",
+      "text": "Exported at: {date} (original source timestamp: {source})",
       "review": "candidate"
     },
     "uiVersion": {
@@ -107,7 +107,25 @@
     },
     "eventTableHeader": {
       "sourceFragment": "| 時間 | 技能 | 題目 | 事件 | 條件 | 結果 | 經過時間 |",
-      "text": "| Time | Skill | Item | Event | Condition | Outcome | Elapsed |",
+      "text": "| Time (UTC and original timestamp) | Skill | Item | Event | Condition | Outcome | Elapsed | Recorded versions |",
+      "review": "candidate"
+    },
+    "eventVersionsNote": {
+      "sourceFile": "app.js",
+      "sourceFragment": "const skillEvents = state.events.filter((event) => event.skillId)",
+      "text": "Source event timestamps are preserved in parentheses. Per-event version references below are additional audit details from the canonical event records, not fields displayed in the current Chinese Markdown export; UNKNOWN means not recorded, not a default version.",
+      "review": "candidate"
+    },
+    "eventVersionMissing": {
+      "sourceFile": "app.js",
+      "sourceFragment": "state.events",
+      "text": "UNKNOWN (not recorded)",
+      "review": "candidate"
+    },
+    "eventVersions": {
+      "sourceFile": "app.js",
+      "sourceFragment": "state.events",
+      "text": "item: {item}; skill: {skill}; evidence taxonomy: {evidenceTaxonomy}; scoring contract: {scoring}",
       "review": "candidate"
     },
     "eventPresented": {

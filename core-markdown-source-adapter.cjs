@@ -102,7 +102,10 @@ function adapt(snapshot,options={}) {
       item:e.problemId?problemName(e.problemId):"UNKNOWN",type:knownType?e.type:"unknown",
       firstAnswer:e.firstAnswer===true?true:e.firstAnswer===false?false:null,
       unhinted:e.unhinted===true?true:e.unhinted===false?false:null,
-      outcome:typeof e.outcome==="string"?e.outcome:"UNKNOWN",elapsedMs:e.elapsedMs};
+      outcome:typeof e.outcome==="string"?e.outcome:"UNKNOWN",elapsedMs:e.elapsedMs,
+      // Raw per-event version references are audit metadata, not inferred policy defaults.
+      versions:{item:e.itemVersion??null,skill:e.skillVersion??null,
+        evidenceTaxonomy:e.evidenceTaxonomyVersion??null,scoring:e.scoringContractVersion??null}};
   });
   const lp=statusRead(snapshot.livePractice,"livePractice");
   const practice=lp.state==="ok"?(lp.summary.totalEvents?{

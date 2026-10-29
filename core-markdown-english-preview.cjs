@@ -33,6 +33,28 @@ function copy(key, values={}) {
   });
 }
 function optionalText(value, fallbackKey) { return value == null || value === "" ? copy(fallbackKey) : text(value,"user field"); }
+// A locale-specific display is not the source timestamp. Require an explicit
+// offset and retain the original string; never borrow the runner's local zone.
+function timestamp(value,label) {
+  const source=text(value,label);
+  const m=source.match(/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})(?:\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$/);
+  if(!m)blocked(label+" must be an ISO timestamp with an explicit UTC offset");
+  const [year,month,day,hour,minute,second]=m.slice(1,7).map(Number);
+  const calendar=new Date(Date.UTC(year,month-1,day));
+  if(calendar.getUTCFullYear()!==year || calendar.getUTCMonth()+1!==month ||
+     calendar.getUTCDate()!==day || hour>23 || minute>59 || second>59)blocked(label+" has an invalid calendar time");
+  const time=new Date(source);
+  if(!Number.isFinite(time.getTime()))blocked(label+" is not a valid timestamp");
+  const utc=new Intl.DateTimeFormat("en",{
+    timeZone:"UTC",year:"numeric",month:"short",day:"numeric",
+    hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"
+  }).format(time)+" UTC";
+  return {source,utc};
+}
+function versionLabel(value,label) {
+  if(value===null)return copy("eventVersionMissing");
+  return text(value,label);
+}
 function previewReport(data, options={}) {
   if (!record(options) || options.preview !== true || options.runtime === true || options.publishable === true)
     blocked("offline candidate preview only");
@@ -42,7 +64,7 @@ function previewReport(data, options={}) {
   const allowed=new Set(["exportedAt","uiVersion","completed","total","pendingReview","items","skills",
     "diagnostics","events","practice","live","sgf","integrated","trial"]);
   if (Object.keys(data).some(k=>!allowed.has(k))) blocked("unrecognized report section");
-  text(data.exportedAt,"exportedAt"); text(data.uiVersion,"uiVersion");
+  const exported=timestamp(data.exportedAt,"exportedAt"); text(data.uiVersion,"uiVersion");
   count(data.total,"total"); count(data.completed,"completed"); count(data.pendingReview,"pendingReview");
   if (data.completed>data.total || data.pendingReview>data.total) blocked("invalid report totals");
   for(const k of ["items","skills","events","sgf"]) if (!Array.isArray(data[k])) blocked(k + " must be an array");
@@ -52,7 +74,7 @@ function previewReport(data, options={}) {
   const diagnostics=requireRecord(data.diagnostics,"diagnostics");
   if (!["empty","partial","error","unknown"].includes(diagnostics.state)) blocked("diagnostic status");
   count(diagnostics.excluded,"diagnostics.excluded");
-  const out=[copy("reportTitle"),"",copy("exportedAt",{date:data.exportedAt}),
+  const out=[copy("reportTitle"),"",copy("exportedAt",{date:exported.utc,source:exported.source}),
     copy("uiVersion",{version:data.uiVersion}),"",copy("completed",{completed:data.completed,total:data.total}),
     copy("pendingReview",{count:data.pendingReview}),"",copy("itemsHeading"),""];
   for(const item of data.items) {
@@ -109,9 +131,15 @@ function previewReport(data, options={}) {
   }
   out.push(copy("diagnosticsExcluded",{count:diagnostics.excluded}));
   if(data.events.length) {
-    out.push("",copy("practiceEventsHeading"),"",copy("eventTableHeader"),"| --- | --- | --- | --- | --- | --- | --- |");
+    out.push("",copy("practiceEventsHeading"),"",copy("eventVersionsNote"),"",copy("eventTableHeader"),"| --- | --- | --- | --- | --- | --- | --- | --- |");
     for(const e of data.events){
-      requireRecord(e,"event");text(e.occurredAt,"event.occurredAt");
+      requireRecord(e,"event");
+      const occurred=timestamp(e.occurredAt,"event.occurredAt");
+      const versions=requireRecord(e.versions,"event.versions");
+      if(Object.keys(versions).some(k=>!["item","skill","evidenceTaxonomy","scoring"].includes(k)))
+        blocked("unrecognized event version field");
+      for(const key of ["item","skill","evidenceTaxonomy","scoring"])
+        if(!Object.hasOwn(versions,key))blocked("missing event version field: "+key);
       const eventTypes={presented:"eventPresented",presentation_end:"eventPresentationEnd",hint:"eventHint"};
       const eventName=Object.hasOwn(eventTypes,e.type)?copy(eventTypes[e.type])
         :e.type==="answer"?(e.firstAnswer===true?copy("eventFirst"):e.firstAnswer===false?copy("eventRetry"):"UNKNOWN (first-answer status)")
@@ -123,7 +151,13 @@ function previewReport(data, options={}) {
       if(e.type==="presentation_end") outcome=e.outcome==="solved"?copy("eventSolved"):
         e.outcome==="unanswered"?copy("eventUnanswered"):e.outcome==="interrupted"?copy("eventInterrupted"):"UNKNOWN (presentation outcome)";
       const elapsed=Number.isFinite(e.elapsedMs)&&e.elapsedMs>=0?copy("eventElapsed",{seconds:Math.round(e.elapsedMs/1000)}):"—";
-      out.push("| "+[...([e.occurredAt,e.skill||"UNKNOWN",e.item||"UNKNOWN"].map(safe)),eventName,condition,outcome,elapsed].join(" | ")+" |");
+      const versionSummary=copy("eventVersions",{
+        item:versionLabel(versions.item,"item version"),skill:versionLabel(versions.skill,"skill version"),
+        evidenceTaxonomy:versionLabel(versions.evidenceTaxonomy,"evidence taxonomy version"),
+        scoring:versionLabel(versions.scoring,"scoring contract version")
+      });
+      out.push("| "+[...([occurred.utc+" ("+occurred.source+")",e.skill||"UNKNOWN",e.item||"UNKNOWN"].map(safe)),
+        eventName,condition,outcome,elapsed,versionSummary].join(" | ")+" |");
     }
   }
   function statusSection(value,name,heading,errorKey,okLines) {
