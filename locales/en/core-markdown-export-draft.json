@@ -1,0 +1,583 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "artifact": "core-markdown-export",
+  "status": "candidate-not-runtime",
+  "sourceFile": "app.js",
+  "sourceFunction": "exportNotes",
+  "sourceCommit": "8fcc645cebc969a2b57d85ccfa6c6391db08467c",
+  "review": {
+    "nativeEnglish": "pending",
+    "goTerminology": "pending",
+    "evidenceSemantics": "pending",
+    "accessibility": "pending",
+    "readerUsability": "not_measured"
+  },
+  "scope": "Offline text templates for source-traced Core readable Markdown, including diagnostic, combined practice evidence and personal pilot candidate wording; not a replacement for the canonical app.js export.",
+  "messages": {
+    "reportTitle": {
+      "sourceFragment": "# 個人圍棋練習紀錄",
+      "text": "# Personal Go Practice Record",
+      "review": "candidate"
+    },
+    "exportedAt": {
+      "sourceFragment": "匯出時間：",
+      "text": "Exported at: {date} (original source timestamp: {source})",
+      "review": "candidate"
+    },
+    "uiVersion": {
+      "sourceFragment": "介面版本：",
+      "text": "Interface version: {version}",
+      "review": "candidate"
+    },
+    "completed": {
+      "sourceFragment": "已完成：",
+      "text": "Core questions completed: {completed} / {total}",
+      "review": "candidate"
+    },
+    "pendingReview": {
+      "sourceFragment": "待複習：",
+      "text": "Questions marked for review: {count}",
+      "review": "candidate"
+    },
+    "itemsHeading": {
+      "sourceFragment": "## 題目紀錄",
+      "text": "## Core Question Records",
+      "review": "candidate"
+    },
+    "itemRow": {
+      "sourceFragment": "作答 ${state.attempts",
+      "text": "- {title}: {status}; attempts: {attempts}{review}",
+      "review": "candidate"
+    },
+    "itemCompleted": {
+      "sourceFragment": "已完成",
+      "text": "completed",
+      "review": "candidate"
+    },
+    "itemUncompleted": {
+      "sourceFragment": "未完成",
+      "text": "not completed",
+      "review": "candidate"
+    },
+    "itemReview": {
+      "sourceFragment": "；待複習",
+      "text": "; needs review",
+      "review": "candidate"
+    },
+    "skillsHeading": {
+      "sourceFragment": "## 試行技能摘要",
+      "text": "## Trial Skill Summary",
+      "review": "candidate"
+    },
+    "skillsBoundary": {
+      "sourceFragment": "這些是指定棋形的練習紀錄，不是獨立保留題或實戰成效。只把每次題目首次、未提示的作答列為可比較機會。",
+      "text": "These are practice records from specified board positions, not independent retention checks or evidence of improved game performance. Only each question's first, unhinted response counts as a comparable opportunity.",
+      "review": "candidate"
+    },
+    "skillsRow": {
+      "sourceFragment": "可比較機會 ${eligible.length} 次；第一次作答正確 ${correct} 次。",
+      "text": "- {skill}: {eligible} eligible first unhinted opportunities; {correct} correct first responses.",
+      "review": "candidate"
+    },
+    "diagnosticsHeading": {
+      "sourceFragment": "## 錯誤修正診斷",
+      "text": "## Error-Correction Diagnostics",
+      "review": "candidate"
+    },
+    "diagnosticsEmpty": {
+      "sourceFragment": "尚無可比較的未提示首答。",
+      "text": "- No comparable first responses without hints have been recorded.",
+      "review": "candidate"
+    },
+    "diagnosticsExcluded": {
+      "sourceFragment": "未納入診斷的提示後或資格不明作答：",
+      "text": "- Excluded from this diagnostic (hinted, eligibility-unknown, or otherwise ineligible lesson/scheduler responses): {count}. These records remain available for other reporting denominators.",
+      "review": "candidate"
+    },
+    "diagnosticsRow": {
+      "sourceFragment": "diagnosticSummaryText({ skills: [skill] })",
+      "text": "- {diagnostic}",
+      "review": "candidate"
+    },
+    "practiceEventsHeading": {
+      "sourceFragment": "## 練習作答紀錄",
+      "text": "## Practice Response Events",
+      "review": "candidate"
+    },
+    "eventTableHeader": {
+      "sourceFragment": "| 時間 | 技能 | 題目 | 事件 | 條件 | 結果 | 經過時間 |",
+      "text": "| Time (UTC and original timestamp) | Skill | Item | Event | Condition | Outcome | Elapsed | Recorded versions |",
+      "review": "candidate"
+    },
+    "eventVersionsNote": {
+      "sourceFile": "app.js",
+      "sourceFragment": "const skillEvents = state.events.filter((event) => event.skillId)",
+      "text": "Source event timestamps are preserved in parentheses. Per-event version references below are additional audit details from the canonical event records, not fields displayed in the current Chinese Markdown export; UNKNOWN means not recorded, not a default version.",
+      "review": "candidate"
+    },
+    "eventVersionMissing": {
+      "sourceFile": "app.js",
+      "sourceFragment": "state.events",
+      "text": "UNKNOWN (not recorded)",
+      "review": "candidate"
+    },
+    "eventVersions": {
+      "sourceFile": "app.js",
+      "sourceFragment": "state.events",
+      "text": "item: {item}; skill: {skill}; evidence taxonomy: {evidenceTaxonomy}; scoring contract: {scoring}",
+      "review": "candidate"
+    },
+    "eventPresented": {
+      "sourceFragment": "顯示題目",
+      "text": "item presented",
+      "review": "candidate"
+    },
+    "eventPresentationEnd": {
+      "sourceFragment": "結束題目",
+      "text": "presentation ended",
+      "review": "candidate"
+    },
+    "eventHint": {
+      "sourceFragment": "顯示提示",
+      "text": "hint shown",
+      "review": "candidate"
+    },
+    "eventFirst": {
+      "sourceFragment": "首次作答",
+      "text": "first response",
+      "review": "candidate"
+    },
+    "eventRetry": {
+      "sourceFragment": "重試作答",
+      "text": "retry response",
+      "review": "candidate"
+    },
+    "eventUnhinted": {
+      "sourceFragment": "未提示",
+      "text": "no hint shown",
+      "review": "candidate"
+    },
+    "eventHinted": {
+      "sourceFragment": "提示後",
+      "text": "after a hint",
+      "review": "candidate"
+    },
+    "eventCorrect": {
+      "sourceFragment": "正確",
+      "text": "correct for this task",
+      "review": "candidate"
+    },
+    "eventWrong": {
+      "sourceFragment": "錯誤",
+      "text": "incorrect for this task",
+      "review": "candidate"
+    },
+    "eventSolved": {
+      "sourceFragment": "已解出",
+      "text": "solved",
+      "review": "candidate"
+    },
+    "eventUnanswered": {
+      "sourceFragment": "未作答",
+      "text": "unanswered",
+      "review": "candidate"
+    },
+    "eventInterrupted": {
+      "sourceFragment": "中斷",
+      "text": "interrupted",
+      "review": "candidate"
+    },
+    "eventElapsed": {
+      "sourceFragment": "${Math.round(event.elapsedMs / 1000)} 秒",
+      "text": "{seconds} s",
+      "review": "candidate"
+    },
+    "practiceHeading": {
+      "sourceFragment": "## 人機實戰練習",
+      "text": "## Computer-Game Practice",
+      "review": "candidate"
+    },
+    "practiceGames": {
+      "sourceFragment": "練習局數：",
+      "text": "- Practice sessions: {count}",
+      "review": "candidate"
+    },
+    "practiceDecisions": {
+      "sourceFragment": "你的可觀察決策：",
+      "text": "- Observable human decisions: {count}",
+      "review": "candidate"
+    },
+    "practiceBoundary": {
+      "sourceFragment": "這些只作練習紀錄，不會直接改變能力紀錄、複習安排或正式評量。",
+      "text": "These are practice records only. They do not directly alter the learner model, review schedule or formal evaluation.",
+      "review": "candidate"
+    },
+    "practiceReadError": {
+      "sourceFragment": "事件流讀取失敗：",
+      "text": "- ERROR: Practice event stream could not be read ({reason}); no values have been guessed.",
+      "review": "candidate"
+    },
+    "liveHeading": {
+      "sourceFragment": "## 9×9 人機實戰紀錄",
+      "text": "## 9×9 Computer-Game Evidence",
+      "review": "candidate"
+    },
+    "liveAssessed": {
+      "sourceFragment": "已查看你的回合：",
+      "text": "- Human turns inspected: {count}",
+      "review": "candidate"
+    },
+    "liveEligible": {
+      "sourceFragment": "符合目前觀察條件的局部機會：",
+      "text": "- Local opportunities meeting the current eligibility criteria: {count}",
+      "review": "candidate"
+    },
+    "liveUnscored": {
+      "sourceFragment": "不評分回合：",
+      "text": "- Unscored human turns: {count}",
+      "review": "candidate"
+    },
+    "liveVersions": {
+      "sourceFragment": "使用中的判定版本：",
+      "text": "- Versioned eligibility / scoring / progress policies: {versions}",
+      "review": "candidate"
+    },
+    "liveLimits": {
+      "sourceFragment": "使用限制：",
+      "text": "- Interpretation boundary: {boundary}",
+      "review": "candidate"
+    },
+    "liveSkillRow": {
+      "sourceFragment": "符合條件 ${skill.eligibleOpportunities} 次",
+      "text": "- {skill}: eligible {eligible}; first responses {first}; satisfied {satisfied}; not satisfied {unsatisfied}; unanswered {unanswered}; state {state}.",
+      "review": "candidate"
+    },
+    "liveReadError": {
+      "sourceFragment": "實戰紀錄讀取失敗：",
+      "text": "- ERROR: Live evidence could not be read ({reason}); no replacement values have been inferred.",
+      "review": "candidate"
+    },
+    "integratedHeading": {
+      "sourceFragment": "## 整合學習紀錄",
+      "text": "## Combined Practice Evidence",
+      "review": "candidate"
+    },
+    "integratedPolicy": {
+      "sourceFragment": "判定版本：",
+      "text": "- Progress policy version: {version}",
+      "review": "candidate"
+    },
+    "integratedCollection": {
+      "sourceFragment": "實戰資料收集：",
+      "text": "- Live data collection: {status}; inspected {inspected}; eligible {eligible}; first responses {first}; unanswered {unanswered}; distinct sessions with first responses {sessions}.",
+      "review": "candidate"
+    },
+    "integratedSkill": {
+      "sourceFragment": "完成延後複習 ${skill.completedDelayedT2Cycles} 輪",
+      "text": "- {skill}: {practice} comparable practice opportunities; {delayed} completed delayed T2 cycles; {live} eligible live opportunities; {satisfied}/{first} satisfactory first live responses; next evidence needed: {next}.",
+      "review": "candidate"
+    },
+    "trialHeading": {
+      "sourceFragment": "## 個人縱向試行",
+      "text": "## Personal Longitudinal Trial",
+      "review": "candidate"
+    },
+    "trialJudgement": {
+      "sourceFragment": "目前判斷：",
+      "text": "- Current interpretation: {judgement}",
+      "review": "candidate"
+    },
+    "trialApplication": {
+      "sourceFragment": "局面應用練習：",
+      "text": "- Position-application practice: {correct}/{total} correct; presented {presented}; unanswered/interrupted {unanswered}; inappropriate uses {inappropriate}; hinted or repeated excluded {excluded}.",
+      "review": "candidate"
+    },
+    "trialBoundary": {
+      "sourceFragment": "判讀限制：",
+      "text": "- Interpretation boundary: {boundary}",
+      "review": "candidate"
+    },
+    "sgfHeading": {
+      "sourceFragment": "## 棋譜局部複習",
+      "text": "## Local SGF Reconstruction",
+      "review": "candidate"
+    },
+    "sgfBoundary": {
+      "sourceFragment": "以下是原局著手重建，不能單獨證明實戰改善；原判斷僅供日後人工復盤。",
+      "text": "This reconstructs a move from a game record. It does not, on its own, establish improved game performance. Initial judgements are saved for later human review.",
+      "review": "candidate"
+    },
+    "sgfRecord": {
+      "sourceFragment": "規則連結：${entry.linkedSkill}",
+      "text": "- {source} | move {number} | linked skill {skill} | completed {date}",
+      "review": "candidate"
+    },
+    "sgfPosition": {
+      "sourceFragment": "原局面（",
+      "text": "  - Position ({size}×{size}): Black {black}; White {white}",
+      "review": "candidate"
+    },
+    "sgfCandidate": {
+      "sourceFragment": "我先考慮的候選手：",
+      "text": "  - My initial candidate: {candidate}",
+      "review": "candidate"
+    },
+    "sgfReason": {
+      "sourceFragment": "理由或不確定點：",
+      "text": "  - Reason or uncertainty: {reason}",
+      "review": "candidate"
+    },
+    "sgfOpponent": {
+      "sourceFragment": "我預期對方會怎麼應手：",
+      "text": "  - Expected opponent reply: {response}",
+      "review": "candidate"
+    },
+    "sgfTiming": {
+      "sourceFragment": "保存時點：",
+      "text": "  - Reflection saved: {timing}",
+      "review": "candidate"
+    },
+    "sgfBefore": {
+      "sourceFragment": "作答前",
+      "text": "before the answer",
+      "review": "candidate"
+    },
+    "sgfAfter": {
+      "sourceFragment": "作答後",
+      "text": "after the answer",
+      "review": "candidate"
+    },
+    "sgfNotSaved": {
+      "sourceFragment": "未保存",
+      "text": "not saved",
+      "review": "candidate"
+    },
+    "sgfReview": {
+      "sourceFragment": "可接受答案確認：",
+      "text": "  - Acceptable answer verification: {status}",
+      "review": "candidate"
+    },
+    "sgfEvidence": {
+      "sourceFragment": "經確認的可接受答案或分析依據：",
+      "text": "  - Verified acceptable move / supporting analysis: {evidence}",
+      "review": "candidate"
+    },
+    "sgfNext": {
+      "sourceFragment": "下一次看到相似局面時的提醒：",
+      "text": "  - Note for a similar position: {next}",
+      "review": "candidate"
+    },
+    "sgfNotFilled": {
+      "sourceFragment": "未填寫",
+      "text": "not entered",
+      "review": "candidate"
+    },
+    "sgfUnconfirmed": {
+      "sourceFragment": "尚未確認",
+      "text": "not confirmed",
+      "review": "candidate"
+    },
+    "observationHeading": {
+      "sourceFragment": "## 我的觀察",
+      "text": "## My Reflections",
+      "review": "candidate"
+    },
+    "observationOne": {
+      "sourceFragment": "這次我原本怎麼想：",
+      "text": "- How I first thought about this: ",
+      "review": "candidate"
+    },
+    "observationTwo": {
+      "sourceFragment": "現在我知道：",
+      "text": "- What I understand now: ",
+      "review": "candidate"
+    },
+    "observationThree": {
+      "sourceFragment": "下次提醒自己：",
+      "text": "- What to remember next time: ",
+      "review": "candidate"
+    },
+    "fileName": {
+      "sourceFragment": "個人圍棋練習紀錄.md",
+      "text": "personal-go-practice-record.md",
+      "review": "candidate"
+    },
+    "diagnosticBoundary": {
+      "sourceFile": "app.js",
+      "sourceFragment": "diagnostics.interpretationBoundary",
+      "text": "These diagnostics classify observable responses to specified skill tasks. They do not establish a psychological or cognitive cause. A completed correction-distance sample requires separate unhinted, non-holdout delayed T2 first responses.",
+      "review": "candidate"
+    },
+    "diagnosticNoError": {
+      "sourceFile": "app.js",
+      "sourceFragment": "尚無首答錯誤",
+      "text": "- {skill}: {opportunities} comparable opportunities; no observed first-response errors.",
+      "review": "candidate"
+    },
+    "diagnosticErrors": {
+      "sourceFile": "learning-metrics.js",
+      "sourceFragment": "qualifiedOpportunities: items.length",
+      "text": "- {skill}: first-response errors observed: {errors}; comparable opportunities: {opportunities}.",
+      "review": "candidate"
+    },
+    "diagnosticAwaitFirst": {
+      "sourceFile": "app.js",
+      "sourceFragment": "等待第一次延後複習",
+      "text": "After the latest error: {count} comparable opportunities; awaiting the first eligible delayed review.",
+      "review": "candidate"
+    },
+    "diagnosticAwaitSecond": {
+      "sourceFile": "app.js",
+      "sourceFragment": "等待第二次延後複習",
+      "text": "After the latest error: {count} comparable opportunities; awaiting the second eligible delayed review.",
+      "review": "candidate"
+    },
+    "diagnosticCompleted": {
+      "sourceFile": "app.js",
+      "sourceFragment": "次完成的穩定修正距離樣本",
+      "text": "Completed correction-distance samples: {count}. This is diagnostic evidence only.",
+      "review": "candidate"
+    },
+    "diagnosticNoSample": {
+      "sourceFile": "app.js",
+      "sourceFragment": "尚無可完成的穩定修正距離樣本",
+      "text": "No completed correction-distance sample is available.",
+      "review": "candidate"
+    },
+    "diagnosticRecurrence": {
+      "sourceFile": "app.js",
+      "sourceFragment": "段再犯間隔",
+      "text": "Observed recurrence intervals: {count}.",
+      "review": "candidate"
+    },
+    "diagnosticLowerBound": {
+      "sourceFile": "app.js",
+      "sourceFragment": "未再犯下限",
+      "text": "Lower bound since the most recent observed error (successful comparable opportunities without another observed error): {count}.",
+      "review": "candidate"
+    },
+    "diagnosticUnclassified": {
+      "sourceFile": "learning-metrics.js",
+      "sourceFragment": "尚未分類的技能結果",
+      "text": "Unclassified observable skill outcome ({id}); no specific diagnosis can be inferred.",
+      "review": "candidate"
+    },
+    "integratedUnknown": {
+      "sourceFile": "app.js",
+      "sourceFragment": "if (integrated)",
+      "text": "UNKNOWN: Combined practice evidence could not be verified. No combined progress result is inferred.",
+      "review": "candidate"
+    },
+    "integratedError": {
+      "sourceFile": "app.js",
+      "sourceFragment": "if (integrated)",
+      "text": "ERROR: Combined practice evidence could not be read ({reason}); no combined result is inferred.",
+      "review": "candidate"
+    },
+    "integratedBoundary": {
+      "sourceFile": "app.js",
+      "sourceFragment": "integrated.interpretationBoundary",
+      "text": "- Interpretation boundary: {boundary}",
+      "review": "candidate"
+    },
+    "integratedCollectionBoundary": {
+      "sourceFile": "app.js",
+      "sourceFragment": "readiness.interpretationBoundary",
+      "text": "- Live collection interpretation boundary: {boundary}",
+      "review": "candidate"
+    },
+    "integratedNoMastery": {
+      "sourceFile": "app.js",
+      "sourceFragment": "integrated.skills",
+      "text": "Combined records describe observed practice, delayed review and live opportunities; they do not certify mastery or a playing rank.",
+      "review": "candidate"
+    },
+    "trialPilotBoundary": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "reviewNotice =",
+      "text": "This is a personal usability and data-pipeline pilot. The questions were previously exposed during an older self-review and are not formal unseen items. These observations cannot establish learning gains, retention, transfer, causation or generalisation.",
+      "review": "candidate"
+    },
+    "trialProtocolBoundary": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "interpretation: \"兩批只作資料管線",
+      "text": "The two batches test data handling, return flow and task burden. Previously exposed items cannot support formal unseen evaluation or claims of improvement, retention, transfer, causality, effects on other learners or permanent mastery.",
+      "review": "candidate"
+    },
+    "trialBatch": {
+      "sourceFile": "app.js",
+      "sourceFragment": "summary.batchResults.map",
+      "text": "- {role} batch: {correct}/{total} correct recorded first responses (descriptive only).",
+      "review": "candidate"
+    },
+    "trialBaseline": {
+      "sourceFile": "app.js",
+      "sourceFragment": "batch.role === \"baseline\"",
+      "text": "baseline",
+      "review": "candidate"
+    },
+    "trialFollowup": {
+      "sourceFile": "app.js",
+      "sourceFragment": "\"追蹤\"",
+      "text": "follow-up",
+      "review": "candidate"
+    },
+    "trialNoBatches": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "batchResults.length < 2",
+      "text": "Insufficient pilot data: the baseline and seven-day follow-up are not both complete.",
+      "review": "candidate"
+    },
+    "trialTwoBatches": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "兩批描述完成，仍屬資料不足",
+      "text": "Both pilot batches have descriptions, but the evidence remains insufficient for an effectiveness claim.",
+      "review": "candidate"
+    },
+    "trialSkillDirection": {
+      "sourceFile": "app.js",
+      "sourceFragment": "bySkillDirection",
+      "text": "- {skill}: baseline {baselineCorrect}/{baselineTotal}; follow-up {followupCorrect}/{followupTotal}; descriptive difference {delta}.",
+      "review": "candidate"
+    },
+    "trialUnverifiedStatus": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "status: \"data_insufficient\"",
+      "text": "Insufficient data; no formal evaluation or learning-gain conclusion.",
+      "review": "candidate"
+    },
+    "diagnosticPolicy": {
+      "sourceFile": "learning-metrics.js",
+      "sourceFragment": "metricPolicyVersion: metricPolicy.id",
+      "text": "- Diagnostic metric policy: {version}. These observations are not a mastery estimate.",
+      "review": "candidate"
+    },
+    "diagnosticHistorical": {
+      "sourceFile": "learning-metrics.js",
+      "sourceFragment": "completed,",
+      "text": "- Previously completed delayed correction-distance samples: {count}. A newer error may still be awaiting follow-up.",
+      "review": "candidate"
+    },
+    "trialProtocol": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "id: \"personal-pilot-v3\"",
+      "text": "- Personal pilot protocol: {id}; descriptive use only, formal unseen evaluation unavailable.",
+      "review": "candidate"
+    },
+    "trialExposure": {
+      "sourceFile": "trial.js",
+      "sourceFragment": "status: \"seen\"",
+      "text": "- Exposure: these pilot questions were previously seen in the R1 self-review. Neither batch is an unseen evaluation.",
+      "review": "candidate"
+    }
+  },
+  "blocked": [
+    "Full English readable export not activated; no output without an approved all-site locale and line-by-line evidence audit.",
+    "Diagnostics.interpretationBoundary, trial summary, live skill names/states and user-entered notes must be context-reviewed before an English release.",
+    "Missing, unknown or storage/provider errors must remain errors, never rendered as verified success.",
+    "The personal trial is previously exposed and data_insufficient even when both batches have completed.",
+    "Diagnostic and integrated English output is partial preview only: no learner state changes and no validation of retention, transfer, rank, or mastery.",
+    "Output must be tested against independent canonical event and summary fixtures before runtime connection."
+  ]
+}

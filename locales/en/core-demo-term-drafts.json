@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "canonicalSource": "content.js",
+  "sourceLessonCount": 19,
+  "lessons": [
+    {
+      "lessonIndex": 0,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Liberty",
+          "definition": "An empty intersection next to a stone along a board line; diagonal points do not count."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 1,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Atari",
+          "definition": "A connected group has only one liberty left and may be captured next."
+        },
+        {
+          "termIndex": 1,
+          "term": "Capture",
+          "definition": "When a move removes the opponent group's final liberty, the group is taken off the board."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 2,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Extend",
+          "definition": "Play next to your own group along a line, connecting the new stone and then recounting the group's liberties."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 3,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Group",
+          "definition": "Stones of one colour connected along board lines. Diagonal contact alone does not join groups."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 4,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Connecting point",
+          "definition": "An empty point touching two of your groups that can join them with a legal move."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 5,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Cutting point",
+          "definition": "An empty point where the opponent could directly connect two groups; occupying it blocks that particular connection."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 6,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Illegal self-capture",
+          "definition": "A move that leaves your group without liberties and captures nothing."
+        },
+        {
+          "termIndex": 1,
+          "term": "Ko",
+          "definition": "Under the simple-ko rule you may not immediately retake a stone if it recreates the preceding position."
+        },
+        {
+          "termIndex": 2,
+          "term": "Ko threat",
+          "definition": "A meaningful threat elsewhere intended to draw a reply before contesting a ko again."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 7,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Eye",
+          "definition": "An enclosed empty point or region inside a group."
+        },
+        {
+          "termIndex": 1,
+          "term": "Real eye",
+          "definition": "An eye the opponent cannot safely occupy; two separate real eyes generally let a group live in these basic positions."
+        },
+        {
+          "termIndex": 2,
+          "term": "False eye",
+          "definition": "A space that resembles an eye but can still be entered or destroyed by the opponent."
+        },
+        {
+          "termIndex": 3,
+          "term": "Vital point",
+          "definition": "A point that can significantly change eyes, liberties or connections."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 8,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Opening",
+          "definition": "The early phase of a game, when moves establish useful space and relationships between groups."
+        },
+        {
+          "termIndex": 1,
+          "term": "Middle game",
+          "definition": "The phase when groups interact more closely and fighting, security and life-and-death questions become more important."
+        },
+        {
+          "termIndex": 2,
+          "term": "Endgame",
+          "definition": "The later phase in which players settle remaining boundaries and compare local point gains after major groups are relatively safe."
+        },
+        {
+          "termIndex": 3,
+          "term": "Weak group",
+          "definition": "A group whose connection, liberties, eyes or escape routes are not yet secure and which may face attack."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 9,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "19×19 board",
+          "definition": "The standard full-sized Go board has 19 lines each way and 361 intersections. This small diagram illustrates direction, not the whole board."
+        },
+        {
+          "termIndex": 1,
+          "term": "Whole-board opening",
+          "definition": "Planning early moves across the board, often using corners and sides while considering how nearby stones work together."
+        },
+        {
+          "termIndex": 2,
+          "term": "Direction of play",
+          "definition": "Where a move develops in relation to neighbouring groups, space and support, rather than a coordinate to memorise."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 10,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Secure territory",
+          "definition": "An area with sufficiently settled boundaries that ownership is relatively clear; its value still follows the chosen scoring rules."
+        },
+        {
+          "termIndex": 1,
+          "term": "Thickness",
+          "definition": "A solid, relatively safe formation that can support nearby fighting or development; it is not automatically worth a fixed number of points."
+        },
+        {
+          "termIndex": 2,
+          "term": "Outside influence",
+          "definition": "The potential of a position to affect nearby or central play beyond its immediate territory; potential is not guaranteed points."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 11,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Weak group",
+          "definition": "A group that can be pressured because its eyes, liberties, connections or escape routes are insufficient."
+        },
+        {
+          "termIndex": 1,
+          "term": "Stable group",
+          "definition": "A group that is comparatively secure, so an opponent cannot easily turn a short attack into a severe life-and-death threat."
+        },
+        {
+          "termIndex": 2,
+          "term": "Attack",
+          "definition": "Playing against a weaker group to gain strength, territory or initiative; capturing every opposing stone is not required."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 12,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Life-and-death reading",
+          "definition": "Considering moves and the opponent's strongest replies in sequence to test whether a group can live or be captured."
+        },
+        {
+          "termIndex": 1,
+          "term": "Strongest reply",
+          "definition": "The opposing move that most seriously challenges your intended continuation in the local position."
+        },
+        {
+          "termIndex": 2,
+          "term": "Vital point",
+          "definition": "An intersection that can make a decisive difference to eye space, liberties or connections."
+        },
+        {
+          "termIndex": 3,
+          "term": "Player to move",
+          "definition": "Whose turn it is in the position; this can change the result and is different from sente as an initiative concept."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 13,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Endgame",
+          "definition": "The stage of settling remaining boundaries and comparing local gains after most large groups are reasonably secure."
+        },
+        {
+          "termIndex": 1,
+          "term": "Point",
+          "definition": "A unit used here for a local score or score difference. Whole-board scoring depends on the rules in use."
+        },
+        {
+          "termIndex": 2,
+          "term": "Sente",
+          "definition": "The initiative retained when a move usually demands an answer and you may be able to play first elsewhere afterwards; it is not guaranteed."
+        },
+        {
+          "termIndex": 3,
+          "term": "Urgent move",
+          "definition": "A move that prevents immediate serious loss, such as a group dying or a major invasion, and may matter more than a larger ordinary endgame move."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 14,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Whole-board direction",
+          "definition": "Comparing weak groups, unsettled spaces and support across the board before deciding where to play next."
+        },
+        {
+          "termIndex": 1,
+          "term": "Urgent area",
+          "definition": "An area where failing to respond promptly may cause a major and near-term loss."
+        },
+        {
+          "termIndex": 2,
+          "term": "Big point",
+          "definition": "A promising open area offering substantial value but not necessarily posing immediate danger."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 15,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Sacrifice",
+          "definition": "Deliberately accepting the loss of a few stones in return for benefits elsewhere on the board."
+        },
+        {
+          "termIndex": 1,
+          "term": "Compensation",
+          "definition": "The outside strength, territory, attacking chances or initiative obtained in exchange for giving up stones."
+        },
+        {
+          "termIndex": 2,
+          "term": "Outside influence",
+          "definition": "The reach and usefulness of stones toward the centre or another area; it is not already secured territory."
+        },
+        {
+          "termIndex": 3,
+          "term": "Sente",
+          "definition": "The opportunity to retain the move and reach the next important area first after a move that normally calls for an answer."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 16,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Ko threat",
+          "definition": "A move elsewhere that the opponent has a strong reason to answer while you prepare to contest a ko again."
+        },
+        {
+          "termIndex": 1,
+          "term": "Value of a ko",
+          "definition": "The difference between winning and losing the ko in the full position; it helps determine how much to spend on threats."
+        },
+        {
+          "termIndex": 2,
+          "term": "Ko fight",
+          "definition": "The exchange of threats and responses while both players contest the right to retake a ko point."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 17,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Joseki",
+          "definition": "A commonly studied sequence of reasonable corner exchanges under particular conditions; never a context-free guarantee of the best move."
+        },
+        {
+          "termIndex": 1,
+          "term": "Outside influence",
+          "definition": "The useful strength and reach toward the rest of the board arising from a local exchange."
+        },
+        {
+          "termIndex": 2,
+          "term": "Direction of play",
+          "definition": "Choosing which way a local variation develops in relation to friendly support, opposing strength and whole-board needs."
+        }
+      ]
+    },
+    {
+      "lessonIndex": 18,
+      "sourceVersion": "content.js-public-2026-10-14",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending",
+      "terms": [
+        {
+          "termIndex": 0,
+          "term": "Game review",
+          "definition": "Revisiting a completed game to examine key decisions, recover your original reasoning and choose a question to test next time."
+        },
+        {
+          "termIndex": 1,
+          "term": "Turning point",
+          "definition": "A position where a decision significantly changed the result or the safety of an important group."
+        },
+        {
+          "termIndex": 2,
+          "term": "Candidate move",
+          "definition": "An alternative move worth comparing in the same position, not necessarily the only correct or best move."
+        },
+        {
+          "termIndex": 3,
+          "term": "Played move",
+          "definition": "The move recorded as actually played in the game; it is a historical baseline, not automatically the uniquely best move."
+        }
+      ]
+    }
+  ],
+  "sourceSemantics": "Glossary terms only; demonstration captions have one source of truth at locales/en/core-demo-drafts.json. Neither copy is allowed to change item rules or scoring.",
+  "missing": "Human Go-specific terminology check, native English review, runtime localization and 11-page complete-site coverage remain pending; all target locale routes blocked."
+}
