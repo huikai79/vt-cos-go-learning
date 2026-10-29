@@ -123,11 +123,12 @@ test("Diagnostic policy and historical SCD samples survive an active later error
  assert.doesNotMatch(preview,/mastery [0-9]+%/i);
  d.diagnostics.skills[0].scd.completedSamples=-1;
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
-});\ntest("UTC display preserves an explicit source offset; invalid and offset-free times are blocked",()=>{
+});
+test("UTC display preserves an explicit source offset; invalid and offset-free times are blocked",()=>{
  const x=base();x.exportedAt="2026-10-29T23:15:40+08:00";
  let report=previewReport(x,{preview:true}).content;
  assert.match(report,/15:15:40 UTC/);
- assert.match(report,/2026-10-29T23:15:40\\+08:00/);
+ assert.match(report,/2026-10-29T23:15:40\+08:00/);
  for(const invalid of ["2026-10-29T23:15:40","2026-02-30T10:00:00Z","not-a-time"]){
   x.exportedAt=invalid;
   assert.throws(()=>previewReport(x,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
@@ -135,9 +136,9 @@ test("Diagnostic policy and historical SCD samples survive an active later error
  const d=base();d.events=[{occurredAt:"2026-10-24T05:00:00Z",type:"answer",firstAnswer:true,
   unhinted:true,outcome:"correct",skill:"skill",item:"item",
   versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null}}];
- assert.match(previewReport(d,{preview:true}).content,/UNKNOWN \\(not recorded\\)/);
+ assert.match(previewReport(d,{preview:true}).content,/UNKNOWN \(not recorded\)/);
  d.events[0].versions.skill="v2 | <script>";
- assert.match(previewReport(d,{preview:true}).content,/skill: v2 \\\\| &lt;script&gt;/);
+ assert.ok(previewReport(d,{preview:true}).content.includes("skill: v2 "+String.fromCharCode(92)+"| &lt;script&gt;"));
  d.events[0].versions.skill=123;
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  d.events[0].versions.skill=null;delete d.events[0].versions.scoring;

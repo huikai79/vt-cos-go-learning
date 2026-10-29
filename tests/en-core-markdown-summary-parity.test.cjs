@@ -149,7 +149,8 @@ test("Incomplete, misordered and excess pilot batches fail closed, not 'two batc
  ])assert.throws(()=>previewReport({...p,trial:{...pilot,batches:bad}},{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  assert.throws(()=>previewReport({...p,trial:{...pilot,batches:[{role:"baseline",correct:0,total:1}],directions:[]}},{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
 });
-\ntest("Source-stamped UTC export and event versions remain descriptive and do not invent missing metadata",()=>{
+
+test("Source-stamped UTC export and event versions remain descriptive and do not invent missing metadata",()=>{
  const x=base();
  x.exportedAt="2026-10-29T23:01:02+08:00";
  x.state.events=[{...answer(0,false),itemVersion:"item-a",skillVersion:"skill-b",

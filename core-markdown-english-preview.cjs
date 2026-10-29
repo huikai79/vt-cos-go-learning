@@ -37,7 +37,7 @@ function optionalText(value, fallbackKey) { return value == null || value === ""
 // offset and retain the original string; never borrow the runner's local zone.
 function timestamp(value,label) {
   const source=text(value,label);
-  const m=source.match(/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})(?:\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$/);
+  const m=source.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/);
   if(!m)blocked(label+" must be an ISO timestamp with an explicit UTC offset");
   const [year,month,day,hour,minute,second]=m.slice(1,7).map(Number);
   const calendar=new Date(Date.UTC(year,month-1,day));
