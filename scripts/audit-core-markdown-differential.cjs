@@ -25,12 +25,16 @@ function auditComparison({snapshot,canonical,english}={}){
   JSON.stringify(report.skills.map(s=>[s.eligible,s.correct])),"Counts must match, not only headings");
  const events=(snapshot.state?.events||[]).filter(x=>x&&x.skillId);
  const canonicalRows=zh.split("\n").filter(line=>line.startsWith("| ")&&events.some(e=>line.startsWith("| "+e.occurredAt+" |")));
- const englishRows=en.split("\n").filter(line=>line.startsWith("| ")&&events.some(e=>line.startsWith("| "+e.occurredAt+" |")));
+ const englishRows=en.split("\n").filter(line=>line.startsWith("| ")&&events.some(e=>line.includes(" ("+e.occurredAt+") |")));
  const expected=events.map(e=>e.occurredAt);
  const timestamps=rows=>rows.map(row=>row.split(" | ")[0].slice(2));
+ const sourceTimestamps=rows=>rows.map(row=>{
+   const firstCell=row.split(" | ")[0].slice(2),m=firstCell.match(/\(([^()]+)\)$/);
+   return m?m[1]:null;
+ });
  invariant("events.count-order",canonicalRows.length===events.length&&englishRows.length===events.length&&
    JSON.stringify(timestamps(canonicalRows))===JSON.stringify(expected)&&
-   JSON.stringify(timestamps(englishRows))===JSON.stringify(expected),
+   JSON.stringify(sourceTimestamps(englishRows))===JSON.stringify(expected),
    "All skill events, including failed/UNKNOWN rows, in original order");
  invariant("events.first-retry-hints",events.every((e,i)=>{
    const row=englishRows[i]||"";
@@ -40,7 +44,8 @@ function auditComparison({snapshot,canonical,english}={}){
  }),"English must not collapse first/retry or missing eligibility into success");
  invariant("events.version-audit",Array.isArray(audit.eventVersions)&&audit.eventVersions.length===events.length&&
   events.every((e,i)=>["itemVersion","skillVersion","evidenceTaxonomyVersion","scoringContractVersion"]
-   .every(k=>(audit.eventVersions[i][k]??null)===(e[k]??null))),
+   .every((k,j)=>(audit.eventVersions[i][k]??null)===(e[k]??null)&&
+     (report.events?.[i]?.versions?.[["item","skill","evidenceTaxonomy","scoring"][j]]??null)===(e[k]??null))),
    "Raw event versions must be preserved unchanged in audit metadata");
  const sgfSource=snapshot.state?.localExercises||[];
  invariant("sgf.count-review",audit.sgfSourceCount===sgfSource.length&&
@@ -57,7 +62,7 @@ function auditComparison({snapshot,canonical,english}={}){
  check("timestamp.format","REVIEW_REQUIRED","Chinese exportNotes reads current Date in zh-TW; English adapter uses snapshot.exportedAt. Same-instant display has not been verified");
  check("diagnostic.prose","REVIEW_REQUIRED","Chinese diagnosticSummaryText and English candidate diagnostic sentences have not passed Go/evidence semantic review");
  check("integrated-and-trial.prose","REVIEW_REQUIRED","Trial/combined record sentences and explanatory boundaries are not proven semantically equivalent");
- check("event-versions.readable-export","REVIEW_REQUIRED","Event versions are in JSON/audit metadata, not yet in both readable Markdown reports");
+ check("event-versions.readable-export","REVIEW_REQUIRED","English preview shows per-event audit references; Chinese Markdown does not. Human review and actual browser parity remain unverified");
  check("browser-download","REVIEW_REQUIRED","Controlled source execution is not a real browser two-language download");
  check("independent-review","REVIEW_REQUIRED","Native-English/Go/evidence/accessibility reviews not completed");
  const blockers=checks.filter(c=>c.status!=="MATCHED");

@@ -29,7 +29,7 @@ test("Offline Core report maps reader-facing names but retains original event ID
  const snapshot={schemaVersion:1,exportedAt:"2026-10-27T00:00:00Z",uiVersion:"report-test",
   problems:[problem],skills:[skill],state:{completed:[problem.id],missed:[],attempts:{[problem.id]:1},
   scheduler:{responses:[]},events:[
-    {type:"answer",occurredAt:"T1",skillId:skill.id,problemId:problem.id,
+    {type:"answer",occurredAt:"2026-10-27T01:00:00Z",skillId:skill.id,problemId:problem.id,
      firstAnswer:true,unhinted:true,qualifiedOpportunity:true,outcome:"incorrect",
      itemVersion:"item-7",scoringContractVersion:"score-2",elapsedMs:1000}
   ],trial:Trial.emptyState(),applicationResults:[],applicationEvents:[],localExercises:[]},
@@ -51,7 +51,7 @@ test("Offline Core report maps reader-facing names but retains original event ID
  assert.ok(blocked.converted.audit.unresolvedDisplayNames.includes("problem:"+problem.id));
  assert.equal(blocked.preview.complete,false);
  const extra={...snapshot,state:{...snapshot.state,events:[...snapshot.state.events,
-  {type:"presented",occurredAt:"T2",skillId:skill.id,problemId:"unknown-item"}]}};
+  {type:"presented",occurredAt:"2026-10-27T01:01:00Z",skillId:skill.id,problemId:"unknown-item"}]}};
  const unknown=render(extra,{preview:true});
  assert.ok(unknown.converted.audit.unresolvedDisplayNames.includes("problem:unknown-item"));
  assert.ok(unknown.preview.content.includes("unknown-item"));

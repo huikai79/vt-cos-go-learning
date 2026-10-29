@@ -14,18 +14,18 @@ const base=()=>({exportedAt:"2026-10-25T08:00:00Z",uiVersion:"workspace-v1",comp
  skills:[{name:"Liberties",eligible:1,correct:0}],diagnostics:{state:"partial",excluded:1,skills:[
   {id:"kc",label:"Liberties",opportunities:1,errors:1,scd:{state:"no_sample"},recurrence:{state:"lower_bound",opportunities:0}}]},
  events:[
- {occurredAt:"t1",skill:"kc",item:"u1",type:"presented"},
- {occurredAt:"t2",skill:"kc",item:"u1",type:"answer",firstAnswer:true,unhinted:true,outcome:"incorrect",elapsedMs:1000},
- {occurredAt:"t3",skill:"kc",item:"u1",type:"hint"},
- {occurredAt:"t4",skill:"kc",item:"u1",type:"answer",firstAnswer:false,unhinted:false,outcome:"correct",elapsedMs:2000},
- {occurredAt:"t5",skill:"kc",item:"u1",type:"presentation_end",outcome:"solved"}],
+ {occurredAt:"2026-10-25T08:01:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"kc",item:"u1",type:"presented"},
+ {occurredAt:"2026-10-25T08:02:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"kc",item:"u1",type:"answer",firstAnswer:true,unhinted:true,outcome:"incorrect",elapsedMs:1000},
+ {occurredAt:"2026-10-25T08:03:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"kc",item:"u1",type:"hint"},
+ {occurredAt:"2026-10-25T08:04:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"kc",item:"u1",type:"answer",firstAnswer:false,unhinted:false,outcome:"correct",elapsedMs:2000},
+ {occurredAt:"2026-10-25T08:05:00Z",versions:{item:null,skill:null,evidenceTaxonomy:null,scoring:null},skill:"kc",item:"u1",type:"presentation_end",outcome:"solved"}],
  practice:{state:"error",reason:"storage failure"},live:{state:"unknown"},sgf:[]});
 test("Source-preserving event fixture: canonical export guards the same event fields and order",()=>{
  for(const key of ["event.occurredAt","event.skillId","event.problemId","event.type","event.firstAnswer","event.unhinted","event.outcome","event.elapsedMs"])
    assert.ok(canonical.includes(key),key);
  const events=base().events;
  const report=previewReport(base(),{preview:true}).content;
- const rows=report.split("\n").filter(x=>x.startsWith("| t"));
+ const rows=report.split("\n").filter(x=>x.startsWith("| ")&&events.some(e=>x.includes(" ("+e.occurredAt+") |")));
  assert.equal(rows.length,events.length);
  for(let i=0;i<events.length;i++)assert.ok(rows[i].includes(events[i].occurredAt),"event order "+i);
  assert.match(rows[1],/first response.*no hint shown.*incorrect for this task/);

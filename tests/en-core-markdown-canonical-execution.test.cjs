@@ -43,13 +43,13 @@ const snapshot=()=>({
  state:{
    completed:["u1"],missed:["u2"],attempts:{u1:2,u2:0},
    scheduler:{responses:[]},events:[
-    {type:"presented",occurredAt:"T1",skillId:"capture-last-liberty-v1",problemId:"u1",itemVersion:"item-v1"},
-    {type:"answer",occurredAt:"T2",skillId:"capture-last-liberty-v1",problemId:"u1",firstAnswer:true,
+    {type:"presented",occurredAt:"2026-10-26T00:01:00Z",skillId:"capture-last-liberty-v1",problemId:"u1",itemVersion:"item-v1"},
+    {type:"answer",occurredAt:"2026-10-26T00:02:00Z",skillId:"capture-last-liberty-v1",problemId:"u1",firstAnswer:true,
       unhinted:true,qualifiedOpportunity:true,outcome:"incorrect",elapsedMs:1000,itemVersion:"item-v1",scoringContractVersion:"score-v2"},
-    {type:"hint",occurredAt:"T3",skillId:"capture-last-liberty-v1",problemId:"u1"},
-    {type:"answer",occurredAt:"T4",skillId:"capture-last-liberty-v1",problemId:"u1",firstAnswer:false,
+    {type:"hint",occurredAt:"2026-10-26T00:03:00Z",skillId:"capture-last-liberty-v1",problemId:"u1"},
+    {type:"answer",occurredAt:"2026-10-26T00:04:00Z",skillId:"capture-last-liberty-v1",problemId:"u1",firstAnswer:false,
       unhinted:false,qualifiedOpportunity:false,outcome:"correct",elapsedMs:2000,itemVersion:"item-v1"},
-    {type:"presentation_end",occurredAt:"T5",skillId:"capture-last-liberty-v1",problemId:"u1",outcome:"solved"}
+    {type:"presentation_end",occurredAt:"2026-10-26T00:05:00Z",skillId:"capture-last-liberty-v1",problemId:"u1",outcome:"solved"}
    ],
    trial:Trial.emptyState(),applicationResults:[],applicationEvents:[],
    localExercises:[{
@@ -88,14 +88,14 @@ test("Execute ACTUAL Chinese exportNotes and English offline renderer on the SAM
  assert.match(en.preview.content,/Questions marked for review: 1/);
  assert.match(zh.body,/可比較機會 1 次；第一次作答正確 0 次/);
  assert.match(en.preview.content,/1 eligible first unhinted opportunities; 0 correct first responses/);
- const zhOrder=[...zh.body.matchAll(/\| (T\d) \|/g)].map(m=>m[1]);
- const enOrder=[...en.preview.content.matchAll(/\| (T\d) \|/g)].map(m=>m[1]);
- assert.deepEqual(zhOrder,["T1","T2","T3","T4","T5"]);
+ const zhOrder=[...zh.body.matchAll(/\| (2026-10-26T00:0[1-6]:00Z) \|/g)].map(m=>m[1]);
+ const enOrder=[...en.preview.content.matchAll(/\((2026-10-26T00:0[1-6]:00Z)\) \|/g)].map(m=>m[1]);
+ assert.deepEqual(zhOrder,[1,2,3,4,5].map(v=>"2026-10-26T00:0"+v+":00Z"));
  assert.deepEqual(enOrder,zhOrder);
- assert.match(zh.body,/T2 \|.*首次作答.*未提示.*錯誤/);
- assert.match(en.preview.content,/T2 \|.*first response.*no hint shown.*incorrect for this task/);
- assert.match(zh.body,/T4 \|.*重試作答.*提示後.*正確/);
- assert.match(en.preview.content,/T4 \|.*retry response.*after a hint.*correct for this task/);
+ assert.match(zh.body,/2026-10-26T00:02:00Z \|.*首次作答.*未提示.*錯誤/);
+ assert.match(en.preview.content,/2026-10-26T00:02:00Z\) \|.*first response.*no hint shown.*incorrect for this task/);
+ assert.match(zh.body,/2026-10-26T00:04:00Z \|.*重試作答.*提示後.*正確/);
+ assert.match(en.preview.content,/2026-10-26T00:04:00Z\) \|.*retry response.*after a hint.*correct for this task/);
  assert.match(zh.body,/事件流讀取失敗：event store unavailable/);
  assert.match(en.preview.content,/ERROR: Practice event stream could not be read/);
  assert.match(zh.body,/實戰紀錄讀取失敗：provider result UNKNOWN/);
@@ -122,11 +122,11 @@ test("Unknown or malformed SGF cannot silently disappear from the English report
 });
 test("Preserve all original events including unknown eligibility without shrinking denominator",()=>{
  const snap=snapshot();
- snap.state.events.push({type:"answer",occurredAt:"T6",skillId:"capture-last-liberty-v1",
+ snap.state.events.push({type:"answer",occurredAt:"2026-10-26T00:06:00Z",skillId:"capture-last-liberty-v1",
    problemId:"u2",outcome:"UNKNOWN",firstAnswer:null,unhinted:null,qualifiedOpportunity:false});
  const zh=canonicalExport(snap),en=render(snap,{preview:true});
- const zhRows=[...zh.body.matchAll(/\| (T\d) \|/g)].map(m=>m[1]);
- const enRows=[...en.preview.content.matchAll(/\| (T\d) \|/g)].map(m=>m[1]);
+ const zhRows=[...zh.body.matchAll(/\| (2026-10-26T00:0[1-6]:00Z) \|/g)].map(m=>m[1]);
+ const enRows=[...en.preview.content.matchAll(/\((2026-10-26T00:0[1-6]:00Z)\) \|/g)].map(m=>m[1]);
  assert.deepEqual(enRows,zhRows);
  assert.equal(en.converted.report.skills[0].eligible,1);
  assert.equal(en.converted.audit.sourceEvents,snap.state.events.length);
@@ -138,14 +138,14 @@ test("Differential audit detects dropped events and numerical drift, not only re
  const altered={...en,preview:{...en.preview,content:en.preview.content.replace("Core questions completed: 1 / 2","Core questions completed: 2 / 2")}};
  const mismatch=auditComparison({snapshot:snap,canonical:zh,english:altered});
  assert.equal(mismatch.checks.find(x=>x.id==="core.completed-total").status,"BLOCKED");
- const dropped={...en,preview:{...en.preview,content:en.preview.content.split("\n").filter(x=>!x.startsWith("| T4 |")).join("\n")}};
+ const dropped={...en,preview:{...en.preview,content:en.preview.content.split("\n").filter(x=>!x.includes("(2026-10-26T00:04:00Z) |")).join("\n")}};
  assert.equal(auditComparison({snapshot:snap,canonical:zh,english:dropped}).checks.find(x=>x.id==="events.count-order").status,"BLOCKED");
  const badVersion={...en,converted:{...en.converted,audit:{...en.converted.audit,eventVersions:[]}}};
  assert.equal(auditComparison({snapshot:snap,canonical:zh,english:badVersion}).checks.find(x=>x.id==="events.version-audit").status,"BLOCKED");
 });
 test("Unknown first-answer events still count and do not clear readable export blockers",()=>{
  const snap=snapshot();
- snap.state.events.push({type:"answer",occurredAt:"T6",skillId:"capture-last-liberty-v1",
+ snap.state.events.push({type:"answer",occurredAt:"2026-10-26T00:06:00Z",skillId:"capture-last-liberty-v1",
    problemId:"u2",outcome:"UNKNOWN",firstAnswer:null,unhinted:null,qualifiedOpportunity:false});
  const zh=canonicalExport(snap),en=render(snap,{preview:true});
  const audit=auditComparison({snapshot:snap,canonical:zh,english:en});
