@@ -4,6 +4,8 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
+const {render: renderEnglishOffline} = require("../core-markdown-source-adapter.cjs");
+const {auditComparison: auditBrowserMarkdown} = require("../scripts/audit-core-markdown-differential.cjs");
 
 const browser = [
   "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
@@ -830,7 +832,71 @@ async function main() {
     assert.equal(response.title, "從一局找到下一個課題");
     assert.equal(response.boardHidden, true);
     assert.equal(response.singleColumn, true);
-    const notes = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__exportBlob = blob; return 'blob:captured'; }; URL.revokeObjectURL = () => {}; HTMLAnchorElement.prototype.click = function () { window.__downloadName = this.download; }; document.querySelector('#export-button').click(); return {name: window.__downloadName, text: await window.__exportBlob.text()}; })()`);
+    // WP40 real Edge disk download of the existing Chinese learner export.
+    const markdownDownloadDir = fs.mkdtempSync(path.join(os.tmpdir(), "go-core-markdown-"));
+    let downloadedMarkdown;
+    try {
+      await command(socket, "Browser.setDownloadBehavior", { behavior: "allow", downloadPath: markdownDownloadDir });
+      await evaluate(socket, "document.querySelector('#export-button').click()");
+      const expectedFile = path.join(markdownDownloadDir, "個人圍棋練習紀錄.md");
+      for (let retry = 0; retry < 100; retry += 1) {
+        if (fs.existsSync(expectedFile) && fs.statSync(expectedFile).size > 0 &&
+            !fs.readdirSync(markdownDownloadDir).some(name => name.endsWith(".crdownload"))) break;
+        await delay(100);
+      }
+      assert.ok(fs.existsSync(expectedFile), "Edge did not create the actual Chinese Markdown download");
+      downloadedMarkdown = fs.readFileSync(expectedFile, "utf8");
+      assert.match(downloadedMarkdown, /^# 個人圍棋練習紀錄/m);
+      assert.match(downloadedMarkdown, /已完成：7 \/ 106/);
+      assert.match(downloadedMarkdown, /## 練習作答紀錄/);
+      assert.match(downloadedMarkdown, /首次作答.*未提示.*錯誤/);
+    } finally {
+      fs.rmSync(markdownDownloadDir, { recursive: true, force: true, maxRetries: 8, retryDelay: 100 });
+    }
+    // Independent browser Blob capture, compared with the real disk file.
+    const notes = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__exportBlob = blob; return 'blob:captured'; }; URL.revokeObjectURL = () => {}; HTMLAnchorElement.prototype.click = function () { window.__downloadName = this.download; }; document.querySelector('#export-button').click(); return {name: window.__downloadName, mime: window.__exportBlob.type, text: await window.__exportBlob.text()}; })()`);
+    const normalizeExportTime = text => text.replace(/^匯出時間：.*$/m, "匯出時間：[same-session timestamp]");
+    assert.equal(notes.mime, "text/markdown;charset=utf-8");
+    assert.equal(normalizeExportTime(downloadedMarkdown), normalizeExportTime(notes.text),
+      "disk download and canonical browser Blob differ outside the clock label");
+    // The event snapshot is read from the SAME Edge session. The English
+    // candidate is rendered only in this Node test, never in the website.
+    const browserSnapshot = await evaluate(socket, `(() => {
+      const saved=JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
+      const requested=window.GoSiteLanguage.stateFor(new URL('?lang=en',location.href).href);
+      return {
+        schemaVersion:1, exportedAt:new Date().toISOString(), uiVersion:saved.uiVersion,
+        problems:window.GoContent.problems.map(p=>({id:p.id,title:p.title})),
+        skills:window.GoContent.skills.map(s=>({id:s.id,name:s.name})),
+        state:saved,
+        // Not read by this test: keep provider and integrated status unknown.
+        livePractice:{ok:false,error:"not independently read in browser parity receipt"},
+        liveEvidence:{ok:false,error:"not independently read in browser parity receipt"},
+        integrated:{state:"unknown"},
+        localeGate:{requested:requested.requested,status:requested.status,rendered:requested.rendered}
+      };
+    })()`);
+    assert.deepEqual(browserSnapshot.localeGate, {requested:"en",status:"unavailable",rendered:"zh-Hant-TW"});
+    const storedBefore=JSON.stringify(browserSnapshot.state);
+    const englishBrowserCandidate=renderEnglishOffline(browserSnapshot,{preview:true});
+    assert.equal(JSON.stringify(browserSnapshot.state),storedBefore,"English conversion mutated Edge source data");
+    assert.equal(englishBrowserCandidate.preview.complete,false);
+    assert.equal(englishBrowserCandidate.converted.complete,false);
+    const browserComparison=auditBrowserMarkdown({
+      snapshot:browserSnapshot,canonical:{body:downloadedMarkdown},english:englishBrowserCandidate
+    });
+    for(const id of ["core.completed-total","core.review","skills.first-unhinted-counts",
+      "events.count-order","events.first-retry-hints","events.version-audit","source-unchanged"]){
+      assert.equal(browserComparison.checks.find(x=>x.id===id)?.status,"MATCHED",
+        "Edge disk download vs offline English: "+id);
+    }
+    assert.equal(browserComparison.releaseEligible,false);
+    assert.equal(browserComparison.checks.find(x=>x.id==="browser-download")?.status,"REVIEW_REQUIRED",
+      "Chinese browser download does not prove a released English browser download");
+    assert.match(englishBrowserCandidate.preview.content,/Personal Go Practice Record/);
+    assert.doesNotMatch(englishBrowserCandidate.preview.content,/mastery \d+%/i);
+    process.stdout.write("PASS: Edge disk Markdown vs offline English source parity (not released)\n");
+
     assert.equal(notes.name, "個人圍棋練習紀錄.md");
     assert.match(notes.text, /已完成：7 \/ 106/);
     assert.match(notes.text, /待複習：0 題/);
