@@ -140,6 +140,10 @@ test("UTC display preserves an explicit source offset; invalid and offset-free t
  d.events[0].versions.skill="v2 | <script>";
  assert.ok(previewReport(d,{preview:true}).content.includes("skill: v2 "+String.fromCharCode(92)+"| &lt;script&gt;"));
  d.events[0].versions.skill=123;
+ assert.match(previewReport(d,{preview:true}).content,/skill: 123;/);
+ d.events[0].versions.skill=-1;
+ assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
+ d.events[0].versions.skill={code:"123"};
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});
  d.events[0].versions.skill=null;delete d.events[0].versions.scoring;
  assert.throws(()=>previewReport(d,{preview:true}),{code:"LOCALE_EXPORT_BLOCKED"});

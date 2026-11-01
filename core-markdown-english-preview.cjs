@@ -53,6 +53,10 @@ function timestamp(value,label) {
 }
 function versionLabel(value,label) {
   if(value===null)return copy("eventVersionMissing");
+  // Canonical event skill/item/taxonomy versions can be integers. Rendering
+  // must preserve their raw numeric type in the adapter/audit, not reject
+  // browser-authored events or silently supply a version.
+  if(Number.isSafeInteger(value) && value>=0)return String(value);
   return text(value,label);
 }
 function previewReport(data, options={}) {

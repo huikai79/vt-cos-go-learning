@@ -96,3 +96,18 @@ test("Two completed previously seen pilot batches remain descriptive and not for
  assert.match(result.preview.content,/Both pilot batches have descriptions, but the evidence remains insufficient/);
  assert.equal(result.preview.complete,false);
 });
+
+test("Real numeric canonical event version IDs remain numeric in audit and readable in English",()=>{
+ const x=fixture();
+ x.state.events[1].itemVersion=3;
+ x.state.events[1].skillVersion=2;
+ x.state.events[1].evidenceTaxonomyVersion=1;
+ x.state.events[1].scoringContractVersion=4;
+ const result=render(x,{preview:true});
+ assert.deepEqual(result.converted.report.events[1].versions,
+   {item:3,skill:2,evidenceTaxonomy:1,scoring:4});
+ assert.deepEqual(result.converted.audit.eventVersions[1],
+   {itemVersion:3,skillVersion:2,evidenceTaxonomyVersion:1,scoringContractVersion:4});
+ assert.match(result.preview.content,/item: 3; skill: 2; evidence taxonomy: 1; scoring contract: 4/);
+ assert.equal(result.preview.complete,false);
+});
