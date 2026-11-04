@@ -1,0 +1,506 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "canonicalSource": "content.js:GoContent.lessons[*].demoSteps",
+  "editorialStatus": "draft",
+  "goReview": "pending",
+  "nativeReview": "pending",
+  "lessons": [
+    {
+      "lessonIndex": 0,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "A stone in the corner",
+          "caption": "A stone at the corner has no intersections outside the board. Only neighbouring empty points inside the board count as liberties.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Two liberties",
+          "caption": "The empty points directly right and below are its two liberties; the diagonal point does not count.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 1,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "White's last liberty",
+          "caption": "Black surrounds White from three directions. Look for the one empty intersection that still touches White.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Capturing White",
+          "caption": "Black fills that final liberty, leaving White without liberties and removing the white stone.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 2,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "One liberty left",
+          "caption": "This black stone has only one empty neighbouring point below it. Check the point before extending.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Black connects by extending",
+          "caption": "The new black stone joins the original along a line. The connected group now shares its liberties.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 3,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Direct connection",
+          "caption": "The two black stones touch along a horizontal line, so they are already one connected group.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Diagonal contact",
+          "caption": "The nearby lower-right black stone touches only diagonally. It remains a separate group in this task.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 4,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Shared connecting point",
+          "caption": "The marked empty intersection is adjacent to both black groups. Playing there would connect them directly.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Connected stones",
+          "caption": "After Black fills the middle point, three stones form a connected group and share liberties.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 5,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "White's possible connection",
+          "caption": "White could connect the two stones by playing on their shared neighbouring empty point.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Black's cutting move",
+          "caption": "Black takes the common point, blocking that particular direct connection. Another route might still exist.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 6,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "A surrounded empty point",
+          "caption": "Black would have no liberties in this surrounded point and would capture nothing by playing there.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "A move Black cannot play",
+          "caption": "The red cross marks an illegal self-capture in this example, not merely a strategically poor move.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 2,
+          "label": "Before a ko capture",
+          "caption": "The central black stone is in atari; White can take its last liberty on the marked point.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 3,
+          "label": "White captures and creates ko",
+          "caption": "After White's capture, Black could seem able to recapture immediately, but that would repeat the preceding position.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 4,
+          "label": "Simple ko prevents immediate recapture",
+          "caption": "Black cannot immediately retake on the crossed point. Black must play elsewhere first.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 5,
+          "label": "Returning after moves elsewhere",
+          "caption": "Black can contest the ko again after an exchange elsewhere. Whether that exchange helps depends on the wider position.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 7,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Three connected empty points",
+          "caption": "These three empty intersections currently form one eye space, not two separate eyes.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Black occupies the vital point",
+          "caption": "In this enclosed example, Black splits the eye space, leaving two separate real eyes.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 2,
+          "label": "Black denies White the vital point",
+          "caption": "Black takes the central point first, preventing White from immediately making two eyes there; further replies still matter.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 3,
+          "label": "A point resembling an eye",
+          "caption": "The central point appears enclosed, but the black stone above has only that point as a liberty.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 4,
+          "label": "White plays in the false eye",
+          "caption": "White's move captures the upper black stone, showing why this point is not a secure real eye.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 8,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Opening stage on 9×9",
+          "caption": "Look at the corners and available room. These highlights illustrate choices, not a prescribed move order.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Middle-game safety first",
+          "caption": "The central black stone is under pressure. Consider its escape before seeking more territory.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 2,
+          "label": "Settling the endgame",
+          "caption": "With larger groups relatively safe, attention can turn to boundaries that still need to be settled.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 9,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Two development directions",
+          "caption": "Compare the highlighted directions from the corner with the supporting black stone on the right.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Develop toward friendly support",
+          "caption": "Black develops to the right, where nearby friendly stones may work together.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 10,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "An area of relatively secure territory",
+          "caption": "The empty points behind the black boundary are more readily countable than unsettled central space.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "A thick wall facing a weak opponent",
+          "caption": "The black wall supports nearby fighting, but is not worth a fixed number of territory points.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 11,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Black's remaining escape route",
+          "caption": "Before attacking elsewhere, find where Black's pressured group can extend.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Black extends outward",
+          "caption": "The connected black group gains additional room. This does not prove its long-term survival.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 12,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Locate the straight-three space",
+          "caption": "First recognise three adjacent empty points inside the surrounding black group.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "White takes the central vital point",
+          "caption": "White's move challenges Black's attempt to divide the empty space into two eyes.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 2,
+          "label": "Black tests a reply",
+          "caption": "After Black's reply at one end, check the central white stone's final liberty.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 3,
+          "label": "Verify move legality",
+          "caption": "White cannot simply fill that final point if it would be self-capture without capturing anything.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 13,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "An unsettled endgame boundary",
+          "caption": "Compare what happens if Black plays first and what happens if White plays first.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Result A: Black first",
+          "caption": "Black's move shifts the local boundary toward White. Remember this result for comparison.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 2,
+          "label": "Result B: White first",
+          "caption": "White's move shifts the boundary the other way. Full scoring depends on the complete position and rules.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 14,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Two areas to compare",
+          "caption": "The upper-left fight can continue, but the lower-right black group may need attention more urgently.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Black addresses a weakness first",
+          "caption": "Black extends to give the weak group room, without claiming this is the only whole-board move.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 15,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "A pressured corner group",
+          "caption": "Compare saving the corner stones with giving them up for gains elsewhere.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Option A: a costly rescue",
+          "caption": "More moves may be required to save the corner group, and the resulting outside position remains uncertain.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 2,
+          "label": "Option B: outside compensation",
+          "caption": "The corner stones are abandoned in this illustration while Black seeks outside strength. Judge the whole exchange.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 16,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "A real threat during ko",
+          "caption": "White has only one liberty left. Black's threatened capture is concrete, although the ko fight is elsewhere.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "If White ignores the threat",
+          "caption": "Black can capture the white stone. Whether this threat is worth using depends on the value of the ko.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 17,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Compare corner directions",
+          "caption": "Two possible directions are shown. The existing black stone to the right helps explain their different effects.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Development with support",
+          "caption": "Black chooses the direction of nearby support, without claiming that the pattern has a unique correct variation.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    },
+    {
+      "lessonIndex": 18,
+      "steps": [
+        {
+          "stepIndex": 0,
+          "label": "Identify the turning point",
+          "caption": "Keep the actual recorded move visible and recall the question you tried to solve at the time.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        },
+        {
+          "stepIndex": 1,
+          "label": "Compare an alternative",
+          "caption": "The original recorded move is a historical baseline; the other mark is a candidate for comparison, not a proven best move.",
+          "editorialStatus": "draft",
+          "goReview": "pending",
+          "nativeReview": "pending"
+        }
+      ]
+    }
+  ]
+}

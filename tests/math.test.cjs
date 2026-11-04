@@ -14,7 +14,8 @@ test("圍棋 × 數學頁維持 Explore-only，不接 learner runtime", () => {
   assert.doesNotMatch(html, /src="(?:app|scheduler|learner-progress|learning-metrics|practice-events|live-evidence)\.js/);
   assert.doesNotMatch(html, /localStorage/);
   const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"[^>]*><\/script>/gi)].map((match) => match[1]);
-  assert.deepEqual(scripts, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1"]);
+  assert.deepEqual(scripts, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1", "site-language.js?v=public-site-locale-gate-v1"]);
+  assert.ok(!scripts.some(src => /^(?:app|scheduler|learning-metrics|learner-progress|practice-events)\.js/.test(src)));
   assert.match(record, /learner_runtime_authority: none/);
   assert.match(record, /promotion_decision: do_not_promote_to_core/);
 });

@@ -4,6 +4,8 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
+const {render: renderEnglishOffline} = require("../core-markdown-source-adapter.cjs");
+const {auditComparison: auditBrowserMarkdown} = require("../scripts/audit-core-markdown-differential.cjs");
 
 const browser = [
   "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
@@ -127,7 +129,7 @@ async function command(socket, method, params = {}) {
       clearTimeout(timeout);
       socket.removeEventListener("message", onMessage);
       if (message.error) reject(new Error(message.error.message));
-      else if (message.result.exceptionDetails) reject(new Error(message.result.exceptionDetails.text));
+      else if (message.result.exceptionDetails) reject(new Error(message.result.exceptionDetails.exception?.description || message.result.exceptionDetails.text));
       else resolve(message.result);
     }
     socket.addEventListener("message", onMessage);
@@ -179,8 +181,8 @@ async function main() {
   assert.match(sourceCss, /\.hint-feedback\{[^}]*background:/);
   assert.match(sourceCss, /\.interaction-feedback\{[^}]*background:/);
   assert.match(sourceCss, /\.system-status\{[^}]*background:/);
-  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", current\(\)\.hint\)/);
-  assert.match(sourceApp, /showAuxiliaryFeedback\("interaction-feedback", result\.reason\)/);
+  assert.match(sourceApp, /showAuxiliaryFeedback\("hint-feedback", visibleProblem\(current\(\)\)\.hint\)/);
+  assert.match(sourceApp, /legalMoveFailureText\(displayLocale, result\.reason\)/);
   assert.doesNotMatch(sourceApp, /\$\("feedback"\)\.textContent = current\(\)\.hint/);
   assert.match(sourceHtml, /<details class="advanced-evidence-details">/);
   assert.match(sourceHtml, /id="advanced-evidence-brief">尚無足夠資料<\/strong>/);
@@ -830,7 +832,71 @@ async function main() {
     assert.equal(response.title, "從一局找到下一個課題");
     assert.equal(response.boardHidden, true);
     assert.equal(response.singleColumn, true);
-    const notes = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__exportBlob = blob; return 'blob:captured'; }; URL.revokeObjectURL = () => {}; HTMLAnchorElement.prototype.click = function () { window.__downloadName = this.download; }; document.querySelector('#export-button').click(); return {name: window.__downloadName, text: await window.__exportBlob.text()}; })()`);
+    // WP40 real Edge disk download of the existing Chinese learner export.
+    const markdownDownloadDir = fs.mkdtempSync(path.join(os.tmpdir(), "go-core-markdown-"));
+    let downloadedMarkdown;
+    try {
+      await command(socket, "Browser.setDownloadBehavior", { behavior: "allow", downloadPath: markdownDownloadDir });
+      await evaluate(socket, "document.querySelector('#export-button').click()");
+      const expectedFile = path.join(markdownDownloadDir, "個人圍棋練習紀錄.md");
+      for (let retry = 0; retry < 100; retry += 1) {
+        if (fs.existsSync(expectedFile) && fs.statSync(expectedFile).size > 0 &&
+            !fs.readdirSync(markdownDownloadDir).some(name => name.endsWith(".crdownload"))) break;
+        await delay(100);
+      }
+      assert.ok(fs.existsSync(expectedFile), "Edge did not create the actual Chinese Markdown download");
+      downloadedMarkdown = fs.readFileSync(expectedFile, "utf8");
+      assert.match(downloadedMarkdown, /^# 個人圍棋練習紀錄/m);
+      assert.match(downloadedMarkdown, /已完成：7 \/ 106/);
+      assert.match(downloadedMarkdown, /## 練習作答紀錄/);
+      assert.match(downloadedMarkdown, /首次作答.*未提示.*錯誤/);
+    } finally {
+      fs.rmSync(markdownDownloadDir, { recursive: true, force: true, maxRetries: 8, retryDelay: 100 });
+    }
+    // Independent browser Blob capture, compared with the real disk file.
+    const notes = await evaluate(socket, `(async () => { URL.createObjectURL = (blob) => { window.__exportBlob = blob; return 'blob:captured'; }; URL.revokeObjectURL = () => {}; HTMLAnchorElement.prototype.click = function () { window.__downloadName = this.download; }; document.querySelector('#export-button').click(); return {name: window.__downloadName, mime: window.__exportBlob.type, text: await window.__exportBlob.text()}; })()`);
+    const normalizeExportTime = text => text.replace(/^匯出時間：.*$/m, "匯出時間：[same-session timestamp]");
+    assert.equal(notes.mime, "text/markdown;charset=utf-8");
+    assert.equal(normalizeExportTime(downloadedMarkdown), normalizeExportTime(notes.text),
+      "disk download and canonical browser Blob differ outside the clock label");
+    // The event snapshot is read from the SAME Edge session. The English
+    // candidate is rendered only in this Node test, never in the website.
+    const browserSnapshot = await evaluate(socket, `(() => {
+      const saved=JSON.parse(localStorage.getItem('go-learning-prototype-v7'));
+      const requested=window.GoSiteLanguage.stateFor(new URL('?lang=en',location.href).href);
+      return {
+        schemaVersion:1, exportedAt:new Date().toISOString(), uiVersion:saved.uiVersion,
+        problems:window.GoContent.problems.map(p=>({id:p.id,title:p.title})),
+        skills:window.GoContent.skills.map(s=>({id:s.id,name:s.name})),
+        state:saved,
+        // Not read by this test: keep provider and integrated status unknown.
+        livePractice:{ok:false,error:"not independently read in browser parity receipt"},
+        liveEvidence:{ok:false,error:"not independently read in browser parity receipt"},
+        integrated:{state:"unknown"},
+        localeGate:{requested:requested.requested,status:requested.status,rendered:requested.rendered}
+      };
+    })()`);
+    assert.deepEqual(browserSnapshot.localeGate, {requested:"en",status:"unavailable",rendered:"zh-Hant-TW"});
+    const storedBefore=JSON.stringify(browserSnapshot.state);
+    const englishBrowserCandidate=renderEnglishOffline(browserSnapshot,{preview:true});
+    assert.equal(JSON.stringify(browserSnapshot.state),storedBefore,"English conversion mutated Edge source data");
+    assert.equal(englishBrowserCandidate.preview.complete,false);
+    assert.equal(englishBrowserCandidate.converted.complete,false);
+    const browserComparison=auditBrowserMarkdown({
+      snapshot:browserSnapshot,canonical:{body:downloadedMarkdown},english:englishBrowserCandidate
+    });
+    for(const id of ["core.completed-total","core.review","skills.first-unhinted-counts",
+      "events.count-order","events.first-retry-hints","events.version-audit","source-unchanged"]){
+      assert.equal(browserComparison.checks.find(x=>x.id===id)?.status,"MATCHED",
+        "Edge disk download vs offline English: "+id);
+    }
+    assert.equal(browserComparison.releaseEligible,false);
+    assert.equal(browserComparison.checks.find(x=>x.id==="browser-download")?.status,"REVIEW_REQUIRED",
+      "Chinese browser download does not prove a released English browser download");
+    assert.match(englishBrowserCandidate.preview.content,/Personal Go Practice Record/);
+    assert.doesNotMatch(englishBrowserCandidate.preview.content,/mastery \d+%/i);
+    process.stdout.write("PASS: Edge disk Markdown vs offline English source parity (not released)\n");
+
     assert.equal(notes.name, "個人圍棋練習紀錄.md");
     assert.match(notes.text, /已完成：7 \/ 106/);
     assert.match(notes.text, /待複習：0 題/);
@@ -2469,7 +2535,7 @@ async function main() {
     assert.equal(historyDesktop.questions, 5);
     assert.deepEqual(historyDesktop.evidenceLabels, ["確證", "高度可信", "有爭議", "傳說", "研究假說", "未知"]);
     assert.equal(historyDesktop.sourceAuditDate, "本頁來源最後查核：2026-09-29");
-    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1"]);
+    assert.deepEqual(historyDesktop.scriptSources, ["back-to-top.js?v=back-to-top-v1", "reading-toc.js?v=reading-toc-v1", "site-language.js?v=public-site-locale-gate-v1"]);
     assert.equal(historyDesktop.historyVersion, true);
     assert.deepEqual(historyDesktop.lowContrast, [], `history low contrast: ${JSON.stringify(historyDesktop.lowContrast)}`);
     assert.ok(historyDesktop.minContrast >= 4.5, `history minimum contrast: ${historyDesktop.minContrast}`);
@@ -2964,6 +3030,86 @@ async function main() {
       }
     }
     await command(socket,"Emulation.setDeviceMetricsOverride",{width:1280,height:900,deviceScaleFactor:1,mobile:false});
+
+    // Live Game real-browser negative/normal flow: source locale stays Chinese
+    // even for requested ?lang=en; no draft string may enter runtime.
+    await command(socket, "Page.navigate", { url: livePage + "&lang=en" });
+    let liveReady = false;
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      liveReady = await evaluate(socket, "Boolean(document.querySelector('#live-board svg') && document.querySelector('#site-locale-status'))");
+      if (liveReady) break;
+      await delay(100);
+    }
+    assert.equal(liveReady, true, "Live Game did not load with blocked English request");
+    const initialLive = await evaluate(socket, `(() => ({
+      board: document.querySelector('#live-board').getAttribute('aria-label'),
+      point: document.querySelector('#live-board .live-point').getAttribute('aria-label'),
+      rendered: window.GoSiteLanguage.stateFor(location.href).rendered,
+      localeAvailable: document.querySelector('#site-locale-status').textContent,
+      moveCount: document.querySelector('#move-count').textContent
+    }))()`);
+    assert.equal(initialLive.rendered, "zh-Hant-TW");
+    assert.match(initialLive.board, /9 路/);
+    assert.match(initialLive.localeAvailable, /尚未提供完整版本/);
+    assert.equal(initialLive.moveCount, "0");
+
+    const liveFlow = await evaluate(socket, `(() => {
+      const mode = document.querySelector('#opponent-mode');
+      mode.value = 'local'; mode.dispatchEvent(new Event('change', {bubbles:true}));
+      const first = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]');
+      first.dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const legalMoves = document.querySelector('#move-count').textContent;
+      const pointAfterMove = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').getAttribute('aria-label');
+      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const illegalMessage = document.querySelector('#live-feedback').textContent;
+      const afterIllegal = document.querySelector('#move-count').textContent;
+      document.querySelector('#pass-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      document.querySelector('#pass-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const scoring = !document.querySelector('#scoring-panel').hidden;
+      const score = document.querySelector('#score-lines').textContent;
+      const boardScoring = document.querySelector('#live-board svg').getAttribute('aria-label');
+      document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      const markedPoint = document.querySelector('#live-board .live-point[data-x="4"][data-y="4"]').getAttribute('aria-label');
+      window.confirm = () => true;
+      document.querySelector('#confirm-score-button').dispatchEvent(new MouseEvent('click', {bubbles:true}));
+      return {legalMoves, pointAfterMove, illegalMessage, afterIllegal, scoring, score,
+        boardScoring, markedPoint, result:document.querySelector('#result-text').textContent,
+        finished:!document.querySelector('#result-panel').hidden,
+        boardFinished:document.querySelector('#live-board svg').getAttribute('aria-label')};
+    })()`);
+    assert.equal(liveFlow.legalMoves, "1");
+    assert.equal(liveFlow.afterIllegal, "1", "occupied move altered the game");
+    assert.match(liveFlow.pointAfterMove, /黑棋/);
+    assert.match(liveFlow.illegalMessage, /已有棋子/);
+    assert.equal(liveFlow.scoring, true);
+    assert.match(liveFlow.score, /棋子/);
+    assert.match(liveFlow.boardScoring, /終局死子確認/);
+    assert.match(liveFlow.markedPoint, /可切換死子標記/);
+    assert.equal(liveFlow.finished, true);
+    assert.ok(liveFlow.result.length > 0);
+    assert.match(liveFlow.boardFinished, /棋局已結束/);
+
+    // An unavailable provider must not produce a move or a success event.
+    const providerProbe = await evaluate(socket, `(async () => {
+      document.querySelector('#new-game-button').click();
+      const mode = document.querySelector('#advanced-provider-mode');
+      mode.value = 'remote'; mode.dispatchEvent(new Event('change', {bubbles:true}));
+      const endpoint = document.querySelector('#provider-endpoint');
+      endpoint.value = 'https://127.0.0.1:1/unavailable';
+      endpoint.dispatchEvent(new Event('change', {bubbles:true}));
+      document.querySelector('#test-provider-button').click();
+      for(let i=0;i<100;i++) {
+        if(document.querySelector('#provider-status').classList.contains('error')) break;
+        await new Promise(resolve=>setTimeout(resolve,100));
+      }
+      return {status:document.querySelector('#provider-status').textContent,
+        error:document.querySelector('#provider-status').classList.contains('error'),
+        count:document.querySelector('#move-count').textContent};
+    })()`);
+    assert.equal(providerProbe.error, true, "failed provider test was presented as success");
+    assert.match(providerProbe.status, /連線失敗/);
+    assert.equal(providerProbe.count, "0");
+    process.stdout.write("PASS: Live Game browser ARIA, score, history, finished result, blocked locale and provider error\\n");
 
     await command(socket, "Page.navigate", { url: reviewPage });
     let reviewReady = false;
