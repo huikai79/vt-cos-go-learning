@@ -26,6 +26,14 @@ jobs:
         run: |
           node --version
           git rev-parse HEAD
+      - name: Report frozen candidate asset drift without rebinding (read-only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The frozen manifest is the authority. main is accepted as a reference
+          # only when its tracked asset fingerprint still equals that manifest.
+          git fetch --depth=1 origin main:refs/remotes/origin/main
+          node scripts/audit-formal-candidate-drift.cjs origin/main HEAD
       - name: Run non-browser Node tests
         shell: bash
         run: |
