@@ -3176,11 +3176,11 @@ async function main() {
         const title=document.querySelector('#question-title').textContent;
         const prompt=document.querySelector('#question-prompt').textContent;
         const boardInstruction=document.querySelector('#board-instruction').textContent;
-        document.querySelector('#board [data-x="5"][data-y="5"]').click();
+        document.querySelector('#board [data-x="5"][data-y="5"]').dispatchEvent(new MouseEvent("click",{bubbles:true}));
         const wrong=document.querySelector('#feedback').textContent;
         document.querySelector('#hint-button').click();
         const hint=document.querySelector('#hint-feedback').textContent;
-        document.querySelector('#board [data-x="4"][data-y="5"]').click();
+        document.querySelector('#board [data-x="4"][data-y="5"]').dispatchEvent(new MouseEvent("click",{bubbles:true}));
         const correct=document.querySelector('#feedback').textContent;
         const state=JSON.parse(localStorage.getItem("go-learning-prototype-v7"));
         const events=state.events.filter(e=>e.problemId==="u1-06").map(e=>({
