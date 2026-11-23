@@ -3147,6 +3147,109 @@ async function main() {
     assert.equal(reviewDraft.reviews.filter((review) => review.status).length, 1);
     assert.equal(reviewDraft.reviewScope.parallelFormComparability, "not_established");
     assert.equal(reviewDraft.reviewScope.learningEffect, "not_measured");
+    // WP42 real Edge source-locale parity: the unavailable English URL must
+    // not alter learner-visible Chinese answers or evidence lifecycle.
+    async function runCoreLocaleAttempt(requested) {
+      // Disposable CI browser profile; clear only its own fixture between runs.
+      await evaluate(socket, "localStorage.removeItem('go-learning-prototype-v7')");
+      const target = new URL(page);
+      target.hash = "core";
+      if(requested)target.searchParams.set("lang",requested);
+      await command(socket,"Page.navigate",{url:target.href});
+      let ready=false;
+      for(let retry=0;retry<60;retry++){
+        ready=await evaluate(socket,
+          "document.readyState === 'complete' && location.href === "+
+          JSON.stringify(target.href)+
+          " && Boolean(window.GoSiteLanguage && window.GoContent && document.querySelector('#site-locale-status') && document.querySelector('#question-title'))");
+        if(ready)break;
+        await delay(100);
+      }
+      assert.equal(ready,true,"locale route never finished loading: "+target.href);
+      return await evaluate(socket, `(() => {
+        const route=GoSiteLanguage.stateFor(location.href);
+        const status=document.querySelector('#site-locale-status');
+        document.querySelector('[data-lesson="1"]').click();
+        if(document.querySelector('#lesson-intro-dialog')?.open)
+          document.querySelector('#lesson-intro-start-button').click();
+        const canonical=GoContent.problems.find(p=>p.id==="u1-06");
+        const title=document.querySelector('#question-title').textContent;
+        const prompt=document.querySelector('#question-prompt').textContent;
+        const boardInstruction=document.querySelector('#board-instruction').textContent;
+        document.querySelector('#board [data-x="5"][data-y="5"]').click();
+        const wrong=document.querySelector('#feedback').textContent;
+        document.querySelector('#hint-button').click();
+        const hint=document.querySelector('#hint-feedback').textContent;
+        document.querySelector('#board [data-x="4"][data-y="5"]').click();
+        const correct=document.querySelector('#feedback').textContent;
+        const state=JSON.parse(localStorage.getItem("go-learning-prototype-v7"));
+        const events=state.events.filter(e=>e.problemId==="u1-06").map(e=>({
+          type:e.type,problemId:e.problemId,outcome:e.outcome??null,
+          firstAnswer:e.firstAnswer??null,unhinted:e.unhinted??null,
+          qualifiedOpportunity:e.qualifiedOpportunity??null,
+          skillId:e.skillId??null,skillVersion:e.skillVersion??null,
+          scoringContractVersion:e.scoringContractVersion??null,
+          evidenceTaxonomyVersion:e.evidenceTaxonomyVersion??null,
+          errorTypeId:e.errorTypeId??null
+        }));
+        return {route:{requested:route.requested,rendered:route.rendered,status:route.status},
+          docLang:document.documentElement.lang,
+          notice:{role:status.getAttribute("role"),live:status.getAttribute("aria-live"),text:status.textContent},
+          sourceTitle:canonical.title,sourcePrompt:canonical.prompt,
+          title,prompt,boardInstruction,wrong,hint,correct,events,
+          completed:state.completed,missed:state.missed,
+          attempts:state.attempts["u1-06"],schedulerPolicy:state.schedulerPolicy};
+      })()`);
+    }
+    const zhAttempt=await runCoreLocaleAttempt(null);
+    const enAttempt=await runCoreLocaleAttempt("en");
+    assert.deepEqual(zhAttempt.route,{requested:"zh-Hant-TW",rendered:"zh-Hant-TW",status:"source"});
+    assert.deepEqual(enAttempt.route,{requested:"en",rendered:"zh-Hant-TW",status:"unavailable"});
+    for(const sample of [zhAttempt,enAttempt]){
+      assert.equal(sample.docLang,"zh-Hant-TW");
+      assert.equal(sample.title,sample.sourceTitle);
+      assert.equal(sample.prompt,sample.sourcePrompt);
+      assert.match(sample.wrong,/答錯，再看一次/);
+      assert.match(sample.correct,/答對了/);
+      assert.ok(sample.hint.length>5);
+      assert.deepEqual(sample.events.map(e=>e.type),["presented","answer","hint","answer"]);
+      assert.deepEqual(sample.events.filter(e=>e.type==="answer").map(e=>
+        [e.outcome,e.firstAnswer,e.unhinted,e.qualifiedOpportunity]),
+        [["incorrect",true,true,true],["correct",false,false,false]]);
+      assert.equal(sample.schedulerPolicy,"fixed-spacing-v1");
+      assert.equal(sample.notice.role,"status");
+      assert.equal(sample.notice.live,"polite");
+    }
+    assert.match(enAttempt.notice.text,/not available yet/);
+    // Route metadata/notice alone may differ; event provenance never can.
+    for(const key of ["docLang","sourceTitle","sourcePrompt","title","prompt",
+      "boardInstruction","wrong","hint","correct","events","completed","missed","attempts","schedulerPolicy"]){
+      assert.deepEqual(enAttempt[key],zhAttempt[key],
+        "unreleased English route changed canonical learner behavior: "+key);
+    }
+    await evaluate(socket,"localStorage.removeItem('go-learning-prototype-v7')");
+    const unknownUrl=new URL(page);
+    unknownUrl.searchParams.set("lang","invalid-locale");
+    unknownUrl.hash="core";
+    await command(socket,"Page.navigate",{url:unknownUrl.href});
+    let unknown=null;
+    for(let retry=0;retry<60;retry++){
+      unknown=await evaluate(socket, `(() => {
+        if(document.readyState!=="complete" || !window.GoSiteLanguage ||
+           !document.querySelector('#site-locale-status'))return null;
+        return {href:location.href,route:GoSiteLanguage.stateFor(location.href),
+          lang:document.documentElement.lang,
+          status:document.querySelector('#site-locale-status').textContent};
+      })()`);
+      if(unknown?.href===unknownUrl.href)break;
+      await delay(100);
+    }
+    assert.equal(unknown?.href,unknownUrl.href);
+    assert.equal(unknown.route.status,"unknown");
+    assert.equal(unknown.route.rendered,"zh-Hant-TW");
+    assert.equal(unknown.lang,"zh-Hant-TW");
+    assert.match(unknown.status,/不支援此語言代碼/);
+    process.stdout.write("PASS: blocked locale browser parity preserves Chinese first answer and event semantics\n");
     process.stdout.write("PASS: 離線課程、驗收遮蔽、匯出與 R1 盲審頁面\n");
   } finally {
     if (socket instanceof CdpPipe) {
