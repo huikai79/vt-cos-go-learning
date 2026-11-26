@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "publishable": false,
+  "sourceFile": "formal-teaching-evidence.js",
+  "sourceGitBlobSha": "242d13e2c835fd1f4b77996d23b2f3e495a61c64",
+  "scope": "Review-only candidate for collector form labels, validation branches and notices. It cannot change the running page, machine receipt fields, formally frozen candidate or evidence status.",
+  "review": {
+    "nativeEnglish": "pending",
+    "goAccuracy": "pending",
+    "accessibility": "pending",
+    "readerUsability": "not_measured"
+  },
+  "binding": {
+    "protocol": "go-formal-teaching-evidence-v2",
+    "candidateId": "formal-teaching-candidate-2026-10-08-i",
+    "candidateFingerprint": "fnv1a32-js16-b78d5876",
+    "r1ContentFingerprint": "fnv1a32-c34ef6a4",
+    "formalTeaching": "BLOCKED",
+    "formalEvaluation": "BLOCKED",
+    "learningEffect": "NOT_MEASURED"
+  },
+  "taskLabels": [
+    {
+      "key": "start_course",
+      "sourceFragment": "開始課程",
+      "text": "Start the course",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "complete_board_answer",
+      "sourceFragment": "完成棋盤作答",
+      "text": "Answer a question on the board",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "recover_after_wrong_answer",
+      "sourceFragment": "答錯後自行恢復並繼續",
+      "text": "Recover after an incorrect answer and continue without help",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "reload_and_resume",
+      "sourceFragment": "重新整理後繼續",
+      "text": "Reload the page and resume",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "export_learning_data",
+      "sourceFragment": "匯出學習資料",
+      "text": "Export learning data",
+      "placeholders": [],
+      "review": "candidate"
+    }
+  ],
+  "accessibilityLabels": [
+    {
+      "key": "keyboard_only",
+      "sourceFragment": "只用鍵盤完成主要流程",
+      "text": "Complete the main flow using only the keyboard",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "screen_reader_spot_check",
+      "sourceFragment": "螢幕閱讀器 spot check",
+      "text": "Check the key flow with a screen reader",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "zoom_200",
+      "sourceFragment": "200% 文字縮放",
+      "text": "Check 200% text zoom",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "viewport_320",
+      "sourceFragment": "320px viewport",
+      "text": "Check the page at 320px viewport width",
+      "placeholders": [],
+      "review": "candidate"
+    }
+  ],
+  "validationMessages": [
+    {
+      "key": "minimumParticipants",
+      "sourceFragment": "至少需要三位參與者",
+      "text": "At least three participants must be observed.",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "uniqueParticipantCode",
+      "sourceFragment": "participant code 必須非空且唯一",
+      "text": "Each participant code must be non-empty and unique.",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "unnamedParticipant",
+      "sourceFragment": "未命名參與者",
+      "text": "Unnamed participant",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "notTargetNovice",
+      "sourceFragment": "不是已確認 target novice",
+      "text": "{participantCode} has not been verified as a target novice.",
+      "placeholders": [
+        "participantCode"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "taskIncomplete",
+      "sourceFragment": "未完成 ${TASK_LABELS[task]}",
+      "text": "{participantCode} did not complete: {taskLabel}.",
+      "placeholders": [
+        "participantCode",
+        "taskLabel"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "participantBlocking",
+      "sourceFragment": "有 blocking issue",
+      "text": "{participantCode} has at least one blocking issue.",
+      "placeholders": [
+        "participantCode"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "participantReferenceMissing",
+      "sourceFragment": "缺 evidence reference",
+      "text": "{participantCode} is missing an evidence reference.",
+      "placeholders": [
+        "participantCode"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "accessibilityNotPassed",
+      "sourceFragment": "accessibility 未通過：${ACCESS_LABELS[check]}",
+      "text": "Accessibility check not passed: {checkLabel}.",
+      "placeholders": [
+        "checkLabel"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "accessibilityBlocking",
+      "sourceFragment": "accessibility 有 blocking issue",
+      "text": "The accessibility check has at least one blocking issue.",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "accessibilityReferenceMissing",
+      "sourceFragment": "accessibility 缺 evidence reference",
+      "text": "The accessibility check is missing an evidence reference.",
+      "placeholders": [],
+      "review": "candidate"
+    }
+  ],
+  "formLabels": [
+    {
+      "key": "participantHeading",
+      "sourceFragment": "Target novice ${n}",
+      "text": "Target novice {n}",
+      "placeholders": [
+        "n"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "participantCode",
+      "sourceFragment": "匿名 participant code",
+      "text": "Anonymous participant code",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "participantCodePlaceholder",
+      "sourceFragment": "例如 novice-0${n}",
+      "text": "e.g. novice-0{n}",
+      "placeholders": [
+        "n"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "targetNoviceCheckbox",
+      "sourceFragment": "已確認符合 target novice 定義",
+      "text": "Confirmed that this participant meets the target novice definition",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "evidenceReference",
+      "sourceFragment": "證據引用",
+      "text": "Evidence reference",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "evidenceReferencePlaceholder",
+      "sourceFragment": "例如 local-report/novice-0${n}",
+      "text": "e.g. local-report/novice-0{n}",
+      "placeholders": [
+        "n"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "blockingIssues",
+      "sourceFragment": "Blocking issues（每行一項；沒有就留空）",
+      "text": "Blocking issues (one per line; leave blank only when there are none)",
+      "placeholders": [],
+      "review": "candidate"
+    }
+  ],
+  "statusMessages": [
+    {
+      "key": "draftExported",
+      "sourceFragment": "草稿已匯出；草稿內容仍須由 teaching-gate verifier 判定。",
+      "text": "Draft exported. The teaching-gate verifier must still evaluate the evidence.",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "finalExportBlocked",
+      "sourceFragment": "尚不能匯出完成回條：",
+      "text": "Cannot export a completed receipt: {errors}.",
+      "placeholders": [
+        "errors"
+      ],
+      "review": "candidate"
+    },
+    {
+      "key": "finalExported",
+      "sourceFragment": "完成回條已匯出；請與 R1a、19 課外審回條一起交由 teaching-gate-verify.cjs 驗證。",
+      "text": "Completed receipt exported. Submit it with the R1a and 19-lesson external review receipts for verification by teaching-gate-verify.cjs.",
+      "placeholders": [],
+      "review": "candidate"
+    }
+  ],
+  "fileNames": [
+    {
+      "key": "draftFilename",
+      "sourceFragment": "正式教學真人證據草稿.json",
+      "text": "正式教學真人證據草稿.json",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "key": "completedFilename",
+      "sourceFragment": "正式教學真人證據.json",
+      "text": "正式教學真人證據.json",
+      "placeholders": [],
+      "review": "candidate"
+    }
+  ]
+}
