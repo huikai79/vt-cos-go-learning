@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "publishable": false,
+  "source": {
+    "html": "lesson-content-review.html",
+    "htmlBlobSha": "41b31ab914261ae479c789da86f4840fbf55bade",
+    "dynamicScript": "lesson-content-review.js",
+    "dynamicScriptBlobSha": "c745b3e3aecfbfa3c28ef87142b179cdd61aba3c"
+  },
+  "scope": "Reviewer interface only: actual 19 lessons and Go board demonstrations are still sourced from Chinese content.js; this does not establish translated teaching content or Go validity.",
+  "review": {
+    "nativeEnglish": "pending",
+    "goContent": "pending",
+    "accessibility": "pending",
+    "readerUsability": "not_measured"
+  },
+  "gate": {
+    "formalTeaching": "BLOCKED",
+    "formalEvaluation": "BLOCKED",
+    "learningEffect": "NOT_MEASURED"
+  },
+  "staticText": [
+    {
+      "source": "VT-COS｜悟之一手｜19 課短講外部棋理審查",
+      "text": "VT-COS | A Move of Insight | External Go Content Review of 19 Lessons",
+      "review": "candidate"
+    },
+    {
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    },
+    {
+      "source": "19 課短講外部棋理審查",
+      "text": "External Go Content Review of 19 Lessons",
+      "review": "candidate"
+    },
+    {
+      "source": "這份回條只核對 learner-facing 短講的棋理、文字與棋盤示範是否一致。",
+      "text": "This receipt checks that learner-facing lesson explanations, wording and board demonstrations agree with each other and the Go task.",
+      "review": "candidate"
+    },
+    {
+      "source": "它不測學習者是否理解，也不證明學習成效。審查者應未參與這批短講內容編寫、不是目前學習者，並具備核對基礎圍棋教學內容的能力。任何需修或歧義都應如實記錄；本 gate 不採多數決。",
+      "text": "It does not measure learner comprehension or establish learning effects. Reviewers must be independent of the lesson authors, must not be current learners and must be capable of checking foundational-to-advanced Go teaching content. Record every Needs revision or Ambiguous finding; this gate is not decided by majority vote.",
+      "review": "candidate"
+    },
+    {
+      "source": "審查規格：",
+      "text": "Review protocol:",
+      "review": "candidate"
+    },
+    {
+      "source": "審查者代碼",
+      "text": "Reviewer code",
+      "review": "candidate"
+    },
+    {
+      "source": "圍棋經驗",
+      "text": "Go experience",
+      "review": "candidate"
+    },
+    {
+      "source": "我沒有參與這批短講文字、棋盤示範或教學結論的編寫。",
+      "text": "I did not author the lesson text, board demonstrations or teaching conclusions in these 19 lessons.",
+      "review": "candidate"
+    },
+    {
+      "source": "我不是目前使用本平臺學習或參與個人流程試行的學習者。",
+      "text": "I am not currently learning on this platform or participating in its personal workflow pilot.",
+      "review": "candidate"
+    },
+    {
+      "source": "我具備核對這 19 課基礎至進階圍棋教學內容的能力。",
+      "text": "I am qualified to review the Go teaching content in these 19 foundational-to-advanced lessons.",
+      "review": "candidate"
+    },
+    {
+      "source": "已完成 0 / 19",
+      "text": "Completed 0 / 19",
+      "review": "candidate"
+    },
+    {
+      "source": "匯出草稿",
+      "text": "Export draft",
+      "review": "candidate"
+    },
+    {
+      "source": "匯出完成回條",
+      "text": "Export completed receipt",
+      "review": "candidate"
+    },
+    {
+      "source": "請逐課核對文字、棋盤步驟、caption 與 takeaway。",
+      "text": "Check each lesson's text, board steps, captions and takeaway.",
+      "review": "candidate"
+    }
+  ],
+  "staticAttributes": [
+    {
+      "attribute": "content",
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    },
+    {
+      "attribute": "placeholder",
+      "source": "例如 lesson-reviewer-01",
+      "text": "e.g. lesson-reviewer-01",
+      "review": "candidate"
+    },
+    {
+      "attribute": "placeholder",
+      "source": "例如業餘 3 段／教學 5 年",
+      "text": "e.g. amateur 3 dan / 5 years teaching experience",
+      "review": "candidate"
+    }
+  ],
+  "dynamic": [
+    {
+      "id": "boardAriaFallback",
+      "source": "棋盤示範",
+      "text": "Board demonstration",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "lessonNumber",
+      "source": "第 ${lesson.lessonIndex+1} 課",
+      "text": "Lesson {number}",
+      "placeholders": [
+        "number"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "unitNumber",
+      "source": "單元 ${lesson.unit+1}",
+      "text": "Unit {number}",
+      "placeholders": [
+        "number"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "demoNumber",
+      "source": "示範 ${i+1}",
+      "text": "Demonstration {number}",
+      "placeholders": [
+        "number"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "takeaway",
+      "source": "帶走一句：",
+      "text": "Key takeaway:",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "findingLabel",
+      "source": "審查結果",
+      "text": "Review finding",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "findingUnset",
+      "source": "請選擇",
+      "text": "Select a finding",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "consistent",
+      "source": "一致",
+      "text": "Consistent",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "needsFix",
+      "source": "需修",
+      "text": "Needs revision",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "ambiguous",
+      "source": "歧義",
+      "text": "Ambiguous",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "reason",
+      "source": "理由／修正說明",
+      "text": "Explanation or proposed revision",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "reasonPlaceholder",
+      "source": "若需修或歧義，請具體說明棋理、文字或棋盤步驟問題",
+      "text": "When flagging a revision or ambiguity, describe the problem in Go reasoning, text or board steps.",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "progress",
+      "source": "已完成 ${done} / ${reviewLessons.length}",
+      "text": "Completed {done} / {total}",
+      "placeholders": [
+        "done",
+        "total"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "draftFilename",
+      "source": "19課短講外部審查草稿.json",
+      "text": "19課短講外部審查草稿.json",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "finalBlocked",
+      "source": "尚不能匯出正式回條：待完成 ${incomplete.length} 課，並確認審查者資料與三項聲明。",
+      "text": "Cannot export a completed receipt: {incomplete} lessons remain. Confirm reviewer details and all three declarations.",
+      "placeholders": [
+        "incomplete"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "finalFilename",
+      "source": "19課短講外部棋理回條.json",
+      "text": "19課短講外部棋理回條.json",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "finalExportNotice",
+      "source": "完成回條已匯出；請交由 lesson-content-review-verify.cjs 驗證。",
+      "text": "Completed receipt exported. Submit it to lesson-content-review-verify.cjs for verification.",
+      "placeholders": [],
+      "review": "candidate"
+    }
+  ],
+  "immutableReceiptFilenames": [
+    "19課短講外部審查草稿.json",
+    "19課短講外部棋理回條.json"
+  ],
+  "notAuthored": [
+    "content.js:GoContent.lessons[*].title",
+    "content.js:GoContent.lessons[*].subtitle",
+    "content.js:GoContent.lessons[*].text",
+    "content.js:GoContent.lessons[*].takeaway",
+    "content.js:GoContent.lessons[*].demoSteps"
+  ]
+}

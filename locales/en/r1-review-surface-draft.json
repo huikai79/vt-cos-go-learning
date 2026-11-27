@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "publishable": false,
+  "source": {
+    "html": "r1-review.html",
+    "htmlBlobSha": "255ca6ec34b282151f097d7f5be3c760cefb231d",
+    "dynamicScript": "r1-review.js",
+    "dynamicScriptBlobSha": "ff536cbccbb26419cc74e41a31cb3f487112b8d3"
+  },
+  "scope": "R1a reviewer interface only. Publicly exposed bank questions do not become formal unseen items through translation; translated reviewer text has no scoring or review authority.",
+  "review": {
+    "nativeEnglish": "pending",
+    "goContent": "pending",
+    "accessibility": "pending",
+    "readerUsability": "not_measured"
+  },
+  "gate": {
+    "formalTeaching": "BLOCKED",
+    "formalEvaluation": "BLOCKED",
+    "learningEffect": "NOT_MEASURED"
+  },
+  "staticText": [
+    {
+      "source": "VT-COS｜悟之一手｜R1 獨立盲審",
+      "text": "VT-COS | A Move of Insight | R1 Independent Blind Review",
+      "review": "candidate"
+    },
+    {
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    },
+    {
+      "source": "R1a 全題庫獨立內容審查",
+      "text": "R1a Independent Content Review of the Public Question Bank",
+      "review": "candidate"
+    },
+    {
+      "source": "本頁只給未參與編題、也不是目前學習者的外部審查者使用。",
+      "text": "Only independent external reviewers who did not author these items and who are not current learners may use this page.",
+      "review": "candidate"
+    },
+    {
+      "source": "完整題庫已隨公開原始碼曝光，不能再作受控的未公開保留題；本頁只保留答案盲審的內容核對流程，而且只載入去除既定答案、目標與解說的審查資料。請勿另行瀏覽 GitHub 原始碼庫內的題庫原始碼或機器稽核結果；先自行判斷成功手，再標記「一致、需修、歧義或多解」。選「一致」時只需選落子；選「需修、歧義或多解」時必須說明理由。共核對 148 題題庫的 43 個母題組代表題及全部 48 題公開保留組，重複項合併後為 77 題；涵蓋提子、連接、救棋、直三與第二眼缺口。回條只提供單一審查者的內容核對證據，不證明難度等值、完整內容效度或學習成效。",
+      "text": "The full question bank has already been exposed through the public source code, so none of it can qualify as a controlled private unseen holdout. This page supports only an answer-blind content review; its review data excludes the prescribed answers, goals and explanations. Do not consult the bank's source code or machine audit results before judging the tasks. Find a successful move yourself, then choose Consistent, Needs revision, Ambiguous, or Multiple valid solutions. Consistent requires a move; other findings need an explanation. The public bank contains 148 items. The review covers 43 parent-group representatives and all 48 publicly exposed holdout items, giving 77 distinct items after deduplication. Topics include capture, connection, saving stones, straight three and second-eye gaps. A single reviewer's receipt only supports a content check; it does not establish equivalent difficulty, comprehensive content validity or learning effects.",
+      "review": "candidate"
+    },
+    {
+      "source": "審查者代碼",
+      "text": "Reviewer code",
+      "review": "candidate"
+    },
+    {
+      "source": "圍棋經驗",
+      "text": "Go experience",
+      "review": "candidate"
+    },
+    {
+      "source": "我沒有參與這批題目、答案、技能邊界或評分規則的編寫。",
+      "text": "I did not author this set's questions, answers, skill boundaries or scoring rules.",
+      "review": "candidate"
+    },
+    {
+      "source": "我不是目前使用本平臺學習或參與個人流程試行的學習者。",
+      "text": "I am not currently learning on this platform or participating in its personal workflow pilot.",
+      "review": "candidate"
+    },
+    {
+      "source": "我在完成判斷前沒有查看既定答案、提示、解說、題庫原始碼或機器稽核結果。",
+      "text": "I have not seen the prescribed answers, hints, explanations, question-bank source or machine audit results before making my judgements.",
+      "review": "candidate"
+    },
+    {
+      "source": "已完成 0 / 77",
+      "text": "Completed 0 / 77",
+      "review": "candidate"
+    },
+    {
+      "source": "顯示",
+      "text": "Show",
+      "review": "candidate"
+    },
+    {
+      "source": "全部",
+      "text": "All",
+      "review": "candidate"
+    },
+    {
+      "source": "待審",
+      "text": "Pending",
+      "review": "candidate"
+    },
+    {
+      "source": "已完成",
+      "text": "Completed",
+      "review": "candidate"
+    },
+    {
+      "source": "下一張待審",
+      "text": "Next pending item",
+      "review": "candidate"
+    },
+    {
+      "source": "匯出草稿",
+      "text": "Export draft",
+      "review": "candidate"
+    },
+    {
+      "source": "匯出完成回條",
+      "text": "Export completed receipt",
+      "review": "candidate"
+    },
+    {
+      "source": "可隨時匯出草稿；完成 77 題、審查者資料與獨立聲明後，才能匯出完成回條。",
+      "text": "You may export a draft at any time. A completed receipt requires all 77 items, reviewer details and all three independence declarations.",
+      "review": "candidate"
+    }
+  ],
+  "staticAttributes": [
+    {
+      "attribute": "content",
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    },
+    {
+      "attribute": "placeholder",
+      "source": "例如 reviewer-01",
+      "text": "e.g. reviewer-01",
+      "review": "candidate"
+    },
+    {
+      "attribute": "placeholder",
+      "source": "例如業餘 3 段／教學 5 年",
+      "text": "e.g. amateur 3 dan / 5 years teaching experience",
+      "review": "candidate"
+    }
+  ],
+  "dynamic": [
+    {
+      "id": "boardPointAria",
+      "source": "第 ${y + 1} 行第 ${x + 1} 列",
+      "text": "Row {row}, column {column}",
+      "placeholders": [
+        "row",
+        "column"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "boardAria",
+      "source": "${escapeHtml(problem.id)} 棋盤",
+      "text": "Go board for item {itemId}",
+      "placeholders": [
+        "itemId"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "moveUnselected",
+      "source": "尚未選擇建議落子",
+      "text": "No proposed move selected",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "reviewFinding",
+      "source": "審查結果",
+      "text": "Review finding",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "chooseFinding",
+      "source": "請選擇",
+      "text": "Select a finding",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "consistent",
+      "source": "一致",
+      "text": "Consistent",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "needsFix",
+      "source": "需修",
+      "text": "Needs revision",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "ambiguous",
+      "source": "歧義",
+      "text": "Ambiguous",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "multipleSolutions",
+      "source": "多解",
+      "text": "Multiple valid solutions",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "reasonLabel",
+      "source": "判斷理由",
+      "text": "Reason for your finding",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "reasonPlaceholder",
+      "source": "請寫氣數、連接關係、多解位置或修正理由",
+      "text": "Describe liberties, connections, alternative valid moves or why revision is needed.",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "storageError",
+      "source": "無法把審查草稿寫入瀏覽器儲存空間；請立即使用「匯出草稿」保留目前內容。",
+      "text": "The browser could not save the review draft. Export a draft now to preserve your work.",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "progress",
+      "source": "已完成 ${completed} / ${reviewItems.length} · 待審 ${incomplete}",
+      "text": "Completed {completed} / {total} · Pending {pending}",
+      "placeholders": [
+        "completed",
+        "total",
+        "pending"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "pendingCount",
+      "source": "待審（${incomplete}）",
+      "text": "Pending ({count})",
+      "placeholders": [
+        "count"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "completedCount",
+      "source": "已完成（${completed}）",
+      "text": "Completed ({count})",
+      "placeholders": [
+        "count"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "allReviewed",
+      "source": "題皆已完成，可補齊審查者資料與獨立聲明後匯出回條。",
+      "text": "All {count} items have been reviewed. Add reviewer details and the independence declarations before exporting.",
+      "placeholders": [
+        "count"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "proposedMove",
+      "source": "建議落子：第 ${y + 1} 行、第 ${x + 1} 列（座標 ${x},${y}）",
+      "text": "Proposed move: row {row}, column {column} (coordinates {x},{y})",
+      "placeholders": [
+        "row",
+        "column",
+        "x",
+        "y"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "draftFilename",
+      "source": "R1_獨立審題草稿.json",
+      "text": "R1_獨立審題草稿.json",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "draftExportNotice",
+      "source": "草稿已匯出；目前完成",
+      "text": "Draft exported: {completed} of {total} reviewed. This draft does not establish that R1a passed.",
+      "placeholders": [
+        "completed",
+        "total"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "missingReviewerCode",
+      "source": "審查者代碼",
+      "text": "Reviewer code",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "missingExperience",
+      "source": "圍棋經驗",
+      "text": "Go experience",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "missingDeclarations",
+      "source": "三項獨立聲明",
+      "text": "All three independence declarations",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "finalBlocked",
+      "source": "尚不能匯出完成回條：",
+      "text": "Cannot export a completed receipt. Missing: {missingProfile}; incomplete items: {incomplete}. Consistent requires a move, other findings also require a reason. You may export a draft.",
+      "placeholders": [
+        "missingProfile",
+        "incomplete"
+      ],
+      "review": "candidate"
+    },
+    {
+      "id": "finalFilename",
+      "source": "R1_獨立審題回條.json",
+      "text": "R1_獨立審題回條.json",
+      "placeholders": [],
+      "review": "candidate"
+    },
+    {
+      "id": "finalExportNotice",
+      "source": "完成回條已匯出；尚須由驗證程序核對內容指紋與既定答案。",
+      "text": "Completed receipt exported. The verifier must still check the content fingerprint and prescribed answers.",
+      "placeholders": [],
+      "review": "candidate"
+    }
+  ],
+  "immutableReceiptFilenames": [
+    "R1_獨立審題草稿.json",
+    "R1_獨立審題回條.json"
+  ],
+  "notAuthored": [
+    "r1-review-bank.js:reviewItems[*].prompt"
+  ]
+}
