@@ -33,8 +33,12 @@ test("new/changed HTML copy, changed JS source, omitted dynamic message and miss
  const changed=A.audit(stem,draft,html,moreJs);
  assert.ok(changed.errors.some(e=>e.includes("source Git blob")));
  assert.ok(changed.errors.some(e=>e.includes("uncovered Chinese")));
+ const duplicate=structuredClone(draft);duplicate.dynamic.push(structuredClone(duplicate.dynamic[0]));
+ assert.ok(A.audit(stem,duplicate,html,js).errors.some(e=>e.includes("dynamic")));
+ const swapped=structuredClone(draft);[swapped.dynamic[0],swapped.dynamic[1]]=[swapped.dynamic[1],swapped.dynamic[0]];
+ assert.ok(A.audit(stem,swapped,html,js).errors.some(e=>e.includes("dynamic source IDs")));
  const missing=structuredClone(draft);missing.dynamic.splice(3,1);
- assert.ok(A.audit(stem,missing,html,js).errors.some(e=>e.includes("uncovered")||e.includes("source")));
+ assert.ok(A.audit(stem,missing,html,js).errors.some(e=>e.includes("dynamic source IDs")));
  const noVariable=structuredClone(draft);noVariable.dynamic[0].text="Select a board position";
  assert.ok(A.audit(stem,noVariable,html,js).errors.some(e=>e.includes("placeholder")));
 });

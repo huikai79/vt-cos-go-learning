@@ -16,6 +16,55 @@ function extract(html){
  return {text,attrs:[...new Map(attrs.map(x=>[x.attribute+"\0"+x.source,x])).values()]};
 }
 const signature=x=>x.attribute+"\0"+x.source;
+const EXPECTED_DYNAMIC_IDS=Object.freeze({
+  "r1-review": [
+    "boardPointAria",
+    "boardAria",
+    "moveUnselected",
+    "reviewFinding",
+    "chooseFinding",
+    "consistent",
+    "needsFix",
+    "ambiguous",
+    "multipleSolutions",
+    "reasonLabel",
+    "reasonPlaceholder",
+    "storageError",
+    "progress",
+    "pendingCount",
+    "completedCount",
+    "allReviewed",
+    "proposedMove",
+    "draftFilename",
+    "draftExportNotice",
+    "missingReviewerCode",
+    "missingExperience",
+    "missingDeclarations",
+    "finalBlocked",
+    "finalFilename",
+    "finalExportNotice"
+  ],
+  "lesson-content-review": [
+    "boardAriaFallback",
+    "lessonNumber",
+    "unitNumber",
+    "demoNumber",
+    "takeaway",
+    "findingLabel",
+    "findingUnset",
+    "consistent",
+    "needsFix",
+    "ambiguous",
+    "reason",
+    "reasonPlaceholder",
+    "progress",
+    "draftFilename",
+    "finalBlocked",
+    "finalFilename",
+    "finalExportNotice"
+  ]
+});
+
 function audit(stem,draft,html,js){
  const errors=[],array=Array.isArray,rec=x=>x&&typeof x==="object"&&!array(x);
  if(!rec(draft))throw Error("review locale draft must be an object");
@@ -35,6 +84,9 @@ function audit(stem,draft,html,js){
  if(inventory.attrs.length!==attrs.length||
   JSON.stringify(inventory.attrs)!==JSON.stringify(attrs.map(x=>x&&({attribute:x.attribute,source:x.source}))))errors.push("missing, stale or reordered static attributes");
  if(!dynamic.length||new Set(dynamic.map(x=>x&&x.id)).size!==dynamic.length)errors.push("empty/duplicate dynamic review IDs");
+ const identifiers=dynamic.map(x=>x&&x.id);
+ if(JSON.stringify(identifiers)!==JSON.stringify(EXPECTED_DYNAMIC_IDS[stem]||[]))
+  errors.push("missing, reordered or unexpected dynamic source IDs");
  const entries=[...text,...attrs,...dynamic];
  for(const r of entries){
   if(!rec(r)||typeof r.text!=="string"||!r.text.trim()||r.review!=="candidate"||
@@ -73,7 +125,7 @@ function run(base=root){
   return report;
  });
 }
-module.exports={PAGES,extract,sha,audit,run};
+module.exports={PAGES,EXPECTED_DYNAMIC_IDS,extract,sha,audit,run};
 if(require.main===module){
  try{process.stdout.write(JSON.stringify(run(),null,2)+"\n");}
  catch(e){process.stderr.write(e.message+"\n");process.exitCode=1;}
