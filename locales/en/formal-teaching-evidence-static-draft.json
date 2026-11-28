@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "completeSiteEligible": false,
+  "sourceFile": "formal-teaching-evidence.html",
+  "sourceRef": "7f06005d8c887aa52055ef6f6651d2aa64a89d5e",
+  "scope": "Source-traced static page text, document title, metadata and input placeholders only; not a live English webpage. Preserve all IDs, exact protocol/fingerprint values, actual user inputs, URLs, JSON receipt keys and the unmodified learner-review contract.",
+  "review": {
+    "nativeEnglish": "pending",
+    "goAccuracy": "pending",
+    "accessibility": "pending",
+    "readerUsability": "not_measured"
+  },
+  "untranslatedDynamicSourceFiles": [
+    "formal-teaching-evidence.js"
+  ],
+  "segments": [
+    {
+      "source": "VT-COS｜悟之一手｜正式教學真人證據收集",
+      "text": "VT-COS | A Move of Insight | Collect Human Evidence for Formal Teaching",
+      "review": "candidate"
+    },
+    {
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    },
+    {
+      "source": "正式教學真人證據收集",
+      "text": "Collect Human Evidence for Formal Teaching",
+      "review": "candidate"
+    },
+    {
+      "source": "本頁只記錄同一凍結 candidate 的三位 target novice usability 與真人 accessibility spot check。觀察者不能替參與者完成任務；失敗、中止或 blocking issue 必須保留。這不是學習成效評量，也不建立 private unseen holdout。",
+      "text": "This page records usability observations from three target novice learners and a human accessibility spot check, all on the same frozen candidate. Observers must not perform tasks for participants. Preserve failures, interruptions, and blocking issues. This is not an assessment of learning effects and does not establish a private, previously unseen holdout.",
+      "review": "candidate"
+    },
+    {
+      "source": "真人 accessibility spot check",
+      "text": "Human Accessibility Spot Check",
+      "review": "candidate"
+    },
+    {
+      "source": "證據引用",
+      "text": "Evidence reference",
+      "review": "candidate"
+    },
+    {
+      "source": "Blocking issues（每行一項；沒有就留空）",
+      "text": "Blocking issues (one per line; leave blank only if there are none)",
+      "review": "candidate"
+    },
+    {
+      "source": "停止線：",
+      "text": "Stop rule:",
+      "review": "candidate"
+    },
+    {
+      "source": "任一初學者不是 target novice、漏做任何 critical task、出現 blocking issue、缺 evidence reference，或 accessibility 任一檢查未通過，都不得匯出「完成回條」。可匯出草稿保存現況。",
+      "text": "Do not export a completed receipt if any participant is not a target novice, misses a required critical task, has a blocking issue or lacks an evidence reference, or if any accessibility check fails. Export a draft to preserve the actual observations.",
+      "review": "candidate"
+    },
+    {
+      "source": "匯出草稿",
+      "text": "Export draft",
+      "review": "candidate"
+    },
+    {
+      "source": "匯出完成回條",
+      "text": "Export completed receipt",
+      "review": "candidate"
+    },
+    {
+      "source": "請逐位完成觀察；三位都必須使用上方同一 candidate。",
+      "text": "Record each participant's observations separately. All three must use the same candidate identified above.",
+      "review": "candidate"
+    }
+  ],
+  "attributes": [
+    {
+      "attribute": "content",
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    },
+    {
+      "attribute": "placeholder",
+      "source": "例如 local-report/accessibility-2026-09-30",
+      "text": "e.g. local-report/accessibility-2026-09-30",
+      "review": "candidate"
+    }
+  ]
+}

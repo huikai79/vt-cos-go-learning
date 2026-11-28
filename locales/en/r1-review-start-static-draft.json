@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "completeSiteEligible": false,
+  "sourceFile": "r1-review-start.html",
+  "sourceRef": "7f06005d8c887aa52055ef6f6651d2aa64a89d5e",
+  "scope": "Source-traced static page text, document title, metadata and input placeholders only; not a live English webpage. Preserve all IDs, exact protocol/fingerprint values, actual user inputs, URLs, JSON receipt keys and the unmodified learner-review contract.",
+  "review": {
+    "nativeEnglish": "pending",
+    "goAccuracy": "pending",
+    "accessibility": "pending",
+    "readerUsability": "not_measured"
+  },
+  "untranslatedDynamicSourceFiles": [],
+  "segments": [
+    {
+      "source": "VT-COS｜悟之一手｜R1a 外部審查交接",
+      "text": "VT-COS | A Move of Insight | R1a Independent Review Handoff",
+      "review": "candidate"
+    },
+    {
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    },
+    {
+      "source": "R1a 外部獨立內容審查交接",
+      "text": "R1a Handoff for Independent External Content Review",
+      "review": "candidate"
+    },
+    {
+      "source": "請先不要瀏覽本專案的 GitHub 原始碼庫、題庫原始碼、答案、測試或機器稽核結果。",
+      "text": "Do not inspect this project's GitHub repository, question-bank source code, answers, tests, or machine audit results before the review.",
+      "review": "candidate"
+    },
+    {
+      "source": "這個步驟只適合未參與本批題目／答案／技能邊界編寫，而且不是目前學習者的外部圍棋審查者。若你已先看過答案或機器驗證結果，本次就不能勾選「答案盲審」聲明；不要以猜測補填。",
+      "text": "This step is only for an external Go reviewer who did not help write these questions, answers, or skill boundaries and who is not a current learner. If you have already seen the answers or machine verification results, you cannot truthfully confirm an answer-blind review. Do not guess or fill in unverified declarations.",
+      "review": "candidate"
+    },
+    {
+      "source": "本次固定審查契約",
+      "text": "Fixed Review Contract",
+      "review": "candidate"
+    },
+    {
+      "source": "審查規格（Protocol）",
+      "text": "Review protocol",
+      "review": "candidate"
+    },
+    {
+      "source": "內容指紋（Content fingerprint）",
+      "text": "Content fingerprint",
+      "review": "candidate"
+    },
+    {
+      "source": "題庫母體",
+      "text": "Question-bank population",
+      "review": "candidate"
+    },
+    {
+      "source": "148 題公開題庫",
+      "text": "148 publicly exposed questions",
+      "review": "candidate"
+    },
+    {
+      "source": "審查母體",
+      "text": "Review sample",
+      "review": "candidate"
+    },
+    {
+      "source": "43 個母題組代表題 + 全部 48 題公開保留組；去重後 77 題",
+      "text": "43 representative items from parent question groups, plus all 48 public holdout items; 77 distinct items after deduplication",
+      "review": "candidate"
+    },
+    {
+      "source": "證據層級",
+      "text": "Evidence scope",
+      "review": "candidate"
+    },
+    {
+      "source": "單一外部內容審查證據；不證明平行題等難、完整內容效度或學習成效",
+      "text": "One independent reviewer's content-check evidence only. This does not establish parallel-form difficulty comparability, full content validity, or learning effects.",
+      "review": "candidate"
+    },
+    {
+      "source": "審查順序",
+      "text": "Review Procedure",
+      "review": "candidate"
+    },
+    {
+      "source": "先確認你符合獨立性條件，並保持答案盲審。",
+      "text": "First confirm that you meet the independence requirements and have not seen the prescribed answers.",
+      "review": "candidate"
+    },
+    {
+      "source": "進入審查頁，對每題自行找成功手，再標記「一致／需修／歧義／多解」。",
+      "text": "Open the review page. Find a successful move yourself for each item, then select Consistent, Needs revision, Ambiguous, or Multiple valid solutions.",
+      "review": "candidate"
+    },
+    {
+      "source": "若選「需修、歧義、多解」，必須寫明理由；不得因為想讓整批通過而改成「一致」。",
+      "text": "If you choose Needs revision, Ambiguous, or Multiple valid solutions, explain why. Never change a finding to Consistent merely to make the whole set pass.",
+      "review": "candidate"
+    },
+    {
+      "source": "完成 77 題與三項獨立聲明後，匯出",
+      "text": "After reviewing all 77 items and completing the three independence declarations, export",
+      "review": "candidate"
+    },
+    {
+      "source": "R1_獨立審題回條.json",
+      "text": "R1_獨立審題回條.json",
+      "review": "candidate"
+    },
+    {
+      "source": "把回條交回專案維護者；由驗證程式核對審查規格、內容指紋、題庫母體、重複題號、落子與審查結果；任何關鍵異常都直接判定不通過。",
+      "text": "Return the receipt to the project maintainer. The verifier checks the protocol, content fingerprint, sample, duplicate IDs, proposed moves, and review findings. Any critical discrepancy fails verification.",
+      "review": "candidate"
+    },
+    {
+      "source": "停止線：",
+      "text": "Stop rule:",
+      "review": "candidate"
+    },
+    {
+      "source": "只要你發現任何需修、歧義、多解，或你認為建議落子與頁面後續既定答案可能不同，就照實保存。R1a 不採多數決，也不允許把異議平均掉。",
+      "text": "Record every Needs revision, Ambiguous, or Multiple valid solutions finding, including any move that may differ from the answer revealed later. R1a is not decided by majority vote; disagreements must not be averaged away.",
+      "review": "candidate"
+    },
+    {
+      "source": "開始 77 題外部審查",
+      "text": "Start the external review of 77 items",
+      "review": "candidate"
+    },
+    {
+      "source": "離開審查流程",
+      "text": "Leave the review process",
+      "review": "candidate"
+    }
+  ],
+  "attributes": [
+    {
+      "attribute": "content",
+      "source": "VT-COS｜悟之一手",
+      "text": "VT-COS | A Move of Insight",
+      "review": "candidate"
+    }
+  ]
+}

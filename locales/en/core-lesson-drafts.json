@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "partial-draft-not-for-runtime-or-release",
+  "canonicalSource": "content.js",
+  "units": [
+    {
+      "unitIndex": 0,
+      "title": "Liberties and Captures",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 1,
+      "title": "Connecting and Cutting",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 2,
+      "title": "Illegal Moves and Ko",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 3,
+      "title": "Eyes and Basic Life and Death",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 4,
+      "title": "A Game on a 9×9 Board",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 5,
+      "title": "Opening Fundamentals",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 6,
+      "title": "Territory and Thickness",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 7,
+      "title": "Attack, Defence and Weak Groups",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 8,
+      "title": "Reading Life and Death",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 9,
+      "title": "Endgame and Counting",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 10,
+      "title": "Whole-Board Direction",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 11,
+      "title": "Fighting and Sacrifice",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 12,
+      "title": "Ko Fights and Threats",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 13,
+      "title": "Joseki and Variations",
+      "editorialStatus": "draft"
+    },
+    {
+      "unitIndex": 14,
+      "title": "Reviewing Your Games",
+      "editorialStatus": "draft"
+    }
+  ],
+  "lessons": [
+    {
+      "lessonIndex": 0,
+      "title": "What Is a Liberty?",
+      "text": "Stones sit on the intersections of the board. An empty point directly above, below, left or right of a stone is a liberty. Diagonal points do not count. Stones connected along the lines share their liberties.",
+      "takeaway": "Look at the empty points touching the group along the lines. Count each point only once.",
+      "badge": "The basics",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 1,
+      "title": "Atari and Capturing",
+      "text": "A group is in atari when it has just one liberty left. If the opponent fills that final liberty with a legal move, the whole group is captured and removed from the board.",
+      "takeaway": "Find the opponent's last liberty before trying to capture.",
+      "badge": "Capturing stones",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 2,
+      "title": "Escaping Atari",
+      "text": "When your group is in atari, extending along a board line may connect it to a new stone and create more liberties. Playing diagonally does not join the two stones into one group.",
+      "takeaway": "After extending, count the liberties of the whole connected group again.",
+      "badge": "Staying safe",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 3,
+      "title": "Which Stones Form One Group?",
+      "text": "Stones of the same colour form one group only when they touch along the board lines, directly or through other connected stones. A diagonal relationship may still matter strategically, but it is not a direct connection.",
+      "takeaway": "For this task, check whether the stones are already connected—not whether they might connect later.",
+      "badge": "Recognising groups",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 4,
+      "title": "Make a Direct Connection",
+      "text": "In these simple positions, two friendly groups may share one adjacent empty point. Playing there can join them into a single group.",
+      "takeaway": "Find an empty point touching both groups, then check the connection after playing.",
+      "badge": "Connecting stones",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 5,
+      "title": "Find the Cutting Point",
+      "text": "In these positions, your opponent could connect two separate groups through one shared empty point. Occupying that point stops that particular direct connection; another route may still be possible.",
+      "takeaway": "A cut blocks a specific connection. Do not assume it separates the groups permanently.",
+      "badge": "Cutting points",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 6,
+      "title": "When a Move Is Not Allowed",
+      "text": "A move that leaves your own group with no liberties is illegal unless it captures opposing stones first. Under the simple ko rule, you also cannot immediately recapture if that would recreate the preceding board position.",
+      "takeaway": "Check liberties after the move. In a ko, play elsewhere before attempting a recapture.",
+      "badge": "Rules and ko",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 7,
+      "title": "Two Eyes and Vital Points",
+      "text": "In these basic life-and-death positions, a group with two separate real eyes that an opponent cannot safely fill can live. First inspect the eye spaces, then find the point that creates or prevents two eyes. Read the opponent's strongest reply as well.",
+      "takeaway": "A promising first move is only the beginning: check the reply that challenges it most.",
+      "badge": "Life and death",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 8,
+      "title": "Understand the Stages of a Game",
+      "text": "In the opening, ask where a move can develop useful space. In the middle game, notice which groups need attention. Near the end, identify boundaries that still need to be settled.",
+      "takeaway": "What matters most changes as the game develops. Not every move needs to capture something.",
+      "badge": "Playing a full game",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 9,
+      "title": "Develop from the Corner",
+      "text": "A standard Go board has 19 lines in each direction. In the opening, the corners often let stones make territory efficiently, while nearby friendly stones affect which direction is useful.",
+      "takeaway": "Do not memorise a coordinate. Choose a direction that works with the stones already on the board.",
+      "badge": "Opening direction",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 10,
+      "title": "Territory, Thickness and Influence",
+      "text": "Territory is an area whose ownership is reasonably secure. Thickness describes a stable shape that can support future fighting. Influence is the potential reach of stones toward nearby or central areas; neither has a fixed point value.",
+      "takeaway": "Look beyond the territory you can count now. Ask where your stones can work next.",
+      "badge": "Whole-board concepts",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 11,
+      "title": "Take Care of Weak Groups",
+      "text": "A group may be weak because it has limited eye space, an uncertain connection, few escape routes or few liberties. Attacking can earn territory, strength or initiative even without capturing the opponent.",
+      "takeaway": "Before attacking, check whether your own stones are safe—and what the attack gains.",
+      "badge": "Attack and defence",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 12,
+      "title": "Read Beyond the First Move",
+      "text": "Life-and-death reading means considering a move, the opponent's strongest answer and the moves after that. Focus on points that change eyes, liberties or connections.",
+      "takeaway": "Find a vital point, then ask what the opponent would play to resist.",
+      "badge": "Reading practice",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 13,
+      "title": "Compare Endgame Results",
+      "text": "Once large groups are mostly safe, the endgame settles the remaining boundaries. To compare a local endgame move, examine what happens if you play first and if your opponent plays first; the full-board score still depends on the rules used.",
+      "takeaway": "Compare both possible orders, not only what you gain by playing first.",
+      "badge": "Endgame judgement",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 14,
+      "title": "Choose a Direction for the Whole Board",
+      "text": "A good whole-board choice depends on the relationships between groups: where your stones are weak, where open space remains and which move helps more than one area.",
+      "takeaway": "Look at the whole board before deciding whether to continue a local fight.",
+      "badge": "Board-wide direction",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 15,
+      "title": "Decide What to Save",
+      "text": "You do not have to rescue every stone. Sometimes allowing a few stones to be captured creates a stronger outside position, more territory or the chance to play elsewhere first. Compare the actual exchange, not the number of stones lost.",
+      "takeaway": "Compare what you gain if you give up stones with what you gain by trying to save them.",
+      "badge": "Fighting choices",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 16,
+      "title": "Find a Useful Ko Threat",
+      "text": "During a ko fight, a threat elsewhere may compel a reply and create a chance to take the ko again. Whether the threat is worthwhile depends on what it threatens and on the cost of winning or losing the ko.",
+      "takeaway": "Match the threat to the value of the ko; a bigger-looking threat is not always better.",
+      "badge": "Ko fighting",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 17,
+      "title": "Joseki Depends on the Board",
+      "text": "Joseki are established patterns of reasonable corner exchanges under particular conditions, not guaranteed best moves. The nearby stones, outside influence and direction of play all matter.",
+      "takeaway": "Check the surrounding board before choosing a familiar variation.",
+      "badge": "Choosing variations",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    {
+      "lessonIndex": 18,
+      "title": "Find One Question from a Finished Game",
+      "text": "During a game review, choose a move you felt unsure about or one that changed the position considerably. Record what you were thinking, then compare other candidate moves. An AI suggestion is something to investigate, not proof of one uniquely best answer.",
+      "takeaway": "Take one useful question from each game and test it in a later position.",
+      "badge": "Game review",
+      "sourceVersion": "public-content-v5",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    }
+  ],
+  "missing": [
+    "19 lesson demo steps/captions",
+    "19 lesson glossary entries/definitions",
+    "106 Core item prompt/hint/retry/explanation candidates",
+    "other lesson and unit UI states",
+    "all additional public pages and JS-generated text",
+    "readable exports and accessibility review"
+  ]
+}

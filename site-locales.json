@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "sourceRef": "7f06005d8c887aa52055ef6f6651d2aa64a89d5e",
+  "defaultLocale": "zh-Hant-TW",
+  "publicPages": [
+    "index.html",
+    "advanced.html",
+    "classic-shapes.html",
+    "history.html",
+    "math.html",
+    "global-go-observatory.html",
+    "live-game.html",
+    "r1-review-start.html",
+    "r1-review.html",
+    "lesson-content-review.html",
+    "formal-teaching-evidence.html"
+  ],
+  "locales": [
+    {
+      "id": "zh-Hant-TW",
+      "nativeName": "繁體中文",
+      "status": "source",
+      "publishable": true,
+      "audience": "臺灣繁體中文使用者；各頁依學習者、進階與審查讀者分層"
+    },
+    {
+      "id": "en",
+      "nativeName": "English",
+      "status": "authoring",
+      "publishable": false,
+      "audience": "English-speaking Go beginners; explain the board situation first and introduce liberty / atari only where useful"
+    },
+    {
+      "id": "ko-KR",
+      "nativeName": "한국어",
+      "status": "not_started",
+      "publishable": false,
+      "audience": "한국 초심자; 바둑 용어·존댓말을 한국어 원문 자료로 확인"
+    },
+    {
+      "id": "ms-MY",
+      "nativeName": "Bahasa Melayu",
+      "status": "not_started",
+      "publishable": false,
+      "audience": "Pelajar Malaysia; gunakan bahasa Melayu Malaysia dan jelaskan istilah Go yang belum mantap"
+    },
+    {
+      "id": "th-TH",
+      "nativeName": "ภาษาไทย",
+      "status": "not_started",
+      "publishable": false,
+      "audience": "ผู้เริ่มเรียนโกะชาวไทย; ตรวจศัพท์โกะและการตัดบรรทัดภาษาไทย"
+    },
+    {
+      "id": "id-ID",
+      "nativeName": "Bahasa Indonesia",
+      "status": "not_started",
+      "publishable": false,
+      "audience": "Pemula Indonesia; gunakan ragam bahasa Indonesia, bukan salinan pilihan kata bahasa Melayu"
+    },
+    {
+      "id": "de-DE",
+      "nativeName": "Deutsch",
+      "status": "not_started",
+      "publishable": false,
+      "audience": "Deutschsprachige Go-Anfänger; etablierte Go-Begriffe im Zusammenhang erklären, nicht chinesische Syntax nachahmen"
+    }
+  ],
+  "promotionGate": {
+    "requiredScopes": [
+      "all_public_pages",
+      "all_core_items",
+      "all_dynamic_outcomes",
+      "hints_and_answer_reveal",
+      "error_unknown_and_recovery",
+      "aria_keyboard_and_navigation",
+      "readable_exports",
+      "direct_links_and_persistence"
+    ],
+    "requiredChecks": [
+      "engineering_negative_tests",
+      "go_content_review",
+      "human_native_language_review",
+      "target_reader_usability",
+      "accessibility",
+      "public_boundary_diff_scan"
+    ],
+    "noSilentFallback": true,
+    "requiresUserReleaseApproval": true
+  }
+}

@@ -44,3 +44,27 @@ test("重新凍結只代表資產身分，不把 example evidence 偽造成真�
   assert.equal(example.formalEvaluation.r1bComparabilityEstablished,false);
   assert.equal(gate.formalTeachingCandidateId,candidate.candidateId);
 });
+
+const Drift=require("../scripts/audit-formal-candidate-drift.cjs");
+test("唯讀 asset identity 診斷能區分受保護檔案改動、基準失效與不完整資料",()=>{
+  const paths=["index.html","app.js"];
+  const frozen={"index.html":"a".repeat(40),"app.js":"b".repeat(40)};
+  const changed={...frozen,"app.js":"c".repeat(40)};
+  const expected=Drift.fingerprintFor(paths,frozen);
+  const current=Drift.compare({assetPaths:paths,expectedFingerprint:expected,
+    referenceEntries:frozen,currentEntries:changed});
+  assert.equal(current.status,"DRIFT_BLOCKED");
+  assert.deepEqual(current.changedAssets.map(x=>x.path),["app.js"]);
+  assert.equal(current.releaseEligible,false);
+  assert.equal(current.formalTeachingResult,"NOT_EVALUATED");
+  assert.equal(Drift.compare({assetPaths:paths,expectedFingerprint:expected,
+    referenceEntries:frozen,currentEntries:frozen}).status,"ASSET_IDENTITY_MATCH");
+  const wrongReference=Drift.compare({assetPaths:paths,expectedFingerprint:expected,
+    referenceEntries:changed,currentEntries:changed});
+  assert.equal(wrongReference.status,"REFERENCE_INVALID");
+  assert.throws(()=>Drift.fingerprintFor(paths,{"index.html":"a".repeat(40)}),{code:"CANDIDATE_DRIFT_AUDIT_ERROR"});
+  assert.throws(()=>Drift.parseTree("120000 blob "+"a".repeat(40)+"\tindex.html\0",paths),
+    {code:"CANDIDATE_DRIFT_AUDIT_ERROR"});
+  assert.throws(()=>Drift.fingerprintFor(["index.html","index.html"],frozen),
+    {code:"CANDIDATE_DRIFT_AUDIT_ERROR"});
+});

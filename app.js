@@ -2,6 +2,41 @@
   "use strict";
   const { BLACK, boardFromStones, groupAt, playMove } = window.GoCore;
   const { units, lessons, problems, skills } = window.GoContent;
+  // Only a released, complete-site locale may supply learner-visible copy.
+  // All Go facts, IDs, answers, events and schedules remain canonical.
+  const localeRoute = window.GoSiteLanguage && window.GoSiteLanguage.stateFor(window.location.href);
+  const displayLocale = localeRoute && localeRoute.status === "available" ? localeRoute.requested : "zh-Hant-TW";
+  const coreCopy = window.GoCoreLocaleView && window.GoCoreLocaleView.languageView
+    ? window.GoCoreLocaleView.languageView(window.GoContent,
+        displayLocale === "zh-Hant-TW" ? null : window.GoReviewedCoreBundle, displayLocale)
+    : { unit: (i) => units[i], lesson: (i) => lessons[i], problem: (id) => problems.find((p) => p.id === id) };
+  function uiText(key, chinese, params) {
+    return window.GoCoreLocaleView && window.GoCoreLocaleView.uiText
+      ? window.GoCoreLocaleView.uiText(displayLocale, key, chinese, params)
+      : chinese;
+  }
+  function visibleRetry(problem) {
+    return window.GoCoreLocaleView && window.GoCoreLocaleView.retryText
+      ? window.GoCoreLocaleView.retryText(displayLocale, problem, window.GoReviewedCoreRetries)
+      : (problem.retry || "再找一次沿線相鄰的交叉點。");
+  }
+  function visibleProblem(problem) {
+    return coreCopy.problem(problem.id) || problem;
+  }
+  function visibleLesson(lesson) {
+    const index = lessons.indexOf(lesson);
+    if (index < 0) return lesson;
+    const copy = coreCopy.lesson(index);
+    if (copy === lesson) return lesson;
+    return { ...lesson, ...copy,
+      demoSteps: lesson.demoSteps.map((step, i) => ({ ...step, ...copy.demoSteps[i] })),
+      terms: lesson.terms.map((term, i) => ({ ...term, ...copy.terms[i] }))
+    };
+  }
+  function visibleUnit(index) {
+    const copy = coreCopy.unit(index);
+    return copy === units[index] ? copy : { ...units[index], ...copy };
+  }
   const { phase2Problems } = window.GoPhase2Content;
   const { fixedApplicationProbes, sampleSgf } = window.GoPhase4Content;
   const Sgf = window.GoSgf;
@@ -142,11 +177,11 @@
           rawValue: storageReadIssue.raw
         }));
         storageReadIssue = null;
-        storageRecoveryNotice = "偵測到無法安全載入的舊進度；原始內容已保留在本機復原副本，課程已用可讀狀態啟動。";
+        storageRecoveryNotice = uiText("storageRecoverySaved", "偵測到無法安全載入的舊進度；原始內容已保留在本機復原副本，課程已用可讀狀態啟動。");
       }
       catch (_) {
         storageWriteFailed = true;
-        storageWarningMessage = "舊進度格式損壞，而且無法建立復原副本；為避免覆寫，本次變更未保存。請先檢查瀏覽器儲存空間。";
+        storageWarningMessage = uiText("storageRecoveryFailed", "舊進度格式損壞，而且無法建立復原副本；為避免覆寫，本次變更未保存。請先檢查瀏覽器儲存空間。");
         showStorageWarning();
         return false;
       }
@@ -186,7 +221,7 @@
     }
     catch (_) {
       storageWriteFailed = true;
-      storageWarningMessage = "無法寫入瀏覽器儲存空間；本次變更未保存。請先匯出可用資料，並檢查瀏覽器的儲存權限或剩餘空間。";
+      storageWarningMessage = uiText("storageWriteFailed", "無法寫入瀏覽器儲存空間；本次變更未保存。請先匯出可用資料，並檢查瀏覽器的儲存權限或剩餘空間。");
       showStorageWarning();
       return false;
     }
@@ -927,24 +962,25 @@
     if (!list) return;
     list.innerHTML = units.map((unit, index) => {
       const lessonCount = lessons.filter((lesson) => lesson.unit === index).length;
-      return `<li><button type="button" data-site-intro-unit="${index}"><span class="intro-unit-number">${String(index + 1).padStart(2, "0")}</span><span><strong>${escapeHtml(unit.title)}</strong><small>${lessonCount} 課</small></span><span aria-hidden="true">→</span></button></li>`;
+      return `<li><button type="button" data-site-intro-unit="${index}"><span class="intro-unit-number">${String(index + 1).padStart(2, "0")}</span><span><strong>${escapeHtml(visibleUnit(index).title)}</strong><small>${lessonCount} 課</small></span><span aria-hidden="true">→</span></button></li>`;
     }).join("");
   }
 
   function renderNav() {
     const unitIndex = state.navUnitIndex;
-    const unit = units[unitIndex];
+    const unit = visibleUnit(unitIndex);
     const currentLessonIndex = problems[state.index].lesson;
-    const currentLesson = lessons[currentLessonIndex];
+    const currentLesson = visibleLesson(lessons[currentLessonIndex]);
     const currentUnitIndex = currentLesson.unit;
     $("current-course-context").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
     $("top-course-context").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
-    $("unit-select").innerHTML = units.map((item, index) => `<option value="${index}" ${index === unitIndex ? "selected" : ""}>第 ${index + 1} 單元 · ${escapeHtml(item.title)}</option>`).join("");
+    $("unit-select").innerHTML = units.map((item, index) => `<option value="${index}" ${index === unitIndex ? "selected" : ""}>第 ${index + 1} 單元 · ${escapeHtml(visibleUnit(index).title)}</option>`).join("");
     $("unit-select").value = String(unitIndex);
     $("previous-unit-button").disabled = unitIndex === 0;
     $("next-unit-button").disabled = unitIndex === units.length - 1;
     $("unit-meta").textContent = `第 ${currentUnitIndex + 1} 單元 · ${currentLesson.title}`;
-    $("lesson-nav").innerHTML = `<div class="nav-unit"><div class="nav-unit-title">${unitIndex === currentUnitIndex ? "本單元課程" : "查看第 " + (unitIndex + 1) + " 單元 · " + escapeHtml(unit.title)}</div>${lessons.map((lesson, index) => {
+    $("lesson-nav").innerHTML = `<div class="nav-unit"><div class="nav-unit-title">${unitIndex === currentUnitIndex ? "本單元課程" : "查看第 " + (unitIndex + 1) + " 單元 · " + escapeHtml(unit.title)}</div>${lessons.map((canonicalLesson, index) => {
+      const lesson = visibleLesson(canonicalLesson);
       const active = !state.externalMode && currentLessonIndex === index;
       return lesson.unit === unitIndex ? `<button type="button" class="lesson-link ${active ? "active" : ""}" ${active ? 'aria-current="page"' : ""} data-lesson="${index}"><span class="lesson-index">${String(index + 1).padStart(2, "0")}</span><span class="lesson-copy"><strong>${escapeHtml(lesson.title)}${active ? ' <span class="current-label">目前</span>' : ""}</strong><small>${escapeHtml(lesson.subtitle)}</small></span></button>` : "";
     }).join("")}</div>`;
@@ -1167,10 +1203,10 @@
     teachingBoard.hidden = false;
     teachingBoard.innerHTML = demoBoardMarkup(step);
     $("teaching-demo-caption").textContent = step.caption;
-    $("teaching-demo-count").textContent = steps.length > 1 ? `第 ${demoStepIndex + 1} / ${steps.length} 步` : "";
+    $("teaching-demo-count").textContent = steps.length > 1 ? uiText("demoCount", `第 ${demoStepIndex + 1} / ${steps.length} 步`, {current: demoStepIndex + 1, total: steps.length}) : "";
     $("teaching-demo-previous").disabled = demoStepIndex === 0;
     $("teaching-demo-next").disabled = false;
-    $("teaching-demo-next").textContent = demoStepIndex === steps.length - 1 ? "從頭再看 ↺" : "看下一步 →";
+    $("teaching-demo-next").textContent = demoStepIndex === steps.length - 1 ? uiText("demoRestart", "從頭再看 ↺") : uiText("demoNext", "看下一步 →");
     stepper.hidden = false;
     $("teaching-demo-previous").hidden = steps.length < 2;
     $("teaching-demo-next").hidden = steps.length < 2;
@@ -1226,41 +1262,43 @@
 
   function renderAnswer() {
     const problem = current();
+    const presentation = visibleProblem(problem);
     if (problem.type === "move") {
-      $("answer-area").innerHTML = `<span class="move-guide">點選棋盤，或用方向鍵逐點移動，再按 Enter／空白鍵落子。<br>答錯可再試；需要時可先看提示。</span>`;
-      $("board-instruction").textContent = "點選落子；鍵盤可用方向鍵移動，Enter／空白鍵落子";
+      $("answer-area").innerHTML = `<span class="move-guide">${displayLocale === "zh-Hant-TW" ? "點選棋盤，或用方向鍵逐點移動，再按 Enter／空白鍵落子。<br>答錯可再試；需要時可先看提示。" : escapeHtml(uiText("moveGuide", ""))}</span>`;
+      $("board-instruction").textContent = uiText("moveInstruction", "點選落子；鍵盤可用方向鍵移動，Enter／空白鍵落子");
       $("answer-policy").textContent = state.externalMode === "evaluation"
-        ? "點選後會立即記錄首答，完成整批前不顯示正誤。"
+        ? uiText("evaluationPolicy", "點選後會立即記錄首答，完成整批前不顯示正誤。")
         : state.externalMode === "local_sgf"
-          ? "請下出你記得的原棋譜著手；與原棋譜不同可以再試，這不代表該手一定不好。"
-          : "請在棋盤上選一點；答錯可以再試。";
-      $("board-card").setAttribute("aria-label", "可落子的題目棋盤");
+          ? uiText("localSgfPolicy", "請下出你記得的原棋譜著手；與原棋譜不同可以再試，這不代表該手一定不好。")
+          : uiText("movePolicy", "請在棋盤上選一點；答錯可以再試。");
+      $("board-card").setAttribute("aria-label", uiText("playableBoard", "可落子的題目棋盤"));
       return;
     }
     if (problem.type === "choice") {
-      $("answer-area").innerHTML = problem.options.map((label, index) => `<button class="option-button choice-button" type="button" data-answer="${index}">${escapeHtml(label)}</button>`).join("");
-      $("board-instruction").textContent = problem.focus.length ? "觀察金色圈出的棋子" : "閱讀題幹後選擇答案";
-      $("answer-policy").textContent = state.externalMode === "evaluation" ? "選擇後會立即記錄首答，完成整批前不顯示正誤。" : "選擇答案後會立即作答；答錯可以再試。";
-      $("board-card").setAttribute("aria-label", "觀察用題目棋盤");
+      $("answer-area").innerHTML = presentation.options.map((label, index) => `<button class="option-button choice-button" type="button" data-answer="${index}">${escapeHtml(label)}</button>`).join("");
+      $("board-instruction").textContent = problem.focus.length ? uiText("choiceFocused", "觀察金色圈出的棋子") : uiText("choiceRead", "閱讀題幹後選擇答案");
+      $("answer-policy").textContent = state.externalMode === "evaluation" ? uiText("evaluationPolicy", "選擇後會立即記錄首答，完成整批前不顯示正誤。") : uiText("choicePolicy", "選擇答案後會立即作答；答錯可以再試。");
+      $("board-card").setAttribute("aria-label", uiText("observedBoard", "觀察用題目棋盤"));
       return;
     }
     if (problem.type === "spot") {
-      $("answer-area").innerHTML = `<span class="move-guide">點選棋盤上的位置，或用方向鍵移動後按 Enter／空白鍵選擇。<br>這題只判定題幹指定的局部觀察點，不代表全局唯一最佳手。</span>`;
-      $("board-instruction").textContent = "點選要比較的位置；鍵盤可用方向鍵移動，Enter／空白鍵選擇";
-      $("answer-policy").textContent = "選擇位置後會立即作答；答錯可以再試。";
-      $("board-card").setAttribute("aria-label", "可選擇位置的局部棋盤示意");
+      $("answer-area").innerHTML = `<span class="move-guide">${displayLocale === "zh-Hant-TW" ? "點選棋盤上的位置，或用方向鍵移動後按 Enter／空白鍵選擇。<br>這題只判定題幹指定的局部觀察點，不代表全局唯一最佳手。" : escapeHtml(uiText("spotGuide", ""))}</span>`;
+      $("board-instruction").textContent = uiText("spotInstruction", "點選要比較的位置；鍵盤可用方向鍵移動，Enter／空白鍵選擇");
+      $("answer-policy").textContent = uiText("spotPolicy", "選擇位置後會立即作答；答錯可以再試。");
+      $("board-card").setAttribute("aria-label", uiText("selectedPointBoard", "可選擇位置的局部棋盤示意"));
       return;
     }
     const values = problem.type === "count" ? [1, 2, 3, 4, 5, 6] : [true, false];
-    $("answer-area").innerHTML = values.map((value) => `<button class="option-button" type="button" data-answer="${value}">${problem.type === "connect" ? (value ? "有，同一串" : "沒有，分兩串") : value + " 口"}</button>`).join("");
-    $("board-instruction").textContent = "觀察金色圈出的棋子";
-    $("answer-policy").textContent = state.externalMode === "evaluation" ? "選擇後會立即記錄首答，完成整批前不顯示正誤。" : "選擇答案後會立即作答；答錯可以再試。";
-    $("board-card").setAttribute("aria-label", "觀察用題目棋盤");
+    $("answer-area").innerHTML = values.map((value) => `<button class="option-button" type="button" data-answer="${value}">${problem.type === "connect" ? (value ? uiText("connectYes", "有，同一串") : uiText("connectNo", "沒有，分兩串")) : uiText("liberties", value + " 口", {count: value})}</button>`).join("");
+    $("board-instruction").textContent = uiText("choiceFocused", "觀察金色圈出的棋子");
+    $("answer-policy").textContent = state.externalMode === "evaluation" ? uiText("evaluationPolicy", "選擇後會立即記錄首答，完成整批前不顯示正誤。") : uiText("choicePolicy", "選擇答案後會立即作答；答錯可以再試。");
+    $("board-card").setAttribute("aria-label", uiText("observedBoard", "觀察用題目棋盤"));
   }
 
   function render() {
     const problem = current();
-    const lesson = currentLesson();
+    const presentation = visibleProblem(problem);
+    const lesson = visibleLesson(currentLesson());
     const isTextPractice = problem.type === "choice" && problem.stones.length === 0;
     document.querySelector(".practice-grid").classList.toggle("text-practice", isTextPractice);
     document.querySelector(".content-wrap")?.classList.toggle("text-practice-layout", isTextPractice);
@@ -1300,8 +1338,8 @@
     renderDemoBoards(lesson);
     const skill = currentSkill();
     $("question-tag").textContent = state.externalMode === "application" ? "局面應用練習" : state.externalMode === "evaluation" ? "無提示流程試行" : state.externalMode === "local_sgf" ? "棋譜單點復盤" : skill ? `練習技能 · ${skill.learnerLabel || skill.name}` : (problem.type === "move" ? "落子題" : "觀察題");
-    $("question-title").textContent = problem.title;
-    $("question-prompt").textContent = problem.prompt;
+    $("question-title").textContent = presentation.title;
+    $("question-prompt").textContent = presentation.prompt;
     $("takeaway-text").textContent = lesson.takeaway;
     $("takeaway").hidden = true;
     $("feedback").className = "feedback";
@@ -1309,7 +1347,7 @@
     clearAuxiliaryFeedback("interaction-feedback");
     clearAuxiliaryFeedback("hint-feedback");
     $("hint-button").hidden = false;
-    $("hint-button").textContent = "給我一點提示";
+    $("hint-button").textContent = uiText("hintButton", "給我一點提示");
     $("hint-button").disabled = state.externalMode === "evaluation";
     $("answer-policy").hidden = false;
     $("next-button").disabled = true;
@@ -1341,7 +1379,7 @@
   function renderProgress() {
     $("progress-count").textContent = `${state.completed.size} / ${problems.length}`;
     $("progress-bar").style.width = `${state.completed.size / problems.length * 100}%`;
-    $("progress-caption").textContent = state.completed.size === problems.length ? `目前 ${units.length} 個單元已完成` : `還有 ${problems.length - state.completed.size} 題待完成`;
+    $("progress-caption").textContent = state.completed.size === problems.length ? uiText("progressComplete", `目前 ${units.length} 個單元已完成`, {count:units.length}) : uiText("progressRemaining", `還有 ${problems.length - state.completed.size} 題待完成`, {count:problems.length-state.completed.size});
     $("review-count").textContent = state.missed.size;
     $("review-button").disabled = state.missed.size === 0;
     $("review-button").hidden = state.missed.size === 0;
@@ -1353,12 +1391,12 @@
     $("sidebar-due-review-count").textContent = dueCount;
     $("sidebar-due-review-button").hidden = dueCount === 0;
     $("today-navigation").hidden = dueCount === 0 && state.missed.size === 0;
-    $("due-review-button").setAttribute("aria-label", `今日有 ${dueCount} 題到期複習`);
-    $("scheduled-practice-button").textContent = dueCount ? `複習今日到期（${dueCount}）` : "開始間隔練習";
+    $("due-review-button").setAttribute("aria-label", uiText("dueReviewAria", `今日有 ${dueCount} 題到期複習`, {count:dueCount}));
+    $("scheduled-practice-button").textContent = dueCount ? uiText("scheduledReviewButton", `複習今日到期（${dueCount}）`, {count:dueCount}) : uiText("scheduledPracticeButton", "開始間隔練習");
     $("scheduled-practice-description").textContent = dueCount
-      ? `今天有 ${dueCount} 題到期；先做這些複習，不會改變核心課程進度。`
-      : "今天沒有到期題；可先做尚未練過的練習題，之後再依間隔回來複習。";
-    $("resume-button").textContent = state.externalMode ? "返回目前課程" : state.hasStarted ? "前往目前題目" : state.index === 0 ? "開始第 1 題" : "開始這一題";
+      ? uiText("scheduledReviewDue", `今天有 ${dueCount} 題到期；先做這些複習，不會改變核心課程進度。`, {count:dueCount})
+      : uiText("scheduledReviewEmpty", "今天沒有到期題；可先做尚未練過的練習題，之後再依間隔回來複習。");
+    $("resume-button").textContent = state.externalMode ? uiText("resumeCurrentCourse", "返回目前課程") : state.hasStarted ? uiText("resumeCurrentQuestion", "前往目前題目") : state.index === 0 ? uiText("startFirstQuestion", "開始第 1 題") : uiText("startCurrentQuestion", "開始這一題");
     const diagnostics = Metrics.summarize({ events: state.events, schedulerResponses: state.scheduler.responses });
     $("diagnostic-summary").textContent = diagnosticSummaryText(diagnostics);
     renderLivePracticeSummary();
@@ -1389,6 +1427,7 @@
 
   function reportAnswer(correct, reason, answerValue) {
     const problem = current();
+    const presentation = visibleProblem(problem);
     if (!state.externalMode) {
       state.hasStarted = true;
       markCurrentLessonIntroSeen();
@@ -1401,7 +1440,7 @@
       state.solved = true;
       const feedback = $("feedback");
       feedback.className = "feedback";
-      feedback.textContent = "首答已記錄；完成整批前不顯示正誤。";
+      feedback.textContent = uiText("evaluationRecorded", "首答已記錄；完成整批前不顯示正誤。");
       $("next-button").disabled = false;
       $("next-button").hidden = false;
       $("hint-button").hidden = true;
@@ -1445,8 +1484,8 @@
       if (!state.externalMode && state.reviewMode && state.wrongThisTurn === 0) state.missed.delete(problem.id);
       feedback.className = "feedback answer-result success";
       feedback.innerHTML = state.externalMode === "local_sgf"
-        ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原棋譜一致</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`
-        : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">答對了</strong><span class="answer-explanation">${escapeHtml(problem.explanation)}</span>`;
+        ? `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">與原棋譜一致</strong><span class="answer-explanation">${escapeHtml(presentation.explanation)}</span>`
+        : `<span class="feedback-badge" aria-hidden="true">✓</span><strong class="feedback-title">${escapeHtml(uiText("correctTitle", "答對了"))}</strong><span class="answer-explanation">${escapeHtml(presentation.explanation)}</span>`;
       $("next-button").disabled = false;
       $("next-button").hidden = false;
       $("hint-button").hidden = true;
@@ -1463,7 +1502,7 @@
         : `${reason} 再試一次，或看看提示。`;
       feedback.innerHTML = state.externalMode === "local_sgf"
         ? `<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">與原棋譜不同</strong><span class="answer-explanation">${escapeHtml(retryMessage)}</span>`
-        : `<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">答錯，再看一次</strong><span class="answer-explanation">${escapeHtml(retryMessage)}</span>`;
+        : `<span class="feedback-badge" aria-hidden="true">×</span><strong class="feedback-title">${escapeHtml(uiText("incorrectTitle", "答錯，再看一次"))}</strong><span class="answer-explanation">${escapeHtml(retryMessage)}</span>`;
     }
     save();
     renderSgfReflection();
@@ -1484,7 +1523,7 @@
     if (problem.type !== "move") return;
     const result = playMove(state.board, x, y, current().playerColor || BLACK);
     if (!result.legal) {
-      showAuxiliaryFeedback("interaction-feedback", result.reason);
+      showAuxiliaryFeedback("interaction-feedback", window.GoCoreLocaleView && window.GoCoreLocaleView.legalMoveFailureText ? window.GoCoreLocaleView.legalMoveFailureText(displayLocale, result.reason) : result.reason);
       return;
     }
     clearAuxiliaryFeedback("interaction-feedback");
@@ -1505,7 +1544,7 @@
       startProblem(0, "external_complete");
       $("feedback").className = storageWriteFailed ? "feedback error" : "feedback success";
       $("feedback").textContent = storageWriteFailed
-        ? "本次結果仍在目前頁面，但無法寫入瀏覽器儲存空間；離開前請先匯出可用資料。"
+        ? uiText("storageUnsavedResult", "本次結果仍在目前頁面，但無法寫入瀏覽器儲存空間；離開前請先匯出可用資料。")
         : completedMode === "local_sgf" ? "單點復盤已保存；原判斷與原棋譜重建會一併寫入匯出紀錄。" : "局面應用練習已完成；它與自然實戰分開記錄。";
       revealQuestionStart();
       return;
@@ -1709,7 +1748,7 @@
     const value = current().type === "count" || current().type === "choice" ? Number(button.dataset.answer) : button.dataset.answer === "true";
     const correct = value === current().answer;
     button.classList.add(correct ? "correct" : "wrong");
-    reportAnswer(correct, current().retry || "再找一次沿線相鄰的交叉點。", button.textContent.trim());
+    reportAnswer(correct, correct ? "" : visibleRetry(current()), button.textContent.trim());
   });
   $("board").addEventListener("click", (event) => {
     const point = event.target.closest("[data-x]");
@@ -1718,7 +1757,7 @@
     const y = Number(point.dataset.y);
     if (state.externalMode !== "evaluation") setBoardCursor(x, y, false);
     if (point.dataset.occupied === "true") {
-      showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+      showAuxiliaryFeedback("interaction-feedback", uiText("occupiedPoint", "這裡已有棋子，不能落子。"));
       return;
     }
     onMove(x, y);
@@ -1735,7 +1774,7 @@
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       if (point.dataset.occupied === "true") {
-        showAuxiliaryFeedback("interaction-feedback", "這裡已有棋子，不能落子。");
+        showAuxiliaryFeedback("interaction-feedback", uiText("occupiedPoint", "這裡已有棋子，不能落子。"));
         return;
       }
       onMove(Number(point.dataset.x), Number(point.dataset.y));
@@ -1743,7 +1782,7 @@
   });
   $("hint-button").addEventListener("click", () => {
     if (state.solved || state.hintShown || state.externalMode === "evaluation") return;
-    showAuxiliaryFeedback("hint-feedback", current().hint);
+    showAuxiliaryFeedback("hint-feedback", visibleProblem(current()).hint);
     state.hintShown = true;
     markCurrentLessonIntroSeen();
     recordEvent("hint", {
@@ -1756,7 +1795,7 @@
       const active = state.activeApplicationPresentation;
       state.applicationEvents.push({ type: "hint", occurredAt: new Date().toISOString(), presentationId: active && active.presentationId, problemId: current().id, firstAnswerPending: state.answersThisTurn === 0, evidenceTaxonomyVersion: current().evidenceTaxonomyVersion || EvidenceTaxonomy.CURRENT_VERSION, transferLevel: current().transferLevel || "T3", evaluationContext: current().evaluationContext || "standardized", uiVersion: active && active.uiVersion || uiVersion });
     }
-    $("hint-button").textContent = "提示已顯示";
+    $("hint-button").textContent = uiText("hintShown", "提示已顯示");
     $("hint-button").disabled = true;
     renderLearningFlow();
     save();

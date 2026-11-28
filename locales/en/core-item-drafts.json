@@ -1,0 +1,1567 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "status": "candidate-not-runtime",
+  "canonicalSource": "GoContent.problems",
+  "itemCount": 106,
+  "items": {
+    "u1-01": {
+      "id": "u1-01",
+      "title": "One stone in the middle",
+      "prompt": "How many liberties does the marked black stone have?",
+      "hint": "Count only the empty points touching the stone along a board line.",
+      "explanation": "The four neighbouring intersections—up, down, left and right—are empty, so this stone has four liberties.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-02": {
+      "id": "u1-02",
+      "title": "One stone on the edge",
+      "prompt": "How many liberties does the marked black stone have?",
+      "hint": "The area outside the board cannot be counted.",
+      "explanation": "The black stone has three adjacent empty intersections: left, right and below.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-03": {
+      "id": "u1-03",
+      "title": "One stone in the corner",
+      "prompt": "How many liberties does the marked black stone have?",
+      "hint": "A corner has only two board lines leading inward.",
+      "explanation": "Only the points to the right and below are liberties, so the stone has two.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-04": {
+      "id": "u1-04",
+      "title": "Two connected stones",
+      "prompt": "How many liberties does this connected black group have?",
+      "hint": "The intersection between the stones is occupied, so it is not a liberty.",
+      "explanation": "Both stones form one group. Count the six different empty intersections around that group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-05": {
+      "id": "u1-05",
+      "title": "Does a diagonal count?",
+      "prompt": "Do the two marked black stones already form one connected group?",
+      "hint": "Stones connect along horizontal or vertical board lines, not across a diagonal.",
+      "explanation": "The stones touch only diagonally. They are still two separate groups.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-06": {
+      "id": "u1-06",
+      "title": "Capture in the middle",
+      "prompt": "Black to play. Capture the marked white stone by taking its last liberty.",
+      "hint": "Look for the empty point directly next to White that is not occupied by Black.",
+      "explanation": "Black fills White's final liberty. With no liberties left, the white stone is captured.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-07": {
+      "id": "u1-07",
+      "title": "Capture at the edge",
+      "prompt": "Black to play. Find White's last liberty and capture the stone.",
+      "hint": "The board edge gives White no extra liberty. Check the point below it.",
+      "explanation": "The last liberty of this edge stone is directly below it; Black captures there.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-08": {
+      "id": "u1-08",
+      "title": "Capture in the corner",
+      "prompt": "Black to play. Capture the white stone in the corner.",
+      "hint": "A corner stone can only gain liberties at the two neighbouring intersections on the board.",
+      "explanation": "The point to the right is occupied by Black. The remaining liberty is below White.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-09": {
+      "id": "u1-09",
+      "title": "Capture two stones together",
+      "prompt": "Black to play. Capture the marked pair of connected white stones in one move.",
+      "hint": "Count the empty points around both white stones as one group.",
+      "explanation": "The two white stones share their liberties. Filling the last empty point below the left-hand stone captures the whole group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u1-10": {
+      "id": "u1-10",
+      "title": "Save a stone in atari",
+      "prompt": "Black to play. Extend the marked black stone to escape atari.",
+      "hint": "The black stone has one liberty left. Check how many liberties the group would have after extending.",
+      "explanation": "Extending downward connects two black stones into one group with more liberties.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-01": {
+      "id": "u2-01",
+      "title": "Side-by-side stones",
+      "prompt": "Are the two marked black stones in the same connected group?",
+      "hint": "Follow the horizontal board line between them.",
+      "explanation": "The black stones touch directly along a horizontal line, so they belong to one group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-02": {
+      "id": "u2-02",
+      "title": "Stones above and below",
+      "prompt": "Are the two marked white stones in the same connected group?",
+      "hint": "Follow the vertical board line between them.",
+      "explanation": "The white stones touch directly along a vertical line, so they form one group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-03": {
+      "id": "u2-03",
+      "title": "Diagonal stones remain separate",
+      "prompt": "Are the two marked black stones already one connected group?",
+      "hint": "A diagonal contact is not a direct connection along a board line.",
+      "explanation": "Although they look close, the two stones are still separate groups.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-04": {
+      "id": "u2-04",
+      "title": "An opposing stone between them",
+      "prompt": "Are the two marked black stones part of one connected group?",
+      "hint": "Check what occupies the intersection between the black stones.",
+      "explanation": "A white stone separates them. The marked black stones are not directly connected.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-05": {
+      "id": "u2-05",
+      "title": "Join across the middle",
+      "prompt": "Black to play. Connect the two marked black stones directly with one move.",
+      "hint": "Find the empty intersection that touches both black stones along the board lines.",
+      "explanation": "Black plays on the shared adjacent point, linking the two stones into one group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-06": {
+      "id": "u2-06",
+      "title": "Join vertically",
+      "prompt": "Black to play. Connect the upper and lower black stones into one group.",
+      "hint": "Check the empty intersection between the two black stones.",
+      "explanation": "Black fills the middle point, making a vertical connection between the stones.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-07": {
+      "id": "u2-07",
+      "title": "Connect near the edge",
+      "prompt": "Black to play. Join the two black stones near the left edge.",
+      "hint": "Look for the empty point touching both black stones.",
+      "explanation": "Filling the shared point joins the two stones along the same row.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-08": {
+      "id": "u2-08",
+      "title": "A cutting point in the middle",
+      "prompt": "Black to play. Occupy the point where the two marked white stones could connect directly.",
+      "hint": "Find the empty point directly between the two white stones.",
+      "explanation": "Black occupies the middle point, preventing White from connecting there in one move.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-09": {
+      "id": "u2-09",
+      "title": "Stop a vertical connection",
+      "prompt": "Black to play. Prevent the upper and lower white stones from connecting directly through the middle.",
+      "hint": "Look for the empty intersection shared by both white stones.",
+      "explanation": "Black occupies that intersection, stopping this direct vertical connection.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u2-10": {
+      "id": "u2-10",
+      "title": "Find the connecting point near the edge",
+      "prompt": "Black to play. Which point would White need to connect the two marked stones directly? Occupy it.",
+      "hint": "Look along the straight line between the two white stones.",
+      "explanation": "Black occupies the point between them, so White cannot connect there in one move.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m01": {
+      "id": "u4-m01",
+      "title": "Find the first vital point",
+      "prompt": "Black to play. Find the point that turns this three-point eye space into two separate real eyes.",
+      "hint": "Compare the middle point with the two ends. Which move separates the remaining empty space?",
+      "explanation": "Black plays in the middle, leaving one enclosed empty point on each side. This is the basic straight-three eye-space shape.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m02": {
+      "id": "u4-m02",
+      "title": "Rotate the same eye shape",
+      "prompt": "Black to play. Where is the vital point when the three-point shape is vertical?",
+      "hint": "Rotating the shape does not change which point divides it into two.",
+      "explanation": "Black occupies the middle. The top and bottom empty points become separate real eyes.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m03": {
+      "id": "u4-m03",
+      "title": "Deny White two eyes",
+      "prompt": "Black to play. White wants to make two eyes from this connected three-point space. Which vital point should Black take first?",
+      "hint": "Think about what would happen if White occupied the central point first.",
+      "explanation": "Black takes the centre so White cannot use that point to split its eye space. White's strongest follow-up still needs to be read.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m04": {
+      "id": "u4-m04",
+      "title": "Attack the rotated eye shape",
+      "prompt": "Black to play. Find the point that prevents White from making two eyes in the vertical shape.",
+      "hint": "Find the middle of the three connected empty intersections.",
+      "explanation": "Taking the middle denies White this two-eye formation. The task checks the first vital point, not every later killing variation.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m05": {
+      "id": "u4-m05",
+      "title": "Complete a second eye horizontally",
+      "prompt": "Black to play. The left eye is already enclosed. Fill the missing boundary point of the second eye.",
+      "hint": "Inspect the four neighbouring points around the right-hand empty eye space.",
+      "explanation": "Black closes the missing boundary. Both separate empty points become enclosed real eyes.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m06": {
+      "id": "u4-m06",
+      "title": "Complete a second eye vertically",
+      "prompt": "Black to play. Close the missing boundary point of the second eye in this rotated shape.",
+      "hint": "Confirm the existing eye, then inspect which side of the other eye remains open.",
+      "explanation": "Filling the gap leaves two separate enclosed eye points. The orientation does not change the condition.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m07": {
+      "id": "u4-m07",
+      "title": "Block White's second eye",
+      "prompt": "Black to play. White is one move away from making a second eye. Occupy the missing boundary point first.",
+      "hint": "Do not fill the already complete eye. Find the gap around the other candidate eye.",
+      "explanation": "Black enters the outer gap, so the second empty point touches an opposing stone and is no longer a real white eye.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-m08": {
+      "id": "u4-m08",
+      "title": "Block the rotated second eye",
+      "prompt": "Black to play. Occupy the gap in White's second-eye boundary before White can close it.",
+      "hint": "Compare both candidate eye points. One still has an unclosed boundary.",
+      "explanation": "Black takes the gap, leaving White with only its existing eye in this task. This alone does not prove the entire group will die.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-01": {
+      "id": "u3-01",
+      "title": "A move with no liberties",
+      "prompt": "Black plays a stone that would have no liberties after the move, and no white stones are captured. Is that legal?",
+      "options": [
+        "Yes, any point can be played first",
+        "No, it is an illegal self-capture",
+        "Yes, but it is risky"
+      ],
+      "hint": "Imagine the liberties of Black's group after the move.",
+      "explanation": "A move that leaves your group with no liberties and captures nothing is illegal under these rules.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-02": {
+      "id": "u3-02",
+      "title": "Capturing removes the problem",
+      "prompt": "Black plays into a surrounded point but captures neighbouring white stones. How should the move be judged?",
+      "options": [
+        "Legal if Black has liberties after the capture",
+        "Illegal because the point appeared surrounded",
+        "Black must pass instead"
+      ],
+      "hint": "When you play, remove captured stones before counting your group's remaining liberties.",
+      "explanation": "The captured white stones are removed first. If Black then has liberties, this move is legal.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-03": {
+      "id": "u3-03",
+      "title": "Why does ko exist?",
+      "prompt": "Why does the simple ko rule prevent immediate recapture?",
+      "options": [
+        "To prevent a repeating position from continuing forever",
+        "To make the board smaller",
+        "To ensure Black wins"
+      ],
+      "hint": "What would happen if each player captured back on every turn?",
+      "explanation": "The ko rule prevents two players from repeating the same board position indefinitely.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-04": {
+      "id": "u3-04",
+      "title": "After a ko capture",
+      "prompt": "White has just captured a black stone in a simple ko. What may Black do next?",
+      "options": [
+        "Recapture immediately on that point",
+        "Play elsewhere first",
+        "Remove White's stone by hand"
+      ],
+      "hint": "Simple ko forbids the immediate move that recreates the previous position.",
+      "explanation": "Black cannot recapture immediately. Black must play elsewhere first.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-05": {
+      "id": "u3-05",
+      "title": "What is a ko threat?",
+      "prompt": "Black plays elsewhere and creates a threat White may have to answer before Black fights for the ko again. What is that move called?",
+      "options": [
+        "A ko threat",
+        "An illegal move",
+        "An endgame move"
+      ],
+      "hint": "This threat creates a reason for the opponent to respond before the ko fight continues.",
+      "explanation": "A move that pressures the opponent to answer while fighting a ko is called a ko threat.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u3-06": {
+      "id": "u3-06",
+      "title": "Which ko rule does this app use?",
+      "prompt": "Which repetition restriction does the current interactive rules engine enforce?",
+      "options": [
+        "Simple ko: no immediate return to the preceding board position",
+        "Superko: no repetition of any earlier position",
+        "No ko restriction"
+      ],
+      "hint": "The lessons use the common beginner version that looks one board position back.",
+      "explanation": "This engine implements simple ko and prevents an immediate return to the previous board position.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-01": {
+      "id": "u4-01",
+      "title": "Why two real eyes matter",
+      "prompt": "A surrounded black group has two separate real eyes that White cannot safely fill. What does this usually tell you?",
+      "options": [
+        "Black is alive in this basic position",
+        "Black must be captured",
+        "Eyes have no connection to life and death"
+      ],
+      "hint": "Think about whether White can occupy both eye points without being captured.",
+      "explanation": "Two separate real eyes prevent White from safely filling both spaces in this basic position.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-02": {
+      "id": "u4-02",
+      "title": "One eye is not enough",
+      "prompt": "A surrounded group has only one eye. Which conclusion is safest?",
+      "options": [
+        "The group must be alive",
+        "The next player and vital points still matter",
+        "The group must be dead"
+      ],
+      "hint": "One eye alone does not guarantee life.",
+      "explanation": "With only one eye, the outcome may depend on who plays first and which vital point they choose.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-03": {
+      "id": "u4-03",
+      "title": "A vital point for both sides",
+      "prompt": "A point that stops your opponent from forming a second eye can also help you make one. Which principle is this closest to?",
+      "options": [
+        "Your opponent's vital point may also be yours",
+        "The corner is always the smallest area",
+        "Capturing always comes first"
+      ],
+      "hint": "Both players may be fighting for the same eye-shaping point.",
+      "explanation": "In life-and-death positions, both sides may need the same vital point for different reasons.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-04": {
+      "id": "u4-04",
+      "title": "A false eye",
+      "prompt": "An empty point looks like an eye, but the opponent can play there safely. How should you treat it?",
+      "options": [
+        "A secure real eye",
+        "A false or incomplete eye",
+        "An extra liberty that guarantees life"
+      ],
+      "hint": "A real eye is a space the opponent cannot safely occupy.",
+      "explanation": "A space the opponent can enter safely is not a secure real eye; examine the surrounding stones.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-05": {
+      "id": "u4-05",
+      "title": "How to start reading life and death",
+      "prompt": "What is a useful first step when solving a basic life-and-death problem?",
+      "options": [
+        "Find a point that can change the eye shape",
+        "Choose any empty point",
+        "Count the entire board first"
+      ],
+      "hint": "Look for a move that could change the local position significantly.",
+      "explanation": "Find a vital point, then consider the opponent's strongest reply rather than stopping at your first idea.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u4-06": {
+      "id": "u4-06",
+      "title": "Who plays first?",
+      "prompt": "In one local position, Black can live when Black plays first, but White can kill when White plays first. What does that show?",
+      "options": [
+        "The order of play can decide life and death",
+        "Stone colour makes no difference to the task",
+        "One eye is always enough"
+      ],
+      "hint": "Which player can claim the vital point first?",
+      "explanation": "When an eye shape is unfinished, the player to move can determine whether a group lives.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-01": {
+      "id": "u5-01",
+      "title": "Why practice on a 9×9 board?",
+      "prompt": "What is the main benefit of finishing a game on a 9×9 board as a beginner?",
+      "options": [
+        "You can experience the opening, fighting and ending sooner",
+        "Half the Go rules disappear",
+        "You never need to count liberties"
+      ],
+      "hint": "A smaller board reaches local fights and the end of the game sooner.",
+      "explanation": "A 9×9 board keeps the rules of Go while making it easier to finish and review a whole game.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-02": {
+      "id": "u5-02",
+      "title": "The first goal of the opening",
+      "prompt": "At the beginning of a 9×9 game, which aim is generally more useful?",
+      "options": [
+        "Develop stones with room to grow",
+        "Fill the first line immediately",
+        "Chase one distant stone at all costs"
+      ],
+      "hint": "Give your stones room for later moves.",
+      "explanation": "Early moves should build useful space and relationships between stones, rather than start an unnecessary chase.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-03": {
+      "id": "u5-03",
+      "title": "What should you notice in the middle game?",
+      "prompt": "One of your groups is surrounded while a small empty corner remains. What should you check first?",
+      "options": [
+        "Whether your surrounded group is in urgent danger",
+        "The small empty corner",
+        "Whichever area you notice first"
+      ],
+      "hint": "If a group is lost, the nearby territory may be lost as well.",
+      "explanation": "Check the safety of an urgently weak group before pursuing a smaller gain elsewhere.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-04": {
+      "id": "u5-04",
+      "title": "Recognising the endgame",
+      "prompt": "Both players' large groups are mostly safe. Most remaining moves settle a boundary or gain a few points. Which stage does this resemble?",
+      "options": [
+        "The endgame",
+        "The opening",
+        "The start of a ko fight"
+      ],
+      "hint": "Notice when the focus shifts from group survival to boundaries.",
+      "explanation": "Settling borders and comparing small territorial gains are typical endgame tasks.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-05": {
+      "id": "u5-05",
+      "title": "When both players are ready to stop",
+      "prompt": "Both players believe there are no useful moves left. What is the normal next step?",
+      "options": [
+        "Pass in turn according to the rules and proceed to scoring",
+        "Clear the board immediately",
+        "Play another move in an empty corner"
+      ],
+      "hint": "Think about the procedure for ending a game.",
+      "explanation": "After two consecutive passes, the game proceeds to the applicable end-of-game and scoring procedure.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u5-06": {
+      "id": "u5-06",
+      "title": "One useful question after a short game",
+      "prompt": "After a 9×9 game, which review question is most useful for your next game?",
+      "options": [
+        "Which move made my group vulnerable, and what did I overlook?",
+        "How many minutes did the game take?",
+        "How heavy was my opponent's stone?"
+      ],
+      "hint": "Look for one decision you can recognise and check next time.",
+      "explanation": "Reviewing one overlooked threat or weak group gives you a concrete question to test in another game.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-01": {
+      "id": "u6-01",
+      "title": "Why corners often come first",
+      "prompt": "Why do players often look toward the corners early on an empty board?",
+      "options": [
+        "Two board edges help surround territory more efficiently",
+        "A stone in the corner can never be captured",
+        "Corner stones have no liberties"
+      ],
+      "hint": "In a corner, you have fewer sides to enclose than in the centre.",
+      "explanation": "The two board edges make it possible to secure an area with fewer stones. This is a useful opening principle, not an absolute rule.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-02": {
+      "id": "u6-02",
+      "title": "Develop toward friendly support",
+      "prompt": "You already have a stone in one corner. Why might you extend toward nearby friendly stones?",
+      "options": [
+        "Your new and existing stones can support one another",
+        "Your stones should always be as far apart as possible",
+        "The only aim is to add one liberty"
+      ],
+      "hint": "Notice whether the new stone gives your existing stones a useful direction.",
+      "explanation": "Moves that work with nearby friendly stones tend to develop more effectively than isolated moves.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-03": {
+      "id": "u6-03",
+      "title": "No universally best opening point",
+      "prompt": "Someone says the star point is always better than the 3–4 point. What is the best response?",
+      "options": [
+        "Neither is always best; consider the board and your plan",
+        "Yes, the same point is best in every game",
+        "That rule applies only to 9×9 boards"
+      ],
+      "hint": "Opening patterns depend on the position, not a single memorised coordinate.",
+      "explanation": "Both the star point and the 3–4 point have legitimate uses. Their value depends on nearby stones and the overall plan.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-04": {
+      "id": "u6-04",
+      "title": "Look nearby before extending",
+      "prompt": "Before deciding which side to extend toward, what should you examine?",
+      "options": [
+        "Nearby friendly and opposing stones, and the available space",
+        "How shiny the stones are",
+        "Which player first picked up a stone"
+      ],
+      "hint": "Support and pressure from other stones change how an extension works.",
+      "explanation": "Nearby stones show which direction offers room to develop and which direction invites an attack.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-05": {
+      "id": "u6-05",
+      "title": "Urgent or simply large?",
+      "prompt": "One of your groups is under pressure, but there is also a large open area elsewhere. What should you compare first?",
+      "options": [
+        "Whether the pressured group needs an urgent move",
+        "Which empty area has the nicest colour",
+        "Whether the board looks symmetrical"
+      ],
+      "hint": "A large opening point may be less important than a group in immediate trouble.",
+      "explanation": "Compare the urgency of protecting the weak group with the value of the open area. A truly urgent threat often comes first.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u6-06": {
+      "id": "u6-06",
+      "title": "A question after every opening move",
+      "prompt": "After an opening move, which question is most useful?",
+      "options": [
+        "How does this move work with my nearby stones?",
+        "How many centimetres is it from the centre?",
+        "Can this move capture something immediately?"
+      ],
+      "hint": "The value of an opening stone often comes from its relationship to other stones.",
+      "explanation": "Checking how the move supports existing stones gives a more reliable sense of direction than examining the stone alone.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-01": {
+      "id": "u7-01",
+      "title": "What counts as territory?",
+      "prompt": "Which description best matches reasonably secure territory?",
+      "options": [
+        "An area with fairly clear boundaries that can be counted",
+        "Any single isolated stone",
+        "A large central space neither player has settled"
+      ],
+      "hint": "Look for an area whose ownership is relatively clear.",
+      "explanation": "Secure territory has boundaries firm enough that its points can be counted with reasonable confidence.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-02": {
+      "id": "u7-02",
+      "title": "What is thickness?",
+      "prompt": "Which position best illustrates thickness in Go?",
+      "options": [
+        "A safe, solid shape that can support play farther out",
+        "A group in atari with only one liberty",
+        "An area whose points are already guaranteed"
+      ],
+      "hint": "Thickness is about safety and what your stones can help you do next.",
+      "explanation": "A thick group is relatively secure and can support fighting or development nearby; it does not have a fixed point value.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-03": {
+      "id": "u7-03",
+      "title": "Thickness is not a fixed number",
+      "prompt": "If you build a thick wall, does that automatically mean you are many points ahead?",
+      "options": [
+        "No; its value depends on how it can be used across the board",
+        "Yes; each thick stone is worth exactly ten points",
+        "Yes, provided the wall is in a corner"
+      ],
+      "hint": "A wall needs useful targets or room in which to exert influence.",
+      "explanation": "Thickness has no fixed conversion into territory. The nearby weak groups and open space determine how valuable it may become.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-04": {
+      "id": "u7-04",
+      "title": "Trading territory for influence",
+      "prompt": "An exchange gives you more immediate territory but gives your opponent outside influence. What should you examine before judging it?",
+      "options": [
+        "Where the influence points and whether it has useful targets",
+        "Which player has more individual stones",
+        "The colour of the wooden board frame"
+      ],
+      "hint": "Influence matters most when it can affect actual positions.",
+      "explanation": "Judge both sides of the exchange in context: how secure is the territory, and can the opponent use the outside strength?",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-05": {
+      "id": "u7-05",
+      "title": "Do not fight a strong wall blindly",
+      "prompt": "Why can fighting right beside an opponent's solid, thick wall be dangerous?",
+      "options": [
+        "Their nearby strength gives them support in the fight",
+        "The rules forbid playing next to a wall",
+        "The wall automatically removes your liberties"
+      ],
+      "hint": "Consider which player's stones are better supported.",
+      "explanation": "The opponent's solid wall may make their fighting stones safer and leave you with fewer useful options.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u7-06": {
+      "id": "u7-06",
+      "title": "Compare the whole board",
+      "prompt": "Which is the least reliable way to compare territory with thickness?",
+      "options": [
+        "Assign every thick wall one fixed point value",
+        "Look at the surrounding groups",
+        "Look for directions in which the position can develop"
+      ],
+      "hint": "The usefulness of thickness changes with the position.",
+      "explanation": "Thickness cannot be valued by one universal point formula; assess the nearby groups and potential development.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-01": {
+      "id": "u8-01",
+      "title": "Recognise a weak group",
+      "prompt": "Which group is most likely to be weak?",
+      "options": [
+        "A surrounded group with few liberties and little eye space",
+        "A safe group with two eyes and strong outside support",
+        "A group that already surrounds secure corner territory"
+      ],
+      "hint": "Weak groups often lack a safe way to live or escape.",
+      "explanation": "A group with limited liberties, little eye space and pressure from the opponent needs attention.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-02": {
+      "id": "u8-02",
+      "title": "Why attack a weak group?",
+      "prompt": "What is a useful aim when attacking an opponent's weak group?",
+      "options": [
+        "Put the opponent under pressure while building strength or another gain",
+        "Capture every opposing stone regardless of cost",
+        "Keep chasing as far as possible"
+      ],
+      "hint": "Attacking does not have to end in a capture.",
+      "explanation": "A good attack can build your own strength, territory or initiative without capturing the whole group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-03": {
+      "id": "u8-03",
+      "title": "Make sure your own stones are safe",
+      "prompt": "Your group has only one liberty, while another opposing group looks weak. What should you do first?",
+      "options": [
+        "Check whether your own group faces immediate capture",
+        "Start chasing the opponent at once",
+        "Count the final score"
+      ],
+      "hint": "An unsafe group can turn an attack against you.",
+      "explanation": "Deal with a genuinely urgent danger to your own stones before beginning another attack.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-04": {
+      "id": "u8-04",
+      "title": "Chase toward your strength",
+      "prompt": "Why can it help to push an opposing weak group toward your thick position?",
+      "options": [
+        "Your strong stones can support the fight",
+        "Your opponent automatically gains an extra liberty",
+        "That direction guarantees territory"
+      ],
+      "hint": "Which side already has safer, better-supported stones?",
+      "explanation": "Friendly thickness can make an attack safer and more effective when the opponent runs toward it.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-05": {
+      "id": "u8-05",
+      "title": "Know when to stop attacking",
+      "prompt": "The opposing group has become safe, while continuing the chase would weaken your stones. What is a better choice?",
+      "options": [
+        "Stop the chase and look for a more valuable move",
+        "Continue the chase forever",
+        "Remove your own strong stones"
+      ],
+      "hint": "Keep asking what you gain from each attacking move.",
+      "explanation": "When an attack no longer gains anything and risks weakening your position, consider playing elsewhere.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u8-06": {
+      "id": "u8-06",
+      "title": "Test your attack against resistance",
+      "prompt": "Before attacking, which question is most valuable?",
+      "options": [
+        "What do I gain if the opponent chooses their strongest escape?",
+        "Does the move look aggressive?",
+        "Will the move fill every point on the board?"
+      ],
+      "hint": "Assume your opponent finds a good reply.",
+      "explanation": "Check the best likely defence. An attack is worthwhile when you still gain something against serious resistance.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-01": {
+      "id": "u9-01",
+      "title": "Read the opponent's reply",
+      "prompt": "How should you approach a life-and-death problem?",
+      "options": [
+        "Read moves for both sides, including the strongest replies",
+        "Choose a move because it looks attractive",
+        "Decide from the number of stones alone"
+      ],
+      "hint": "Your opponent will not have to follow the line you hope for.",
+      "explanation": "Life-and-death reading means testing each candidate move against the opponent's strongest answers.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-02": {
+      "id": "u9-02",
+      "title": "What makes a point vital?",
+      "prompt": "What can a vital point change in a life-and-death position?",
+      "options": [
+        "Eye space, liberties or connections",
+        "The size of the board",
+        "Which colour moved first in the game"
+      ],
+      "hint": "Look for a point that significantly changes the local position.",
+      "explanation": "Vital points matter because playing on them can change eye shapes, liberties or whether stones connect.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-03": {
+      "id": "u9-03",
+      "title": "Record whose turn it is",
+      "prompt": "A position can live with Black to play and die with White to play. What must the problem statement specify?",
+      "options": [
+        "Which player moves first",
+        "Only a coordinate",
+        "Neither player's turn"
+      ],
+      "hint": "The same stones can lead to different results depending on who plays.",
+      "explanation": "The player to move is essential information in a life-and-death task; a coordinate alone may not define the problem.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-04": {
+      "id": "u9-04",
+      "title": "Why connecting weak groups helps",
+      "prompt": "If two weak groups can safely connect, what might improve?",
+      "options": [
+        "They share liberties and eye space and may become safer",
+        "They immediately lose a liberty in every position",
+        "They necessarily lose all territory"
+      ],
+      "hint": "Remember what directly connected stones have in common.",
+      "explanation": "A secure connection lets groups share liberties and potential eyes, which may improve their chances of living.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-05": {
+      "id": "u9-05",
+      "title": "Challenge your own reading",
+      "prompt": "After finding one sequence in which your group lives, what should you do next?",
+      "options": [
+        "Look for a stronger opposing reply that could refute it",
+        "Declare the group alive immediately",
+        "Count the whole-board score instead"
+      ],
+      "hint": "Try to find the move your opponent would most like to play.",
+      "explanation": "Your first successful-looking line is only a candidate. Test it against stronger resistance before trusting it.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u9-06": {
+      "id": "u9-06",
+      "title": "Build up reading practice",
+      "prompt": "Which practice approach is appropriate for learning life-and-death reading?",
+      "options": [
+        "Start with small local positions that specify who moves, then increase the reading depth",
+        "Only analyse full 19×19 games from the beginning",
+        "Memorise solution diagrams without reading"
+      ],
+      "hint": "Short, clearly defined sequences are easier to check accurately.",
+      "explanation": "Begin with small, well-specified local positions and gradually increase the number of replies to consider.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-01": {
+      "id": "u10-01",
+      "title": "Compare both endgame outcomes",
+      "prompt": "An endgame move gains you two points and also prevents your opponent from gaining two. How should you evaluate its size?",
+      "options": [
+        "Compare the score difference between the two possible orders of play",
+        "Count only the points you gain",
+        "Count only the stones on the board"
+      ],
+      "hint": "Look at what changes if your opponent plays there first.",
+      "explanation": "An endgame move's local value depends on the swing between your playing first and the opponent's playing first.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-02": {
+      "id": "u10-02",
+      "title": "Choose between two safe endgame moves",
+      "prompt": "Two endgame moves are equally safe: one makes a six-point difference, the other a two-point difference. Which is generally played first?",
+      "options": [
+        "The six-point swing",
+        "The two-point swing",
+        "Either one without comparison"
+      ],
+      "hint": "With urgency equal, compare the size of the swing.",
+      "explanation": "All else equal, the move with the larger point swing is usually the more valuable endgame choice.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-03": {
+      "id": "u10-03",
+      "title": "Urgent before large",
+      "prompt": "One endgame move is small but needed to keep your corner alive. Another is larger but not urgent. What should you examine first?",
+      "options": [
+        "Protect the urgent life-and-death position",
+        "Always take the larger endgame points",
+        "Pass immediately"
+      ],
+      "hint": "Survival can matter more than a small point count.",
+      "explanation": "When a group faces a genuine life-and-death threat, deal with that urgency before comparing ordinary endgame gains.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-04": {
+      "id": "u10-04",
+      "title": "Before counting the score",
+      "prompt": "What should players settle before a final territorial count?",
+      "options": [
+        "The status of groups and any uncertain boundaries",
+        "A completely new opening",
+        "Only the number of stones played"
+      ],
+      "hint": "Unsettled stones may make ownership uncertain.",
+      "explanation": "Resolve the status of groups and unclear boundaries before treating the counted territory as agreed.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-05": {
+      "id": "u10-05",
+      "title": "What is a sente endgame move?",
+      "prompt": "An endgame move creates a threat the opponent is usually compelled to answer. What may be its advantage?",
+      "options": [
+        "It may preserve the initiative so you can play elsewhere next",
+        "It must be larger than every other endgame move",
+        "It cannot affect the score"
+      ],
+      "hint": "A move is sente only when ignoring it carries a meaningful cost.",
+      "explanation": "A genuine sente endgame move may gain points while allowing you to move first in another area; confirm that the reply is actually needed.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u10-06": {
+      "id": "u10-06",
+      "title": "Find the source of a scoring mistake",
+      "prompt": "Your predicted final score differs greatly from the actual result. What should you review?",
+      "options": [
+        "Missed dead stones, unsettled borders and exchanges",
+        "Only your bad luck",
+        "Whether to make the board larger"
+      ],
+      "hint": "Look for a concrete difference between estimated and actual ownership.",
+      "explanation": "Recheck the status of groups, borders and exchanges to turn the scoring error into a specific question for future games.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-01": {
+      "id": "u11-01",
+      "title": "Look at the whole board",
+      "prompt": "A local fight could continue, but one of your groups elsewhere is about to be captured. What should you do first?",
+      "options": [
+        "Pause and check whether saving that weak group is more urgent",
+        "Always finish the local fight",
+        "Look only at the last move"
+      ],
+      "hint": "Compare urgent problems across the board.",
+      "explanation": "A group in immediate danger may deserve attention before an unfinished local fight.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-02": {
+      "id": "u11-02",
+      "title": "Recognise a large point",
+      "prompt": "Which area is most likely to offer a large move?",
+      "options": [
+        "An unsettled open area that you can influence without weakening yourself",
+        "A corner whose boundaries are already fully secure",
+        "One of your groups that has only one liberty"
+      ],
+      "hint": "A large move often affects a substantial undecided area.",
+      "explanation": "An open area with significant potential can matter more than a place already settled.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-03": {
+      "id": "u11-03",
+      "title": "One move, two jobs",
+      "prompt": "Why can a move that both strengthens your group and limits the opponent's space be valuable?",
+      "options": [
+        "It addresses two whole-board needs at once",
+        "It must capture stones immediately",
+        "It only adds one liberty"
+      ],
+      "hint": "Think about how much useful work one stone performs.",
+      "explanation": "Combining defence with pressure can make a move efficient in the whole-board position.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-04": {
+      "id": "u11-04",
+      "title": "Think beyond captured stones",
+      "prompt": "You capture two stones locally, but the opponent builds powerful outside thickness. What should you do before judging the trade?",
+      "options": [
+        "Compare the local gain with the effects across the board",
+        "Count only the captured stones",
+        "Look only at who gave atari first"
+      ],
+      "hint": "A small local win can carry a bigger outside cost.",
+      "explanation": "Judge the exchange by territory, thickness, weak groups and future possibilities—not capture count alone.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-05": {
+      "id": "u11-05",
+      "title": "Mark the urgent areas",
+      "prompt": "When looking across the whole board, what should you identify first?",
+      "options": [
+        "Weak groups, big unsettled spaces and urgent points",
+        "Only corners that are already safe",
+        "The four edges of the board"
+      ],
+      "hint": "Find the areas where one move could change the position most.",
+      "explanation": "Identifying weak groups, open space and immediate threats helps you choose a useful direction.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u11-06": {
+      "id": "u11-06",
+      "title": "Direction is not a memorised coordinate",
+      "prompt": "What is the least useful approach to learning whole-board direction?",
+      "options": [
+        "Memorise fixed coordinates without checking the other stones",
+        "Compare urgency with potential size",
+        "Check where supporting stones are"
+      ],
+      "hint": "The same point can serve different purposes in different positions.",
+      "explanation": "Choose a direction from the relationships between groups and spaces rather than a fixed-coordinate rule.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-01": {
+      "id": "u12-01",
+      "title": "Should you save every stone?",
+      "prompt": "A small group can be sacrificed, leaving you strong outside with an attack against a larger opposing group. What should you compare?",
+      "options": [
+        "The whole-board compensation from giving up the stones",
+        "Assume every stone must be rescued",
+        "Count only how many stones you lose"
+      ],
+      "hint": "A sacrifice is worthwhile only when it buys something useful.",
+      "explanation": "Giving up a few stones may be reasonable if the resulting thickness, initiative or attack is worth more.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-02": {
+      "id": "u12-02",
+      "title": "The value of taking the initiative",
+      "prompt": "A move generally makes the opponent respond, allowing you to reach the next large point first. Why might that help?",
+      "options": [
+        "The chance to move first elsewhere has value",
+        "Forcing a reply never costs anything",
+        "Every forcing move is correct"
+      ],
+      "hint": "The initiative means retaining choices about where to play next.",
+      "explanation": "A forcing move can preserve initiative, but its own cost and whether the opponent truly must reply still matter.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-03": {
+      "id": "u12-03",
+      "title": "Check safety before invading",
+      "prompt": "Before entering your opponent's area, what do you most need to know?",
+      "options": [
+        "Whether your stones have a way to connect, escape or live",
+        "Whether you have fewer stones in total",
+        "Whether the centre is always safe"
+      ],
+      "hint": "An invasion needs a realistic survival plan.",
+      "explanation": "Without a route to safety, an invasion may simply create another weak group.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-04": {
+      "id": "u12-04",
+      "title": "Attack where you have support",
+      "prompt": "Your opponent has an unsettled group and you have strong nearby stones. What is a reasonable aim?",
+      "options": [
+        "Gain strength, territory or initiative while staying safe",
+        "Guarantee that you capture every stone",
+        "Attach to your opponent on every move"
+      ],
+      "hint": "Capturing everything is not the only useful result.",
+      "explanation": "Your strong stones may let you press the weak group and gain territory, outside strength or the initiative.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-05": {
+      "id": "u12-05",
+      "title": "Know when to sacrifice",
+      "prompt": "Your stones cannot escape safely, and every attempted rescue adds more stones at risk. What might be better?",
+      "options": [
+        "Stop adding stones and seek compensation outside",
+        "Keep adding stones without limit",
+        "Pretend the group does not exist"
+      ],
+      "hint": "Adding another stone can increase the loss.",
+      "explanation": "A timely sacrifice may contain the damage and free you to gain something elsewhere.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u12-06": {
+      "id": "u12-06",
+      "title": "Review the turning point of a fight",
+      "prompt": "After a failed fight, which review question is most useful?",
+      "options": [
+        "When did my previously safe group become weak?",
+        "How many stones did my opponent place?",
+        "Were the stones physically heavy?"
+      ],
+      "hint": "Find the decision that changed the group's safety.",
+      "explanation": "Identify when the group became weak and when you missed a chance to stabilise it.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-01": {
+      "id": "u13-01",
+      "title": "Is that really a ko threat?",
+      "prompt": "If your opponent can ignore a move elsewhere with little consequence, can you rely on it as a ko threat?",
+      "options": [
+        "No, it does not put enough pressure on the opponent",
+        "Yes, because it costs nothing",
+        "It must be better than a large threat"
+      ],
+      "hint": "An effective ko threat needs a reply.",
+      "explanation": "A threat that the opponent can easily ignore is not a reliable way to regain the ko.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-02": {
+      "id": "u13-02",
+      "title": "How much is the ko worth?",
+      "prompt": "Before committing to a ko fight, what should you compare?",
+      "options": [
+        "The whole-board consequences of winning and losing the ko",
+        "Who first noticed the ko",
+        "How near the ko is to the centre"
+      ],
+      "hint": "A ko can affect much more than the stone being captured.",
+      "explanation": "Estimate the consequences of both outcomes before spending valuable threats on the fight.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-03": {
+      "id": "u13-03",
+      "title": "An expensive ko threat",
+      "prompt": "You use an enormous threat elsewhere to fight over a very small ko, giving the opponent a large gain. What might be wrong?",
+      "options": [
+        "The cost of the threat exceeds the value of the ko",
+        "Larger threats are always better",
+        "A threat never has a cost"
+      ],
+      "hint": "A ko threat is an exchange, not a free move.",
+      "explanation": "If the concession required by your threat costs more than the ko is worth, the whole exchange may be poor.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-04": {
+      "id": "u13-04",
+      "title": "Where might a useful threat be?",
+      "prompt": "When looking for ko threats, what deserves attention first?",
+      "options": [
+        "A move that threatens an important group, territory or connection",
+        "An empty corner that matters to neither player",
+        "A point deep inside your already dead group"
+      ],
+      "hint": "Look for something your opponent cannot afford to lose.",
+      "explanation": "Threats against important groups, territory and connections are more likely to demand a reply.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-05": {
+      "id": "u13-05",
+      "title": "Why play a ko threat elsewhere?",
+      "prompt": "You leave the ko point to make a threat elsewhere, hoping to retake the ko after a reply. What is the purpose?",
+      "options": [
+        "Use the turn elsewhere to earn another chance at the ko",
+        "Cancel all the rules of the game",
+        "Guarantee victory in a single step"
+      ],
+      "hint": "The threat is played while you cannot immediately retake.",
+      "explanation": "A meaningful threat can draw a reply and give you an opportunity to contest the ko again.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u13-06": {
+      "id": "u13-06",
+      "title": "Review a ko exchange",
+      "prompt": "After a ko fight, what should you examine?",
+      "options": [
+        "Each threat used by both sides and what it actually cost",
+        "Only who captured the ko last",
+        "Ignore moves made elsewhere"
+      ],
+      "hint": "Much of a ko fight's value is decided away from the ko point.",
+      "explanation": "Reviewing the threats and replies reveals the cost of the whole exchange.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-01": {
+      "id": "u14-01",
+      "title": "What does joseki mean?",
+      "prompt": "What best describes a joseki?",
+      "options": [
+        "A common corner exchange considered reasonable under certain conditions",
+        "The only sequence that must be copied in every game",
+        "A formula that guarantees a win"
+      ],
+      "hint": "Nearby stones and whole-board direction still matter.",
+      "explanation": "Joseki are established corner patterns, not universally correct moves regardless of context.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-02": {
+      "id": "u14-02",
+      "title": "Before choosing a corner variation",
+      "prompt": "What should you check before choosing a joseki variation?",
+      "options": [
+        "Where the outside strength will face and which stones are nearby",
+        "How many pages are in your game record",
+        "Whether the opponent is playing quickly"
+      ],
+      "hint": "The same local sequence may work differently with different neighbours.",
+      "explanation": "Choose a variation that fits the surrounding stones, outside influence and whole-board needs.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-03": {
+      "id": "u14-03",
+      "title": "When memorisation stops helping",
+      "prompt": "You remember the first half of a joseki, but the surrounding stones differ from your example. What should you do?",
+      "options": [
+        "Reassess the direction instead of blindly continuing the sequence",
+        "Finish the memorised sequence no matter what",
+        "Change the colours of the stones"
+      ],
+      "hint": "A remembered sequence has conditions.",
+      "explanation": "If the surrounding position differs, judge the purpose of the next move rather than copying it automatically.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-04": {
+      "id": "u14-04",
+      "title": "After a joseki, check the groups",
+      "prompt": "A corner sequence ends, but your outside group is still thin and vulnerable. What deserves attention?",
+      "options": [
+        "Strengthen it or consider how its weakness affects the position",
+        "Start another identical joseki immediately",
+        "Ignore it because the corner sequence ended"
+      ],
+      "hint": "Ending the local pattern does not end whole-board problems.",
+      "explanation": "Examine which groups are unsettled and what follow-up moves remain after the corner exchange.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-05": {
+      "id": "u14-05",
+      "title": "Territory or outside influence?",
+      "prompt": "Two reasonable corner variations offer different outcomes: one secures territory, the other outside influence. How should you choose?",
+      "options": [
+        "Compare which outcome fits the nearby position and your plan",
+        "Always select territory",
+        "Always select outside influence"
+      ],
+      "hint": "Neither kind of gain is universally better.",
+      "explanation": "Nearby weak groups, development opportunities and whole-board direction determine which exchange is more useful.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u14-06": {
+      "id": "u14-06",
+      "title": "Learn why a joseki works",
+      "prompt": "Which is a more useful way to study joseki?",
+      "options": [
+        "Understand the aims and directions before learning longer sequences",
+        "Memorise as many long sequences as possible without context",
+        "Force yourself to use a new sequence in every game"
+      ],
+      "hint": "Understanding lets you judge unfamiliar positions.",
+      "explanation": "Learn what each exchange aims to accomplish so you can adapt to different surrounding stones.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-01": {
+      "id": "u15-01",
+      "title": "Where should a game review begin?",
+      "prompt": "After a game, which moments are most useful to revisit first?",
+      "options": [
+        "A few turning points involving large gains, losses or group survival",
+        "Every move for exactly the same length of time",
+        "Only the most attractive shape on the board"
+      ],
+      "hint": "Look for moments that changed the game significantly.",
+      "explanation": "Starting from a few influential decisions makes a review more focused.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-02": {
+      "id": "u15-02",
+      "title": "Record your own reasoning first",
+      "prompt": "Why write down what you were thinking before consulting an AI or review tool?",
+      "options": [
+        "You can compare your original judgment with the suggestions",
+        "The AI will then play the game for you",
+        "It means you no longer need to review"
+      ],
+      "hint": "The difference in reasoning matters, not only the coordinate.",
+      "explanation": "Keeping your original explanation makes it easier to find what you missed or misunderstood.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-03": {
+      "id": "u15-03",
+      "title": "How should you use an AI candidate?",
+      "prompt": "An AI tool suggests a move with a higher estimated win rate. What is the most useful next step?",
+      "options": [
+        "Ask what problem it improves, then check the idea yourself",
+        "Memorise only the coordinate",
+        "Call every other move incorrect"
+      ],
+      "hint": "Treat a candidate move as a question to investigate.",
+      "explanation": "Use AI estimates to examine weaknesses, direction or trade-offs; they do not prove a unique teaching answer.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-04": {
+      "id": "u15-04",
+      "title": "Choose one question for the next game",
+      "prompt": "A review reveals many mistakes. What is a manageable next practice goal?",
+      "options": [
+        "Select one observable decision to revisit in your next game",
+        "Fix every weakness at once",
+        "Stop playing"
+      ],
+      "hint": "A concrete target can be checked in a later position.",
+      "explanation": "Choose one action to practise, such as checking your own groups before starting an attack.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-05": {
+      "id": "u15-05",
+      "title": "Record more than the result",
+      "prompt": "You lost a game but avoided a particular illegal move you used to make. What should your notes include?",
+      "options": [
+        "The observed change and what still needs checking",
+        "Only the win or loss",
+        "A statement that the game taught you nothing"
+      ],
+      "hint": "A game result does not describe every decision you made.",
+      "explanation": "Record the specific decision that differed and seek comparable situations before claiming lasting improvement.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    },
+    "u15-06": {
+      "id": "u15-06",
+      "title": "A useful takeaway from one review",
+      "prompt": "What is the minimum useful outcome of a personal game review?",
+      "options": [
+        "One turning point, why it mattered and one question for the next game",
+        "The physical weight of all stones",
+        "Only an AI win-rate screenshot"
+      ],
+      "hint": "Leave the review with something you can check while playing.",
+      "explanation": "A turning point, an explanation and a specific next-game question make the review actionable.",
+      "sourceVersion": "content.js-public-2026-10-13",
+      "editorialStatus": "draft",
+      "goReview": "pending",
+      "nativeReview": "pending"
+    }
+  },
+  "disclosurePolicy": "Never insert hint-specific location in prompt or unhinted status; after-answer explanations may reveal solution.",
+  "contentAuthority": "Only natural-language copy; never supply answer/scoring/goal/exposure/firstResponse."
+}

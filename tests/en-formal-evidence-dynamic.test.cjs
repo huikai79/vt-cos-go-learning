@@ -1,0 +1,41 @@
+"use strict";
+const test=require("node:test"),assert=require("node:assert/strict");
+const fs=require("node:fs"),path=require("node:path");
+const auditor=require("../scripts/audit-en-formal-evidence-dynamic.cjs");
+const root=path.resolve(__dirname,"..");
+const original=fs.readFileSync(path.join(root,auditor.SOURCE_FILE),"utf8");
+const candidate=JSON.parse(fs.readFileSync(path.join(root,auditor.DRAFT_FILE),"utf8"));
+test("source-bound English dynamic reviewer draft remains explicitly unapproved",()=>{
+ const report=auditor.run(root);
+ assert.equal(report.uncoveredSourceLines.length,0);
+ assert.equal(report.errors.length,0);
+ assert.equal(report.dynamicSegments,31);
+ assert.equal(report.runtimeEligible,false);
+ assert.equal(report.formalTeaching,"BLOCKED");
+ assert.equal(report.formalEvaluation,"BLOCKED");
+ assert.equal(report.learningEffect,"NOT_MEASURED");
+ assert.equal(candidate.sourceGitBlobSha,auditor.blobSha(original));
+ const html=fs.readFileSync(path.join(root,"formal-teaching-evidence.html"),"utf8");
+ assert.doesNotMatch(html,/formal-teaching-evidence-dynamic-draft/);
+ assert.doesNotMatch(original,/dynamic-draft\.json/);
+});
+test("source change, new Chinese message, missing key or unauthorized runtime promotion fail",()=>{
+ const newSource=original+"\nconst newVisibleMessage='先保留失敗記錄';";
+ const changed=auditor.check(newSource,candidate);
+ assert.ok(changed.errors.some(s=>s.includes("source Git blob")));
+ assert.ok(changed.errors.some(s=>s.includes("new uncovered")));
+ const missing=structuredClone(candidate);missing.validationMessages.pop();
+ assert.ok(auditor.check(original,missing).errors.some(s=>s.includes("validationMessages")));
+ const wrong=structuredClone(candidate);wrong.status="approved-for-runtime";wrong.publishable=true;
+ assert.ok(auditor.check(original,wrong).errors.some(s=>s.includes("candidate-only")));
+});
+test("missing required placeholder, modified receipt name and claimed review all fail",()=>{
+ const badPlaceholder=structuredClone(candidate);
+ badPlaceholder.validationMessages.find(x=>x.key==="taskIncomplete").text="Task incomplete.";
+ assert.ok(auditor.check(original,badPlaceholder).errors.some(s=>s.includes("placeholder mismatch")));
+ const badFilename=structuredClone(candidate);
+ badFilename.fileNames[0].text="different.json";
+ assert.ok(auditor.check(original,badFilename).errors.some(s=>s.includes("receipt filename")));
+ const falseApproval=structuredClone(candidate);falseApproval.review.nativeEnglish="approved";
+ assert.ok(auditor.check(original,falseApproval).errors.some(s=>s.includes("candidate-only")));
+});
